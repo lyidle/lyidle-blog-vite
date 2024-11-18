@@ -1,0 +1,44 @@
+// 项目的全局scss变量
+// 屏幕尺寸 参照 element-plus的layout
+$scr-xs: 768px;
+$scr-sm: 992px;
+$scr-md: 1200px;
+$scr-lg: 1920px;
+:root {
+  // 主要字体颜色
+  --primary-color: #203b5b;
+  // #region layout
+  // 头部
+  --header-height: 40px;
+  --header-bg: transparent;
+  --header-bg-during: 0.3s;
+  // 头部导航
+  --header-topnav-margin: 20px;
+  // 头部导航 底部线条
+  --header-topnav-mask-color: #e5baee;
+  --header-topnav-mask-height: 2px;
+  // 左右边距
+  --header-pd: 50px;
+  --content-width: 80%;
+  // banner
+  --banner-detail-color-light: #0d3769;
+}
+
+// #endregion layout
+// #region scrollbar
+$scroll-bg: #f3f3ff;
+// 背景颜色分割 角度 一三的颜色 二四的颜色
+$scroll-thumb-bg: (-45deg, rgb(141, 188, 220), rgb(80, 145, 189));
+$scroll-thumb-radius: 20px;
+$scroll-thumb-border: 2px solid $scroll-bg;
+// svg作为背景 需要把 十六进制的 # 符号换成 %23
+$scroll-button-bg: "%23a1c7ea";
+$scroll-button-bg-hover: "%236da3d5";
+// #endregion
+// #region Methods
+@mixin flex-center($justify: center, $align: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+// #endregion
