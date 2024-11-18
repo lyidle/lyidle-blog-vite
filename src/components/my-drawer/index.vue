@@ -42,9 +42,7 @@ $drawer-during: 0.3s;
   top: 0;
   right: 0;
   height: 100vh;
-  width: 35%;
-  max-width: 300px;
-  min-width: 200px;
+  width: 250px;
   background-color: white;
   z-index: 11;
 }

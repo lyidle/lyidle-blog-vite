@@ -10,7 +10,6 @@ import "virtual:uno.css"
 import "normalize.css"
 // 引入全局样式
 import "@/styles/global.scss"
-import "animate.css"
 export default {
   // 安装插件
   install(app: any) {

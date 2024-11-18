@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <el-icon class="i-ep:menu" @click="isShow"></el-icon>
+    <i class="i-ep:menu w-1em h-1em" @click="isShow"></i>
     <my-drawer v-model="drawer">
       <template #body>31313</template>
     </my-drawer>

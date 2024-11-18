@@ -9,78 +9,13 @@
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
-import { menuListType } from "@/api/header/type"
+// 引入store
+import { useSettingStore } from "@/store/setting"
+import { useUserStore } from "@/store/user"
+// 把pinia的数据动态化
+const { headerColor, headerBg } = storeToRefs(useSettingStore())
+const { menuList } = storeToRefs(useUserStore())
 const title = import.meta.env.VITE_INITIAL_TITLE
-const headerBg = ref("transparent")
-const headerColor = ref("white")
-const menuList = reactive<menuListType[]>([
-  {
-    id: 1,
-    title: "首页",
-    icon: "i-ep:home-filled",
-    to: "/home",
-  },
-  {
-    id: 2,
-    title: "作品",
-    icon: "i-mdi:collection",
-    to: "",
-    data: [
-      {
-        id: 1,
-        name: "test",
-        to: "/test",
-      },
-      {
-        id: 2,
-        name: "test2",
-        to: "/test2",
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "笔记",
-    icon: "i-lucide:notebook-pen",
-    to: "/note",
-  },
-  {
-    id: 4,
-    title: "筛选",
-    icon: "i-tdesign:filter-3-filled",
-    to: "",
-  },
-  {
-    id: 5,
-    title: "音乐",
-    icon: "i-flowbite:list-music-outline",
-    to: "",
-  },
-  {
-    id: 6,
-    title: "图库",
-    icon: "i-jam:picture-f",
-    to: "",
-  },
-  {
-    id: 7,
-    title: "留言板",
-    icon: "i-uil:message",
-    to: "",
-  },
-  {
-    id: 8,
-    title: "友链",
-    icon: "i-heroicons-solid:link",
-    to: "",
-  },
-  {
-    id: 9,
-    title: "简介",
-    icon: "i-iconoir:page-star",
-    to: "",
-  },
-])
 const el = document.documentElement
 // getComputedStyle是事实的
 const result = getComputedStyle(el).getPropertyValue(`--primary-color`)

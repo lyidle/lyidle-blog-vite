@@ -5,4 +5,8 @@
 
 <script setup lang="ts" name="Home"></script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.pages {
+  width: 100vw;
+}
+</style>

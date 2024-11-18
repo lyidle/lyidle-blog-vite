@@ -11,6 +11,7 @@
 
 <script setup lang="ts" name="Home">
 // 彼岸花开开彼岸,忘川河畔亦忘川。奈何桥头空奈何,三生石上写三生。
+// 引入短诗接口
 import { getSentence } from "@/api/sentence"
 const props = defineProps({
   height: {
@@ -28,7 +29,7 @@ const url = props.url
 const sentence = ref()
 nextTick(async () => {
   banner.value.style.height = height
-  banner.value.style.backgroundImage = url
+  // banner.value.style.backgroundImage = url
   const { data } = await getSentence()
   sentence.value = data
 })
@@ -42,6 +43,12 @@ nextTick(async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(
+      to right,
+      rgba(137, 137, 137, 0.5),
+      rgba(137, 137, 137, 0)
+    ),
+    url("/static/images/base-bg-light-01.png");
   .detail {
     display: flex;
     flex-direction: column;

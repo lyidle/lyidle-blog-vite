@@ -2,7 +2,7 @@
   <ul class="topnav">
     <li v-for="item in menuList" :key="item.id">
       <router-link :to="item.to">
-        <el-icon :class="item.icon"></el-icon>
+        <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.title }}
       </router-link>
       <Menu :data="item.data" v-if="item.data"></Menu>
@@ -12,7 +12,6 @@
 
 <script setup lang="ts">
 defineProps(["menuList", "headerColor"])
-// const headerColor = defineModel("headerColor")
 </script>
 
 <style scoped lang="scss">

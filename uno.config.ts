@@ -1,4 +1,5 @@
 import presetIcons from "@unocss/preset-icons"
+import presetWind from "@unocss/preset-wind"
 import { defineConfig } from "unocss"
 
 export default defineConfig({
@@ -16,5 +17,6 @@ export default defineConfig({
       //   ep: () => import("@iconify-json/ep/icons.json").then((i) => i.default),
       // },
     }),
+    presetWind(),
   ],
 })
