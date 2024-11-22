@@ -1,20 +1,37 @@
 <template>
-  <teleport to="body">
-    <div class="drawer-mask" @click="close" v-show="drawer"></div>
+  <div>
+    <div class="drawer-mask" @click="close" v-if="drawer"></div>
     <transition name="drawer">
-      <div class="drawer-content" v-show="drawer">
+      <div class="drawer-content" v-if="drawer">
         <slot name="body"></slot>
       </div>
     </transition>
-  </teleport>
+  </div>
 </template>
 
 <script setup lang="ts" name="Drawer">
 const drawer = defineModel()
+const emits = defineEmits<{
+  close: []
+  initRibbon: []
+}>()
 const close = (e: MouseEvent) => {
   if ((e.target as HTMLElement).className == "drawer") return
   drawer.value = false
+  emits("close")
 }
+withDefaults(defineProps<{ width?: string; bg?: string; mask?: string }>(), {
+  width: "250px",
+  bg: "white",
+  mask: "#0000005a",
+})
+watch(
+  () => drawer.value,
+  () => {
+    emits("initRibbon")
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped lang="scss">
@@ -34,7 +51,7 @@ $drawer-during: 0.3s;
 .drawer-mask {
   position: fixed;
   inset: 0;
-  background-color: #0000005a;
+  background-color: v-bind(mask);
   z-index: 10;
 }
 .drawer-content {
@@ -42,8 +59,9 @@ $drawer-during: 0.3s;
   top: 0;
   right: 0;
   height: 100vh;
-  width: 250px;
-  background-color: white;
+  width: v-bind(width);
+  background-color: v-bind(bg);
   z-index: 11;
+  overflow-y: scroll;
 }
 </style>

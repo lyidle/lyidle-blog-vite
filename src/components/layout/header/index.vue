@@ -3,8 +3,8 @@
     <div class="logo text">
       <router-link to="/">{{ title }}</router-link>
     </div>
-    <layout-topnav :menuList :headerColor></layout-topnav>
-    <layout-topnav-mini :menuList></layout-topnav-mini>
+    <layout-topnav :menuList></layout-topnav>
+    <layout-topnav-mini></layout-topnav-mini>
   </div>
 </template>
 
@@ -16,17 +16,14 @@ import { useUserStore } from "@/store/user"
 const { headerColor, headerBg } = storeToRefs(useSettingStore())
 const { menuList } = storeToRefs(useUserStore())
 const title = import.meta.env.VITE_INITIAL_TITLE
-const el = document.documentElement
-// getComputedStyle是事实的
-const result = getComputedStyle(el).getPropertyValue(`--primary-color`)
 // 导航吸附函数
 const _sticky = () => {
   if (document.documentElement.scrollTop > 0) {
-    headerBg.value = "rgba(255,255,255,.8)"
-    headerColor.value = result
+    headerBg.value = "var(--header-sticky-bg)"
+    headerColor.value = "var(--header-sticky-color)"
   } else {
-    headerBg.value = "transparent"
-    headerColor.value = "white"
+    headerBg.value = "var(--header-bg)"
+    headerColor.value = "var(--header-color)"
   }
 }
 onMounted(() => {
@@ -44,18 +41,18 @@ onUnmounted(() => {
   color: v-bind(headerColor);
   width: 100%;
   height: var(--header-height);
-  @include flex-center(space-between);
+  @include flex(space-between);
   background-color: var(--header-bg);
   padding: 0 var(--header-pd);
   background-color: v-bind(headerBg);
   position: fixed;
+  box-sizing: border-box;
   top: 0;
-  transition: background-color var(--header-bg-during);
+  z-index: 10;
+  transition: background-color var(--header-bg-during),
+    padding var(--header-bg-during);
   .logo {
     font-family: "LOGO";
-    > a {
-      color: v-bind(headerColor);
-    }
   }
 }
 </style>

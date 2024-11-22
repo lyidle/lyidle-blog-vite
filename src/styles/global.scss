@@ -12,25 +12,32 @@ li {
 @font-face {
   font-family: "LOGO";
   font-weight: 900;
-  src: url("static/font/logo.woff") format("woff");
+  src: url("/static/font/logo.woff") format("woff");
   font-display: swap;
 }
+@font-face {
+  font-family: "LXGWW";
+  src: url("/static/font/LXGWWenKai-Regular.ttf");
+}
 html {
-  cursor: url("static/cursor/light/pointer.png") 0 0, default;
-  font-family: var(--el-font-family);
+  cursor: var(--cursor-default);
+  font-family: $global-font;
   width: 100vw;
   overflow-x: hidden;
+  background-color: var(--body-color);
 }
-img,
 a {
-  cursor: url("static/cursor/light/link.png") 0 0, pointer;
+  cursor: var(--cursor-pointer);
 }
 .text {
-  cursor: url("static/cursor/light/text.png") 18 5, text;
+  cursor: var(--cursor-text);
 }
 a {
-  color: var(--primary-color);
+  color: inherit;
   text-decoration: none;
+}
+i {
+  display: inline-block;
 }
 // #endregion
 // #region scrollbar

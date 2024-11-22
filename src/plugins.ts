@@ -6,6 +6,8 @@ import router from "@/router/index"
 import pinia from "@/store"
 // UnoCss
 import "virtual:uno.css"
+// 动态图标
+import "@/components/icon/unocss"
 // 重置样式
 import "normalize.css"
 // 引入全局样式

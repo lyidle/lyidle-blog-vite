@@ -1,8 +1,14 @@
 <template>
-  <layout></layout>
+  <router-view></router-view>
 </template>
 
 <script setup lang="ts" name="App">
+import { useUserStore } from "@/store/user"
+const userStore = useUserStore()
+// 发起请求
+onBeforeMount(async () => {
+  await userStore.userMenuList()
+})
 // 点击特效
 const clickEffect = () => {
   interface BallType {
@@ -396,4 +402,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

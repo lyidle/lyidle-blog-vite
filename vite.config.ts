@@ -43,18 +43,12 @@ export default defineConfig(({ mode }) => {
       // },
       proxy: {
         // 运行时的反代配置
-        // [env.VITE_AUTH_API]: {
-        //   target: env.VITE_AUTH_SERVE,
-        //   changeOrigin: true,
-        //   rewrite: (path) =>
-        //     path.replace(new RegExp(`^${env.VITE_AUTH_API}`), ""),
-        // },
-        // [env.VITE_MANAGER_API]: {
-        //   target: env.VITE_MANAGER_SERVE,
-        //   changeOrigin: true,
-        //   rewrite: (path) =>
-        //     path.replace(new RegExp(`^${env.VITE_MANAGER_API}`), ""),
-        // },
+        [env.VITE_API]: {
+          target: env.VITE_SERVE,
+          changeOrigin: true,
+          // rewrite: (path) =>
+          //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
+        },
       },
     },
   }

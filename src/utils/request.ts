@@ -19,11 +19,10 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     // 这里的状态码是后端返回的状态码
-    if (response.data.code == 200 || response.data.code == 20000)
-      return response.data
+    if (response.data.status == 200) return response.data
     else {
-      // 有信息就返回信息 没有 就把数据返回自行判断
-      throw new Error(response.data.data.message || response.data.message)
+      // 返回错误信息
+      throw new Error(response.data.message)
     }
   },
   (error) => {
@@ -51,7 +50,7 @@ request.interceptors.response.use(
         break
     }
     // 错误提示信息
-    ElNotification.error(message)
+    // ElNotification.error(message)
     return Promise.reject(new Error(message || error.message || "Error"))
   }
 )
