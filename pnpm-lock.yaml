@@ -11,6 +11,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      hover.css:
+        specifier: ^2.3.2
+        version: 2.3.2
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -47,6 +50,9 @@ importers:
         version: 0.2.3
       '@unocss/preset-icons':
         specifier: ^0.64.0
+        version: 0.64.1
+      '@unocss/preset-rem-to-px':
+        specifier: ^0.64.1
         version: 0.64.1
       '@unocss/preset-wind':
         specifier: ^0.64.1
@@ -761,6 +767,9 @@ packages:
   '@unocss/preset-mini@0.64.1':
     resolution: {integrity: sha512-tl+ciN0elB9eETEVZQrNaMy4NpbLdWDVW7KlmpRZi4Eomf/Ntz+Wctp5V0aBvszo8arEaDiOwsgMxITvx9Ll6Q==}
 
+  '@unocss/preset-rem-to-px@0.64.1':
+    resolution: {integrity: sha512-21mg6mjLUN4iMACxMAzTV+c2HTOPyLXjTZB9/DcWYspwIECLbKL7Ly2pSqjeebUi2zvsp345cEwiEgRLp8gyRw==}
+
   '@unocss/preset-tagify@0.64.1':
     resolution: {integrity: sha512-xBGF7usHIDOMmLEgawpgbOAoNZ8qFZ/mpbRG9tdEjOHJ+rXJuJlZHhwIgwjQiFRCzSRtlsN57/iM37bZNRCEAg==}
 
@@ -1142,6 +1151,9 @@ packages:
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
+
+  hover.css@2.3.2:
+    resolution: {integrity: sha512-eXch700vfcoSSAcEcU154lTHBYQy2cjGT+yJZtkKWxASBBiPVkqYOdMAa0sz4cYj2YIrl1FRE2s5O4EgOaIpig==}
 
   human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
@@ -2309,6 +2321,10 @@ snapshots:
       '@unocss/extractor-arbitrary-variants': 0.64.1
       '@unocss/rule-utils': 0.64.1
 
+  '@unocss/preset-rem-to-px@0.64.1':
+    dependencies:
+      '@unocss/core': 0.64.1
+
   '@unocss/preset-tagify@0.64.1':
     dependencies:
       '@unocss/core': 0.64.1
@@ -2805,6 +2821,8 @@ snapshots:
   he@1.2.0: {}
 
   hookable@5.5.3: {}
+
+  hover.css@2.3.2: {}
 
   human-signals@5.0.0: {}
 

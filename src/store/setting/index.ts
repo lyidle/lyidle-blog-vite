@@ -3,6 +3,8 @@ import isDarkFn from "@/utils/isDark"
 import { useUserStore } from "@/store/user"
 // 引入类型
 import { menuListType } from "@/api/user/type"
+// 引入鼠标点击和移动特效
+import { clickEffectFn, moveEffectFn } from "@/utils/effect"
 export const useSettingStore = defineStore(
   "Setting",
   () => {
@@ -10,34 +12,69 @@ export const useSettingStore = defineStore(
     const headerColor = ref<string>("white")
     // 头部背景颜色
     const headerBg = ref<string>("transparent")
-    // 大屏头部设置 按钮开关
+
+    // #region 头部设置
     const isDark = ref<boolean>(true)
-    const setDark = (newV: boolean, route: any) => {
+    const setDark = (newV: boolean) => {
+      // 暗夜模式
       isDark.value = newV
       isDarkFn(newV)
-      setBanner(newV, route)
     }
+    // banner 是否 固定
+    const bannerIsFixed = ref<boolean>(false)
+    const setBannerFixed = (newV: boolean) => {
+      bannerIsFixed.value = newV
+    }
+    // 是否开启鼠标点击特效
+    const clickEffect = ref<boolean>(false)
+    //调用特效函数
+    const effectClick = new clickEffectFn()
+    const effectMove = new moveEffectFn()
+    const setClickEffect = (newV: boolean = clickEffect.value) => {
+      clickEffect.value = newV
+      if (newV) {
+        effectClick.onMounted()
+      } else {
+        effectClick.onUnMounted()
+      }
+    }
+    // 是否开启移动效果
+    const moveEffect = ref<boolean>(false)
+    const setEffectMove = (newV: boolean = moveEffect.value) => {
+      moveEffect.value = newV
+      if (newV) {
+        effectMove.onMounted()
+      } else {
+        effectMove.onUnMounted()
+      }
+    }
+    // 是否开启侧边栏
+    const isAside = ref<boolean>(true)
+    // 是否全屏
+    const isFullScreen = ref<boolean>(false)
+    // 内容区域和侧边信息是否交换
+    const contentIsReverse = ref<boolean>()
+    // #endregion 头部设置
+
+    // #region banner
     // banner相关 变量
     const bannerHeight = ref("")
-    const bannerFixed = ref(false)
-    // 暗夜切换的bannerImg
-    const bannerImg = ref()
-    const { menuList } = useUserStore()
+    const route = useRoute()
     let path: string | null = null
-    // 初始化banner 主要是白天黑夜要跟着改变 也可以用watch监听
-    const setBanner = (newV: boolean, route: any) => {
+    // 暗夜切换的bannerImg
+    const bannerImg = computed(() => {
+      let result: any
       // 初始化 加上缓存处理 如果当前路由没有变动就不初始化
       const init = () => {
         // 有缓存退出
-        if (path === route.path) return
+        if (path === route?.path) return
         const recursive = (item: menuListType[]) => {
           function multi(item: any) {
             for (let i = 0; i < item.length; i++) {
               const obj = item[i]
-              if (obj.to.includes(route.path)) {
+              if (obj.to?.includes(route.path)) {
                 if (obj.bannerImg) {
-                  // 也可以弄个中间变量返回 再赋值
-                  bannerImg.value = obj.bannerImg
+                  result = obj.bannerImg
                   return
                 }
               }
@@ -49,45 +86,74 @@ export const useSettingStore = defineStore(
           // 递归找到深层路径中包含当前路径的对象返回oneId
           multi(item)
         }
-        recursive(menuList)
-        bannerHeight.value = bannerImg.value?.height
-          ? bannerImg.value?.height
-          : "100vh"
-        bannerFixed.value = bannerImg.value?.fixed || false
+        recursive(menuList.value)
+        bannerHeight.value = result?.height ? result?.height : "100vh"
         // 缓存本次路由
         path = route.path
       }
       init()
-      if (newV) {
-        bannerImg.value = bannerImg.value.dark
-          ? bannerImg.value.dark
-          : "var(--banner-img)"
+      if (isDark.value) {
+        result = result?.dark ? result.dark : "var(--banner-img)"
       } else {
-        bannerImg.value = bannerImg.value?.light
-          ? bannerImg.value.light
-          : "var(--banner-img)"
+        result = result?.light ? result.light : "var(--banner-img)"
       }
-      return bannerImg
-    }
+      return result
+    })
+    const { menuList } = storeToRefs(useUserStore())
+    // #endregion banner
+
+    // #region 内容区域
+    // 卡片的阴影
+    const cardBoxShadow = computed(() => {
+      // 内容卡片阴影
+      if (bannerIsFixed.value) {
+        return "var(--pages-shadow-fixed)"
+      } else {
+        return "var(--pages-shadow)"
+      }
+    })
+    // #endregion 内容区域
+
     return {
       // header相关
       headerColor,
       headerBg,
-      // 暗夜相关
+      // 头部设置
       isDark,
       setDark,
+      bannerIsFixed,
+      setBannerFixed,
+      clickEffect,
+      setClickEffect,
+      moveEffect,
+      setEffectMove,
+      isAside,
       // banner相关
-      setBanner,
       bannerImg,
-      bannerFixed,
       bannerHeight,
+      // 内容区域
+      cardBoxShadow,
+      // other 右键菜单
+      isFullScreen,
+      contentIsReverse,
     }
   },
   {
     persist: {
       key: "setting",
       storage: localStorage,
-      pick: ["isDark"],
+      pick: [
+        // 头部设置信息
+        "isDark",
+        "bannerIsFixed",
+        "clickEffect",
+        "moveEffect",
+        "isAside",
+        // 内容区域
+        "cardBoxShadow",
+        // other 右键菜单
+        "contentIsReverse",
+      ],
     },
   }
 )

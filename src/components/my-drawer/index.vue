@@ -13,7 +13,6 @@
 const drawer = defineModel()
 const emits = defineEmits<{
   close: []
-  initRibbon: []
 }>()
 const close = (e: MouseEvent) => {
   if ((e.target as HTMLElement).className == "drawer") return
@@ -25,13 +24,6 @@ withDefaults(defineProps<{ width?: string; bg?: string; mask?: string }>(), {
   bg: "white",
   mask: "#0000005a",
 })
-watch(
-  () => drawer.value,
-  () => {
-    emits("initRibbon")
-  },
-  { immediate: true }
-)
 </script>
 
 <style scoped lang="scss">

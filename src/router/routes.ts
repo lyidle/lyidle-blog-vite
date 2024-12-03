@@ -3,7 +3,7 @@ export const constantRoute = [
   {
     path: "/",
     name: "index",
-    redirect: "home",
+    redirect: "/home",
     component: () => import("@/components/layout/index.vue"),
     children: [
       {
@@ -33,6 +33,27 @@ export const constantRoute = [
         component: () => import("@/views/test2/index.vue"),
       },
     ],
+  },
+  {
+    path: "/person",
+    name: "Person",
+    meta: { title: "个人" },
+    component: () => import("@/components/layout/index.vue"),
+    redirect: "/about",
+    children: [
+      {
+        path: "/person/about",
+        name: "About",
+        meta: { title: "关于" },
+        component: () => import("@/views/about/index.vue"),
+      },
+    ],
+  },
+  {
+    path: "/login",
+    name: "Login",
+    meta: { title: "登录" },
+    component: () => import("@/views/login/index.vue"),
   },
   {
     path: "/404",

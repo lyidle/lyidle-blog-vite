@@ -56,7 +56,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 // 需要悬浮的父级列表
-$list: li, span;
+$list: custom-popover-trigger;
 // 引入头部变量
 $menu-radius: 5px;
 $menu-border-width: 10px;

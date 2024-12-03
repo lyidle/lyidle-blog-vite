@@ -19,7 +19,7 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     // 这里的状态码是后端返回的状态码
-    if (response.data.status == 200) return response.data
+    if (response.data.status == 200) return response.data.data
     else {
       // 返回错误信息
       throw new Error(response.data.message)

@@ -1,16 +1,14 @@
-//节流实现
-export default function throttle(fn: Function, delay: number) {
-  let timer: any = null
-  return function (this: any) {
-    const _this = this
-    const args = arguments
-    // 没有就进入
+export default function throttle<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timer: number | null = null
+  return function (...args: Parameters<T>) {
     if (!timer) {
-      fn.apply(_this, args)
+      fn(...args)
       timer = setTimeout(() => {
-        timer = null //超过时间间隔把状态位timer设为有效
-      }, delay)
-      return undefined
+        timer = null
+      }, delay) as unknown as number | null
     }
-  }
+  } as (...args: Parameters<T>) => void
 }

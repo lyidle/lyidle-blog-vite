@@ -3,7 +3,7 @@
     <ul class="header-menu" ref="menu">
       <template v-for="item in userStore.menuList" :key="item.id">
         <li>
-          <router-link :to="item.to" v-if="item.to">
+          <router-link :to="item.children ? '' : item.to" v-if="item.to">
             <div class="title" @click="toggle(item.id)">
               <i :class="item.icon"></i>
               {{ item.title }}

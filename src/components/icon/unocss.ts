@@ -9,6 +9,8 @@ const menuIcons = {
   图库: "i-jam:picture-f",
   留言板: "i-uil:message",
   友链: "i-heroicons-solid:link",
-  简介: "i-iconoir:page-star",
+  个人: "i-iconoir:page-star",
+  关于: "i-akar-icons:paper-airplane",
+  登录: "i-material-symbols:login",
 }
 const menuMinus = { plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" }

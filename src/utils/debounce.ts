@@ -1,5 +1,8 @@
 //防抖实现
-export default function debounce(fn: Function, delay: number) {
+export default function debounce<T extends (...args: any[]) => any>(
+  fn: Function,
+  delay: number
+): (...args: Parameters<T>) => void {
   let timer: any = null
   return function (this: any) {
     const _this = this

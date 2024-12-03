@@ -19,9 +19,21 @@ const title = import.meta.env.VITE_INITIAL_TITLE
 // 导航吸附函数
 const _sticky = () => {
   if (document.documentElement.scrollTop > 0) {
+    // 有缓存退出 避免操作dom 引起消耗
+    if (
+      headerBg.value === "var(--header-sticky-bg)" &&
+      headerColor.value === "var(--header-sticky-color)"
+    )
+      return
     headerBg.value = "var(--header-sticky-bg)"
     headerColor.value = "var(--header-sticky-color)"
   } else {
+    // 有缓存退出 避免操作dom 引起消耗
+    if (
+      headerBg.value === "var(--header-bg)" &&
+      headerColor.value === "var(--header-color)"
+    )
+      return
     headerBg.value = "var(--header-bg)"
     headerColor.value = "var(--header-color)"
   }
@@ -42,7 +54,6 @@ onUnmounted(() => {
   width: 100%;
   height: var(--header-height);
   @include flex(space-between);
-  background-color: var(--header-bg);
   padding: 0 var(--header-pd);
   background-color: v-bind(headerBg);
   position: fixed;
@@ -53,6 +64,11 @@ onUnmounted(() => {
     padding var(--header-bg-during);
   .logo {
     font-family: "LOGO";
+  }
+  // 设置menu的阴影
+  ::v-deep(.custom-menu),
+  ::v-deep(.custom-popover) {
+    filter: drop-shadow(var(--header-menu-drop-shadow));
   }
 }
 </style>

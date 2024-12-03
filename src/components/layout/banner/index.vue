@@ -1,21 +1,24 @@
 <template>
-  <div
-    class="banner"
-    :style="{
-      height: bannerHeight,
-      top: bannerFixed ? '0' : '',
-      zIndex: bannerFixed ? '-1' : '',
-    }"
-    ref="banner"
-  >
-    <div class="detail">
-      <div class="title text">Welcome to LyidleのBlog</div>
-      <div class="subtitle text">
-        {{ sentence?.content }}--{{ sentence?.author }}
+  <context-menu>
+    <div
+      class="banner"
+      :style="{
+        height: bannerHeight,
+        top: bannerIsFixed ? '0' : 'unset',
+        zIndex: bannerIsFixed ? '1' : 'unset',
+        position: bannerIsFixed ? 'fixed' : 'unset',
+      }"
+      ref="banner"
+    >
+      <div class="detail">
+        <div class="title text">Welcome to LyidleのBlog</div>
+        <div class="subtitle text">
+          {{ sentence?.content }}--{{ sentence?.author }}
+        </div>
       </div>
     </div>
-  </div>
-  <div class="fixed-replace" v-if="bannerFixed"></div>
+    <div class="fixed-replace" v-if="bannerIsFixed"></div>
+  </context-menu>
 </template>
 
 <script setup lang="ts" name="Home">
@@ -36,22 +39,10 @@ withDefaults(
   }
 )
 // 初始化仓库 暗夜模式自动切换图片等信息
-let { isDark, bannerImg, bannerFixed, bannerHeight } = storeToRefs(
-  useSettingStore()
-)
-const { setBanner } = useSettingStore()
-const route = useRoute()
+let { bannerImg, bannerIsFixed, bannerHeight } = storeToRefs(useSettingStore())
 const sentence = ref()
 const banner = ref()
-onMounted(() => {
-  setBanner(isDark.value, route)
-  // 固定
-  if (bannerFixed.value) {
-    banner.value.style.position = "fixed"
-  }
-})
 nextTick(async () => {
-  // banner.value.style.backgroundImage = url
   const { data } = await getSentence()
   sentence.value = data
 })
@@ -59,11 +50,11 @@ nextTick(async () => {
 
 <style scoped lang="scss">
 .fixed-replace {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 }
 .banner {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-size: cover;
   background-position: center;
@@ -82,7 +73,7 @@ nextTick(async () => {
     width: 80%;
     overflow: hidden;
     .title {
-      font-size: 30px;
+      font-size: 1.875rem;
       font-weight: 500;
       text-align: center;
       color: v-bind(color);
@@ -91,7 +82,7 @@ nextTick(async () => {
       max-width: 100%;
       margin-top: 10px;
       text-align: center;
-      font-size: 20px;
+      font-size: 1.25rem;
       color: v-bind(color);
       overflow: hidden;
       // 省略号
@@ -100,10 +91,10 @@ nextTick(async () => {
     }
     @media screen and (max-width: $scr-xs) {
       .title {
-        font-size: 25px;
+        font-size: 1.5625rem;
       }
       .subtitle {
-        font-size: 15px;
+        font-size: 0.9375rem;
       }
     }
   }

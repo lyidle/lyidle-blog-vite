@@ -1,12 +1,14 @@
 // 项目的全局scss变量
 // 屏幕尺寸 参照 element-plus的layout
+$scr-mi: 610px;
 $scr-xs: 768px;
 $scr-sm: 992px;
-$scr-md: 1200px;
+$scr-md: 1300px;
 $scr-lg: 1920px;
 $global-font: "LXGWW", "微软雅黑", sans-serif;
 :root {
-  --body-color: #f7fcff;
+  // 内容区域背景颜色 没有背景固定时
+  --body-bg: #f7fcff;
   // 鼠标样式
   --cursor-default: url("static/cursor/light/pointer.png") 0 0, default;
   --cursor-pointer: url("static/cursor/light/link.png") 0 0, pointer;
@@ -14,7 +16,6 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
   // 主要字体颜色 content 区域的字体
   --primary-color: #2a4f7c;
   --primary-bg: white;
-  --primary-bg-shadow: rgba(180, 203, 225, 0.5);
   --primary-during: 0.3s;
   // header 和 mini-header-drawer
   --second-color: #203b5b;
@@ -24,18 +25,19 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
   // 头部导航 底部线条
   --header-topnav-mask-color: #8dbcdc;
   // 头部吸附后的颜色
-  --header-sticky-bg: rgba(255, 255, 255, 0.9);
+  --header-sticky-bg: rgba(246, 251, 255, 0.9);
   --header-sticky-color: var(--second-color);
   // 头部导航的菜单颜色
   --header-menu-bg: white;
   --header-menu-bg-hover: var(--header-topnav-mask-color);
   --header-menu-color: var(--second-color);
   --header-menu-color-hover: #ecf5ff;
+  --header-menu-drop-shadow: 0 0 3px rgb(210, 210, 210);
   // 头部导航设置
   --header-setting-bg: white;
   --header-setting-label-color: var(--second-color);
-  --header-setting-btn-on: #5091bd;
-  --header-setting-btn-off: #8dbcdc;
+  --header-setting-switch-on: #5091bd;
+  --header-setting-switch-off: #8dbcdc;
   // 头部小屏drawer导航的菜单颜色
   --header-mini-title-bg: transparent;
   --header-mini-title-bg-hover: #57aae1;
@@ -58,40 +60,64 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
     rgba(137, 137, 137, 0.5),
     rgba(137, 137, 137, 0.3)
   );
-  // 内容颜色
-  --content-card-bg: var(--primary-bg);
-  --content-shadow: -5px 5px 10px var(--primary-bg-shadow);
+  // pages 相关
+  --pages-links-hover: rgb(197, 132, 57);
+  --pages-card-bg: var(--primary-bg);
+  --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
+  --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
+  // 内容卡片
+  --content-card-pin-bg: #619ec7;
+  --content-card-pin-color: #ecf8ff;
+  --content-card-flex-during: 0.5s;
   // 内容图片遮罩
   --content-mask: linear-gradient(
     to right,
     rgba(137, 137, 137, 0.5),
     rgba(137, 137, 137, 0.3)
   );
-  // #region layout
-  // 头部
-  --header-height: 40px;
-  --header-bg-during: 0.3s;
-  // 头部导航
-  --header-topnav-margin: 20px;
-  // 头部导航 底部线条
-  --header-topnav-mask-height: 2px;
-  // 左右边距
-  --header-pd: 50px;
-  --content-width: 90%;
+  // 内容区域轮播图的颜色
+  --content-carousel-arrow-color: #7699c3;
+  --content-carousel-arrow-color-hover: #5884b9;
+  --content-carousel-arrow-bg: #d9eaf6;
+  --content-carousel-arrow-bg-hover: #b1d7f0;
+
+  // --content-carousel-btns-color: #2a4f7c;
+  // --content-carousel-btns-color-hover: #2a4f7c;
+  --content-carousel-btns-bg: #e2eaef;
+  --content-carousel-btns-bg-hover: #b0d4e9;
+  --content-carousel-btns-bg-active: #8dbcdc;
+  --content-carousel-btns-bg-active-hover: #66a5cf;
+  // 按钮primary
+  --primary-btn-bg: #8dbcdc;
+  --primary-btn-color: #eef8ff;
+  --primary-btn-hover-bg: #6ca4ca;
+  --primary-btn-hover-color: #e9f6ff;
+  // 侧边栏 用户信息链接颜色
+  --aside-userinfo-wechat-color: #00c800;
+  --aside-userinfo-qq-color: #329cff;
+  --aside-userinfo-bilibili-color: #20b0e3;
+  --aside-userinfo-mail-color: #000000;
+  // 侧边栏公告
+  --aside-web-announce-icon-bg: #5091bd;
+  // 侧边栏
+  --aside-web-info-icon-bg: #5091bd;
+  --aside-recent-pg-icon-bg: #5091bd;
+  // login
+  --login-card-bg: rgba(255, 255, 255, 0.625);
   // 滚动条背景
   --scroll-bg: #f3f3ff;
 }
 // 暗夜模式
 .dark:root {
-  --body-color: #2a3943;
+  // 内容区域背景颜色 没有背景固定时
+  --body-bg: #2a3943;
   // 鼠标样式
   --cursor-default: url("static/cursor/dark/pointer.png") 0 0, default;
   --cursor-pointer: url("static/cursor/dark/link.png") 0 0, pointer;
   --cursor-text: url("static/cursor/dark/text.png") 18 5, text;
   // 主要字体颜色 content 区域的字体
-  --primary-color: #e0eeff;
+  --primary-color: #c7d4e4;
   --primary-bg: #375366;
-  --primary-bg-shadow: rgba(28, 48, 67, 0.5);
   // header 和 mini-header-drawer
   --second-color: #c6d6ed;
   // 头部没有吸附的颜色
@@ -107,11 +133,12 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
   --header-menu-bg-hover: #5c8096;
   --header-menu-color: var(--second-color);
   --header-menu-color-hover: #ffffff;
+  --header-menu-drop-shadow: 0 0 3px rgb(42, 42, 42);
   // 头部导航设置
   --header-setting-bg: #3d5b6e;
   --header-setting-label-color: var(var(--primary-color));
-  --header-setting-btn-on: #5091bd;
-  --header-setting-btn-off: #8dbcdc;
+  --header-setting-switch-on: #5091bd;
+  --header-setting-switch-off: #8dbcdc;
   // 头部小屏drawer导航的菜单颜色
   --header-mini-title-bg: transparent;
   --header-mini-title-bg-hover: #396396;
@@ -134,18 +161,76 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
     rgba(52, 52, 52, 0.852),
     rgba(52, 52, 52, 0.232)
   );
-  // 内容颜色
-  --content-card-bg: var(--primary-bg);
-  --content-shadow: -5px 5px 10px var(--primary-bg-shadow);
+  // pages 相关
+  --pages-links-hover: rgb(197, 132, 57);
+  --pages-card-bg: var(--primary-bg);
+  --pages-shadow: -5px 5px 10px rgba(28, 48, 67, 0.5);
+  --pages-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+  // 内容卡片
+  --content-card-pin-bg: #36759f;
+  --content-card-pin-color: #dbf1ff;
+  --content-card-flex-during: 0.5s;
   // 内容图片遮罩
   --content-mask: linear-gradient(
     to right,
     rgba(52, 52, 52, 0.5),
     rgba(52, 52, 52, 0.5)
   );
+  // 内容区域轮播图的颜色
+  --content-carousel-arrow-color: #b7d0ee;
+  --content-carousel-arrow-color-hover: #b7d0ee;
+  --content-carousel-arrow-bg: #4782a9;
+  --content-carousel-arrow-bg-hover: #5f9cc4;
+
+  // --content-carousel-btns-color: #2a4f7c;
+  // --content-carousel-btns-color-hover: #2a4f7c;
+  --content-carousel-btns-bg: #8196a3;
+  --content-carousel-btns-bg-hover: #a8c8dc;
+  --content-carousel-btns-bg-active: #5892b8;
+  --content-carousel-btns-bg-active-hover: #7ab3d8;
+  // 按钮primary
+  --primary-btn-bg: #5892b8;
+  --primary-btn-color: #eef8ff;
+  --primary-btn-hover-bg: #6fa6cb;
+  --primary-btn-hover-color: #e9f6ff;
+  // 侧边栏 用户信息链接颜色
+  --aside-userinfo-wechat-color: #00c800;
+  --aside-userinfo-qq-color: #329cff;
+  --aside-userinfo-bilibili-color: #20b0e3;
+  --aside-userinfo-mail-color: #000000;
+  // 侧边栏公告
+  --aside-web-announce-icon-bg: #dbeffb;
+  // 侧边栏
+  --aside-web-info-icon-bg: #dbeffb;
+  --aside-recent-pg-icon-bg: #dbeffb;
+  // login
+  --login-card-bg: #c7d4e4aa;
   // 滚动条背景
   --scroll-bg: #f3f3ff;
 }
+
+// #region layout
+:root {
+  // 头部
+  --header-height: 40px;
+  --header-bg-during: 0.3s;
+  // 头部导航
+  --header-topnav-margin: 20px;
+  // 头部导航 底部线条
+  --header-topnav-mask-height: 2px;
+  // 左右边距
+  --header-pd: 50px;
+  // pages 相关
+  --pages-card-radius: 10px;
+  // 内容区域的间距
+  --content-gap: 15px;
+  // 内容卡片宽度
+  --content-width: calc(100% - var(--content-gap) * 2);
+  // 左侧边栏title（有图标）的间距
+  --aside-title-gap: 5px;
+}
+// 内容区和侧边栏最新文章的海报 缩放动画
+$recent-poster-scale: 1.1;
 // 剪彩动画 的剪刀 大小
 $scissors-size: 30px;
 // #endregion layout
@@ -167,12 +252,30 @@ $scroll-button-bg-hover: "%236da3d5";
   justify-content: $justify;
   align-items: $align;
 }
+
+// el-button
+@mixin primary-button {
+  transition: background var(--primary-during);
+  --el-button-bg-color: var(--primary-btn-bg);
+  --el-button-border-color: var(--primary-btn-bg);
+  --el-button-text-color: var(--primary-btn-color);
+  outline: none;
+  --el-button-hover-bg-color: var(--primary-btn-hover-bg);
+  --el-button-hover-border-color: var(--primary-btn-hover-bg);
+  --el-button-hover-text-color: var(--primary-btn-hover-color);
+  --el-button-active-bg-color: var(--primary-btn-hover-bg);
+  --el-button-active-border-color: var(--primary-btn-hover-bg);
+  --el-button-active-text-color: var(--primary-btn-hover-color);
+}
+// #endregion
+
+// #region animation
 // 定义menu的悬浮动画
 @mixin menuHover($target, $list, $top) {
-  // 定义menu的 父级悬浮元素
+  // 定义menu的 父级悬浮元素 类名的形式
   $list: $list;
   @each $mEl in $list {
-    #{$mEl}:hover {
+    .#{$mEl}:hover {
       > .#{$target} {
         // 动画
         pointer-events: unset;
@@ -182,4 +285,71 @@ $scroll-button-bg-hover: "%236da3d5";
     }
   }
 }
-// #endregion
+// userinfo-btn-car
+@mixin car($el, $during, $size) {
+  #{$el} {
+    animation: an-car infinite $during linear;
+  }
+  @keyframes an-car {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    50% {
+      left: calc(55% - $size);
+      opacity: 1;
+    }
+    100% {
+      left: calc(100% - $size);
+      opacity: 0;
+    }
+  }
+}
+// shake
+@mixin shake($target: false, $during: 0.8s, $scale: 1.1, $rotate: 5deg) {
+  &:hover {
+    @if $target {
+      #{$target} {
+        animation: shake $during infinite alternate-reverse;
+      }
+    } @else {
+      animation: shake $during infinite alternate-reverse;
+    }
+  }
+  @keyframes shake {
+    50% {
+      transform: scale($scale);
+    }
+    70% {
+      transform: scale($scale) rotate(-$rotate);
+    }
+    100% {
+      transform: scale($scale) rotate($rotate);
+    }
+  }
+}
+// 内容区域的侧边信息 的头部相关
+@mixin content-aside-title($color) {
+  ::v-deep(.title) {
+    // 图标
+    i {
+      font-size: 1.4375rem;
+      color: $color;
+    }
+    // 引入悬浮动画
+    @include shake(i);
+    span {
+      font-size: 1.0625rem;
+      color: $color;
+      font-weight: bold;
+    }
+  }
+}
+// 页面中的跳转链接的悬浮函数
+@mixin pages-links-hover {
+  &:hover {
+    color: var(--pages-links-hover);
+    transition: color var(--primary-during);
+  }
+}
+// #endregion animation

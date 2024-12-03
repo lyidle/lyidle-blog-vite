@@ -1,8 +1,9 @@
+const html = document.querySelector("html") as HTMLElement
 export default (newvalue: boolean) => {
   if (newvalue) {
     // 修改html标签
-    ;(document.querySelector("html") as HTMLElement).classList.add("dark")
+    html.classList.add("dark")
   } else {
-    ;(document.querySelector("html") as HTMLElement).classList.remove("dark")
+    html.classList.remove("dark")
   }
 }
