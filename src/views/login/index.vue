@@ -179,6 +179,7 @@ $link: red;
   box-shadow: v-bind(cardBoxShadow);
   background-color: var(--login-card-bg);
   backdrop-filter: blur(0.5px);
+  color: var(--primary-color);
   .reg,
   .login {
     width: 100%;
