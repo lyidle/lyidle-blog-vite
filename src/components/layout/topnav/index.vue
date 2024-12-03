@@ -99,11 +99,11 @@ $icon-mr: 3px;
 $icon-pl: 15px;
 $list-gap: 5px;
 .topnav {
+  display: flex;
+  height: 100%;
   @media screen and (max-width: $scr-sm) {
     display: none;
   }
-  display: flex;
-  height: 100%;
   // 导航项目
   > li {
     margin-left: var(--header-topnav-margin);

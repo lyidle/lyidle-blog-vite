@@ -1,3 +1,6 @@
+// 引入暗夜变量
+@use "./dark.scss";
+@use "./light.scss";
 // 项目的全局scss变量
 // 屏幕尺寸 参照 element-plus的layout
 $scr-mi: 610px;
@@ -6,209 +9,6 @@ $scr-sm: 992px;
 $scr-md: 1300px;
 $scr-lg: 1920px;
 $global-font: "LXGWW", "微软雅黑", sans-serif;
-:root {
-  // 内容区域背景颜色 没有背景固定时
-  --body-bg: #f7fcff;
-  // 鼠标样式
-  --cursor-default: url("static/cursor/light/pointer.png") 0 0, default;
-  --cursor-pointer: url("static/cursor/light/link.png") 0 0, pointer;
-  --cursor-text: url("static/cursor/light/text.png") 18 5, text;
-  // 主要字体颜色 content 区域的字体
-  --primary-color: #2a4f7c;
-  --primary-bg: white;
-  --primary-during: 0.3s;
-  // header 和 mini-header-drawer
-  --second-color: #203b5b;
-  // 头部没有吸附的颜色
-  --header-bg: transparent;
-  --header-color: white;
-  // 头部导航 底部线条
-  --header-topnav-mask-color: #8dbcdc;
-  // 头部吸附后的颜色
-  --header-sticky-bg: rgba(246, 251, 255, 0.9);
-  --header-sticky-color: var(--second-color);
-  // 头部导航的菜单颜色
-  --header-menu-bg: white;
-  --header-menu-bg-hover: var(--header-topnav-mask-color);
-  --header-menu-color: var(--second-color);
-  --header-menu-color-hover: #ecf5ff;
-  --header-menu-drop-shadow: 0 0 3px rgb(210, 210, 210);
-  // 头部导航设置
-  --header-setting-bg: white;
-  --header-setting-label-color: var(--second-color);
-  --header-setting-switch-on: #5091bd;
-  --header-setting-switch-off: #8dbcdc;
-  // 头部小屏drawer导航的菜单颜色
-  --header-mini-title-bg: transparent;
-  --header-mini-title-bg-hover: #57aae1;
-  --header-mini-title-color: var(--second-color);
-  --header-mini-title-color-hover: #e9f6ff;
-  --header-mini-subtitle-bg: transparent;
-  --header-mini-subtitle-bg-hover: #88c4eb;
-  --header-mini-subtitle-color: var(--second-color);
-  --header-mini-subtitle-color-hover: #e9f6ff;
-  // 头部小屏drawer
-  --header-drawer-bg: white;
-  --header-drawer-mask: #0000005a;
-  --header-drawer-title-color: var(--second-color);
-  // banner
-  --banner-detail-color: #ffffff;
-  --banner-img: url("/static/images/base-bg-light.png");
-  // banner 遮罩
-  --banner-mask: linear-gradient(
-    to right,
-    rgba(137, 137, 137, 0.5),
-    rgba(137, 137, 137, 0.3)
-  );
-  // pages 相关
-  --pages-links-hover: rgb(197, 132, 57);
-  --pages-card-bg: var(--primary-bg);
-  --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
-  --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
-  // 内容卡片
-  --content-card-pin-bg: #619ec7;
-  --content-card-pin-color: #ecf8ff;
-  --content-card-flex-during: 0.5s;
-  // 内容图片遮罩
-  --content-mask: linear-gradient(
-    to right,
-    rgba(137, 137, 137, 0.5),
-    rgba(137, 137, 137, 0.3)
-  );
-  // 内容区域轮播图的颜色
-  --content-carousel-arrow-color: #7699c3;
-  --content-carousel-arrow-color-hover: #5884b9;
-  --content-carousel-arrow-bg: #d9eaf6;
-  --content-carousel-arrow-bg-hover: #b1d7f0;
-
-  // --content-carousel-btns-color: #2a4f7c;
-  // --content-carousel-btns-color-hover: #2a4f7c;
-  --content-carousel-btns-bg: #e2eaef;
-  --content-carousel-btns-bg-hover: #b0d4e9;
-  --content-carousel-btns-bg-active: #8dbcdc;
-  --content-carousel-btns-bg-active-hover: #66a5cf;
-  // 按钮primary
-  --primary-btn-bg: #8dbcdc;
-  --primary-btn-color: #eef8ff;
-  --primary-btn-hover-bg: #6ca4ca;
-  --primary-btn-hover-color: #e9f6ff;
-  // 侧边栏 用户信息链接颜色
-  --aside-userinfo-wechat-color: #00c800;
-  --aside-userinfo-qq-color: #329cff;
-  --aside-userinfo-bilibili-color: #20b0e3;
-  --aside-userinfo-mail-color: #000000;
-  // 侧边栏公告
-  --aside-web-announce-icon-bg: #5091bd;
-  // 侧边栏
-  --aside-web-info-icon-bg: #5091bd;
-  --aside-recent-pg-icon-bg: #5091bd;
-  // login
-  --login-card-bg: rgba(255, 255, 255, 0.625);
-  // 滚动条背景
-  --scroll-bg: #f3f3ff;
-}
-// 暗夜模式
-.dark:root {
-  // 内容区域背景颜色 没有背景固定时
-  --body-bg: #2a3943;
-  // 鼠标样式
-  --cursor-default: url("static/cursor/dark/pointer.png") 0 0, default;
-  --cursor-pointer: url("static/cursor/dark/link.png") 0 0, pointer;
-  --cursor-text: url("static/cursor/dark/text.png") 18 5, text;
-  // 主要字体颜色 content 区域的字体
-  --primary-color: #c7d4e4;
-  --primary-bg: #375366;
-  // header 和 mini-header-drawer
-  --second-color: #c6d6ed;
-  // 头部没有吸附的颜色
-  --header-bg: transparent;
-  --header-color: white;
-  // 头部导航 底部线条
-  --header-topnav-mask-color: #95adca;
-  // 头部吸附后的颜色
-  --header-sticky-bg: #4b5f6cf3;
-  --header-sticky-color: var(--second-color);
-  // 头部导航的菜单颜色
-  --header-menu-bg: #3d5b6e;
-  --header-menu-bg-hover: #5c8096;
-  --header-menu-color: var(--second-color);
-  --header-menu-color-hover: #ffffff;
-  --header-menu-drop-shadow: 0 0 3px rgb(42, 42, 42);
-  // 头部导航设置
-  --header-setting-bg: #3d5b6e;
-  --header-setting-label-color: var(var(--primary-color));
-  --header-setting-switch-on: #5091bd;
-  --header-setting-switch-off: #8dbcdc;
-  // 头部小屏drawer导航的菜单颜色
-  --header-mini-title-bg: transparent;
-  --header-mini-title-bg-hover: #396396;
-  --header-mini-title-color: var(--second-color);
-  --header-mini-title-color-hover: #e9f6ff;
-  --header-mini-subtitle-bg: transparent;
-  --header-mini-subtitle-bg-hover: #618dc3;
-  --header-mini-subtitle-color: var(--second-color);
-  --header-mini-subtitle-color-hover: #e9f6ff;
-  // 头部小屏drawer
-  --header-drawer-bg: #375366;
-  --header-drawer-mask: #0000005a;
-  --header-drawer-title-color: var(--second-color);
-  // banner
-  --banner-detail-color: #cfd3dc;
-  --banner-img: url("/static/images/base-bg-dark.png");
-  // banner 遮罩
-  --banner-mask: linear-gradient(
-    to right,
-    rgba(52, 52, 52, 0.852),
-    rgba(52, 52, 52, 0.232)
-  );
-  // pages 相关
-  --pages-links-hover: rgb(197, 132, 57);
-  --pages-card-bg: var(--primary-bg);
-  --pages-shadow: -5px 5px 10px rgba(28, 48, 67, 0.5);
-  --pages-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
-  // 内容卡片
-  --content-card-pin-bg: #36759f;
-  --content-card-pin-color: #dbf1ff;
-  --content-card-flex-during: 0.5s;
-  // 内容图片遮罩
-  --content-mask: linear-gradient(
-    to right,
-    rgba(52, 52, 52, 0.5),
-    rgba(52, 52, 52, 0.5)
-  );
-  // 内容区域轮播图的颜色
-  --content-carousel-arrow-color: #b7d0ee;
-  --content-carousel-arrow-color-hover: #b7d0ee;
-  --content-carousel-arrow-bg: #4782a9;
-  --content-carousel-arrow-bg-hover: #5f9cc4;
-
-  // --content-carousel-btns-color: #2a4f7c;
-  // --content-carousel-btns-color-hover: #2a4f7c;
-  --content-carousel-btns-bg: #8196a3;
-  --content-carousel-btns-bg-hover: #a8c8dc;
-  --content-carousel-btns-bg-active: #5892b8;
-  --content-carousel-btns-bg-active-hover: #7ab3d8;
-  // 按钮primary
-  --primary-btn-bg: #5892b8;
-  --primary-btn-color: #eef8ff;
-  --primary-btn-hover-bg: #6fa6cb;
-  --primary-btn-hover-color: #e9f6ff;
-  // 侧边栏 用户信息链接颜色
-  --aside-userinfo-wechat-color: #00c800;
-  --aside-userinfo-qq-color: #329cff;
-  --aside-userinfo-bilibili-color: #20b0e3;
-  --aside-userinfo-mail-color: #000000;
-  // 侧边栏公告
-  --aside-web-announce-icon-bg: #dbeffb;
-  // 侧边栏
-  --aside-web-info-icon-bg: #dbeffb;
-  --aside-recent-pg-icon-bg: #dbeffb;
-  // login
-  --login-card-bg: #c7d4e4aa;
-  // 滚动条背景
-  --scroll-bg: #f3f3ff;
-}
-
 // #region layout
 :root {
   // 头部
@@ -238,7 +38,7 @@ $scissors-size: 30px;
 // #region scrollbar
 $scroll-bg: var(--scroll-bg);
 // 背景颜色分割 角度 一三的颜色 二四的颜色
-$scroll-thumb-bg: (-45deg, rgb(141, 188, 220), rgb(80, 145, 189));
+$scroll-thumb-bg: -45deg, rgb(141, 188, 220), rgb(80, 145, 189);
 $scroll-thumb-radius: 20px;
 $scroll-thumb-border: 2px solid $scroll-bg;
 // svg作为背景 需要把 十六进制的 # 符号换成 %23
@@ -257,6 +57,7 @@ $scroll-button-bg-hover: "%236da3d5";
 @mixin primary-button {
   transition: background var(--primary-during);
   --el-button-bg-color: var(--primary-btn-bg);
+  border-color: var(--primary-btn-bg);
   --el-button-border-color: var(--primary-btn-bg);
   --el-button-text-color: var(--primary-btn-color);
   outline: none;
@@ -266,6 +67,20 @@ $scroll-button-bg-hover: "%236da3d5";
   --el-button-active-bg-color: var(--primary-btn-hover-bg);
   --el-button-active-border-color: var(--primary-btn-hover-bg);
   --el-button-active-text-color: var(--primary-btn-hover-color);
+}
+// el-input
+@mixin input {
+  ::v-deep(.el-input__wrapper) {
+    --el-input-focus-border-color: var(--input-focus-border-color);
+    --el-input-hover-border-color: var(--input-hover-border-color);
+    background-color: var(--input-bg);
+    input {
+      color: var(--input-color);
+      &::placeholder {
+        color: var(--input-placeholder-color);
+      }
+    }
+  }
 }
 // #endregion
 

@@ -118,17 +118,18 @@ const regData = reactive({
 const toReg = () => {
   container.value.style.height = regHeight + "px"
   container.value.style.transform = "rotateY(180deg)"
-  login.value.style.opacity = "0"
-  login.value.style.zIndex = "1"
   reg.value.style.opacity = "1"
+  login.value.style.zIndex = "1"
+  login.value.style.opacity = "0"
+  container.value.addEventListener("transitioned", () => {})
 }
 // 前往登录的切换动画
 const toLogin = () => {
   container.value.style.height = loginHeight + "px"
   container.value.style.transform = "rotateY(0deg)"
-  login.value.style.opacity = "1"
-  login.value.style.zIndex = "2"
   reg.value.style.opacity = "0"
+  login.value.style.zIndex = "2"
+  login.value.style.opacity = "1"
 }
 // 处理登录
 const handlerLogin = () => {
@@ -163,7 +164,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 $during: 0.7s;
-$link: red;
+$link: var(--login-link-color);
 .container {
   position: absolute;
   width: 50%;
@@ -189,14 +190,46 @@ $link: red;
     left: 0;
     z-index: 1;
     padding: 20px 40px;
+    // 底部的提示信息 切换链接
     .tip {
       margin-top: 10px;
       .link {
         color: $link;
+        @include pages-links-hover;
       }
     }
+    // 应用按钮样式
     .primary-button {
-      @include primary-button;
+      transition: background var(--login-during);
+      --el-button-bg-color: var(--login-btn-bg);
+      border-color: var(--login-btn-bg);
+      --el-button-border-color: var(--login-btn-bg);
+      --el-button-text-color: var(--login-btn-color);
+      outline: none;
+      --el-button-hover-bg-color: var(--login-btn-hover-bg);
+      --el-button-hover-border-color: var(--login-btn-hover-bg);
+      --el-button-hover-text-color: var(--login-btn-hover-color);
+      --el-button-active-bg-color: var(--login-btn-hover-bg);
+      --el-button-active-border-color: var(--login-btn-hover-bg);
+      --el-button-active-text-color: var(--login-btn-hover-color);
+    }
+    // el-label
+    ::v-deep(label) {
+      color: var(--primary-color);
+    }
+    el-input ::v-deep(.el-input__wrapper) {
+      background-color: var(--login-input-bg);
+      box-shadow: unset;
+      &:focus,
+      &:hover {
+        box-shadow: 0 0 0 1px var(--login-input-focus-border-color) inset;
+      }
+      input {
+        color: var(--login-input-color);
+        &::placeholder {
+          color: var(--login-input-placeholder-color);
+        }
+      }
     }
   }
   .login {
@@ -204,7 +237,7 @@ $link: red;
     transition: opacity $during;
   }
   .reg {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(-20px);
     opacity: 0;
     transition: opacity $during;
   }

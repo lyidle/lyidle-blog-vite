@@ -69,11 +69,11 @@ $header-content-pd: 20px;
 .header-menu-container {
   position: relative;
   height: 100%;
+  display: none;
   // 显示与隐藏
   @media screen and (max-width: $scr-sm) {
     display: flex;
   }
-  display: none;
   .topnav {
     display: flex;
     height: 100%;

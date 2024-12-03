@@ -117,7 +117,7 @@ $meta-gap: 5px;
         width: 70%;
         height: $height;
         text-align: center;
-        line-height: $height / 2;
+        line-height: calc($height / 2);
         font-size: 1rem;
         overflow: hidden;
         inset: 0;

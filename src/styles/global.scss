@@ -1,3 +1,4 @@
+@use "sass:list";
 // #region initial style
 div {
   box-sizing: border-box;
@@ -50,11 +51,11 @@ i {
 // thumb
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(
-    nth($scroll-thumb-bg, 1),
-    nth($scroll-thumb-bg, 3) 25%,
-    nth($scroll-thumb-bg, 2) 25% 50%,
-    nth($scroll-thumb-bg, 3) 50% 75%,
-    nth($scroll-thumb-bg, 2) 75% 100%
+    list.nth($scroll-thumb-bg, 1),
+    list.nth($scroll-thumb-bg, 3) 25%,
+    list.nth($scroll-thumb-bg, 2) 25% 50%,
+    list.nth($scroll-thumb-bg, 3) 50% 75%,
+    list.nth($scroll-thumb-bg, 2) 75% 100%
   );
   border: $scroll-thumb-border;
   border-radius: $scroll-thumb-radius;
