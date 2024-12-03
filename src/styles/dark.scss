@@ -83,12 +83,6 @@
   --primary-btn-color: #eef8ff;
   --primary-btn-hover-bg: #6fa6cb;
   --primary-btn-hover-color: #e9f6ff;
-  // input
-  --input-color: red;
-  --input-placeholder-color: #eee;
-  --input-focus-border-color: red;
-  --input-hover-border-color: gray;
-  --input-bg: red;
   // 侧边栏 用户信息链接颜色
   --aside-userinfo-wechat-color: #00c800;
   --aside-userinfo-qq-color: #329cff;
@@ -100,17 +94,17 @@
   --aside-web-info-icon-bg: #dbeffb;
   --aside-recent-pg-icon-bg: #dbeffb;
   // login
-  --login-card-bg: #767676aa;
+  --login-card-bg: rgba(92, 92, 92, 0.685);
+  --login-color: var(--primary-color);
   // login-input
+  --login-input-placeholder: var(--primary-color);
   --login-input-color: var(--primary-color);
-  --login-input-placeholder-color: #eee;
-  --login-input-focus-border-color: #66a5cf;
-  --login-input-hover-border-color: #66a5cf;
-  --login-input-bg: #8dbcdc85;
+  --login-input-underline-bg: var(--primary-color);
   // login-btn
-  --login-btn-bg: #8dbcdc86;
+  --login-btn-bg: #4d9acc79;
+  --login-disabled-bg: #92bfde79;
   --login-btn-color: #eef8ff;
-  --login-btn-hover-bg: #6ca4ca8a;
+  --login-btn-hover-bg: #3882b379;
   --login-btn-hover-color: #e9f6ff;
   // 底部提示信息的 切换链接颜色
   --login-link-color: #cb2d47;

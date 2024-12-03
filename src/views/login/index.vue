@@ -8,19 +8,22 @@
         label-width="width"
         :model="loginData"
         @keyup.enter="handlerLogin"
+        :rules="loginRules"
       >
-        <el-form-item label="账号">
-          <el-input
+        <el-form-item label="账号" prop="account">
+          <input
             placeholder="Account"
             v-model="loginData.account"
-          ></el-input>
+          ></input>
+          <div class="error">1212</div>
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input
+        <el-form-item label="密码" prop="password">
+          <input
             placeholder="Password"
             v-model="loginData.password"
             type="password"
-          ></el-input>
+            autocomplete="off"
+          ></input>
         </el-form-item>
         <el-button
           type="primary"
@@ -44,15 +47,15 @@
         label-position="left"
       >
         <el-form-item label="账号">
-          <el-input placeholder="Account" v-model="regData.account"></el-input>
+          <input placeholder="Account" v-model="regData.account"></input>
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input placeholder="E-Mail" v-model="regData.email"></el-input>
+          <input placeholder="E-Mail" v-model="regData.email"></input>
         </el-form-item>
         <el-form-item label="验证码">
           <div class="flex w-100%">
-            <el-input placeholder="Code" v-model="regData.code" class="flex-1">
-            </el-input>
+            <input placeholder="Code" v-model="regData.code" class="flex-1">
+            </input>
             <el-button
               type="primary"
               class="primary-button w-50px ml-10px"
@@ -64,16 +67,18 @@
           </div>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input
+          <input
             placeholder="Password"
             v-model="regData.password"
-          ></el-input>
+            autocomplete="off"
+          ></input>
         </el-form-item>
         <el-form-item label="确认密码">
-          <el-input
+          <input
             placeholder="Confirm Password"
             v-model="regData.confirmPassword"
-          ></el-input>
+            autocomplete="off"
+          ></input>
         </el-form-item>
         <el-button
           type="primary"
@@ -116,21 +121,18 @@ const regData = reactive({
 })
 // 前往注册的切换动画
 const toReg = () => {
-  container.value.style.height = regHeight + "px"
-  container.value.style.transform = "rotateY(180deg)"
-  reg.value.style.opacity = "1"
-  login.value.style.zIndex = "1"
-  login.value.style.opacity = "0"
-  container.value.addEventListener("transitioned", () => {})
+  reg.value.style.transform='rotateY(0deg)'
+  login.value.style.transform='rotateY(180deg)'
 }
 // 前往登录的切换动画
 const toLogin = () => {
-  container.value.style.height = loginHeight + "px"
-  container.value.style.transform = "rotateY(0deg)"
-  reg.value.style.opacity = "0"
-  login.value.style.zIndex = "2"
-  login.value.style.opacity = "1"
+  reg.value.style.transform='rotateY(180deg)'
+  login.value.style.transform='rotateY(0deg)'
 }
+const loginRules = reactive({
+  account:[{required:true,trigger:'change'}],
+password:[{required:true,trigger:'change'}]
+})
 // 处理登录
 const handlerLogin = () => {
   console.log(loginData)
@@ -151,58 +153,54 @@ const handlerCode = () => {
     }
   }, 1000)
 }
-// 获取注册和登录的高度
-let loginHeight: string
-let regHeight: string
-onMounted(() => {
-  loginHeight = login.value.offsetHeight
-  regHeight = reg.value.offsetHeight
-  // 默认展示的登录 给容器赋初值
-  container.value.style.height = loginHeight + "px"
-})
 </script>
 
 <style scoped lang="scss">
-$during: 0.7s;
-$link: var(--login-link-color);
+$rotate-during: var(--login-rotate-during);
+$link-color: var(--login-link-color);
+$color:var(--primary-color);
 .container {
   position: absolute;
   width: 50%;
-  // height: 400px;
   z-index: 2;
+  // 水平居中
   inset: 0;
   margin: auto;
-  fill-opacity: 0.5;
-  color: var(--primary-color);
-  border-radius: 15px;
-  transition: transform $during, height $during;
-  overflow: hidden;
-  box-shadow: v-bind(cardBoxShadow);
-  background-color: var(--login-card-bg);
-  backdrop-filter: blur(0.5px);
-  color: var(--primary-color);
+  color: $color;
+  // 使用flex 内容居中
+  display: flex;
+  align-items: center;
   .reg,
   .login {
     width: 100%;
-    // height: 100%;
+    // 都脱离文档流
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
     padding: 20px 40px;
+    border-radius: 15px;
+    box-shadow: v-bind(cardBoxShadow);
+    background-color: var(--login-card-bg);
+    backdrop-filter: blur(.5px);
+    // 旋转过渡
+    transition: transform $rotate-during;
+    // 当在背面时不可见
+    backface-visibility: hidden;
     // 底部的提示信息 切换链接
     .tip {
       margin-top: 10px;
       .link {
-        color: $link;
+        color: $link-color;
         @include pages-links-hover;
       }
     }
+    // el-label
+    ::v-deep(.el-form-item__label) {
+      color: var(--primary-color);
+    }
     // 应用按钮样式
     .primary-button {
-      transition: background var(--login-during);
+      // active
+      transition: background var(--primary-during);
       --el-button-bg-color: var(--login-btn-bg);
-      border-color: var(--login-btn-bg);
       --el-button-border-color: var(--login-btn-bg);
       --el-button-text-color: var(--login-btn-color);
       outline: none;
@@ -212,34 +210,41 @@ $link: var(--login-link-color);
       --el-button-active-bg-color: var(--login-btn-hover-bg);
       --el-button-active-border-color: var(--login-btn-hover-bg);
       --el-button-active-text-color: var(--login-btn-hover-color);
+      // disable
+      --el-button-disabled-bg-color:var(--login-disabled-bg);
     }
-    // el-label
-    ::v-deep(label) {
-      color: var(--primary-color);
-    }
-    el-input ::v-deep(.el-input__wrapper) {
-      background-color: var(--login-input-bg);
-      box-shadow: unset;
-      &:focus,
-      &:hover {
-        box-shadow: 0 0 0 1px var(--login-input-focus-border-color) inset;
+    // input
+    input{
+      background-color: transparent;
+      height: 24px;
+      border: none;
+      outline: none;
+      width: 100%;
+      border-bottom: 1px solid var(--login-input-underline-bg);
+      font-size: 13px;
+      transition:font-size var(--primary-during);
+      color: var(--login-input-color);
+      &:focus{
+      font-size: 15px;
       }
-      input {
-        color: var(--login-input-color);
-        &::placeholder {
-          color: var(--login-input-placeholder-color);
-        }
+      &::placeholder{
+      color: var(--login-input-placeholder);
       }
     }
-  }
-  .login {
-    z-index: 2;
-    transition: opacity $during;
+    // 表单错误
+    .error{
+      color: var(--el-color-danger);
+      font-size: 12px;
+      left: 0;
+      line-height: 1;
+      padding-top: 2px;
+      position: absolute;
+      top: 100%;
+    }
   }
   .reg {
-    transform: rotateY(180deg) translateZ(-20px);
-    opacity: 0;
-    transition: opacity $during;
+    // 先隐藏注册
+    transform:rotateY(180deg);
   }
 }
 </style>

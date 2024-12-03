@@ -28,6 +28,13 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
   --content-width: calc(100% - var(--content-gap) * 2);
   // 左侧边栏title（有图标）的间距
   --aside-title-gap: 5px;
+  // 过渡
+  // 底部内容区域大部分的过渡
+  --primary-during: 0.3s;
+  // 内容区域的媒体查询 flex个数的过渡动画
+  --content-card-flex-during: 0.5s;
+  // 登录界面的旋转过渡
+  --login-rotate-during: 0.7s;
 }
 // 内容区和侧边栏最新文章的海报 缩放动画
 $recent-poster-scale: 1.1;
@@ -57,7 +64,6 @@ $scroll-button-bg-hover: "%236da3d5";
 @mixin primary-button {
   transition: background var(--primary-during);
   --el-button-bg-color: var(--primary-btn-bg);
-  border-color: var(--primary-btn-bg);
   --el-button-border-color: var(--primary-btn-bg);
   --el-button-text-color: var(--primary-btn-color);
   outline: none;
@@ -67,20 +73,8 @@ $scroll-button-bg-hover: "%236da3d5";
   --el-button-active-bg-color: var(--primary-btn-hover-bg);
   --el-button-active-border-color: var(--primary-btn-hover-bg);
   --el-button-active-text-color: var(--primary-btn-hover-color);
-}
-// el-input
-@mixin input {
-  ::v-deep(.el-input__wrapper) {
-    --el-input-focus-border-color: var(--input-focus-border-color);
-    --el-input-hover-border-color: var(--input-hover-border-color);
-    background-color: var(--input-bg);
-    input {
-      color: var(--input-color);
-      &::placeholder {
-        color: var(--input-placeholder-color);
-      }
-    }
-  }
+  // disable
+  // --el-button-disabled-bg-color:var(--login-disabled-bg);
 }
 // #endregion
 
