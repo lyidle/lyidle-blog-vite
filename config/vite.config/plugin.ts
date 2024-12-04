@@ -36,7 +36,9 @@ export default () => {
       ],
     }),
     // 按需引入element-plus样式
-    ElementPlus({}),
+    ElementPlus({
+      defaultLocale: "zh-cn",
+    }),
     Components({
       //imports指定组件所在目录，默认为src/components
       // dirs: ["src/components"],

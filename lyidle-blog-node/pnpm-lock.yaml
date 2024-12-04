@@ -11,6 +11,12 @@ importers:
       express:
         specifier: ^4.21.1
         version: 4.21.1
+      nanoid:
+        specifier: ^5.0.9
+        version: 5.0.9
+      nodemailer:
+        specifier: ^6.9.16
+        version: 6.9.16
     devDependencies:
       '@types/express':
         specifier: ^5.0.0
@@ -364,9 +370,18 @@ packages:
     resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
     engines: {node: '>=12.0.0'}
 
+  nanoid@5.0.9:
+    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   negotiator@0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
+
+  nodemailer@6.9.16:
+    resolution: {integrity: sha512-psAuZdTIRN08HKVd/E8ObdV6NO7NTBY3KsC30F7M4H1OnmLCUNaS56FpYxyb26zWLSyYF9Ozch9KYHhHegsiOQ==}
+    engines: {node: '>=6.0.0'}
 
   nodemon@3.1.7:
     resolution: {integrity: sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==}
@@ -897,7 +912,11 @@ snapshots:
 
   mylas@2.1.13: {}
 
+  nanoid@5.0.9: {}
+
   negotiator@0.6.3: {}
+
+  nodemailer@6.9.16: {}
 
   nodemon@3.1.7:
     dependencies:

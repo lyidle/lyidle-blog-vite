@@ -3,10 +3,6 @@ import express from "express"
 import announce from "@/mock/admin/notify"
 const router = express.Router()
 router.get("/announce", (req, res) => {
-  res.send({
-    status: 200,
-    data: announce,
-    message: "获取公告成功~",
-  })
+  res.send(res.locals.result(announce, "获取公告成功~"))
 })
 export default router

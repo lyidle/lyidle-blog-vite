@@ -76,6 +76,50 @@ $scroll-button-bg-hover: "%236da3d5";
   // disable
   // --el-button-disabled-bg-color:var(--login-disabled-bg);
 }
+// login-button
+@mixin login-button {
+  // active
+  transition: background var(--primary-during);
+  --el-button-bg-color: var(--login-btn-bg);
+  --el-button-border-color: var(--login-btn-bg);
+  --el-button-text-color: var(--login-btn-color);
+  outline: none;
+  --el-button-hover-bg-color: var(--login-btn-hover-bg);
+  --el-button-hover-border-color: var(--login-btn-hover-bg);
+  --el-button-hover-text-color: var(--login-btn-hover-color);
+  --el-button-active-bg-color: var(--login-btn-hover-bg);
+  --el-button-active-border-color: var(--login-btn-hover-bg);
+  --el-button-active-text-color: var(--login-btn-hover-color);
+  // disable
+  --el-button-disabled-bg-color: var(--login-disabled-bg);
+}
+// el-input
+// login-input
+@mixin login-input {
+  ::v-deep(.el-input__wrapper) {
+    background-color: unset;
+    box-shadow: unset;
+    border-radius: unset;
+    border-bottom: 1px solid var(--login-input-underline-bg);
+    margin: 1px 11px;
+    padding: unset;
+    input {
+      height: 24px;
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 13px;
+      transition: font-size var(--primary-during);
+      color: var(--login-input-color);
+      &:focus {
+        font-size: 15px;
+      }
+      &::placeholder {
+        color: var(--login-input-placeholder);
+      }
+    }
+  }
+}
 // #endregion
 
 // #region animation
