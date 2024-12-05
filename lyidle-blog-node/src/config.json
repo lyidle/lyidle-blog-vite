@@ -1,0 +1,17 @@
+{
+  "EXPRESS": { "port": 3000, "hash": "a7osQvEVsrd9c5bgIN8iT" },
+  "EMAIL": {
+    "MAIL_HOST": "smtp.office365.com",
+    "MAIL_PORT": "587",
+    "MAIL_USER": "reg@lyidle.cn",
+    "MAIL_PWD": "n)vC^=vzaQh8P[$(c=7C&t,hyG2u3NV"
+  },
+  "DATABASE": {
+    "type": "mysql",
+    "host": "127.0.0.1",
+    "user": "root",
+    "port": "3306",
+    "password": "123456",
+    "database": "vite-blog"
+  }
+}
