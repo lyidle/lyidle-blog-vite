@@ -36,6 +36,7 @@
 
 <script setup lang="ts" name="Home">
 import { carouselType } from "@/api/article/type"
+let result = new URL("@/assets/images/base-bg-light.png", import.meta.url).href
 const carouselItem: carouselType = [
   {
     id: 1,
@@ -51,7 +52,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/src/assets/images/base-bg-light.png",
+    poster: result,
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -69,7 +70,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/src/assets/images/base-bg-light.png",
+    poster: result,
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -87,7 +88,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/src/assets/images/base-bg-light.png",
+    poster: result,
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -105,7 +106,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/src/assets/images/base-bg-light.png",
+    poster: result,
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -123,7 +124,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/src/assets/images/base-bg-light.png",
+    poster: result,
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },

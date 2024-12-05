@@ -8,7 +8,7 @@
         zIndex: bannerIsFixed ? '1' : 'unset',
         position: bannerIsFixed ? 'fixed' : 'unset',
       }"
-      ref="banner"
+      ref="bannerInstance"
     >
       <div class="detail">
         <div class="title text">Welcome to LyidleのBlog</div>
@@ -39,9 +39,9 @@ withDefaults(
   }
 )
 // 初始化仓库 暗夜模式自动切换图片等信息
-let { bannerImg, bannerIsFixed, bannerHeight } = storeToRefs(useSettingStore())
+let { bannerHeight, bannerImg, bannerIsFixed } = storeToRefs(useSettingStore())
 const sentence = ref()
-const banner = ref()
+const bannerInstance = ref()
 nextTick(async () => {
   const { data } = await getSentence()
   sentence.value = data

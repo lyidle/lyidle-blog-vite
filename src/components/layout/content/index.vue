@@ -36,12 +36,12 @@ const asideStyle = computed(() => {
   const result: any = {}
   if (contentIsReverse.value) {
     result.margin = "unset"
-    result.marginLeft = "var(--content-gap)"
-    result.order = "unset"
-  } else {
-    result.margin = "unset"
     result.marginRight = "var(--content-gap)"
     result.order = "-1"
+  } else {
+    result.margin = "unset"
+    result.marginLeft = "var(--content-gap)"
+    result.order = "unset"
   }
   return result
 })

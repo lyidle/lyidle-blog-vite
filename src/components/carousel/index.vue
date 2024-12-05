@@ -59,7 +59,6 @@
 <script setup lang="ts" name="MyCarousel">
 import reqSetInterval from "@/utils/reqSetInterval"
 import throttle from "@/utils/throttle"
-
 const props = withDefaults(
   defineProps<{ data: any; autoplay?: boolean; direction: "left" | "top" }>(),
   {

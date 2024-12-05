@@ -6,8 +6,9 @@ export default [
     icon: "i-ep:home-filled",
     to: "/home",
     bannerImg: {
-      light: 'url("/src/assets/images/base-bg-light.png")',
-      dark: 'url("/src/assets/images/base-bg-dark.png")',
+      light:
+        'url("https://haowallpaper.com/link/common/file/previewFileImg/15839280654553408")',
+      dark: 'url("https://haowallpaper.com/link/common/file/previewFileImg/15556743616106816")',
       height: "100vh",
     },
   },
@@ -30,8 +31,9 @@ export default [
         to: "/note/test",
         icon: "i-mdi:collection",
         bannerImg: {
-          dark: 'url("/src/assets/images/base-bg-light.png")',
-          light: 'url("/src/assets/images/base-bg-dark.png")',
+          dark: 'url("https://haowallpaper.com/link/common/file/previewFileImg/15839280654553408")',
+          light:
+            'url("https://haowallpaper.com/link/common/file/previewFileImg/15556743616106816")',
           height: "100vh",
         },
       },

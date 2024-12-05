@@ -1,10 +1,10 @@
 <template>
   <context-menu-item
-    :content="contentIsReverse ? '交换布局' : '恢复布局'"
+    :content="contentIsReverse ? '恢复布局' : '交换布局'"
     :icon="
       !contentIsReverse
-        ? 'i-arcticons:goodwy-gallery'
-        : 'i-arcticons:photoprism-gallery'
+        ? 'i-arcticons:photoprism-gallery'
+        : 'i-arcticons:goodwy-gallery'
     "
     @click="contentIsReverse = !contentIsReverse"
   ></context-menu-item>

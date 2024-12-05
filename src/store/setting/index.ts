@@ -53,53 +53,49 @@ export const useSettingStore = defineStore(
     // 是否全屏
     const isFullScreen = ref<boolean>(false)
     // 内容区域和侧边信息是否交换
-    const contentIsReverse = ref<boolean>()
+    const contentIsReverse = ref<boolean>(false)
     // #endregion 头部设置
-
     // #region banner
-    // banner相关 变量
-    const bannerHeight = ref("")
+    // 路由菜单
+    const { menuList } = storeToRefs(useUserStore())
     const route = useRoute()
+    // 缓存当前路径
     let path: string | null = null
-    // 暗夜切换的bannerImg
-    const bannerImg = computed(() => {
-      let result: any
-      // 初始化 加上缓存处理 如果当前路由没有变动就不初始化
-      const init = () => {
-        // 有缓存退出
-        if (path === route?.path) return
-        const recursive = (item: menuListType[]) => {
-          function multi(item: any) {
-            for (let i = 0; i < item.length; i++) {
-              const obj = item[i]
-              if (obj.to?.includes(route.path)) {
-                if (obj.bannerImg) {
-                  result = obj.bannerImg
-                  return
-                }
-              }
-              if (obj.children) {
-                return multi(obj.children)
-              }
+    const banner = computed(() => {
+      // 包含当前路径退出
+      if (path && (path as string).includes(route.path)) return
+      let result: menuListType
+      const recursive = (item: menuListType[]) => {
+        const multi = (item: any) => {
+          for (let i = 0; i < item.length; i++) {
+            const obj = item[i]
+            if (obj.to?.includes(route.path)) {
+              result = obj
+              return
+            }
+            if (obj.children) {
+              return multi(obj.children)
             }
           }
-          // 递归找到深层路径中包含当前路径的对象返回oneId
-          multi(item)
         }
-        recursive(menuList.value)
-        bannerHeight.value = result?.height ? result?.height : "100vh"
-        // 缓存本次路由
-        path = route.path
+        multi(item)
       }
-      init()
-      if (isDark.value) {
-        result = result?.dark ? result.dark : "var(--banner-img)"
-      } else {
-        result = result?.light ? result.light : "var(--banner-img)"
-      }
+      recursive(menuList.value)
+      // @ts-ignore
       return result
     })
-    const { menuList } = storeToRefs(useUserStore())
+    const bannerHeight = computed(() => banner.value?.bannerImg?.height)
+    const bannerImg = computed(() => {
+      if (isDark.value) {
+        return banner.value?.bannerImg?.dark
+          ? banner.value?.bannerImg?.dark
+          : "var(--banner-img)"
+      } else {
+        return banner.value?.bannerImg?.light
+          ? banner.value?.bannerImg?.light
+          : "var(--banner-img)"
+      }
+    })
     // #endregion banner
 
     // #region 内容区域
@@ -129,6 +125,7 @@ export const useSettingStore = defineStore(
       setEffectMove,
       isAside,
       // banner相关
+      banner,
       bannerImg,
       bannerHeight,
       // 内容区域
