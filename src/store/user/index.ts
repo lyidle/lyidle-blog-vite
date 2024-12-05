@@ -15,6 +15,5 @@ export const useUserStore = defineStore("user", () => {
       "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
     signer: "Future is now 🍭🍭🍭",
   })
-  const homeLightUrl = 'url("/static/images/base-bg-light-01.png")'
-  return { menuList, homeLightUrl, userMenuList, userInfo }
+  return { menuList, userMenuList, userInfo }
 })

@@ -1,11 +1,10 @@
 import express from "express"
+import { EMAIL } from "@/config.json"
 const router = express.Router()
 // 发件人配置
 const nodemailer = require("nodemailer")
-const MAIL_HOST = "smtp.office365.com"
-const MAIL_PORT = "587"
-const MAIL_USER = "reg@lyidle.cn"
-const MAIL_PWD = "n)vC^=vzaQh8P[$(c=7C&t,hyG2u3NV"
+// 引入邮箱的配置
+const { MAIL_HOST, MAIL_PORT, MAIL_USER, MAIL_PWD } = EMAIL
 const transporter = nodemailer.createTransport({
   host: MAIL_HOST,
   port: MAIL_PORT,
@@ -26,11 +25,15 @@ const sendMail = async (to: string, subject: string, html: string) => {
   }
   return await transporter.sendMail(mailOptions)
 }
-
+// 邮箱
+const emailReg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
 // 邮箱发送接口
 router.post("/email", async (req, res) => {
   const { email } = req.body
-  if (email) console.log(email)
+  if (!emailReg.test(email)) {
+    res.send(res.locals.result(void 0, "邮箱格式不正确哦~", 403))
+    return
+  }
   // 生成6位随机验证码
   const code = Math.random().toString().slice(2, 8)
   // 构建HTML模板
@@ -43,10 +46,10 @@ router.post("/email", async (req, res) => {
   try {
     // 发送邮件
     await sendMail(email, "验证码", html)
-    // 存储验证码（使用Redis）
+    // 存储验证码（使用mysql）
     const emailCodeKey = `email:${email}`
-    console.log(emailCodeKey)
-    res.send(res.locals.result({}, "发送邮箱验证码成功~"))
+    // console.log(emailCodeKey)
+    res.send(res.locals.result(void 0, "发送邮箱验证码成功~"))
   } catch (error) {
     res.send(res.locals.result(error, "发送邮箱验证码失败~", 401))
   }

@@ -6,8 +6,8 @@ export default [
     icon: "i-ep:home-filled",
     to: "/home",
     bannerImg: {
-      light: 'url("/static/images/base-bg-light.png")',
-      dark: 'url("/static/images/base-bg-dark.png")',
+      light: 'url("/src/assets/images/base-bg-light.png")',
+      dark: 'url("/src/assets/images/base-bg-dark.png")',
       height: "100vh",
     },
   },
@@ -30,8 +30,8 @@ export default [
         to: "/note/test",
         icon: "i-mdi:collection",
         bannerImg: {
-          dark: 'url("/static/images/base-bg-light.png")',
-          light: 'url("/static/images/base-bg-dark.png")',
+          dark: 'url("/src/assets/images/base-bg-light.png")',
+          light: 'url("/src/assets/images/base-bg-dark.png")',
           height: "100vh",
         },
       },

@@ -13,12 +13,12 @@ li {
 @font-face {
   font-family: "LOGO";
   font-weight: 900;
-  src: url("/static/font/logo.woff") format("woff");
+  src: url("/assets/font/logo.woff") format("woff");
   font-display: swap;
 }
 @font-face {
   font-family: "LXGWW";
-  src: url("/static/font/LXGWWenKai-Regular.ttf");
+  src: url("/assets/font/LXGWWenKai-Regular.ttf");
 }
 html {
   cursor: var(--cursor-default);

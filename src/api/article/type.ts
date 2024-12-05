@@ -13,7 +13,7 @@ export interface carouselItemType {
   category: categoryType
   tags: tagsType
   update: string
-  poster: string
+  poster?: string
   title: string
   description: string
   active?: boolean

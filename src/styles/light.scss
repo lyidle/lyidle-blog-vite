@@ -2,9 +2,9 @@
   // 内容区域背景颜色 没有背景固定时
   --body-bg: #f7fcff;
   // 鼠标样式
-  --cursor-default: url("static/cursor/light/pointer.png") 0 0, default;
-  --cursor-pointer: url("static/cursor/light/link.png") 0 0, pointer;
-  --cursor-text: url("static/cursor/light/text.png") 18 5, text;
+  --cursor-default: url("/assets/cursor/light/pointer.png") 0 0, default;
+  --cursor-pointer: url("/assets/cursor/light/link.png") 0 0, pointer;
+  --cursor-text: url("/assets/cursor/light/text.png") 18 5, text;
   // 主要字体颜色 content 区域的字体
   --primary-color: #2a4f7c;
   --primary-bg: white;
@@ -44,7 +44,7 @@
   --header-drawer-title-color: var(--second-color);
   // banner
   --banner-detail-color: #ffffff;
-  --banner-img: url("/static/images/base-bg-light.png");
+  --banner-img: url("@/assets/images/base-bg-light.png");
   // banner 遮罩
   --banner-mask: linear-gradient(
     to right,

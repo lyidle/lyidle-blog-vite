@@ -354,10 +354,11 @@ export class moveEffectFn {
 export const setTitleTip = () => {
   // 设置标题离开和回来的提示语
   let temp: string
-  let tipFlag = JSON.parse(import.meta.env.VITE_TITLE_TIP_SHOW) || true
+  let tipFlag = JSON.parse(import.meta.env.VITE_TITLE_TIP_SHOW) ?? true
   const leaveTip = import.meta.env.VITE_LEAVE_TITLE_TIP || "不要离开~"
-  const enterTip = import.meta.env.VITE_ENTER_TITLE_TIP || "欢迎回来"
-  const tipDuring = +import.meta.env.VITE_TITLE_TIP_DURING || 1
+  const enterTip = import.meta.env.VITE_ENTER_TITLE_TIP || "欢迎回来~"
+  const envDur = parseFloat(import.meta.env.VITE_TITLE_TIP_DURING)
+  const tipDuring = isNaN(envDur) ? 1 : envDur
   let enterTimer: any
   let leaveTimer: any
   // 窗口获取焦点的回调

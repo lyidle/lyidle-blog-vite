@@ -1,42 +1,31 @@
-import express from "express" // 导入api路由
+import express from "express"
+// 导入api路由
 import api from "@router/api"
-import type { MyResponse } from "@/@types/express"
 // 引入基础配置
-import config from "@/config.json"
-import fs from "fs"
-// 引入nnoid加盐
-const { EXPRESS } = config
-const PORT = EXPRESS.port
-// // 查看有没有加盐
-// if (!EXPRESS.hash) {
-// const hash = nanoid
-// console.log(nanoid)
-//   // EXPRESS.hash = hash
-//   // console.log(config)
-//   // fs.writeFile()
-// }
-
+import { EXPRESS } from "@/config.json"
+const initHash = require("@/init/hash")
+// 初始化生成hash
+initHash()
+// 端口
+const { port } = EXPRESS
 const app = express()
-app.use((req, res: MyResponse, next) => {
-  // 配置通用的返回格式
-  res.locals.result = (data, message, status = 200) => {
-    return {
-      status: status,
-      data: data,
-      message: message,
-    }
-  }
-  next()
-})
+// 初始化数据库 创建表
+require("@/mysql/init")
 // 解析body json
 app.use(express.json())
 // 解析body urlencoded
 app.use(express.urlencoded({ extended: false }))
-app.get("/", (req, res) => {
-  res.send("Hello, TypeScript and Express!")
-})
+// 引入中间件
+const middleWare = require("@/init/middleWare")
+// 应用中间件
+app.use(middleWare)
+// app.get("/", (req, res) => {
+//   res.send("Hello, TypeScript and Express!")
+// })
 app.use("/api", api)
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`)
+app.use((err: any, req: any, res: any, next: any) => {
+  console.log(err)
+})
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}.`)
 })

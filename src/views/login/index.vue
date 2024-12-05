@@ -23,7 +23,7 @@
           <el-input
             placeholder="Password"
             v-model="loginData.password"
-            type="password"
+            show-password
             autocomplete="off"
             :prefix-icon="passIcon"
           ></el-input>
@@ -89,6 +89,7 @@
         <el-form-item label="密码" prop="password">
           <el-input
             placeholder="Password"
+            show-password
             v-model="regData.password"
             autocomplete="off"
             :prefix-icon="passIcon"
@@ -97,6 +98,7 @@
         <el-form-item label="确认密码" prop="confirmPassword">
           <el-input
             placeholder="Confirm Password"
+            show-password
             v-model="regData.confirmPassword"
             autocomplete="off"
             :prefix-icon="confirmPassIcon"
@@ -167,7 +169,7 @@ const toLogin = () => {
   regForm.value.resetFields()
 }
 // 正则
-// 账号长度大于3位 不能重复
+// 账号大于等于3位 不能重复
 // 密码
 const passReg =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@,_.])[a-zA-Z0-9$@,_.]{6,12}$/

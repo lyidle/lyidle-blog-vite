@@ -10,11 +10,17 @@
         v-for="item in carouselItem"
         class="content-card"
         :category="{ to: item.category.to, content: item.category.content }"
-        :label="{ to: item.tags.to, content: item.tags.content.join('*') }"
+        :label="{ to: item.tags.to, content: item.tags.content }"
       >
         <template #poster>
           <router-link :to="item.to">
-            <img :src="item.poster" alt="" class="poster" />
+            <img :src="item.poster" alt="" class="poster" v-if="item.poster" />
+            <img
+              src="/src/assets/images/base-bg-light.png"
+              alt=""
+              class="poster"
+              v-else
+            />
           </router-link>
         </template>
         <template #description>{{ item.description }}</template>
@@ -45,7 +51,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/static/images/base-bg-light.png",
+    poster: "/src/assets/images/base-bg-light.png",
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -63,7 +69,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/static/images/base-bg-light.png",
+    poster: "/src/assets/images/base-bg-light.png",
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -81,7 +87,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/static/images/base-bg-light.png",
+    poster: "/src/assets/images/base-bg-light.png",
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -99,7 +105,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/static/images/base-bg-light.png",
+    poster: "/src/assets/images/base-bg-light.png",
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
@@ -117,7 +123,7 @@ const carouselItem: carouselType = [
     },
     update: "2023-11-31",
     title: "Markdown语法与外挂标签写法汇总",
-    poster: "/static/images/base-bg-light.png",
+    poster: "/src/assets/images/base-bg-light.png",
     description:
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },

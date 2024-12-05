@@ -5,6 +5,7 @@ import menu from "@/mock/menulist"
 import admin from "@/router/api/admin"
 // 引入 api/reg
 import reg from "@/router/api/reg"
+import login from "@/router/api/login"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
@@ -12,7 +13,8 @@ router.get("/", (req, res) => {
 })
 // 挂载路由
 router.use("/admin", admin)
-router.use("/reg", reg)
+router.use(reg)
+router.use(login)
 router.get("/menuList", (req, res) => {
   res.send(res.locals.result(menu, "获取菜单成功~"))
 })

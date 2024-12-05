@@ -1,11 +1,12 @@
 <template>
   <div class="contain">
     <carousel :data="props.data" :autoplay="false" :direction>
-      <template #body="{ item }">
+      <template #body="{ item }: { item: carouselItemType }">
         <div class="data-item">
           <div class="poster">
             <router-link :to="item.to">
-              <img :src="item?.poster" alt="" />
+              <img :src="item.poster" alt="" v-if="item.poster" />
+              <img src="@/assets/images/base-bg-light.png" alt="" v-else />
               <div class="mask"></div>
             </router-link>
           </div>
@@ -35,6 +36,7 @@
 
 <script setup lang="ts" name="MyCarousel">
 import { useSettingStore } from "@/store/setting"
+import { carouselItemType } from "@/api/article/type"
 const { cardBoxShadow } = storeToRefs(useSettingStore())
 const props = withDefaults(
   defineProps<{ data: any; autoplay?: boolean; direction: "left" | "top" }>(),

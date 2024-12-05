@@ -8,7 +8,7 @@
       <div class="item" v-for="item in 4">
         <router-link to="">
           <div class="poster">
-            <img src="/static/images/base-bg-light.png" alt="" />
+            <img src="@/assets/images/base-bg-light.png" alt="" />
             <div class="mask"></div>
           </div>
         </router-link>
