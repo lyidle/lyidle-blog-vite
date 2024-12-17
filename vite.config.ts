@@ -2,7 +2,6 @@
 import { defineConfig, loadEnv } from "vite"
 // node 进行文件相关操作
 import { resolve } from "path"
-import fs from "fs"
 // 引入 打包相关配置
 import build from "./config/vite.config/build"
 // 引入 插件相关配置

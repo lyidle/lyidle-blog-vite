@@ -1,7 +1,7 @@
 import request from "@/utils/request"
 import { prefix } from "@/api/config"
 enum API {
-  announce = "/admin/announce",
+  announce = "/announce",
 }
 
 export const reqAnnounce = () =>

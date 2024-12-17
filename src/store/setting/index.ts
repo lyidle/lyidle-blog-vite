@@ -137,7 +137,7 @@ export const useSettingStore = defineStore(
   },
   {
     persist: {
-      key: "setting",
+      key: "Setting",
       storage: localStorage,
       pick: [
         // 头部设置信息

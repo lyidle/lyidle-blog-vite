@@ -96,13 +96,14 @@ $scroll-button-bg-hover: "%236da3d5";
 // el-input
 // login-input
 @mixin login-input {
-  ::v-deep(.el-input__wrapper) {
+  .el-input__wrapper {
     background-color: unset;
     box-shadow: unset;
     border-radius: unset;
     border-bottom: 1px solid var(--login-input-underline-bg);
     margin: 1px 11px;
     padding: unset;
+    --el-color-danger: transparent;
     input {
       height: 24px;
       border: none;

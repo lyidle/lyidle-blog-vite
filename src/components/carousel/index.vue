@@ -7,7 +7,11 @@
       @mouseleave="leaveCb"
     >
       <div class="content" ref="content">
-        <div v-for="(item, index) in props.data" class="data-item" ref="item">
+        <div
+          v-for="(item, index) in props.data"
+          class="data-item"
+          ref="itemInstance"
+        >
           <!-- 使用插槽回传 数据 -->
           <slot :item :index name="body">
             <div class="myItem">
@@ -182,21 +186,21 @@ const scrollCb = (e: WheelEvent) => {
   e.preventDefault()
   if (!e.deltaY) return
   // 往下滚动
-  if (e.deltaY == -100) {
+  if (e.deltaY > 0) {
     rollPlay(-1)
   }
   // 往上滚动
-  if (e.deltaY == 100) {
+  if (e.deltaY < 0) {
     rollPlay(1)
   }
 }
 // 初始化
 // 获取到轮播的每一项
-const item = ref()
+const itemInstance = ref()
 const content = ref()
 onMounted(() => {
   // 把第一个复制一份 添加到最后 实现无缝轮播
-  content.value.appendChild(item.value[0].cloneNode(true))
+  content.value.appendChild(itemInstance.value[0].cloneNode(true))
   carousel.value.style[props.direction] = "0"
   // 确定 flex 布局方向
   content.value.style.flexDirection = map[props.direction]

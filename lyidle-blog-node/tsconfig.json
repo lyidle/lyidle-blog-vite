@@ -6,14 +6,13 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@router/*": ["./src/router/*"],
-      "@/*": ["./src/*"]
-    },
     "outDir": "dist",
     "rootDir": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

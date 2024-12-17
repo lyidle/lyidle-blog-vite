@@ -19,7 +19,7 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     // 这里的状态码是后端返回的状态码
-    if (response.data.status == 200) return response.data.data
+    if (response.data.status) return response.data.data
     else {
       // 返回错误信息
       throw new Error(response.data.message)
@@ -41,17 +41,13 @@ request.interceptors.response.use(
       case 404:
         message = "请求地址错误"
         break
-
       case 500:
         message = "服务器出现问题"
-        break
-      default:
-        message = "网络出现问题"
         break
     }
     // 错误提示信息
     // ElNotification.error(message)
-    return Promise.reject(new Error(message || error.message || "Error"))
+    return Promise.reject(new Error(message || error.message || "网络出现问题"))
   }
 )
 // 对外暴露

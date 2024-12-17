@@ -1,0 +1,8 @@
+const { resolve } = require("path")
+const basePath = resolve(__dirname, "src/db")
+module.exports = {
+  config: resolve(basePath, "config/config.json"), // 数据库配置文件
+  "models-path": resolve(basePath, "models"), // 数据模型文件
+  "seeders-path": resolve(basePath, "seeders"), // 数据填充文件
+  "migrations-path": resolve(basePath, "migrations"), // 数据迁移文件
+}

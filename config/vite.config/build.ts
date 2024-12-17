@@ -1,11 +1,10 @@
 export default {
-  outDir: "lyidle-blog-node/public",
+  outDir: "lyidle-blog-node/src/static",
   assetsDir: "assets",
   emptyOutDir: true,
   rollupOptions: {
     // 输出
     output: {
-      outDir: "wisdom-backend",
       // 入口文件名
       entryFileNames: "assets/js/[name]-[hash].js",
       // 块文件名
