@@ -1,5 +1,5 @@
 export default {
-  outDir: "lyidle-blog-node/src/static",
+  outDir: "lyidle-blog-node/src/static/dist",
   assetsDir: "assets",
   emptyOutDir: true,
   rollupOptions: {

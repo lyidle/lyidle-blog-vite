@@ -14,7 +14,7 @@ const PORT = process.env.BACK_PORT || 3000
 const history = require("connect-history-api-fallback")
 app.use(history())
 // 静态资源
-app.use(express.static(resolve(__dirname, "./static")))
+app.use(express.static(resolve(__dirname, "./static/dist")))
 // 反向代理
 const { createProxyMiddleware } = require("http-proxy-middleware")
 app.use(
