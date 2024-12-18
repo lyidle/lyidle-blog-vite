@@ -1,5 +1,5 @@
 <template>
-  <layout-content-aside-card class="container">
+  <layout-content-aside-card class="aside-container">
     <template #title>
       <i class="i-mdi:recent"></i>
       <span>最新文章</span>
@@ -38,7 +38,7 @@ $poster-radius: var(--pages-card-radius);
 $content-gap: 10px;
 // 底部poster与content的间距
 $container-gap: $content-gap;
-.container {
+.aside-container {
   @include content-aside-title(var(--aside-recent-pg-icon-bg));
   ::v-deep(.body) {
     display: flex;

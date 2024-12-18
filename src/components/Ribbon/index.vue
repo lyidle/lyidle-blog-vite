@@ -1,6 +1,6 @@
 <template>
   <div class="ribbon-scissors">
-    <div class="container" ref="contain">
+    <div class="ribbon-container" ref="contain">
       <div class="i-tabler:scissors scissors"></div>
     </div>
   </div>
@@ -28,7 +28,7 @@ $underline-height: 3px;
   display: flex;
   align-items: center;
   position: relative;
-  > .container {
+  > .ribbon-container {
     width: 100%;
     height: $underline-height;
     // 虚线

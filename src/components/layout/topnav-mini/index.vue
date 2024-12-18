@@ -23,7 +23,7 @@
       mask="var(--header-drawer-mask)"
     >
       <template #body>
-        <div class="container con">
+        <div class="top-avater-container">
           <!-- 头像 -->
           <img :src="userInfo.avater" alt="" class="avater" />
           <layout-link-pages></layout-link-pages>
@@ -101,7 +101,7 @@ $header-content-pd: 20px;
       }
     }
   }
-  .container.con {
+  .top-avater-container {
     $gap: 15px;
     color: var(--header-drawer-title-color);
     box-sizing: border-box;

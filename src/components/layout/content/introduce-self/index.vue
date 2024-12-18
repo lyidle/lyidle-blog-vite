@@ -2,7 +2,7 @@
   <context-menu>
     <my-card class="item-aside">
       <template #body>
-        <div class="container aside-userinfo">
+        <div class="aside-container aside-userinfo">
           <div class="userInfo">
             <div class="avater">
               <router-link to="">
@@ -82,7 +82,8 @@ $avater-size: 110px;
 $userinfo-gap: 10px;
 $links-gap: 10px;
 $userinfo-btn-car-size: 25px;
-.container {
+.aside-container {
+  all: unset;
   display: flex;
   flex-direction: column;
   gap: $gap;

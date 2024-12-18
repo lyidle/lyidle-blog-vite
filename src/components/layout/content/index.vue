@@ -1,7 +1,7 @@
 <template>
   <context-menu>
     <div class="pages">
-      <div class="container">
+      <div class="pages-content">
         <slot name="content-start"></slot>
         <div class="contain">
           <slot name="content-card"></slot>
@@ -61,7 +61,7 @@ $aside-pd: 20px;
   justify-content: center;
   position: relative;
   z-index: 2;
-  .container {
+  > .pages-content {
     width: 100%;
     display: flex;
     flex-direction: column;

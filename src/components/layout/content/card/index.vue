@@ -4,7 +4,7 @@
       <div class="content-header">
         <slot name="poster"></slot>
         <div class="mask">
-          <div class="container line-clamp-2">
+          <div class="poster-container line-clamp-2">
             『<slot name="description"></slot>』
           </div>
           <div class="pin">
@@ -112,7 +112,7 @@ $meta-gap: 5px;
           color: var(--content-card-pin-color);
         }
       }
-      .container {
+      .poster-container {
         $height: 80px;
         width: 70%;
         height: $height;

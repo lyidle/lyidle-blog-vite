@@ -1,5 +1,5 @@
 <template>
-  <layout-content-aside-card class="container">
+  <layout-content-aside-card class="info-container">
     <template #title>
       <i class="i-fluent:data-histogram-16-filled"></i>
       <span>小站资讯</span>
@@ -35,7 +35,7 @@
 
 <style scoped lang="scss">
 $item-gap: 5px;
-.container {
+.info-container {
   @include content-aside-title(var(--aside-web-info-icon-bg));
   ::v-deep(.body) {
     display: flex;

@@ -1,7 +1,7 @@
 <template>
   <layout-header></layout-header>
   <layout-banner></layout-banner>
-  <div class="container">
+  <div class="login-container">
     <loginCard ref="loginRef" :reg="regRef?.reg"></loginCard>
     <regCard ref="regRef" :login="loginRef?.login"></regCard>
   </div>
@@ -23,7 +23,7 @@ const regRef = ref()
 $rotate-during: var(--login-rotate-during);
 $link-color: var(--login-link-color);
 $color: var(--primary-color);
-.container {
+.login-container {
   position: absolute;
   width: 50%;
   z-index: 2;
