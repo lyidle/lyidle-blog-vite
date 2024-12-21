@@ -1,6 +1,6 @@
 "use strict"
 const { Model } = require("sequelize")
-const { emailReg } = require("../../routes/user/reg/RegExp")
+const { emailReg } = require("@/routes/user/reg/RegExp")
 module.exports = (sequelize, DataTypes) => {
   class Email extends Model {
     /**
