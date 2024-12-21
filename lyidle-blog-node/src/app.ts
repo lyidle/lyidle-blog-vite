@@ -1,6 +1,11 @@
 import express from "express"
 // 导入环境变量
 require("dotenv").config()
+// @ts-ignore
+if (JSON.parse(process.env.alias)) {
+  const a = require("module-alias/register")
+  console.log(a)
+}
 const cookieParser = require("cookie-parser")
 const logger = require("morgan")
 const app = express()

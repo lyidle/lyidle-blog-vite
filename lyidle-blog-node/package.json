@@ -5,10 +5,10 @@
   "scripts": {
     "build:re": "rimraf dist",
     "build:tsc": "tsc && tsc-alias",
-    "build:move": "copyfiles -u 1 src/**/*.* dist --exclude \"**/*.ts\" && copyfiles package.json pnpm-lock.yaml dist",
+    "build:move": "copyfiles -u 1 src/**/*.* dist/src --exclude \"**/*.ts\" && copyfiles package.json pnpm-lock.yaml .sequelizerc .env dist",
     "build": "pnpm build:re && pnpm build:tsc && pnpm build:move",
-    "api": "node dist/app.js",
-    "web": "node dist/web.js",
+    "api": "node src/app.js",
+    "web": "node src/web.js",
     "start": "concurrently \"pnpm api\" \"pnpm web\"",
     "apiDev": "tsnd -r tsconfig-paths/register --respawn src/app.ts",
     "webDev": "tsnd -r tsconfig-paths/register --respawn src/web.ts",
@@ -29,6 +29,7 @@
     "express": "^4.21.2",
     "express-jwt": "^8.5.1",
     "ip": "^2.0.1",
+    "module-alias": "^2.2.3",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "morgan": "^1.10.0",
@@ -46,5 +47,8 @@
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2"
+  },
+  "_moduleAliases": {
+    "@": "src"
   }
 }
