@@ -1,5 +1,5 @@
 import { menuListType } from "@/api/user/type"
-import { reqMenuList } from "@/api/user"
+import { reqMenuList } from "@/api/admin"
 export const useUserStore = defineStore(
   "user",
   () => {

@@ -1,14 +1,12 @@
 import express from "express"
 // 引入 api/admin 路由
 import admin from "@/routes/admin"
-// 引入 api/reg
-import reg from "@/routes/user/reg"
-// 引入 api/login
-import login from "@/routes/user/login"
-// 引入 api/menuList
-import menuList from "@/routes/user/menuList"
-// 引入 api/announce
-import announce from "@/routes/user/announce"
+// 引入 api/user 路由
+import user from "@/routes/user"
+// 引入 api/article
+import article from "@/routes/article"
+// 引入 api/webInfo
+import webInfo from "@/routes/webInfo"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
@@ -16,8 +14,7 @@ router.get("/", (req, res) => {
 })
 // 挂载路由
 router.use("/admin", admin)
-router.use("/reg", reg)
-router.use("/login", login)
-router.use("/menuList", menuList)
-router.use("/announce", announce)
+router.use("/user", user)
+router.use("/article", article)
+router.use("/webInfo", webInfo)
 module.exports = router

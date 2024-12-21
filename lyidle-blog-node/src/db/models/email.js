@@ -1,8 +1,8 @@
 "use strict"
 const { Model } = require("sequelize")
-const { emailReg, codeReg } = require("@/routes/user/reg/RegExp")
+const { emailReg } = require("../../routes/user/reg/RegExp")
 module.exports = (sequelize, DataTypes) => {
-  class RegEmail extends Model {
+  class Email extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  RegEmail.init(
+  Email.init(
     {
       email: {
         type: DataTypes.STRING,
@@ -29,27 +29,16 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      code: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "验证码不能为空哦~" },
-          notEmpty: { msg: "验证码不能为空哦~" },
-          isReg(value) {
-            const { reg, msg } = codeReg
-            if (!reg.test(value)) {
-              throw new Error(msg)
-            }
-          },
-        },
-      },
+      regCode: DataTypes.INTEGER,
+      forgetCode: DataTypes.INTEGER,
       expiresAt: DataTypes.DATE,
+      deleteAt: DataTypes.DATE,
     },
     {
       sequelize,
       timestamps: false,
-      modelName: "RegEmail",
+      modelName: "Email",
     }
   )
-  return RegEmail
+  return Email
 }

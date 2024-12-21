@@ -7,10 +7,12 @@
       @mouseleave="leaveCb"
     >
       <div class="content" ref="content">
+        <!--key 有id就使用id 没有就使用index -->
         <div
           v-for="(item, index) in props.data"
           class="data-item"
           ref="itemInstance"
+          :key="item.id ? item.id : index"
         >
           <!-- 使用插槽回传 数据 -->
           <slot :item :index name="body">

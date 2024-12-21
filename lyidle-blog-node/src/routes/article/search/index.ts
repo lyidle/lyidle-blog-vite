@@ -1,0 +1,83 @@
+import express from "express"
+import { Op, literal } from "sequelize"
+const router = express.Router()
+// 导入模型
+const { Article } = require("@/db/models")
+const search = async (req: any, res: any, exact?: boolean) => {
+  const { id, author, title, desc, category, tip } = req.query
+  const commend: any = {
+    attributes: ["id", "author", "title", "desc", "category", "tip"],
+  }
+  if (!(id || author || title || desc || category || tip))
+    return res.result(
+      void 0,
+      "请至少传入author、title、desc、category、tip中的一个参数~",
+      false,
+      400
+    )
+  // 按照标签查询
+  if (tip) {
+    commend.where = literal(`JSON_CONTAINS(tip, '"${tip}"')`)
+  }
+  // 按照种类查询
+  if (category)
+    commend.where = {
+      category,
+    }
+  // 按照描述查询
+  if (desc)
+    commend.where = {
+      desc: { [Op.like]: `%${desc}%` },
+    }
+  // 按照描述精确查询
+  if (desc && exact) {
+    commend.where = {
+      desc: desc,
+    }
+  }
+  // 按照标题查询
+  if (title)
+    commend.where = {
+      title: { [Op.like]: `%${title}%` },
+    }
+  // 按照标题精确查询
+  if (title && exact)
+    commend.where = {
+      title: title,
+    }
+  // 按照作者查询
+  if (author)
+    commend.where = {
+      author: { [Op.like]: `%${author}%` },
+    }
+  // 按照作者精确查询
+  if (author && exact)
+    commend.where = {
+      author: author,
+    }
+  // 按照id查询
+  if (id) {
+    commend.where = {
+      id,
+    }
+  }
+  // 查询用户的所有文章
+  const result = await Article.findAll(commend)
+  if (JSON.stringify(result) === "[]")
+    return res.result(void 0, "查询用户信息失败~", false, 400)
+  return res.result(result, "查询用户信息成功~")
+}
+// 查询文章 模糊
+router.get("/", async (req, res) => {
+  await search(req, res)
+})
+// 查询文章 精确
+/* 
+desc
+title
+author
+*/
+router.get("/exact", async (req, res) => {
+  await search(req, res, true)
+})
+export default router

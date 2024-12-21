@@ -1,35 +1,20 @@
 import express from "express"
-import type { Response, Request, NextFunction } from "express"
-//在文件外部扩展不知道怎么弄
-declare global {
-  namespace Express {
-    interface Request {
-      auth: {
-        account: string
-        email: string
-        role: string
-      }
-    }
-    interface Response {
-      result: (
-        data: any,
-        message: string,
-        status?: boolean
-      ) => {
-        status: boolean
-        data: object | void
-        message: string
-      }
-    }
-  }
-}
+// 导入环境变量
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
 const logger = require("morgan")
 const app = express()
+// api端口
+const api_port = process.env.api_port
+// web端口
+const web_port = process.env.web_port
 
-// 端口
-const PORT = process.env.BACK_PORT || 3000
+// 处理跨域
+const cors = require("cors")
+const corsOptions = {
+  origin: ["http://localhost:5173", `http://127.0.0.1:${web_port}`],
+}
+app.use(cors(corsOptions))
 
 // 中间件 扩展request.result 用来定义返回类型
 const RequestExtension = require("@/middleware/RequestExtension")
@@ -41,29 +26,17 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(RequestExtension)
 
-// 路由
+// 导入路由
 const api = require("@/routes")
+
 app.get("/", (req, res) => {
   res.send("hello")
 })
+// 挂载路由
 app.use("/api", api)
-app.use((err: any, req: any, res: any, next: any) => {
-  // console.log(err)
-  // 数据库插入校验
-  if (err.name === "SequelizeValidationError") {
-    res.send(
-      res.result(
-        void 0,
-        err.errors.length === 1
-          ? err.errors[0].message
-          : err.errors.map((item: any) => item.message),
-        false
-      )
-    )
-  }
-  //token解析失败导致的错误
-  if (err.name === "UnauthorizedError") {
-    return res.status(401).send(res.result(void 0, "无效的token~", false))
-  }
-})
-app.listen(PORT, () => console.log(`Api is running on port ${PORT}.`))
+
+// 导入挂载错误中间件
+const errMiddleWare = require("@/middleware/globalError")
+app.use(errMiddleWare)
+
+app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))

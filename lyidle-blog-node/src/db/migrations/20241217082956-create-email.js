@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("RegEmails", {
+    await queryInterface.createTable("Emails", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,7 +12,10 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
       },
-      code: {
+      regCode: {
+        type: Sequelize.INTEGER,
+      },
+      forgetCode: {
         type: Sequelize.INTEGER,
       },
       expiresAt: {
@@ -29,6 +32,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("RegEmails")
+    await queryInterface.dropTable("Emails")
   },
 }

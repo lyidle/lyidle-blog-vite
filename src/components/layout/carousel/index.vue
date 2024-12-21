@@ -1,7 +1,7 @@
 <template>
   <div class="contain">
-    <carousel :data="props.data" :autoplay="false" :direction>
-      <template #body="{ item }: { item: carouselItemType }">
+    <carousel :data="props.data" :autoplay :direction>
+      <template #body="{ item }">
         <div class="data-item">
           <div class="poster">
             <router-link :to="item.to">
@@ -11,12 +11,12 @@
             </router-link>
           </div>
           <div class="content">
-            <div class="date text">{{ item?.update }}</div>
+            <div class="date text">{{ item?.updatedAt }}</div>
             <div class="title line-clamp-1">
               <router-link :to="item.to">{{ item?.title }}</router-link>
             </div>
             <div class="description text line-clamp-3">
-              {{ item?.description }}
+              {{ item?.desc }}
             </div>
           </div>
         </div>

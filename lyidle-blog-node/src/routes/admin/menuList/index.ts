@@ -3,6 +3,6 @@ import express from "express"
 import menu from "@/mock/menulist"
 const router = express.Router()
 router.get("/", (req, res) => {
-  res.send(res.result(menu, "获取菜单成功~"))
+  return res.result(menu, "获取菜单成功~")
 })
 export default router

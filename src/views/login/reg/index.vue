@@ -16,6 +16,13 @@
           :prefix-icon="userIcon"
         ></el-input>
       </el-form-item>
+      <el-form-item label="用户名" prop="nickName">
+        <el-input
+          placeholder="NickName"
+          v-model="regData.nickName"
+          :prefix-icon="userIcon"
+        ></el-input>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input
           placeholder="E-Mail"
@@ -84,7 +91,7 @@ import confirmPassIcon from "@/components/icon/login/confirm-pass.vue"
 import emailIcon from "@/components/icon/login/email.vue"
 import codeIcon from "@/components/icon/login/code.vue"
 // 引入正则
-import { accountReg, passReg, emailReg, codeReg } from "../reg"
+import { accountReg, pwdReg, emailReg, codeReg, nickNameReg } from "../reg"
 // 引入api
 import { reqRegEmail, reqReg } from "@/api/user"
 const props = defineProps(["login"])
@@ -98,6 +105,7 @@ const regForm = ref()
 // 注册的表单数据
 const regData = reactive({
   account: "",
+  nickName: "",
   email: "",
   code: "",
   password: "",
@@ -122,8 +130,17 @@ const regRules = reactive({
     {
       required: true,
       trigger: "change",
-      pattern: accountReg,
-      message: "账号长度最少要是三位哦~",
+      pattern: accountReg.reg,
+      message: accountReg.msg,
+    },
+  ],
+  nickName: [
+    { required: true, trigger: "change", message: "用户名是必填项哦~" },
+    {
+      required: true,
+      trigger: "change",
+      pattern: nickNameReg.reg,
+      message: nickNameReg.msg,
     },
   ],
   password: [
@@ -138,25 +155,24 @@ const regRules = reactive({
     {
       required: true,
       trigger: "change",
-      pattern: passReg,
-      message:
-        "密码需要必须包含数字、字母小写与大写，和特殊字符($@,_.)中的一个哦~",
+      pattern: pwdReg.reg,
+      message: pwdReg.msg,
     },
   ],
   email: [
     {
       required: true,
       trigger: "change",
-      pattern: emailReg,
-      message: "邮箱格式不正确哦~",
+      pattern: emailReg.reg,
+      message: emailReg.msg,
     },
   ],
   code: [
     {
       required: true,
       trigger: "change",
-      pattern: codeReg,
-      message: "验证码格式不正确哦~",
+      pattern: codeReg.reg,
+      message: codeReg.msg,
     },
   ],
   confirmPassword: [

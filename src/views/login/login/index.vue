@@ -11,7 +11,7 @@
     >
       <el-form-item label="账号" prop="account">
         <el-input
-          placeholder="Account"
+          placeholder="Account or Email"
           v-model="loginData.account"
           :prefix-icon="userIcon"
         ></el-input>
@@ -47,7 +47,7 @@
 import userIcon from "@/components/icon/login/user.vue"
 import passIcon from "@/components/icon/login/pass.vue"
 // 引入正则
-import { accountReg, passReg } from "../reg"
+import { accountReg, pwdReg } from "../reg"
 // 引入api
 import { reqLogin } from "@/api/user"
 // 引入仓库
@@ -68,8 +68,8 @@ const loginRules = reactive({
     {
       required: true,
       trigger: "change",
-      pattern: accountReg,
-      message: "账号长度最少要是三位哦~",
+      pattern: accountReg.reg,
+      message: accountReg.msg,
     },
   ],
   password: [
@@ -84,9 +84,8 @@ const loginRules = reactive({
     {
       required: true,
       trigger: "change",
-      pattern: passReg,
-      message:
-        "密码需要必须包含数字、字母小写与大写，和特殊字符($@,_.)中的一个~",
+      pattern: pwdReg.reg,
+      message: pwdReg.msg,
     },
   ],
 })

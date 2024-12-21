@@ -2,7 +2,12 @@
   <layout-banner> </layout-banner>
   <layout-content>
     <template #content-start>
-      <layout-carousel :data="carouselItem" autoplay direction="top">
+      <layout-carousel
+        :data="carousel"
+        autoplay
+        direction="top"
+        v-if="carousel"
+      >
       </layout-carousel>
     </template>
     <template #content-card>
@@ -11,6 +16,7 @@
         class="content-card"
         :category="{ to: item.category.to, content: item.category.content }"
         :label="{ to: item.tags.to, content: item.tags.content }"
+        :key="item.id"
       >
         <template #poster>
           <router-link :to="item.to">
@@ -35,6 +41,8 @@
 </template>
 
 <script setup lang="ts" name="Home">
+// 引入api
+import { reqCarousel, reqArticle } from "@/api/article"
 import { carouselType } from "@/api/article/type"
 let result = new URL("@/assets/images/base-bg-light.png", import.meta.url).href
 const carouselItem: carouselType = [
@@ -129,5 +137,15 @@ const carouselItem: carouselType = [
       "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
   },
 ]
+// 存储焦点轮播图数据
+const carousel = ref()
+// 存储文章数据
+const article = ref()
+onBeforeMount(async () => {
+  // 整理焦点轮播图
+  carousel.value = await reqCarousel()
+  const result = await reqArticle()
+  article.value = result.article
+})
 </script>
 <style scoped lang="scss"></style>

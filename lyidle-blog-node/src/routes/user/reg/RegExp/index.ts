@@ -7,6 +7,11 @@ const accountReg = {
   reg: /^.{3,}$/,
   msg: "账号长度最少要是三位哦~",
 }
+// 名称
+const nickNameReg = {
+  reg: /^.{1,}/,
+  msg: "用户名长度最少要是一位哦~",
+}
 // 密码
 const pwdReg = {
   reg: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@,_.])[a-zA-Z0-9$@,_.]{6,12}$/,
@@ -24,6 +29,7 @@ const codeReg = {
 }
 module.exports = {
   accountReg,
+  nickNameReg,
   pwdReg,
   emailReg,
   codeReg,

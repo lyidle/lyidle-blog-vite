@@ -1,8 +1,9 @@
 import express from "express"
+const ms = require("ms")
 const router = express.Router()
 const nodemailer = require("nodemailer")
 // 引入模型
-const { RegEmail } = require("@/db/models")
+const { Email } = require("@/db/models")
 
 // 引入moment
 import moment from "@/utils/moment"
@@ -10,8 +11,8 @@ import moment from "@/utils/moment"
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
-  secure: false,
-  requireTLS: true,
+  secure: JSON.parse(process.env.secure ? process.env.secure : ""),
+  requireTLS: JSON.parse(process.env.requireTLS ? process.env.requireTLS : ""),
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PWD,
@@ -122,6 +123,11 @@ const template = (email: string, code: string, createTime: string) => {
 </html>
 `
 }
+// map用于暂存 销毁函数的定时器
+const map = new Map()
+// regCode过期时间
+const codeExpire = ms(process.env.RegCode_EXPIRE)
+
 // 邮箱发送接口
 router.post("/email", async (req, res, next) => {
   const { email } = req.body
@@ -132,27 +138,43 @@ router.post("/email", async (req, res, next) => {
   // 插入的数据
   const data = {
     email,
-    code,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    regCode: code,
+    expiresAt: new Date(Date.now() + codeExpire),
   }
   try {
     // 查找是否存在
-    const findEmail = await RegEmail.findOne({ where: { email } })
+    const findEmail = await Email.findOne({ where: { email } })
     if (findEmail !== null) {
       // 存在更新
-      await RegEmail.update(data, { where: { email } })
+      await Email.update(data, { where: { email } })
     } else {
       // 不存在则创建
-      await RegEmail.create(data)
+      await Email.create(data)
     }
+    // 五分钟销毁
+    let timer = setTimeout(async () => {
+      // 查找对应邮箱
+      const result = await Email.findOne({ where: { email } })
+      // 更新regCode为null
+      if (result !== null) result.update({ regCode: null })
+      map.delete(email)
+    }, codeExpire)
+    // 如果有上一次的 则 取消上一次的定时器
+    const time = map.get(email)
+    if (time) {
+      clearTimeout(time)
+      map.delete(email)
+    }
+    // 使用Map存储 键为email 值为定时器
+    map.set(email, timer)
     // 发送邮件
-    // await sendMail(email, "验证码", genHtml)
-    res.send(res.result(data, "发送邮箱验证码成功~"))
+    if (JSON.parse(process.env.SEND_EMAIL ? process.env.SEND_EMAIL : ""))
+      await sendMail(email, "验证码", genHtml)
+    return res.result(data, "发送邮箱验证码成功~")
   } catch (err: any) {
-    if (err.name === "SequelizeValidationError") {
-      return next(err)
-    }
-    res.send(res.result(void 0, "发送邮件失败~", false))
+    return res.validateAuth(err, next, () =>
+      res.result(void 0, "发送邮件失败~", false, 400)
+    )
   }
 })
 export default router

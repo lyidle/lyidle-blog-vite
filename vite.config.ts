@@ -34,21 +34,21 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    // 代理跨域
-    server: {
-      // https: {
-      //   key: fs.readFileSync("certs/certkey.pem"),
-      //   cert: fs.readFileSync("certs/fullchain.pem"),
-      // },
-      proxy: {
-        // 运行时的反代配置
-        [env.VITE_API]: {
-          target: env.VITE_SERVE,
-          changeOrigin: true,
-          // rewrite: (path) =>
-          //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
-        },
-      },
-    },
+    // // 代理跨域
+    // server: {
+    //   // https: {
+    //   //   key: fs.readFileSync("certs/certkey.pem"),
+    //   //   cert: fs.readFileSync("certs/fullchain.pem"),
+    //   // },
+    //   proxy: {
+    //     // 运行时的反代配置
+    //     [env.VITE_API]: {
+    //       target: env.VITE_SERVE,
+    //       changeOrigin: true,
+    //       // rewrite: (path) =>
+    //       //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
+    //     },
+    //   },
+    // },
   }
 })

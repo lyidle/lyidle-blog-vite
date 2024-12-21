@@ -88,7 +88,7 @@ const userStore = useUserStore()
 //   height: string
 // }
 // 记录值去重
-let subStore = reactive(new Map())
+let subStore = new Map()
 const menu = ref()
 const toggle = (id: number | string) => {
   const result = userStore.menuList.find((item) => {
@@ -125,6 +125,9 @@ onMounted(() => {
     // id 是dataset上的 是字符串 ，取的时候也要字符串
     subStore.set(id, { height, flag: true, element, toggle })
   }
+})
+onUnmounted(() => {
+  subStore.clear()
 })
 </script>
 

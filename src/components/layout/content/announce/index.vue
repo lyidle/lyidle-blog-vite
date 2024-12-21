@@ -11,10 +11,11 @@
 </template>
 
 <script setup lang="ts" name="WebNotification">
-import { reqAnnounce } from "@/api/admin/announce"
+import { reqAnnounce } from "@/api/admin"
 const announce = ref<string>("")
 onBeforeMount(async () => {
-  announce.value = await reqAnnounce()
+  const result = await reqAnnounce()
+  announce.value = result.announce
 })
 </script>
 
