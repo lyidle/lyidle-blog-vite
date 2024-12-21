@@ -100,9 +100,6 @@ const handlerLogin = async () => {
   await loginForm.value.validateField()
   try {
     const result = await reqLogin(loginData)
-    // @ts-ignore
-    console.log(result.token)
-    // @ts-ignore
     userInfo.value.token = result.token
     ElMessage.success("登录成功~")
   } catch (error: any) {

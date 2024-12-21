@@ -3,8 +3,7 @@ import express from "express"
 require("dotenv").config()
 // @ts-ignore
 if (JSON.parse(process.env.alias)) {
-  const a = require("module-alias/register")
-  console.log(a)
+  require("module-alias/register")
 }
 const cookieParser = require("cookie-parser")
 const logger = require("morgan")
