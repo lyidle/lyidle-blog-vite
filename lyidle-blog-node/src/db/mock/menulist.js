@@ -1,8 +1,7 @@
 // 模拟
-export default [
+module.exports = [
   {
-    id: 1,
-    title: "首页",
+    name: "首页",
     icon: "i-ep:home-filled",
     to: "/home",
     bannerImg: {
@@ -13,20 +12,17 @@ export default [
     },
   },
   {
-    id: 2,
-    title: "作品",
+    name: "作品",
     icon: "i-mdi:collection",
-    redirect: "/note/test",
+    to: "/note/test",
     // 默认值
-    // layout: {
-    //   width: "70px",
-    //   left: "-15px",
-    //   top: "30px",
-    // },
+    layout: {
+      width: "70px",
+      left: "-15px",
+      top: "30px",
+    },
     children: [
       {
-        id: 1,
-        oneId: 2,
         name: "test",
         to: "/note/test",
         icon: "i-mdi:collection",
@@ -38,8 +34,6 @@ export default [
         },
       },
       {
-        id: 2,
-        oneId: 2,
         name: "test2",
         to: "/note/test2",
         icon: "i-mdi:collection",
@@ -47,20 +41,15 @@ export default [
     ],
   },
   {
-    id: 3,
-    title: "笔记",
+    name: "笔记",
     icon: "i-lucide:notebook-pen",
     children: [
       {
-        id: 1,
-        oneId: 3,
         name: "test",
         to: "/note/test",
         icon: "i-mdi:collection",
       },
       {
-        id: 2,
-        oneId: 3,
         name: "test2",
         to: "/note/test2",
         icon: "i-mdi:collection",
@@ -68,20 +57,15 @@ export default [
     ],
   },
   {
-    id: 4,
-    title: "筛选",
+    name: "筛选",
     icon: "i-tdesign:filter-3-filled",
     children: [
       {
-        id: 1,
-        oneId: 3,
         name: "test",
         to: "/note/test",
         icon: "i-mdi:collection",
       },
       {
-        id: 2,
-        oneId: 3,
         name: "test2",
         to: "/note/test2",
         icon: "i-mdi:collection",
@@ -89,23 +73,19 @@ export default [
     ],
   },
   {
-    id: 5,
-    title: "音乐",
+    name: "音乐",
     icon: "i-flowbite:list-music-outline",
   },
   {
-    id: 6,
-    title: "图库",
+    name: "图库",
     icon: "i-jam:picture-f",
   },
   {
-    id: 7,
-    title: "留言板",
+    name: "留言板",
     icon: "i-uil:message",
   },
   {
-    id: 8,
-    title: "友链",
+    name: "友链",
     icon: "i-heroicons-solid:link",
   },
 ]

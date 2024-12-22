@@ -26,7 +26,9 @@
               :to="item.to"
               class="topnav-menu-item"
               :style="{
-                width: item?.layout?.width ? item?.layout?.width : '70px',
+                width: menuList?.layout?.width
+                  ? menuList?.layout?.width
+                  : '70px',
               }"
             >
               <i :class="item.icon"></i> <span>{{ item.name }}</span>

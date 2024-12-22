@@ -14,7 +14,14 @@
     "start": "concurrently \"pnpm api\" \"pnpm web\"",
     "apiDev": "tsnd -r tsconfig-paths/register --respawn src/app.ts",
     "webDev": "tsnd -r tsconfig-paths/register --respawn src/web.ts",
-    "dev": "concurrently \"pnpm apiDev\" \"pnpm webDev\""
+    "dev": "concurrently \"pnpm apiDev\" \"pnpm webDev\"",
+    "db:up": "sequelize db:migrate",
+    "db:undo": "sequelize db:migrate:undo",
+    "db:undo:all": "sequelize db:migrate:undo:all",
+    "db:seed": "sequelize db:seed",
+    "db:seed:all": "sequelize db:seed:all",
+    "migrate:create": "sequelize migration:generate --name",
+    "seed:create": "sequelize seed:generate --name"
   },
   "keywords": [],
   "author": "",

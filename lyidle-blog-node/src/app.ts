@@ -1,4 +1,5 @@
 import express from "express"
+import type { Request, Response, NextFunction } from "express"
 // 导入环境变量
 require("dotenv").config()
 // @ts-ignore
@@ -39,8 +40,24 @@ app.get("/", (req, res) => {
 // 挂载路由
 app.use("/api", api)
 
-// 导入挂载错误中间件
-const errMiddleWare = require("@/middleware/globalError")
-app.use(errMiddleWare)
+// 全局错误中间件
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  // 数据库插入校验
+  if (err.name === "SequelizeValidationError") {
+    return res.result(
+      void 0,
+      // err.errors.length === 1
+      //   ? err.errors[0].message
+      //   :
+      err.errors.map((item: any) => item.message),
+      false,
+      400
+    )
+  }
+  //token解析失败导致的错误
+  if (err.name === "UnauthorizedError") {
+    return res.result(void 0, "TOKEN过期~", false, 401)
+  }
+})
 
 app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))

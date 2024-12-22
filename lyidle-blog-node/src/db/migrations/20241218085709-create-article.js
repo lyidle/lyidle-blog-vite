@@ -23,6 +23,7 @@ module.exports = {
       },
       tip: {
         type: Sequelize.JSON,
+        allowNull: false,
       },
       carousel: {
         type: Sequelize.TINYINT,

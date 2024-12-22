@@ -61,7 +61,19 @@ module.exports = (sequelize, DataTypes) => {
       },
       avater: DataTypes.TEXT,
       signer: DataTypes.STRING,
-      role: DataTypes.STRING,
+      role: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "角色不能为空哦~" },
+          notEmpty: { msg: "角色不能为空哦~" },
+          async isArray(value) {
+            if (!Array.isArray(value)) {
+              throw new Error("角色必须是一个数组哦~")
+            }
+          },
+        },
+      },
       nickName: {
         type: DataTypes.STRING,
         allowNull: false,

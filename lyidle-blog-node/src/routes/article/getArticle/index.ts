@@ -16,6 +16,7 @@ router.get("/", async (req, res) => {
   const offset = (currentPage - 1) * pageSize
   const { count, rows } = await Article.findAndCountAll({
     attributes: [
+      "id",
       "poster",
       "desc",
       "title",
@@ -29,6 +30,7 @@ router.get("/", async (req, res) => {
   })
   // 整理参数
   const pagesData = rows.map((item: any) => ({
+    id: item.id,
     poster: item.poster,
     title: item.title,
     desc: item.desc,

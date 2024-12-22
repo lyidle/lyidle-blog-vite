@@ -17,11 +17,13 @@ router.get("/", async (req, res) => {
   const result: any = { ...userInfo }
   // 如果找到信息 则代表有
   if (findUserInfo) {
-    const { articleCounts, tipArrays, categoryArrays } = findUserInfo.dataValues
+    const { articleCounts, tipArrays, categoryArrays, totalWords } =
+      findUserInfo.dataValues
     result.counts = {
       pages: articleCounts,
-      tags: tipArrays.length,
-      categories: categoryArrays.length,
+      tags: tipArrays,
+      categories: categoryArrays,
+      totalWords,
     }
   }
   // 如果没有找到 则数量全为零

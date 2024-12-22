@@ -17,9 +17,11 @@ router.get("/", async (req, res) => {
   })
   // 整理参数
   const result = data.map((item: any) => ({
+    id: item.id,
     poster: item.poster,
     title: item.title,
     createdAt: moment(item.createdAt, "YYYY-MM-DD"),
+    updatedAt: moment(item.updatedAt, "YYYY-MM-DD"),
     to: `/doc/${item.category}/${item.id}`,
   }))
   return res.result(result, "获取最新文章成功~")

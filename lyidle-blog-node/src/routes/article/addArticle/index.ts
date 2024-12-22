@@ -27,6 +27,8 @@ router.post("/", async (req, res, next) => {
   }
   let result
   try {
+    console.log(!author)
+    if (!author) return res.result(void 0, "文章作者不能为空哦~", false, 400)
     const findUser = await User.findOne({
       where: { account: author },
       attributes: ["id"],
@@ -68,6 +70,6 @@ router.post("/", async (req, res, next) => {
       res.result(err, "增加文章失败~", false, 400)
     )
   }
-  return res.result({ id: result.id }, "增加文章成功~")
+  return res.result(void 0, "增加文章成功~")
 })
 export default router
