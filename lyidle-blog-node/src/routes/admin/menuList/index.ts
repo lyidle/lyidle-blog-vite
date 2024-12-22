@@ -1,8 +1,8 @@
 import express from "express"
-// 引入模拟数据
-import menu from "@/mock/menulist"
+// 引入 /admin/menuList
+import getMenuList from "./get"
+import setMenuList from "./set"
 const router = express.Router()
-router.get("/", (req, res) => {
-  return res.result(menu, "获取菜单成功~")
-})
+router.use(getMenuList)
+router.use(setMenuList)
 export default router

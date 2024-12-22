@@ -46,7 +46,7 @@ function processFile(filePath, baseDirs) {
         if (err) {
           console.error(`无法写入文件: ${filePath}`, err)
         } else {
-          console.log(`已处理文件: ${filePath}`)
+          // console.log(`已处理文件: ${filePath}`)
         }
       })
     }
@@ -57,7 +57,7 @@ function processFile(filePath, baseDirs) {
 function traverseDirectory(dir, baseDirs) {
   fs.readdir(dir, { withFileTypes: true }, (err, files) => {
     if (err) {
-      console.error(`无法读取目录: ${dir}`, err)
+      // console.error(`无法读取目录: ${dir}`, err)
       return
     }
 
