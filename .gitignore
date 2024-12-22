@@ -155,4 +155,4 @@ dist-ssr
 *.sw?
 
 config.json
-test.json
+test.*
