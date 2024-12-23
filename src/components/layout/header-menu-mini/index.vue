@@ -6,7 +6,7 @@
           <router-link :to="item.children ? '' : item.to" v-if="item.to">
             <div class="title" @click="toggle(item.id)">
               <i :class="item.icon"></i>
-              {{ item.title }}
+              {{ item.name }}
               <div
                 v-if="item.children"
                 class="i-ic:baseline-plus w-1em h-1em right"
@@ -82,13 +82,14 @@ const {
   subtitleColorHover,
 } = props.style
 const userStore = useUserStore()
-// interface subStroreType {
-//   id: string | number
-//   flag: boolean
-//   height: string
-// }
+interface subStroreType {
+  flag: boolean
+  height: string
+  element: HTMLDivElement
+  toggle: HTMLDivElement
+}
 // 记录值去重
-let subStore = new Map()
+let subStore: Map<string, subStroreType> = new Map()
 const menu = ref()
 const toggle = (id: number | string) => {
   const result = userStore.menuList.find((item) => {
@@ -97,16 +98,18 @@ const toggle = (id: number | string) => {
   // 不存在则是一级菜单直接退出
   const menu = result?.children
   if (!menu) return
-  const { height, flag, element, toggle } = subStore.get(`${id}`)
+  const { height, flag, element, toggle } = subStore.get(
+    `${id}`
+  ) as subStroreType
   if (flag) {
     element.style.height = height + "px"
-    toggle.classList.remove(icon?.plus)
-    toggle.classList.add(icon?.minus)
+    toggle.classList.remove(props.style.icon?.plus as string)
+    toggle.classList.add(props.style.icon?.minus as string)
     subStore.set(`${id}`, { height, flag: false, element, toggle })
   } else {
-    element.style.height = 0
-    toggle.classList.remove(icon?.minus)
-    toggle.classList.add(icon?.plus)
+    element.style.height = "0"
+    toggle.classList.remove(props.style.icon?.minus as string)
+    toggle.classList.add(props.style.icon?.plus as string)
     subStore.set(`${id}`, { height, flag: true, element, toggle })
   }
 }

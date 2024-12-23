@@ -8,7 +8,7 @@ router.post("/", async (req, res, next) => {
     content,
     author,
     category,
-    tip,
+    tags,
     carousel,
     desc,
     poster,
@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
     content,
     author,
     category,
-    tip,
+    tags,
     carousel: Number(carousel),
     desc,
     poster,
@@ -28,13 +28,13 @@ router.post("/", async (req, res, next) => {
   let result
   try {
     console.log(!author)
-    if (!author) return res.result(void 0, "文章作者不能为空哦~", false, 400)
+    if (!author) return res.result(void 0, "文章作者不能为空哦~", false)
     const findUser = await User.findOne({
       where: { account: author },
       attributes: ["id"],
     })
     if (findUser == null) {
-      return res.result(void 0, "当前作者不存在~", false, 400)
+      return res.result(void 0, "当前作者不存在~", false)
     }
     const userId = findUser.id
     data.userId = userId
@@ -48,7 +48,7 @@ router.post("/", async (req, res, next) => {
     if (!findUserInfo) {
       await UserInfo.create({
         articleCounts: 1,
-        tipArrays: [...new Set(tip)],
+        tipArrays: [...new Set(tags)],
         categoryArrays: [category],
         userId: userId,
         totalWords: Number(length),
@@ -60,14 +60,14 @@ router.post("/", async (req, res, next) => {
         findUserInfo.dataValues
       await findUserInfo.update({
         articleCounts: articleCounts + 1,
-        tipArrays: [...new Set([...tip, ...tipArrays])],
+        tipArrays: [...new Set([...tags, ...tipArrays])],
         categoryArrays: [...new Set([category, ...categoryArrays])],
         totalWords: Number(length) + Number(totalWords),
       })
     }
   } catch (err) {
     return res.validateAuth(err, next, () =>
-      res.result(err, "增加文章失败~", false, 400)
+      res.result(err, "增加文章失败~", false)
     )
   }
   return res.result(void 0, "增加文章成功~")

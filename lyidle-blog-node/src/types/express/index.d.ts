@@ -14,6 +14,7 @@ declare global {
         iat?: Date
         exp?: Date
       }
+      token: Set
     }
     interface Response {
       result: (

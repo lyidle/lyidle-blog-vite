@@ -34,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
               throw new Error(msg)
             }
           },
+          async isUnique(value) {
+            const findOne = await sequelize.models.User.findOne({
+              where: { account: value },
+            })
+            if (findOne) {
+              throw new Error("用户已存在")
+            }
+          },
         },
       },
       pwd: {
@@ -55,6 +63,14 @@ module.exports = (sequelize, DataTypes) => {
             const { reg, msg } = emailReg
             if (!reg.test(value)) {
               throw new Error(msg)
+            }
+          },
+          async isUnique(value) {
+            const findOne = await sequelize.models.email.findOne({
+              where: { email: value },
+            })
+            if (findOne) {
+              throw new Error("邮箱已存在~")
             }
           },
         },
@@ -88,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      token: DataTypes.STRING(500),
       deleteAt: DataTypes.DATE,
     },
     {

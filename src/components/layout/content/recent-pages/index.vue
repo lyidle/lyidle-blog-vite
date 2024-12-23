@@ -8,7 +8,7 @@
       <div class="item" v-for="item in 4">
         <router-link to="">
           <div class="poster">
-            <img src="@/assets/images/base-bg-light.png" alt="" />
+            <img class="bg=var(--default-img)" alt="" />
             <div class="mask"></div>
           </div>
         </router-link>
@@ -24,10 +24,18 @@
       </div>
     </template>
   </layout-content-aside-card>
+  <button @click="handler"></button>
+  {{ test }}--{{ test2 }}
 </template>
 
 <script setup lang="ts" name="WebInfo">
-//
+import { useMenuListStore } from "@/store/admin"
+const { test, test2 } = storeToRefs(useMenuListStore())
+const handler = () => {
+  test.value++
+  test2.value++
+  test2.value++
+}
 </script>
 
 <style scoped lang="scss">

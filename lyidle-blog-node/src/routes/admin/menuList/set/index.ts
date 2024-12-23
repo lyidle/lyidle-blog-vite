@@ -26,7 +26,7 @@ const extractBannerImg = (data: any, result: any) => {
   } else return result
 }
 // 设置菜单 增加和修改一体
-router.post("/", async (req, res, next) => {
+router.put("/", async (req, res, next) => {
   const data = req.body
   if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
   try {

@@ -111,4 +111,6 @@ moment.locale("zh-cn", {
     doy: 4, // The week that contains Jan 4th is the first week of the year.
   },
 })
-export default moment
+export default (date: Date, format: string = "YYYY-MM-DD") => {
+  return moment(date).format(format)
+}

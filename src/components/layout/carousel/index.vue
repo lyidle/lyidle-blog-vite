@@ -1,22 +1,26 @@
 <template>
   <div class="contain">
     <carousel :data="props.data" :autoplay :direction>
-      <template #body="{ item }">
+      <template #body="{ item }: { item: Datum }">
         <div class="data-item">
           <div class="poster">
-            <router-link :to="item.to">
+            <router-link :to="`/doc/${item.category}/${item.id}`">
               <img :src="item.poster" alt="" v-if="item.poster" />
-              <img src="@/assets/images/base-bg-light.png" alt="" v-else />
+              <img alt="" v-else class="bg=var(--default-img)" />
               <div class="mask"></div>
             </router-link>
           </div>
           <div class="content">
-            <div class="date text">{{ item?.updatedAt }}</div>
+            <div class="date text">
+              {{ moment(item.updatedAt) }}
+            </div>
             <div class="title line-clamp-1">
-              <router-link :to="item.to">{{ item?.title }}</router-link>
+              <router-link :to="`/doc/${item.category}/${item.id}`">
+                {{ item.title }}
+              </router-link>
             </div>
             <div class="description text line-clamp-3">
-              {{ item?.desc }}
+              {{ item.desc }}
             </div>
           </div>
         </div>
@@ -36,10 +40,16 @@
 
 <script setup lang="ts" name="MyCarousel">
 import { useSettingStore } from "@/store/setting"
-import { carouselItemType } from "@/api/article/type"
+import moment from "@/utils/moment"
+// 引入类型
+import { Datum } from "@/api/article/types/getCarousel"
 const { cardBoxShadow } = storeToRefs(useSettingStore())
 const props = withDefaults(
-  defineProps<{ data: any; autoplay?: boolean; direction: "left" | "top" }>(),
+  defineProps<{
+    data: Datum[]
+    autoplay?: boolean
+    direction: "left" | "top"
+  }>(),
   {
     autoplay: false,
     direction: "left",

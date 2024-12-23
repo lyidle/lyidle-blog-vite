@@ -6,9 +6,11 @@ router.use((req, res, next) => {
     data: object,
     message: string,
     status: boolean = true,
-    resultCode = 200
+    resultCode?: number
   ) => {
-    res.status(resultCode).send({
+    // 有最后一位 就以最后传入的状态码为准
+    // 否则判断 status 来决定状态码
+    res.status(resultCode ? resultCode : !status ? 400 : 200).send({
       status,
       data,
       message,

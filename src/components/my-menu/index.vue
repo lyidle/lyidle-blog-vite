@@ -1,6 +1,6 @@
 <template>
   <ul class="custom-menu" v-if="props.data" :style="{ left }">
-    <li class="title" ref="title"><span></span></li>
+    <li class="title" ref="title" v-if="props.data.length"><span></span></li>
     <template v-for="item in props.data" :key="item.id">
       <my-menu-item :style="props.style">
         <slot name="body" :item="item">
@@ -44,9 +44,9 @@ const { bg, color } = props.style
 const title = ref()
 nextTick(() => {
   // 顶部小三角
-  if (props.triangle) {
+  if (props.triangle && title.value) {
     title.value.style.display = "flex"
-  } else {
+  } else if (title.value) {
     title.value.style.display = "none"
   }
 })

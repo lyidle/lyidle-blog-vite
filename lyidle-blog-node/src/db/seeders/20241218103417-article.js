@@ -28,7 +28,7 @@ module.exports = {
         content,
         author: curAuthor,
         category: category[Math.floor(Math.random() * category.length)],
-        tip: JSON.stringify(tips),
+        tags: JSON.stringify(tips),
         userId: Number(curAuthor.replace("test", "")),
         carousel: [0, 1][Math.floor(Math.random() * 2)],
         desc: `文章的描述内容文章的描述内容文章的描述内容文章的描述内容${i}`,
@@ -38,13 +38,11 @@ module.exports = {
       }
       articles.push(article)
       userInfo.push({
-        articleCounts: 1,
-        tipArrays: JSON.stringify([...new Set(tips)]),
-        categoryArrays: JSON.stringify([article.category]),
+        pages: 1,
+        tags: JSON.stringify([...new Set(tips)]),
+        categories: JSON.stringify([article.category]),
         userId: article.userId,
         totalWords: `${content.length}`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       })
     }
     await queryInterface.bulkInsert("Articles", articles, {})

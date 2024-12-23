@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.MenuList.belongsTo(models.Menu)
+      MenuList.belongsTo(models.Menu, { foreignKey: "MenuId", as: "children" }) // 指定别名 'children'
     }
   }
   MenuList.init(
@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: false,
       modelName: "MenuList",
     }
   )

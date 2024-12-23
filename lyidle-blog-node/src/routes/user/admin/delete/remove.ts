@@ -19,7 +19,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   const commend: any = {
     attributes: ["email", "id"],
   }
-  if (!(id || account)) return res.result(void 0, "没有找到用户哦~", false, 400)
+  if (!(id || account)) return res.result(void 0, "没有找到用户哦~", false)
   // 按照account删除
   if (account)
     commend.where = {

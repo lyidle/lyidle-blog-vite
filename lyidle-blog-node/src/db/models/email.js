@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
       regCode: DataTypes.INTEGER,
       forgetCode: DataTypes.INTEGER,
       expiresAt: DataTypes.DATE,
-      deleteAt: DataTypes.DATE,
     },
     {
       sequelize,

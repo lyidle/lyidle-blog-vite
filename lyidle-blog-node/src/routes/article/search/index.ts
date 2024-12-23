@@ -4,11 +4,11 @@ const router = express.Router()
 // 导入模型
 const { Article } = require("@/db/models")
 const search = async (req: any, res: any, exact?: boolean) => {
-  const { id, author, title, desc, category, tip } = req.query
+  const { id, author, title, desc, category, tags } = req.query
   const commend: any = {
-    attributes: ["id", "author", "title", "desc", "category", "tip"],
+    attributes: ["id", "author", "title", "desc", "category", "tags"],
   }
-  if (!(id || author || title || desc || category || tip))
+  if (!(id || author || title || desc || category || tags))
     return res.result(
       void 0,
       "请至少传入author、title、desc、category、tip中的一个参数~",
@@ -16,8 +16,8 @@ const search = async (req: any, res: any, exact?: boolean) => {
       400
     )
   // 按照标签查询
-  if (tip) {
-    commend.where = literal(`JSON_CONTAINS(tip, '"${tip}"')`)
+  if (tags) {
+    commend.where = literal(`JSON_CONTAINS(tags, '"${tags}"')`)
   }
   // 按照种类查询
   if (category)
@@ -64,7 +64,7 @@ const search = async (req: any, res: any, exact?: boolean) => {
   // 查询用户的所有文章
   const result = await Article.findAll(commend)
   if (JSON.stringify(result) === "[]")
-    return res.result(void 0, "查询用户信息失败~", false, 400)
+    return res.result(void 0, "查询用户信息失败~", false)
   return res.result(result, "查询用户信息成功~")
 }
 // 查询文章 模糊

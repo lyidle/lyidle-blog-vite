@@ -1,5 +1,7 @@
 // 暗夜模式
 .dark:root {
+  // 默认图片
+  --default-img: url("@/assets/images/base-bg-dark.png");
   // 内容区域背景颜色 没有背景固定时
   --body-bg: #2a3943;
   // 鼠标样式

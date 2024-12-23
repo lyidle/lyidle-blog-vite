@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="content-info">
-        <div class="title line-clamp-2">
+        <div class="title">
           <slot name="title"></slot>
         </div>
         <div class="meta-contain">
@@ -29,24 +29,29 @@
           </div>
           <div class="info-meta">
             <div class="item">
+              <i class="i-tabler:clover-filled font-size-14px mr-2px" />
               <router-link :to="category.to">
                 <div class="item">
-                  <i class="i-tabler:clover-filled font-size-14px mr-2px" />
-                  <span class="max-w-110px line-clamp-1">
+                  <span class="max-w-110px truncate">
                     {{ category.content }}
                   </span>
                 </div>
               </router-link>
             </div>
             <div class="item">
-              <router-link :to="label.to">
-                <div class="item">
-                  <i class="i-mynaui:label-solid font-size-14px mr-2px" />
-                  <span class="max-w-110px line-clamp-1">
-                    {{ label.content }}
-                  </span>
-                </div>
-              </router-link>
+              <div class="item max-w-110px truncate" style="display: block">
+                <i
+                  class="i-mynaui:label-solid font-size-14px mr-2px translate-y-3px"
+                />
+                <template v-for="(item, index) in label" :key="item">
+                  <router-link :to="`/tags/${item}`">
+                    <span>{{ item }}</span>
+                    <span v-if="index !== label.length - 1" class="m-x-2px"
+                      >•</span
+                    >
+                  </router-link>
+                </template>
+              </div>
             </div>
           </div>
         </div>
@@ -56,11 +61,12 @@
 </template>
 
 <script setup lang="ts" name="ContentCard">
+import type { Article } from "@/api/article/types/getArticle"
 interface dataType {
   to: string
   content: string
 }
-defineProps<{ category: dataType; label: dataType }>()
+defineProps<{ category: dataType; label: Article["tags"] }>()
 </script>
 
 <style scoped lang="scss">
@@ -134,10 +140,8 @@ $meta-gap: 5px;
     .title {
       font-size: 1.1875rem;
       font-weight: 600;
-      text-align: center;
       margin-top: $title-m-t;
       margin-bottom: $title-m-b;
-      padding: 0 20px;
       overflow: hidden;
     }
     // 源信息

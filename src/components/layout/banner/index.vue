@@ -11,7 +11,7 @@
       ref="bannerInstance"
     >
       <div class="detail">
-        <div class="title text">Welcome to LyidleのBlog</div>
+        <div class="title text">{{ welcome }}</div>
         <div class="subtitle text">
           {{ sentence?.content }}--{{ sentence?.author }}
         </div>
@@ -25,7 +25,8 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 引入短诗接口
-import { getSentence } from "@/api/sentence"
+import { getPoetry } from "@/api/admin"
+const welcome = import.meta.env.VITE_INITIAL_WELCOME
 withDefaults(
   defineProps<{
     img?: string
@@ -43,7 +44,7 @@ let { bannerHeight, bannerImg, bannerIsFixed } = storeToRefs(useSettingStore())
 const sentence = ref()
 const bannerInstance = ref()
 nextTick(async () => {
-  const { data } = await getSentence()
+  const data = await getPoetry()
   sentence.value = data
 })
 </script>

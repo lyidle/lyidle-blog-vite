@@ -1,4 +1,5 @@
-const { Article } = require("@/db/models")
+// 引入查找文章的函数
+import findArticleFn from "@/routes/article/admin/find"
 const ms = require("ms")
 // 软删除文章的时间
 const delete_article_expire = ms(process.env.delete_article_expire)
@@ -9,18 +10,11 @@ const deleted = async (Article: any) => {
 }
 // 删除函数
 const remove = async (req: any, res: any, bin: boolean = false) => {
-  const { id } = req.body
-  const commend: any = {}
-  if (!id) return res.result(void 0, "没有找到文章哦~", false, 400)
-  // 按照id删除
-  if (id)
-    commend.where = {
-      id: id,
-    }
-  // 查找是否有文章 以及得到邮箱
-  const findArticle = await Article.findOne(commend)
-  // 没有找到文章
-  if (!findArticle) return res.result(void 0, "没有找到文章哦~", false, 404)
+  const findArticles = await findArticleFn(req, res)
+  // 没找到返回
+  if (!findArticles?.findArticle) return
+  // 找到提取
+  const { id, findArticle } = findArticles
   if (bin) {
     const data = { deleteAt: new Date() + delete_article_expire }
     await findArticle.update(data, { where: { id } })

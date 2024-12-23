@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      articleCounts: {
+      pages: {
         type: Sequelize.INTEGER,
       },
-      tipArrays: {
+      tags: {
         type: Sequelize.JSON,
       },
-      categoryArrays: {
+      categories: {
         type: Sequelize.JSON,
       },
       userId: {
@@ -28,14 +28,6 @@ module.exports = {
       },
       totalWords: {
         type: Sequelize.INTEGER,
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
       },
     })
   },

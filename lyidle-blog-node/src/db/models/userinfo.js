@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   UserInfo.init(
     {
-      articleCounts: {
+      pages: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "文章总数不能为空哦~" },
         },
       },
-      tipArrays: {
+      tags: {
         type: DataTypes.JSON,
         allowNull: false,
         validate: {
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      categoryArrays: {
+      categories: {
         type: DataTypes.JSON,
         allowNull: false,
         validate: {
@@ -63,10 +63,10 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "用户id不能为空哦~" },
         },
       },
-      deleteAt: DataTypes.DATE,
     },
     {
       sequelize,
+      timestamps: false,
       modelName: "UserInfo",
     }
   )

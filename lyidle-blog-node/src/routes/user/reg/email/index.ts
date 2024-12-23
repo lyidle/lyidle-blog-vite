@@ -173,7 +173,7 @@ router.post("/email", async (req, res, next) => {
     return res.result(data, "发送邮箱验证码成功~")
   } catch (err: any) {
     return res.validateAuth(err, next, () =>
-      res.result(void 0, "发送邮件失败~", false, 400)
+      res.result(void 0, "发送邮件失败~", false)
     )
   }
 })

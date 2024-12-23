@@ -41,6 +41,9 @@ importers:
       ip:
         specifier: ^2.0.1
         version: 2.0.1
+      ip2region:
+        specifier: ^2.3.0
+        version: 2.3.0(@types/node@22.10.2)
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -623,6 +626,11 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  ip2region@2.3.0:
+    resolution: {integrity: sha512-zV5Xsadzrx9Ej6heoyhbXMsfGWWQ3C6bAIYStrHhw9kzLpGpVNlnAyRBxxPgxA1GNqr1Ti7oUxcWsMWNN3jZBg==}
+    peerDependencies:
+      '@types/node': '*'
 
   ip@2.0.1:
     resolution: {integrity: sha512-lJUL9imLTNi1ZfXT+DU6rBBdbiKGBuay9B6xGSPVjUeQwaH1RIGqef8RZkUtHioLmSNpPR5M4HVKJGm1j8FWVQ==}
@@ -1845,6 +1853,10 @@ snapshots:
       wrappy: 1.0.2
 
   inherits@2.0.4: {}
+
+  ip2region@2.3.0(@types/node@22.10.2):
+    dependencies:
+      '@types/node': 22.10.2
 
   ip@2.0.1: {}
 

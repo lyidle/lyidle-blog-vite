@@ -1,6 +1,4 @@
 import express from "express"
-// 引入moment
-import moment from "@/utils/moment"
 const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
@@ -23,23 +21,11 @@ router.get("/", async (req, res) => {
       "createdAt",
       "updatedAt",
       "category",
-      "tip",
+      "tags",
     ],
     limit: pageSize,
     offset,
   })
-  // 整理参数
-  const pagesData = rows.map((item: any) => ({
-    id: item.id,
-    poster: item.poster,
-    title: item.title,
-    desc: item.desc,
-    createdAt: moment(item.createdAt, "YYYY-MM-DD"),
-    updatedAt: moment(item.updatedAt, "YYYY-MM-DD"),
-    category: item.category,
-    tip: item.tip,
-    to: `/doc/${item.category}/${item.id}`,
-  }))
   return res.result(
     {
       pagination: {
@@ -47,7 +33,7 @@ router.get("/", async (req, res) => {
         currentPage,
         pageSize,
       },
-      article: pagesData,
+      article: rows,
     },
     "查询文章成功~"
   )

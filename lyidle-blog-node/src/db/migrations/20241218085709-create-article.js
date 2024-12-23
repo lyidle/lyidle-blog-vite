@@ -21,7 +21,7 @@ module.exports = {
       category: {
         type: Sequelize.STRING,
       },
-      tip: {
+      tags: {
         type: Sequelize.JSON,
         allowNull: false,
       },

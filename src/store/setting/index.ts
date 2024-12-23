@@ -2,7 +2,7 @@ import isDarkFn from "@/utils/isDark"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 // 引入类型
-import { menuListType } from "@/api/user/type"
+import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
 // 引入鼠标点击和移动特效
 import { clickEffectFn, moveEffectFn } from "@/utils/effect"
 export const useSettingStore = defineStore(
@@ -64,9 +64,9 @@ export const useSettingStore = defineStore(
     const banner = computed(() => {
       // 包含当前路径退出
       if (path && (path as string).includes(route.path)) return
-      let result: menuListType
-      const recursive = (item: menuListType[]) => {
-        const multi = (item: any) => {
+      let result: MenuListDatum
+      const recursive = (item: MenuListDatum[]) => {
+        const multi = (item: MenuListDatum[]) => {
           for (let i = 0; i < item.length; i++) {
             const obj = item[i]
             if (obj.to?.includes(route.path)) {
@@ -89,11 +89,11 @@ export const useSettingStore = defineStore(
       if (isDark.value) {
         return banner.value?.bannerImg?.dark
           ? banner.value?.bannerImg?.dark
-          : "var(--banner-img)"
+          : "var(--default-img)"
       } else {
         return banner.value?.bannerImg?.light
           ? banner.value?.bannerImg?.light
-          : "var(--banner-img)"
+          : "var(--default-img)"
       }
     })
     // #endregion banner

@@ -1,13 +1,14 @@
 import axios from "axios"
-import { get_local } from "@/utils/localStorage"
+import { useUserStore } from "@/store/user"
 // 第一步：利用axios对象的create方法，去创建axios实例（其他的配置：基础路径、超时的时间）
 const request = axios.create({
   timeout: 5000,
 })
 // 第二步：req实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
+  const { userInfo } = storeToRefs(useUserStore())
   //config配置对象，headers属性请求头，经常给服务器端携带公共参数
-  const token = JSON.parse(get_local("User")).userInfo.token || undefined
+  const token = userInfo.value.token || undefined
   // 存在token 就携带token发起信息
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -48,6 +49,7 @@ request.interceptors.response.use(
         message = "服务器出现问题"
         break
     }
+    console.log(error)
     // 错误提示信息
     // ElNotification.error(message)
     return Promise.reject(new Error(message || "网络出现问题"))

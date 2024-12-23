@@ -1,7 +1,7 @@
 <template>
   <div class="header" ref="header">
     <div class="logo text">
-      <router-link to="/">{{ title }}</router-link>
+      <router-link to="/">{{ LOGO }}</router-link>
     </div>
     <layout-topnav :menuList></layout-topnav>
     <layout-topnav-mini></layout-topnav-mini>
@@ -15,7 +15,7 @@ import { useUserStore } from "@/store/user"
 // 把pinia的数据动态化
 const { headerColor, headerBg } = storeToRefs(useSettingStore())
 const { menuList } = storeToRefs(useUserStore())
-const title = import.meta.env.VITE_INITIAL_TITLE
+const LOGO = import.meta.env.VITE_INITIAL_LOGO
 // 导航吸附函数
 const _sticky = () => {
   if (document.documentElement.scrollTop > 0) {

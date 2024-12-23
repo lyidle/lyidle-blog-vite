@@ -6,6 +6,7 @@ router.get("/", async (req, res) => {
     include: [
       {
         model: MenuList, // 包括 Article 模型
+        as: "children",
         attributes: {
           exclude: ["createdAt", "updatedAt", "MenuId"],
         },

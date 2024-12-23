@@ -2,16 +2,13 @@
   <ul class="topnav">
     <template v-for="menuList in menuList" :key="menuList.id">
       <li class="custom-menu-trigger">
-        <router-link
-          :to="(menuList.to as string) || (menuList.redirect as string)"
-          v-if="menuList.to || menuList.redirect"
-        >
+        <router-link :to="menuList.to" v-if="menuList.to">
           <i :class="menuList.icon" class="w-1em h-1em"></i>
-          {{ menuList.title }}
+          {{ menuList.name }}
         </router-link>
         <a v-else>
           <i :class="menuList.icon" class="w-1em h-1em"></i>
-          {{ menuList.title }}
+          {{ menuList.name }}
         </a>
         <my-menu
           :data="menuList.children"
@@ -21,7 +18,7 @@
           :left="menuList?.layout?.left ? menuList?.layout?.left : '-15px'"
           :style
         >
-          <template #body="{ item }">
+          <template #body="{ item }: { item: MenuListDatum }">
             <router-link
               :to="item.to"
               class="topnav-menu-item"
@@ -62,7 +59,7 @@
         top="30px"
         left="-15px"
       >
-        <template #body="{ item }">
+        <template #body="{ item }: { item: MenuListDatum }">
           <router-link
             :to="item.to"
             class="topnav-menu-item"
@@ -84,7 +81,7 @@
 
 <script setup lang="ts">
 // 引入类型
-import { menuListType } from "@/api/user/type"
+import { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
 const style = {
   bg: "var(--header-menu-bg)",
   bgHover: "var(--header-menu-bg-hover)",
@@ -92,7 +89,7 @@ const style = {
   colorHover: "var(--header-menu-color-hover)",
 }
 // 接收props
-defineProps<{ menuList: menuListType[] }>()
+defineProps<{ menuList: MenuListDatum[] }>()
 </script>
 
 <style scoped lang="scss">

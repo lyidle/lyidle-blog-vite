@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Menu.hasMany(models.MenuList)
+      Menu.hasMany(models.MenuList, { as: "children" }) // 指定别名 'children'
     }
   }
   Menu.init(
@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: false,
       modelName: "Menu",
     }
   )

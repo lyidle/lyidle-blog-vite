@@ -1,5 +1,5 @@
 import express from "express"
-import axios from "axios"
+import IP2Region, { IP2RegionResult } from "ip2region"
 // 导入 ip 包
 const ip = require("ip")
 // 引入模型
@@ -8,14 +8,22 @@ const router = express.Router()
 router.get("/", async (req, res) => {
   // 获取ip
   const userIp = ip.address()
-  const ipRegion = {}
+  type ipRegionType =
+    | Omit<IP2RegionResult, "isp"> & {
+        isp?: string
+        userIp?: string
+      }
+
+  let ipRegion: ipRegionType | null = null
   // 是本地的跳过
   if (!ip.isPrivate(userIp)) {
-    const { data } = await axios.get(
-      `https://www.cz88.net/api/cz88/ip/geo?ip=${userIp}`
-    )
-    const { country, province, city, districts } = data.data
-    Object.assign(ipRegion, { country, province, city, districts, userIp })
+    const query = new IP2Region()
+    const data = query.search("120.24.78.68") as IP2RegionResult
+    if (data) {
+      const { country, province, city } = data
+      ipRegion = { country, province, city }
+    }
+    ;(ipRegion as ipRegionType).userIp = userIp
   }
   const findAnnounce = await Setting.findOne({
     where: { name: "announce" },
@@ -25,7 +33,7 @@ router.get("/", async (req, res) => {
   return res.result(
     {
       announce,
-      region: JSON.stringify(ipRegion) === "{}" ? null : { ...ipRegion },
+      region: ipRegion === null ? null : { ...ipRegion },
     },
     "获取公告成功~"
   )

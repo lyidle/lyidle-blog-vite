@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "文章分类不能为空哦~" },
         },
       },
-      tip: {
+      tags: {
         type: DataTypes.JSON,
         allowNull: false,
         validate: {

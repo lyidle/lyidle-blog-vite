@@ -12,29 +12,38 @@
     </template>
     <template #content-card>
       <layout-content-card
-        v-for="item in carouselItem"
+        v-for="item in article"
         class="content-card"
-        :category="{ to: item.category.to, content: item.category.content }"
-        :label="{ to: item.tags.to, content: item.tags.content }"
+        :category="{
+          to: `/categories/${item.category}/${item.id}`,
+          content: item.category,
+        }"
+        :label="item.tags"
         :key="item.id"
       >
         <template #poster>
-          <router-link :to="item.to">
+          <router-link :to="`/categories/${item.category}`">
             <img :src="item.poster" alt="" class="poster" v-if="item.poster" />
             <img
-              src="/src/assets/images/base-bg-light.png"
+              class="poster bg=var(--default-img) scale-[1.009]"
               alt=""
-              class="poster"
               v-else
             />
           </router-link>
         </template>
-        <template #description>{{ item.description }}</template>
+        <template #description>{{ item.desc }}</template>
         <template #title>
-          <router-link :to="item.to">{{ item.title }}</router-link>
+          <router-link
+            :to="`/categories/${item.category}/${item.id}`"
+            class="line-clamp-2 p-x-20px text-center"
+          >
+            <span>
+              {{ item.title }}
+            </span>
+          </router-link>
         </template>
-        <template #publish>{{ item.publish }}</template>
-        <template #update>{{ item.update }}</template>
+        <template #publish>{{ moment(item.createdAt) }}</template>
+        <template #update>{{ moment(item.updatedAt) }}</template>
       </layout-content-card>
     </template>
   </layout-content>
@@ -42,110 +51,21 @@
 
 <script setup lang="ts" name="Home">
 // 引入api
-import { reqCarousel, reqArticle } from "@/api/article"
-import { carouselType } from "@/api/article/type"
-let result = new URL("@/assets/images/base-bg-light.png", import.meta.url).href
-const carouselItem: carouselType = [
-  {
-    id: 1,
-    publish: "2022-12-31",
-    to: "/doc/category-uuid",
-    category: {
-      to: "/category/categoryName",
-      content: "分类",
-    },
-    tags: {
-      to: "/tags/tagName",
-      content: ["标签1", "标签2"],
-    },
-    update: "2023-11-31",
-    title: "Markdown语法与外挂标签写法汇总",
-    poster: result,
-    description:
-      "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
-  },
-  {
-    id: 2,
-    publish: "2022-12-31",
-    to: "/doc/category-uuid",
-    category: {
-      to: "/category/categoryName",
-      content: "分类",
-    },
-    tags: {
-      to: "/tags/tagName",
-      content: ["标签1"],
-    },
-    update: "2023-11-31",
-    title: "Markdown语法与外挂标签写法汇总",
-    poster: result,
-    description:
-      "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
-  },
-  {
-    id: 3,
-    publish: "2022-12-31",
-    to: "/doc/category-uuid",
-    category: {
-      to: "/category/categoryName",
-      content: "分类",
-    },
-    tags: {
-      to: "/tags/tagName",
-      content: ["标签1"],
-    },
-    update: "2023-11-31",
-    title: "Markdown语法与外挂标签写法汇总",
-    poster: result,
-    description:
-      "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
-  },
-  {
-    id: 4,
-    publish: "2022-12-31",
-    to: "/doc/category-uuid",
-    category: {
-      to: "/category/categoryName",
-      content: "分类",
-    },
-    tags: {
-      to: "/tags/tagName",
-      content: ["标签1"],
-    },
-    update: "2023-11-31",
-    title: "Markdown语法与外挂标签写法汇总",
-    poster: result,
-    description:
-      "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
-  },
-  {
-    id: 5,
-    publish: "2022-12-31",
-    to: "/doc/category-uuid",
-    category: {
-      to: "/category/categoryName",
-      content: "分类",
-    },
-    tags: {
-      to: "/tags/tagName",
-      content: ["标签1"],
-    },
-    update: "2023-11-31",
-    title: "Markdown语法与外挂标签写法汇总",
-    poster: result,
-    description:
-      "本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询",
-  },
-]
+import { getCarousel, getArticle } from "@/api/article"
+// 引入类型
+import { Article } from "@/api/article/types/getArticle"
+import { GetCarousel } from "@/api/article/types/getCarousel"
+import moment from "@/utils/moment"
 // 存储焦点轮播图数据
-const carousel = ref()
+const carousel = ref<GetCarousel["data"]>()
 // 存储文章数据
-const article = ref()
+const article = ref<Article[]>()
 onBeforeMount(async () => {
   // 整理焦点轮播图
-  carousel.value = await reqCarousel()
-  const result = await reqArticle()
-  article.value = result.article
+  const Carousel = await getCarousel()
+  carousel.value = Carousel
+  const Article = await getArticle()
+  article.value = Article.article
 })
 </script>
 <style scoped lang="scss"></style>
