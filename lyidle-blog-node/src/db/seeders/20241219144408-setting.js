@@ -16,7 +16,7 @@ module.exports = {
         },
         {
           name: "createWebAt",
-          content: `建站时间`,
+          content: `${new Date()}`,
         },
       ],
       {}
