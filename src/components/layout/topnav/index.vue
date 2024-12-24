@@ -89,7 +89,7 @@ const style = {
   colorHover: "var(--header-menu-color-hover)",
 }
 // 接收props
-defineProps<{ menuList: MenuListDatum[] }>()
+defineProps<{ menuList?: MenuListDatum[] }>()
 </script>
 
 <style scoped lang="scss">

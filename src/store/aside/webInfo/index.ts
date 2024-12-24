@@ -63,6 +63,8 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
       }
     if (words) webTotalWords.value = numberTransform(words)
     else webTotalWords.value = ""
+    // 都没有弹出失败信息
+    if (!isDataShow.value) ElMessage.error("获取公告失败~")
   }
 
   return {

@@ -98,13 +98,9 @@ const login = ref()
 // 处理登录
 const handlerLogin = async () => {
   await loginForm.value.validateField()
-  try {
-    const result = await reqLogin(loginData)
-    userToken.value = result.token
-    ElMessage.success("登录成功~")
-  } catch (error) {
-    ElMessage.error(error as string)
-  }
+  const result = await reqLogin(loginData)
+  userToken.value = result.token
+  ElMessage.success("登录成功~")
 }
 // 前往注册的切换动画
 const toReg = () => {

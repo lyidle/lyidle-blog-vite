@@ -182,33 +182,25 @@ const regRules = reactive({
 // 处理注册
 const handlerReg = async () => {
   await regForm.value.validate()
-  try {
-    await reqReg(regData)
-    ElMessage.success("注册成功~")
-    toLogin()
-  } catch (error: any) {
-    ElMessage.error(error.message)
-  }
+  await reqReg(regData)
+  ElMessage.success("注册成功~")
+  toLogin()
 }
 // 发送验证码按钮
 const handlerCode = async () => {
   await regForm.value.clearValidate("code")
   await regForm.value.validateField("email")
-  try {
-    await reqRegEmail({ email: regData.email })
-    ElMessage.success("验证码发送成功，有效时间5分钟~")
-    codeIsActive.value = false
-    const tim = setInterval(() => {
-      --code.value
-      if (code.value < 0) {
-        code.value = initCode
-        codeIsActive.value = true
-        clearInterval(tim)
-      }
-    }, 1000)
-  } catch (error: any) {
-    ElMessage.error(error.message)
-  }
+  await reqRegEmail({ email: regData.email })
+  ElMessage.success("验证码发送成功，有效时间5分钟~")
+  codeIsActive.value = false
+  const tim = setInterval(() => {
+    --code.value
+    if (code.value < 0) {
+      code.value = initCode
+      codeIsActive.value = true
+      clearInterval(tim)
+    }
+  }, 1000)
 }
 defineExpose({ reg })
 </script>

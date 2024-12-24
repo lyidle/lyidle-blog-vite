@@ -51,9 +51,8 @@ request.interceptors.response.use(
     }
     // 错误提示信息 服务器有返回信息
     if (error?.response?.data.message) {
-      console.log(error?.response?.data.message)
       ElMessage.error(error?.response?.data.message)
-      return
+      return Promise.resolve(null)
     }
     // 否则 则使用
     return Promise.reject(

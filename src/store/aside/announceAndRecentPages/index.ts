@@ -12,11 +12,6 @@ export const useAnnounceAndRecentPagesStore = defineStore(
     const reqAnnounce = async () => {
       const result = await getAnnounce()
       announce.value = result.announce
-      try {
-        await reqAnnounce()
-      } catch (error) {
-        ElMessage.error(error as string)
-      }
     }
 
     // 最新文章
@@ -24,12 +19,8 @@ export const useAnnounceAndRecentPagesStore = defineStore(
     const pages = ref<GetRecentPages["data"] | null>()
     // 发起请求
     const reqRecentPages = async () => {
-      try {
-        pages.value = await getRecentPages()
-      } catch (error) {
-        pages.value = null
-        ElMessage.error(error as string)
-      }
+      pages.value = await getRecentPages()
+      pages.value = null
     }
 
     return { reqAnnounce, announce, pages, reqRecentPages }
