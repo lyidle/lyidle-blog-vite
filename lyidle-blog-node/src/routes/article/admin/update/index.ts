@@ -2,8 +2,10 @@ import express from "express"
 import { FindOptions } from "sequelize"
 // 引入查找函数
 import findArticleFn from "@/routes/article/admin/find"
+// 引入 jwt
+import { jwt } from "@/middleware/auth"
 const router = express.Router()
-router.put("/", async (req, res, next) => {
+router.put("/", jwt, async (req, res, next) => {
   try {
     // 调用查找函数
     const findArticles = await findArticleFn(
@@ -11,7 +13,7 @@ router.put("/", async (req, res, next) => {
       res,
       ({ commend }: { commend: FindOptions }) => {
         commend.attributes = {
-          exclude: ["deleteAt", "updatedAt", "UserId", "userId"],
+          exclude: ["updatedAt", "UserId", "userId"],
         }
       }
     )
@@ -19,8 +21,17 @@ router.put("/", async (req, res, next) => {
     // 找到提取
     const { findArticle } = findArticles
     // 提取body 信息
-    const { title, content, category, tags, carousel, desc, poster, length } =
-      req.body
+    const {
+      title,
+      content,
+      category,
+      tags,
+      carousel,
+      desc,
+      poster,
+      length,
+      status,
+    } = req.body
     const result: any = {}
 
     // 检查并赋值字段
@@ -33,6 +44,7 @@ router.put("/", async (req, res, next) => {
       result.carousel = Array.isArray(carousel) ? carousel : [carousel] // 确保 carousel 是数组
     if (desc) result.desc = desc
     if (poster) result.poster = poster
+    result.status = status ?? findArticle.dataValues.status
     // 更新数据
     const returnData = await findArticle.update(result)
     res.result({ ...returnData.dataValues }, "修改文章成功~")

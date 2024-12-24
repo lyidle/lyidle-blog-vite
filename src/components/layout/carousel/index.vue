@@ -1,12 +1,21 @@
 <template>
   <div class="contain">
-    <carousel :data="props.data" :autoplay :direction>
+    <carousel v-bind="props">
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
           <div class="poster">
             <router-link :to="`/doc/${item.category}/${item.id}`">
-              <img :src="item.poster" alt="" v-if="item.poster" />
-              <img alt="" v-else class="bg=var(--default-img)" />
+              <img
+                :style="{
+                  background: 'no-repeat center',
+                  backgroundSize: 'cover',
+                  backgroundImage: item.poster
+                    ? item.poster
+                    : 'var(--default-img)',
+                }"
+                class="scale-[1.01]"
+                alt=""
+              />
               <div class="mask"></div>
             </router-link>
           </div>
@@ -49,10 +58,14 @@ const props = withDefaults(
     data: Datum[]
     autoplay?: boolean
     direction: "left" | "top"
+    dur?: number
+    gap?: number
   }>(),
   {
     autoplay: false,
     direction: "left",
+    dur: 1000,
+    gap: 1500,
   }
 )
 </script>
@@ -96,7 +109,6 @@ $mini-dur: 0.5s;
 .contain {
   --content-pd-r: 40px;
   --content-pd-l: 30px;
-  width: 100%;
   height: $carousel-height;
   overflow: hidden;
   border-radius: $carousel-radius;
@@ -112,6 +124,11 @@ $mini-dur: 0.5s;
     flex-shrink: 0;
     background-color: $carousel-bg;
     transition: height $mini-dur;
+    &:hover {
+      img {
+        transform: scale($pages-poster-scale);
+      }
+    }
     .content {
       .title {
         a {
@@ -131,6 +148,7 @@ $mini-dur: 0.5s;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform var(--primary-during);
       }
       .mask {
         position: absolute;

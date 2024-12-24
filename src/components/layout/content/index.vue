@@ -58,78 +58,80 @@ $aside-pd: 20px;
   padding-top: $item-gap;
   transition: width var(--header-bg-during);
   display: flex;
-  justify-content: center;
   position: relative;
   z-index: 2;
+  /* 左边内容区 */
   > .pages-content {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: $item-gap;
-  }
-  /* 左边内容区 */
-  .contain {
-    width: 100%;
-    display: flex;
-    // 内容区域卡片的间距
-    gap: $item-gap;
-    flex-wrap: wrap;
-    position: relative;
-    justify-content: center;
-    // 610px
-    @media screen and (max-width: $scr-mi) {
+    overflow: hidden;
+    // 内容区域卡片
+    .contain {
+      width: 100%;
       display: flex;
+      // 内容区域卡片的间距
+      gap: $item-gap;
+      flex-wrap: wrap;
+      position: relative;
       justify-content: center;
-    }
-    ::v-deep(.title) {
-      a {
-        @include pages-links-hover;
-      }
-    }
-    // 内容区的卡片
-    ::v-deep(.content) {
-      flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
-      transition: transform var(--primary-during),
-        flex var(--content-card-flex-during);
-      box-shadow: v-bind(cardBoxShadow);
-      // 自适应1300px
-      @media screen and (max-width: $scr-md) {
-        flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
-      }
-      // 992px
-      @media screen and (max-width: $scr-sm) {
-        flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
-      }
-      // 768px
-      @media screen and (max-width: $scr-xs) {
-        flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
-      }
+      // 610px
       @media screen and (max-width: $scr-mi) {
-        flex: unset;
-        width: 100%;
+        display: flex;
+        justify-content: center;
       }
-      // 悬浮效果
-      &:hover {
-        transform: translateY($translate-y);
-        .poster {
-          transform: scale($recent-poster-scale);
+      ::v-deep(.title) {
+        a {
+          @include pages-links-hover;
         }
       }
-      &:last-child {
-        margin-right: auto;
-      }
-      // 海报
-      .poster {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--primary-during) transform;
+      // 内容区的卡片
+      ::v-deep(.content) {
+        flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
+        transition: transform var(--primary-during),
+          flex var(--content-card-flex-during);
+        box-shadow: v-bind(cardBoxShadow);
+        // 自适应1300px
+        @media screen and (max-width: $scr-md) {
+          flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
+        }
+        // 992px
+        @media screen and (max-width: $scr-sm) {
+          flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+        }
+        // 768px
+        @media screen and (max-width: $scr-xs) {
+          flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+        }
+        @media screen and (max-width: $scr-mi) {
+          flex: unset;
+          width: 100%;
+        }
+        // 悬浮效果
+        &:hover {
+          transform: translateY($translate-y);
+          .poster {
+            transform: scale($pages-poster-scale);
+          }
+        }
+        &:last-child {
+          margin-right: auto;
+        }
+        // 海报
+        .poster {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: var(--primary-during) transform;
+        }
       }
     }
   }
   /* 右边侧边栏 */
   .content-aside {
     width: 350px;
+    overflow: hidden;
     transition: width var(--primary-during);
     display: flex;
     flex-direction: column;

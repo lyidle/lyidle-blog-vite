@@ -6,6 +6,8 @@
         :data="carousel"
         autoplay
         direction="top"
+        :dur="1000"
+        :gap="1500"
         v-if="carousel"
       >
       </layout-carousel>
@@ -15,19 +17,25 @@
         v-for="item in article"
         class="content-card"
         :category="{
-          to: `/categories/${item.category}/${item.id}`,
+          to: `/categories/${item.category}`,
           content: item.category,
         }"
         :label="item.tags"
         :key="item.id"
+        v-if="article"
       >
         <template #poster>
-          <router-link :to="`/categories/${item.category}`">
-            <img :src="item.poster" alt="" class="poster" v-if="item.poster" />
+          <router-link :to="`/categories/${item.category}/${item.id}`">
             <img
-              class="poster bg=var(--default-img) scale-[1.009]"
+              class="poster scale-[1.01]"
+              :style="{
+                background: 'no-repeat center',
+                backgroundSize: 'cover',
+                backgroundImage: item.poster
+                  ? item.poster
+                  : 'var(--default-img)',
+              }"
               alt=""
-              v-else
             />
           </router-link>
         </template>
@@ -55,17 +63,33 @@ import { getCarousel, getArticle } from "@/api/article"
 // 引入类型
 import { Article } from "@/api/article/types/getArticle"
 import { GetCarousel } from "@/api/article/types/getCarousel"
+// 引入moment格式化时间
 import moment from "@/utils/moment"
+
 // 存储焦点轮播图数据
 const carousel = ref<GetCarousel["data"]>()
 // 存储文章数据
 const article = ref<Article[]>()
-onBeforeMount(async () => {
-  // 整理焦点轮播图
+
+// 获取轮播
+const reqCarousel = async () => {
   const Carousel = await getCarousel()
   carousel.value = Carousel
+}
+// 获取文章
+const reqArticles = async () => {
   const Article = await getArticle()
-  article.value = Article.article
+  article.value = Article?.article
+}
+
+// 初始化数据
+onMounted(async () => {
+  try {
+    await reqCarousel()
+    await reqArticles()
+  } catch (error) {
+    ElMessage.error(error as string)
+  }
 })
 </script>
 <style scoped lang="scss"></style>

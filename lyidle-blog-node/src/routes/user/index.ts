@@ -1,6 +1,6 @@
 import express from "express"
 // 加密访问
-import jwt from "@/middleware/auth"
+import { jwt } from "@/middleware/auth"
 // 引入 api/user/reg
 import reg from "@/routes/user/reg"
 // 引入 api/user/login

@@ -3,39 +3,48 @@ const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
 // 分页获取文章
-router.get("/", async (req, res) => {
-  const { query } = req
-  /**
-   * @pagesize 每页显示条目个数
-   * @currentPage 当前页
-   */
-  const currentPage = Math.abs(Number(query.currentPage)) || 1
-  const pageSize = Math.abs(Number(query.pageSize)) || 10
-  const offset = (currentPage - 1) * pageSize
-  const { count, rows } = await Article.findAndCountAll({
-    attributes: [
-      "id",
-      "poster",
-      "desc",
-      "title",
-      "createdAt",
-      "updatedAt",
-      "category",
-      "tags",
-    ],
-    limit: pageSize,
-    offset,
-  })
-  return res.result(
-    {
-      pagination: {
-        total: count,
-        currentPage,
-        pageSize,
+router.get("/", async (req, res, next) => {
+  try {
+    const { query } = req
+    /**
+     * @pagesize 每页显示条目个数
+     * @currentPage 当前页
+     */
+    const currentPage = Math.abs(Number(query.currentPage)) || 1
+    const pageSize = Math.abs(Number(query.pageSize)) || 10
+    const offset = (currentPage - 1) * pageSize
+    const { count, rows } = await Article.findAndCountAll({
+      attributes: [
+        "id",
+        "poster",
+        "desc",
+        "title",
+        "createdAt",
+        "updatedAt",
+        "category",
+        "tags",
+      ],
+      limit: pageSize,
+      offset,
+      where: { status: 0 },
+    })
+    if (JSON.stringify(rows) === "[]")
+      return res.result(void 0, "查询文章失败~", false)
+    return res.result(
+      {
+        pagination: {
+          total: count,
+          currentPage,
+          pageSize,
+        },
+        article: rows,
       },
-      article: rows,
-    },
-    "查询文章成功~"
-  )
+      "查询文章成功~"
+    )
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询文章失败~", false)
+    )
+  }
 })
 export default router

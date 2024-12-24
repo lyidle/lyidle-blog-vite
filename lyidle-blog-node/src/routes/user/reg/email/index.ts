@@ -168,7 +168,7 @@ router.post("/email", async (req, res, next) => {
     // 使用Map存储 键为email 值为定时器
     map.set(email, timer)
     // 发送邮件
-    if (JSON.parse(process.env.SEND_EMAIL ? process.env.SEND_EMAIL : ""))
+    if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
       await sendMail(email, "验证码", genHtml)
     return res.result(data, "发送邮箱验证码成功~")
   } catch (err: any) {

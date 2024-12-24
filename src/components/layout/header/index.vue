@@ -3,23 +3,28 @@
     <div class="logo text">
       <router-link to="/">{{ LOGO }}</router-link>
     </div>
-    <layout-topnav :menuList></layout-topnav>
+    <layout-topnav :menuList="userMenuList"></layout-topnav>
     <layout-topnav-mini></layout-topnav-mini>
   </div>
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
 // 引入store
-import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"
-// 把pinia的数据动态化
-const { headerColor, headerBg } = storeToRefs(useSettingStore())
-const { menuList } = storeToRefs(useUserStore())
+
+const { userMenuList } = storeToRefs(useUserStore())
+
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
+
+// 导航的颜色
+// 头部字体颜色
+const headerColor = ref<string>("white")
+// 头部背景颜色
+const headerBg = ref<string>("transparent")
 // 导航吸附函数
 const _sticky = () => {
   if (document.documentElement.scrollTop > 0) {
-    // 有缓存退出 避免操作dom 引起消耗
+    // 有缓存退出
     if (
       headerBg.value === "var(--header-sticky-bg)" &&
       headerColor.value === "var(--header-sticky-color)"
@@ -28,7 +33,7 @@ const _sticky = () => {
     headerBg.value = "var(--header-sticky-bg)"
     headerColor.value = "var(--header-sticky-color)"
   } else {
-    // 有缓存退出 避免操作dom 引起消耗
+    // 有缓存退出
     if (
       headerBg.value === "var(--header-bg)" &&
       headerColor.value === "var(--header-color)"

@@ -10,7 +10,7 @@ import webInfo from "@/routes/webInfo"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
-  res.send("13134")
+  res.send("Here is the api~")
 })
 // 挂载路由
 router.use("/admin", admin)

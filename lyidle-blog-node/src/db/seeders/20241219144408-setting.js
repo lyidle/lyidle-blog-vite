@@ -15,7 +15,7 @@ module.exports = {
           content: "©2022-2023",
         },
         {
-          name: "createWebAt",
+          name: "createWedbAt",
           content: `${new Date()}`,
         },
       ],

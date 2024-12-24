@@ -1,16 +1,17 @@
 <template>
+  <!-- 阻止冒泡 防止多个菜单干扰 -->
   <div ref="container" @click.stop @contextmenu.stop>
     <slot></slot>
     <teleport to="body">
-      <div class="menu-context" ref="menu">
+      <div class="menu-context" ref="menu" @contextmenu.capture.prevent.stop>
         <div class="title">
-          <div class="icon" @click="handlerBack">
+          <div class="icon" onclick="history.back()">
             <i class="i-lets-icons:arrow-left"></i>
           </div>
-          <div class="icon" @click="handlerForward">
+          <div class="icon" onclick="history.forward()">
             <i class="i-lets-icons:arrow-right"></i>
           </div>
-          <div class="icon" @click="handlerRefresh">
+          <div class="icon" onclick="location.reload()">
             <i class="i-tabler:refresh"></i>
           </div>
           <div class="icon" @click="scrollTop">
@@ -23,13 +24,13 @@
         <context-menu-item
           :content="bannerIsFixed ? '背景固定' : '背景悬浮'"
           :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
-          @click="setBannerFixed(!bannerIsFixed)"
+          @click="bannerIsFixed = !bannerIsFixed"
         >
         </context-menu-item>
         <context-menu-item
           :content="!isDark ? '暗夜模式' : '白天模式'"
           :icon="!isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
-          @click="handlerDark"
+          @click="isDark = !isDark"
         >
         </context-menu-item>
         <context-menu-item
@@ -39,13 +40,13 @@
               ? 'i-tdesign:fullscreen-exit'
               : 'i-tdesign:fullscreen-1'
           "
-          @click="FullScreenFn"
+          :onclick="screen?.fullScreenCb"
         >
         </context-menu-item>
         <context-menu-item
           :content="'打印页面'"
           :icon="'i-material-symbols-light:print'"
-          @click="handlerPrint"
+          onclick="window.print()"
         ></context-menu-item>
         <slot name="body"></slot>
       </div>
@@ -57,12 +58,14 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 const { isDark, bannerIsFixed, isFullScreen } = storeToRefs(useSettingStore())
-const { setDark, setBannerFixed } = useSettingStore()
 // 引入 utils
 import useFullScreen from "@/hooks/fullscreen"
 const menu = ref()
 // 菜单绑定的元素
 const container = ref()
+// 菜单的高宽
+const menuHeigh = ref()
+const menuWidth = ref()
 // 打开菜单
 const open = (e: MouseEvent) => {
   menu.value.style.height = "0"
@@ -83,23 +86,8 @@ const open = (e: MouseEvent) => {
   menu.value.style.left = `${x}px`
 }
 // 关闭菜单
-const close = () => {
+const close = (e: MouseEvent) => {
   if (menu.value) menu.value.style.height = "0"
-}
-const menuHeigh = ref()
-const menuWidth = ref()
-// 功能
-// 后退
-const handlerBack = () => {
-  history.back()
-}
-// 前进
-const handlerForward = () => {
-  history.forward()
-}
-// 刷新
-const handlerRefresh = () => {
-  location.reload()
 }
 // 回到顶部
 const scrollTop = () => {
@@ -115,21 +103,10 @@ const scrollBottom = () => {
     behavior: "smooth",
   })
 }
-// 暗夜切换
-const handlerDark = () => {
-  isDark.value = !isDark.value
-  // 切换暗夜时需要手动设置 html 标签
-  setDark(isDark.value)
-}
+
 // 全屏
 const screen = useFullScreen()
-const FullScreenFn = () => {
-  screen.fullScreenCb()
-}
-// 打印
-const handlerPrint = () => {
-  window.print()
-}
+
 onMounted(() => {
   // 记录高度
   menuHeigh.value = menu.value.offsetHeight + "px"
@@ -141,9 +118,9 @@ onMounted(() => {
   window.addEventListener("contextmenu", close, true)
 })
 // onUnmounted(() => {
-// console.log(container.value)//null
-// 限制 vite好像自动移除了
-// container.value.removeEventListener("contextmenu", open)
+//   console.log(container.value) //null
+//   // 限制 vite好像自动移除了
+//   container.value.removeEventListener("contextmenu", open)
 // })
 </script>
 

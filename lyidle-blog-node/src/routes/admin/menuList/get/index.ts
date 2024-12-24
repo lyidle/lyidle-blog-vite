@@ -1,21 +1,29 @@
 import express from "express"
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()
-router.get("/", async (req, res) => {
-  const result = await Menu.findAll({
-    include: [
-      {
-        model: MenuList, // 包括 Article 模型
-        as: "children",
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "MenuId"],
+router.get("/", async (req, res, next) => {
+  try {
+    const result = await Menu.findAll({
+      include: [
+        {
+          model: MenuList, // 包括 Article 模型
+          as: "children",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "MenuId"],
+          },
         },
+      ],
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
       },
-    ],
-    attributes: {
-      exclude: ["createdAt", "updatedAt"],
-    },
-  })
-  return res.result(result, "获取菜单成功~")
+    })
+    if (JSON.stringify(result) === "[]")
+      return res.result(void 0, "获取菜单失败~", false)
+    return res.result(result, "获取菜单成功~")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "获取菜单失败~", false)
+    )
+  }
 })
 export default router

@@ -64,9 +64,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 0,
         validate: {
-          isRange(value) {
-            if (!(value == "0" || value == 1))
-              throw new Error("carousel必须是0或1")
+          isTiny(value) {
+            if (value !== 0 && value !== 1)
+              throw new Error("carousel只能为0和1")
           },
         },
       },
@@ -100,7 +100,16 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "用户id不能为空哦~" },
         },
       },
-      deleteAt: DataTypes.DATE,
+      status: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          isTiny(value) {
+            if (value !== 0 && value !== 1) throw new Error("status只能为0和1")
+          },
+        },
+      },
     },
     {
       sequelize,

@@ -46,7 +46,7 @@ module.exports = {
         content,
         author: curAuthor,
         category: category[Math.floor(Math.random() * category.length)],
-        tags: JSON.stringify(tags[Math.floor(Math.random() * tags.length)]),
+        tags: JSON.stringify([tags[Math.floor(Math.random() * tags.length)]]),
         userId: Number(curAuthor.replace("test", "")),
         carousel: [0, 1][Math.floor(Math.random() * 2)],
         desc: desc(i),
@@ -57,8 +57,8 @@ module.exports = {
       articles.push(article)
       userInfo.push({
         pages: 1,
-        tags: JSON.stringify([article.tags]),
-        categories: JSON.stringify([article.category]),
+        tags: article.tags,
+        categories: JSON.stringify(article.category),
         userId: article.userId,
         totalWords: `${content.length}`,
       })

@@ -36,19 +36,23 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   if (!findUser) return res.result(void 0, "没有找到用户哦~", false, 404)
   const { email, id: userId } = findUser.dataValues
   if (bin) {
-    const data = { deleteAt: new Date() + delete_user_expire }
+    const data = { status: 1 }
     await findUser.update(data, { where: { id: userId } })
     // 到时间自动删除
     let tim: NodeJS.Timeout | null = setTimeout(async () => {
-      // 彻底删除
-      await deleted(findUser, userId, email)
+      // 查询是否真的移除用户
+      const result = await User.findByPk(userId)
+      if (result.dataValues.status) {
+        // 彻底删除
+        await deleted(findUser, userId, email)
+      }
       clearTimeout(tim as NodeJS.Timeout)
       tim = null
     }, delete_user_expire)
-    return res.result(void 0, "软删除用户成功~")
+    return res.result(void 0, "用户成功移动到回收站~")
   }
   // 彻底删除
   await deleted(findUser, userId, email)
-  return res.result(void 0, "彻底删除用户成功~")
+  return res.result(void 0, "删除用户成功~")
 }
 export default remove

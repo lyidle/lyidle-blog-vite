@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   ) => {
     // 有最后一位 就以最后传入的状态码为准
     // 否则判断 status 来决定状态码
-    res.status(resultCode ? resultCode : !status ? 400 : 200).send({
+    res.status(resultCode ? resultCode : !status ? 404 : 200).send({
       status,
       data,
       message,

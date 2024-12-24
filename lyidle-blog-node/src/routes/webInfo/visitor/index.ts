@@ -24,6 +24,6 @@ export default async (req: Request, next: NextFunction) => {
   try {
     return await Visitor.create({ name: visitPrint })
   } catch (err: any) {
-    if (err.name !== "SequelizeValidationError") next(err)
+    next(err)
   }
 }

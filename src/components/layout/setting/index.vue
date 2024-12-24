@@ -21,7 +21,6 @@
               :active-icon="dark"
               :inactive-icon="light"
               size="small"
-              @change="handlerDark"
               class="settingSwitch"
             />
           </el-form-item>
@@ -36,7 +35,6 @@
               :inactive-icon="unfixed"
               size="small"
               class="settingSwitch"
-              @change="setBannerFixed"
             />
           </el-form-item>
           <el-form-item
@@ -50,7 +48,6 @@
               :inactive-icon="unclick"
               size="small"
               class="settingSwitch"
-              @change="setClickEffect"
             />
           </el-form-item>
           <el-form-item
@@ -64,7 +61,6 @@
               :inactive-icon="unmove"
               size="small"
               class="settingSwitch"
-              @change="setEffectMove"
             />
           </el-form-item>
           <el-form-item
@@ -89,8 +85,6 @@
 <script setup lang="ts" name="Setting">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-// 引入utils
-import isDarkFn from "@/utils/isDark"
 // 引入图标
 import dark from "@/components/icon/switch/dark.vue"
 import light from "@/components/icon/switch/light.vue"
@@ -106,14 +100,6 @@ import unaside from "@/components/icon/switch/unaside.vue"
 const { isDark, bannerIsFixed, clickEffect, moveEffect, isAside } = storeToRefs(
   useSettingStore()
 )
-// 初始化仓库中用到的函数 不需要使用 storeToRefs
-const { setDark, setClickEffect, setEffectMove, setBannerFixed } =
-  useSettingStore()
-// v-model 暗夜切换
-// 暗夜切换图标
-const handlerDark = (newV: boolean) => {
-  setDark(newV)
-}
 // 定义与接收props
 withDefaults(
   defineProps<{
@@ -132,10 +118,6 @@ withDefaults(
     width: "180px",
   }
 )
-onMounted(() => {
-  // 初始化暗夜模式
-  isDarkFn(isDark.value)
-})
 </script>
 
 <style scoped lang="scss">

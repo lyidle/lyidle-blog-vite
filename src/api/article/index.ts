@@ -1,9 +1,9 @@
 import request from "@/utils/request"
 // 引入类型
-import { GetArticle } from "@/api/article/types/getArticle"
-import { GetCarousel } from "@/api/article/types/getCarousel"
-import { GetRecentPages } from "@/api/article/types/getRecentPages"
-import { GetRecentPagesQuery } from "@/api/article/types/getRecentPagesQuery"
+import type { GetArticle } from "@/api/article/types/getArticle"
+import type { GetCarousel } from "@/api/article/types/getCarousel"
+import type { GetRecentPages } from "@/api/article/types/getRecentPages"
+import type { GetRecentPagesQuery } from "@/api/article/types/getRecentPagesQuery"
 // 统一管理 api
 enum API {
   getCarousel = "/article/carousel",

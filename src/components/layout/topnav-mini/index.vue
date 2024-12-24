@@ -25,7 +25,7 @@
       <template #body>
         <div class="top-avater-container">
           <!-- 头像 -->
-          <img :src="userInfo.avater" alt="" class="avater" />
+          <img :src="userAvater" alt="" class="avater" />
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--second-color)"></Ribbon>
           <layout-header-menu-mini :style></layout-header-menu-mini>
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 // 引入仓库
 import { useUserStore } from "@/store/user"
-const { userInfo } = storeToRefs(useUserStore())
+const { userAvater } = storeToRefs(useUserStore())
 const drawer = ref(false)
 // 展示drawer
 const isShow = () => {

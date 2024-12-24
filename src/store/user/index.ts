@@ -5,22 +5,37 @@ import { aes_encrypt, aes_decrypt } from "@/utils/crypto-aes"
 export const useUserStore = defineStore(
   "User",
   () => {
-    // 菜单
-    const menuList = ref<GetMenuList["data"]>([])
-    // 挂载仓库后直接发起请求
-    const userMenuList = async () => {
+    // 公开的菜单数据
+    const userMenuList = ref<GetMenuList["data"]>([])
+
+    // 获取 公开的菜单数据
+    const reqUserMenuList = async () => {
       const result = await getMenuList()
-      menuList.value = result
+      userMenuList.value = result
     }
-    // 用户信息
-    const userInfo = reactive({
-      userName: "Fut🥝",
-      avater:
-        "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
-      signer: "Future is now 🍭🍭🍭",
-      token: "",
-    })
-    return { menuList, userMenuList, userInfo }
+
+    // 用户名
+    const userUserName = ref("Fut🥝")
+
+    // 用户头像
+    const userAvater = ref(
+      "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+    )
+
+    // 个性签名
+    const userSigner = ref("Future is now 🍭🍭🍭")
+
+    // 用户令牌
+    const userToken = ref("")
+
+    return {
+      reqUserMenuList,
+      userMenuList,
+      userUserName,
+      userAvater,
+      userSigner,
+      userToken,
+    }
   },
   // 对用户信息加密 有token
   {
@@ -31,7 +46,7 @@ export const useUserStore = defineStore(
       },
       key: "User",
       storage: localStorage,
-      pick: ["userInfo"],
+      pick: ["userUserName", "userAvater", "userSigner", "userToken"],
     },
   }
 )

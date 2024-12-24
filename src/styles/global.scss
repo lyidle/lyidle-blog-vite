@@ -23,9 +23,11 @@ li {
 html {
   cursor: var(--cursor-default);
   font-family: $global-font;
-  background-color: var(--body-bg);
   // 禁止勾选 ，只有文本能勾选
   user-select: none;
+}
+body {
+  background-color: var(--body-bg);
 }
 a {
   cursor: var(--cursor-pointer);

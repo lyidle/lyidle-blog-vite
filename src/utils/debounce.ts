@@ -1,17 +1,26 @@
-//防抖实现
 export default function debounce<T extends (...args: any[]) => any>(
-  fn: Function,
+  fn: T,
   delay: number
-): (...args: Parameters<T>) => void {
-  let timer: any = null
-  return function (this: any) {
-    const _this = this
-    const args = arguments
-    // 有就去除
+): ((...args: Parameters<T>) => void) & { cancel: () => void } {
+  let timer: ReturnType<typeof setTimeout> | null = null
+
+  // 防抖函数
+  const debounced = function (this: any, ...args: Parameters<T>) {
     if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
-      fn.apply(_this, args)
+      fn.apply(this, args)
     }, delay)
-    return undefined
+  }
+
+  // 取消防抖方法
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer)
+      timer = null
+    }
+  }
+
+  return debounced as ((...args: Parameters<T>) => void) & {
+    cancel: () => void
   }
 }

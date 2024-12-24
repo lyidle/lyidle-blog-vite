@@ -1,17 +1,28 @@
 export default function throttle<T extends (...args: any[]) => any>(
-  fn: Function,
+  fn: T,
   delay: number
-): (...args: Parameters<T>) => void {
-  let timer: number | null = null
-  return function (this: any) {
+): ((...args: Parameters<T>) => void) & { cancel: () => void } {
+  let timer: ReturnType<typeof setTimeout> | null = null
+
+  // 节流函数
+  const throttled = function (this: any, ...args: Parameters<T>) {
     if (!timer) {
-      const _this = this
-      const args = arguments
-      fn.apply(_this, args)
+      fn.apply(this, args)
       timer = setTimeout(() => {
         timer = null
-      }, delay) as unknown as number | null
+      }, delay)
     }
-    return undefined
+  }
+
+  // 取消节流方法
+  throttled.cancel = () => {
+    if (timer) {
+      clearTimeout(timer)
+      timer = null
+    }
+  }
+
+  return throttled as ((...args: Parameters<T>) => void) & {
+    cancel: () => void
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <layout-content-aside-card>
+  <layout-content-aside-card v-if="announce">
     <template #title>
       <i class="i-icon-park-twotone:announcement"></i>
       <span>公告</span>
@@ -11,11 +11,12 @@
 </template>
 
 <script setup lang="ts" name="WebNotification">
-import { getAnnounce } from "@/api/admin"
-const announce = ref<string>("")
-onBeforeMount(async () => {
-  const result = await getAnnounce()
-  announce.value = result.announce
+import { useAnnounceAndRecentPagesStore } from "@/store/aside/announceAndRecentPages"
+const { announce } = storeToRefs(useAnnounceAndRecentPagesStore())
+const { reqAnnounce } = useAnnounceAndRecentPagesStore()
+// 发起请求
+onMounted(async () => {
+  await reqAnnounce
 })
 </script>
 

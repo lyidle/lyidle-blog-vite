@@ -1,8 +1,8 @@
 <template>
   <div class="contain menu">
     <ul class="header-menu" ref="menu">
-      <template v-for="item in userStore.menuList" :key="item.id">
-        <li>
+      <template v-for="item in userStore.userMenuList" :key="item.id">
+        <li v-if="item.id">
           <router-link :to="item.children ? '' : item.to" v-if="item.to">
             <div class="title" @click="toggle(item.id)">
               <i :class="item.icon"></i>
@@ -92,7 +92,7 @@ interface subStroreType {
 let subStore: Map<string, subStroreType> = new Map()
 const menu = ref()
 const toggle = (id: number | string) => {
-  const result = userStore.menuList.find((item) => {
+  const result = userStore.userMenuList.find((item) => {
     if (item.id === id) return true
   })
   // 不存在则是一级菜单直接退出

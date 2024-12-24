@@ -1,41 +1,51 @@
 <template>
-  <layout-content-aside-card class="aside-container">
+  <layout-content-aside-card class="aside-container" v-if="pages">
     <template #title>
       <i class="i-mdi:recent"></i>
       <span>最新文章</span>
     </template>
     <template #body>
-      <div class="item" v-for="item in 4">
-        <router-link to="">
-          <div class="poster">
-            <img class="bg=var(--default-img)" alt="" />
-            <div class="mask"></div>
-          </div>
-        </router-link>
-        <div class="content">
-          <router-link to="">
-            <div class="title line-clamp-2">
-              Linux系统移植篇(三)——根 文件系统的构建 文件系统的构建
-              文件系统的构建 文件系统的构建
+      <div class="item" v-for="item in pages" :key="item.id">
+        <template v-if="item.id">
+          <router-link :to="`/${item.category}/${item.id}`">
+            <div class="poster">
+              <img
+                :style="{
+                  background: 'no-repeat center',
+                  backgroundSize: 'cover',
+                  backgroundImage: item.poster
+                    ? item.poster
+                    : 'var(--default-img)',
+                }"
+                class="scale-[1.01]"
+                alt=""
+              />
+              <div class="mask"></div>
             </div>
           </router-link>
-          <div class="date text">2023-04-01</div>
-        </div>
+          <div class="content">
+            <router-link :to="`/${item.category}/${item.id}`">
+              <div class="title line-clamp-2">
+                {{ item.title }}
+              </div>
+            </router-link>
+            <div class="date text">{{ moment(item.updatedAt) }}</div>
+          </div>
+        </template>
       </div>
     </template>
   </layout-content-aside-card>
-  <button @click="handler"></button>
-  {{ test }}--{{ test2 }}
 </template>
 
 <script setup lang="ts" name="WebInfo">
-import { useMenuListStore } from "@/store/admin"
-const { test, test2 } = storeToRefs(useMenuListStore())
-const handler = () => {
-  test.value++
-  test2.value++
-  test2.value++
-}
+import { useAnnounceAndRecentPagesStore } from "@/store/aside/announceAndRecentPages"
+import moment from "@/utils/moment"
+const { reqRecentPages } = useAnnounceAndRecentPagesStore()
+const { pages } = storeToRefs(useAnnounceAndRecentPagesStore())
+
+onMounted(async () => {
+  await reqRecentPages()
+})
 </script>
 
 <style scoped lang="scss">
@@ -77,7 +87,7 @@ $container-gap: $content-gap;
         }
       }
       &:hover .poster img {
-        transform: scale($recent-poster-scale);
+        transform: scale($pages-poster-scale);
       }
       .content {
         flex: 1 1 0;

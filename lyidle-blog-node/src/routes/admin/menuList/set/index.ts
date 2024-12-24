@@ -1,4 +1,9 @@
 import express from "express"
+// 引入jwt
+import { jwt } from "@/middleware/auth"
+// 引入管理权限判断
+import { admin } from "@/middleware/auth"
+// 引入模型
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()
 // 提取 layout
@@ -26,7 +31,7 @@ const extractBannerImg = (data: any, result: any) => {
   } else return result
 }
 // 设置菜单 增加和修改一体
-router.put("/", async (req, res, next) => {
+router.put("/", jwt, admin, async (req, res, next) => {
   const data = req.body
   if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
   try {
@@ -72,11 +77,11 @@ router.put("/", async (req, res, next) => {
         }
       }
     }
+    return res.result(void 0, "设置菜单成功~")
   } catch (error) {
     return res.validateAuth(error, next, () =>
       res.result(void 0, "设置菜单失败~")
     )
   }
-  return res.result(void 0, "设置菜单成功~")
 })
 export default router

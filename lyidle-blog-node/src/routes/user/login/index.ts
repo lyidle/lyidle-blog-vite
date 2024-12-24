@@ -26,7 +26,7 @@ router.get("/", async (req, res, next) => {
           email: account,
         },
       },
-      attributes: { exclude: ["createdAt", "updatedAt", "deleteAt", "token"] },
+      attributes: { exclude: ["createdAt", "updatedAt", "status", "token"] },
     })
     // 判断有无找到用户
     if (findUser == null) {
@@ -44,7 +44,7 @@ router.get("/", async (req, res, next) => {
     return res.result({ token }, "登录成功~")
   } catch (error) {
     res.validateAuth(error, next, () => {
-      res.result(error, "登录失败~", false)
+      res.result(void 0, "登录失败~", false)
     })
   }
 })

@@ -3,17 +3,16 @@
     <div
       class="banner"
       :style="{
-        height: bannerHeight,
+        height: banner?.bannerImg?.height,
         top: bannerIsFixed ? '0' : 'unset',
         zIndex: bannerIsFixed ? '1' : 'unset',
         position: bannerIsFixed ? 'fixed' : 'unset',
       }"
-      ref="bannerInstance"
     >
       <div class="detail">
         <div class="title text">{{ welcome }}</div>
         <div class="subtitle text">
-          {{ sentence?.content }}--{{ sentence?.author }}
+          {{ poetry?.content }}--{{ poetry?.author }}
         </div>
       </div>
     </div>
@@ -24,9 +23,14 @@
 <script setup lang="ts" name="Home">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
+import { useUserStore } from "@/store/user"
 // 引入短诗接口
 import { getPoetry } from "@/api/admin"
+// 引入类型
+import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
+// 欢迎词
 const welcome = import.meta.env.VITE_INITIAL_WELCOME
+// props
 withDefaults(
   defineProps<{
     img?: string
@@ -40,12 +44,51 @@ withDefaults(
   }
 )
 // 初始化仓库 暗夜模式自动切换图片等信息
-let { bannerHeight, bannerImg, bannerIsFixed } = storeToRefs(useSettingStore())
-const sentence = ref()
-const bannerInstance = ref()
-nextTick(async () => {
+const { isDark, bannerIsFixed } = storeToRefs(useSettingStore())
+
+// 路由菜单
+const { userMenuList } = storeToRefs(useUserStore())
+const route = useRoute()
+// 缓存当前路径
+let path: string | null = null
+const banner = computed(() => {
+  // 包含当前路径退出
+  if (path && (path as string).includes(route.path)) return
+  let result: MenuListDatum | null = null
+  const recursive = (item: MenuListDatum[]) => {
+    const multi = (item: MenuListDatum[]) => {
+      for (let i = 0; i < item?.length; i++) {
+        const obj = item[i]
+        if (obj.to?.includes(route.path)) {
+          result = obj
+          return
+        }
+        if (obj.children) {
+          return multi(obj.children)
+        }
+      }
+    }
+    multi(item)
+  }
+  if (userMenuList.value) recursive(userMenuList.value)
+  return result as MenuListDatum | null
+})
+
+// banner 图片
+const bannerImg = computed(() => {
+  const img = isDark.value
+    ? banner.value?.bannerImg?.dark
+    : banner.value?.bannerImg?.light
+  return img || "var(--default-img)"
+})
+
+// 短诗
+const poetry = ref()
+
+// 发起请求
+onMounted(async () => {
   const data = await getPoetry()
-  sentence.value = data
+  poetry.value = data
 })
 </script>
 

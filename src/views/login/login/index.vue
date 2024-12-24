@@ -53,7 +53,7 @@ import { reqLogin } from "@/api/user"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 // 导出对应数据
-const { userInfo } = storeToRefs(useUserStore())
+const { userToken } = storeToRefs(useUserStore())
 const props = defineProps(["reg"])
 // 登录的表单数据
 const loginData = reactive({
@@ -100,10 +100,10 @@ const handlerLogin = async () => {
   await loginForm.value.validateField()
   try {
     const result = await reqLogin(loginData)
-    userInfo.value.token = result.token
+    userToken.value = result.token
     ElMessage.success("登录成功~")
-  } catch (error: any) {
-    ElMessage.error(error.message)
+  } catch (error) {
+    ElMessage.error(error as string)
   }
 }
 // 前往注册的切换动画

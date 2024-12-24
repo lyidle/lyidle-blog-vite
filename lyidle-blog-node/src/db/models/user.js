@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             }
           },
           async isUnique(value) {
-            const findOne = await sequelize.models.email.findOne({
+            const findOne = await sequelize.models.User.findOne({
               where: { email: value },
             })
             if (findOne) {
@@ -105,7 +105,16 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       token: DataTypes.STRING(500),
-      deleteAt: DataTypes.DATE,
+      status: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          isTiny(value) {
+            if (value !== 0 && value !== 1) throw new Error("status只能为0和1")
+          },
+        },
+      },
     },
     {
       sequelize,

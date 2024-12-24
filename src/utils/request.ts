@@ -6,9 +6,9 @@ const request = axios.create({
 })
 // 第二步：req实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
-  const { userInfo } = storeToRefs(useUserStore())
+  const { userToken } = storeToRefs(useUserStore())
   //config配置对象，headers属性请求头，经常给服务器端携带公共参数
-  const token = userInfo.value.token || undefined
+  const token = userToken.value
   // 存在token 就携带token发起信息
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -34,25 +34,31 @@ request.interceptors.response.use(
     // 根据状态码返回信息
     switch (status) {
       case 400:
-        message = error.message
+        message = "请求有误哦~"
         break
       case 401:
-        message = "TOKEN过期"
+        message = "TOKEN过期哦~"
         break
       case 403:
-        message = "没有权限访问"
+        message = "没有权限访问哦~"
         break
       case 404:
-        message = "请求地址错误"
+        message = "请求地址错误哦~"
         break
       case 500:
-        message = "服务器出现问题"
+        message = "服务器出现问题哦~"
         break
     }
-    console.log(error)
-    // 错误提示信息
-    // ElNotification.error(message)
-    return Promise.reject(new Error(message || "网络出现问题"))
+    // 错误提示信息 服务器有返回信息
+    if (error?.response?.data.message) {
+      console.log(error?.response?.data.message)
+      ElMessage.error(error?.response?.data.message)
+      return
+    }
+    // 否则 则使用
+    return Promise.reject(
+      error?.response?.data.message || new Error(message || "网络出现问题")
+    )
   }
 )
 // 对外暴露

@@ -7,16 +7,16 @@
             <div class="avater">
               <router-link to="">
                 <img
-                  :src="userInfo.avater"
+                  :src="userAvater"
                   alt=""
                   class="w-100% h-100% object-cover"
                 />
               </router-link>
             </div>
             <div class="username font-size-1.5625rem text-center text">
-              {{ userInfo.userName }}
+              {{ userUserName }}
             </div>
-            <div class="signer text-center text">{{ userInfo.signer }}</div>
+            <div class="signer text-center text">{{ userSigner }}</div>
           </div>
           <div class="pages">
             <layout-link-pages></layout-link-pages>
@@ -73,7 +73,7 @@
 <script setup lang="ts" name="IntroduceSelf">
 // 引入仓库
 import { useUserStore } from "@/store/user"
-const { userInfo } = storeToRefs(useUserStore())
+const { userUserName, userAvater, userSigner } = storeToRefs(useUserStore())
 </script>
 
 <style scoped lang="scss">

@@ -2,7 +2,7 @@
  * Request
  */
 export interface GetCarousel {
-  data: Datum[]
+  data?: Datum[]
   message: string
   status: boolean
   [property: string]: any

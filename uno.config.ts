@@ -3,14 +3,14 @@ import presetWind from "@unocss/preset-wind"
 import { defineConfig } from "unocss"
 
 export default defineConfig({
-  rules: [
-    [
-      /^bg=(.*?)$/,
-      (match) => ({
-        background: `${match[1]} no-repeat center;background-size:cover;`,
-      }),
-    ],
-  ],
+  // rules: [
+  //   [
+  //     /^bg=(.*?)$/,
+  //     (match) => ({
+  //       background: `${match[1]} no-repeat center;background-size:cover;`,
+  //     }),
+  //   ],
+  // ],
   presets: [
     presetIcons({
       // extraProperties: {

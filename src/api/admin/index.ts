@@ -9,12 +9,14 @@ import type { SetAnnounce } from "@/api/admin/types/setAnnounce"
 import type { SetAnnounceBody } from "@/api/admin/types/setAnnounceBody"
 import type { SetMenuList } from "@/api/admin/types/setMenuList"
 import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
-import type { Data as PoetryDatum } from "@/api/admin/types/getPoetry"
+import type { GetPoetry } from "@/api/admin/types/getPoetry"
+import { GetWebInfo } from "@/api/admin/types/getWebInfo"
 // 统一管理 api
 enum API {
   menuList = "/admin/menuList",
   announce = "/admin/announce",
   poetry = "/admin/poetry",
+  webInfo = "/webinfo",
 }
 
 // 引入前缀
@@ -38,4 +40,8 @@ export const setAnnounce = (data: SetAnnounceBody) =>
 
 // 获取短诗
 export const getPoetry = () =>
-  request.get<any, PoetryDatum>(server + prefix + API.poetry)
+  request.get<any, GetPoetry["data"]>(server + prefix + API.poetry)
+
+// 获取小站资讯
+export const getWebInfo = () =>
+  request.get<any, GetWebInfo["data"]>(server + prefix + API.webInfo)

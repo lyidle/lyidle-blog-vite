@@ -61,11 +61,12 @@ const search = async (req: any, res: any, exact?: boolean) => {
       id,
     }
   }
+  commend.where.status = 0
   // 查询用户的所有文章
   const result = await Article.findAll(commend)
   if (JSON.stringify(result) === "[]")
-    return res.result(void 0, "查询用户信息失败~", false)
-  return res.result(result, "查询用户信息成功~")
+    return res.result(void 0, "查询文章失败~", false)
+  return res.result(result, "查询文章成功~")
 }
 // 查询文章 模糊
 router.get("/", async (req, res) => {
@@ -77,7 +78,13 @@ desc
 title
 author
 */
-router.get("/exact", async (req, res) => {
-  await search(req, res, true)
+router.get("/exact", async (req, res, next) => {
+  try {
+    await search(req, res, true)
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询文章失败~", false)
+    )
+  }
 })
 export default router

@@ -1,7 +1,7 @@
 <template>
   <ul class="topnav">
     <template v-for="menuList in menuList" :key="menuList.id">
-      <li class="custom-menu-trigger">
+      <li class="custom-menu-trigger" v-if="menuList.id">
         <router-link :to="menuList.to" v-if="menuList.to">
           <i :class="menuList.icon" class="w-1em h-1em"></i>
           {{ menuList.name }}

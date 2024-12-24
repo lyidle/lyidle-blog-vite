@@ -66,27 +66,38 @@
 import reqSetInterval from "@/utils/reqSetInterval"
 import throttle from "@/utils/throttle"
 const props = withDefaults(
-  defineProps<{ data: any; autoplay?: boolean; direction: "left" | "top" }>(),
+  defineProps<{
+    data: any
+    autoplay?: boolean
+    direction: "left" | "top"
+    dur?: number
+    gap?: number
+  }>(),
   {
     autoplay: false,
     direction: "left",
+    dur: 1000,
+    gap: 1500,
   }
 )
 const index = ref(0) //轮播的索引
-const dur = 1000 //过渡时间
-const transit = dur / 1000 + "s"
-const arrowDur = 0.5 //切换按钮的过渡时间
-const gap = 500 //自动轮播的间隔时间
+const dur = props.dur //过渡时间
+const transit = dur / 1000 + "s" //过渡事件
+const arrowDur = 0.5 //切换按钮 显示与隐藏的过渡时间
+const gap = props.gap //自动轮播的间隔时间
 const carousel = ref() //获取到轮播的容器
-const len = props.data.length
-// 创建映射关系
+const len = props.data.length //获取到有多少个轮播元素 没有克隆图的干扰
+// 创建方向位置的映射关系
 const map = {
   left: "row",
   top: "column",
 }
-let timer: any = null //自动轮播的定时器
+//自动轮播的定时器 使用自制的 requestAnimationFrame
+let timer: ReturnType<typeof reqSetInterval> | null = null
+
 // 移动的回调函数
 const move = (num: number, flag: boolean = true) => {
+  if (!carousel.value) return
   if (flag) {
     carousel.value.style.transition = `${props.direction} ${transit}`
     carousel.value.style[props.direction] = `${-num * 100}%`
@@ -95,6 +106,7 @@ const move = (num: number, flag: boolean = true) => {
     carousel.value.style[props.direction] = `${-num * 100}%`
   }
 }
+
 // 轮播的动画 回调 1 和 -1 控制方向 使用节流 来实现动画过渡中不能点击
 const rollPlay = throttle((add: -1 | 1 = 1) => {
   // 自增
@@ -106,31 +118,39 @@ const rollPlay = throttle((add: -1 | 1 = 1) => {
     // 重置索引
     index.value = 0
     // 等到达最后一张的动画播放完毕后
-    // 无动画拉回到第一张
-    const tim = setTimeout(() => {
+    let tim: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      // 没有动画的 到达到第一张
       move(index.value, false)
-      clearTimeout(tim)
+      if (tim) clearTimeout(tim)
+      tim = null
     }, dur)
   }
   // 第一张时  往左走 会变成是-1
   if (index.value === -1) {
-    // 瞬间移动到最后的克隆图
+    // 更新索引 为最后的一个元素 len数据没有克隆元素干扰
+    index.value = len
+    // 无动画的到达最后一张克隆元素
     move(len, false)
-    // 紧跟着移动到最后一张图
-    index.value = len - 1
-    const tim = setTimeout(() => {
-      move(index.value)
-      clearTimeout(tim)
+    // 到达应该要去的元素位置
+    let tim: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      move(--index.value)
+      if (tim) clearTimeout(tim)
+      tim = null
     }, 0)
   }
 }, dur)
+
+// num 点击的第几个按钮
 // 点击按钮的回调
 const btnMove = (num: number) => {
   index.value = num
+  // 移动到对应位置
   move(num)
 }
+
 // 切换按钮的组件实例
 const arrow = ref()
+
 // 自动轮播的回调
 const initAutoPlay = () => {
   // 判断是否自动轮播
@@ -140,66 +160,87 @@ const initAutoPlay = () => {
     rollPlay(1)
   }, gap)
   // 失焦 取消轮播
-  window.addEventListener("blur", unReqTimer)
+  window.addEventListener("blur", windowBlur)
   // 聚焦 轮播
-  window.addEventListener("focus", focusCb)
+  window.addEventListener("focus", windowFocus)
 }
-// 轮播 聚焦的回调
-const focusCb = () => {
-  // 开启的有定时器退出
-  if (timer?.flag) return
+
+// 浏览器 聚焦的回调
+const windowFocus = () => {
+  // 自动轮播
   initAutoPlay()
 }
-// 轮播 失焦的回调
-const unReqTimer = () => {
-  if (!props.autoplay || !timer?.flag) return
-  // 清除 定时器 requestAnimationFrame
-  timer?.close()
+
+// 浏览器 失焦的回调
+const windowBlur = () => {
+  // 轮播
+  timer?.cancel()
   timer = null
 }
-// 卸载轮播
+
+// 卸载轮播 函数
 const unAutoPlay = () => {
-  unReqTimer()
-  window.removeEventListener("blur", unReqTimer)
-  window.removeEventListener("focus", focusCb)
+  // 调用浏览器失去焦点的函数
+  windowBlur()
+  // 清除事件
+  window.removeEventListener("blur", windowBlur)
+  window.removeEventListener("focus", windowFocus)
 }
-// 鼠标移入回调
+
+// 鼠标移入 函数
 const enterCb = () => {
-  unReqTimer()
+  // 调用浏览器失去焦点的函数
+  windowBlur()
+  // 左右切换按钮出现
   arrow.value.style.opacity = "1"
   arrow.value.style.transition = `opacity ${arrowDur}s`
+  // 初始化 滚轮事件
   initScroll()
 }
 
-// 鼠标移出 回调
+// 鼠标移出 函数
 const leaveCb = () => {
+  // 自动轮播
   initAutoPlay()
+  // 取消 滚动事件
   unScroll()
+  // 左右切换隐藏
   arrow.value.style.opacity = "0"
 }
-// 鼠标上下滚轮
+
+// 鼠标滚轮事件函数
 const initScroll = () => {
   window.addEventListener("wheel", scrollCb, { passive: false })
 }
+
+// 取消鼠标滚轮事件函数
 const unScroll = () => {
   window.removeEventListener("wheel", scrollCb)
 }
+
+// 鼠标滚轮事件的回调函数
 const scrollCb = (e: WheelEvent) => {
   e.preventDefault()
   if (!e.deltaY) return
   // 往下滚动
   if (e.deltaY > 0) {
-    rollPlay(-1)
+    // 滚动动画
+    rollPlay(1)
   }
   // 往上滚动
   if (e.deltaY < 0) {
-    rollPlay(1)
+    // 滚动动画
+    rollPlay(-1)
   }
 }
+
 // 初始化
-// 获取到轮播的每一项
+// 轮播的每一项
 const itemInstance = ref()
+// 轮播的容器
 const content = ref()
+
+// 组件挂载初始化
 onMounted(() => {
   // 把第一个复制一份 添加到最后 实现无缝轮播
   content.value.appendChild(itemInstance.value[0].cloneNode(true))
@@ -211,10 +252,11 @@ onMounted(() => {
   // 初始化切换按钮
   arrow.value.style.opacity = "0"
 })
+// 组件卸载
 onUnmounted(() => {
-  // 取消轮播
+  // 取消自动轮播
   unAutoPlay()
-  // 取消滚动
+  // 取消悬浮滚动事件
   unScroll()
 })
 </script>

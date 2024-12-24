@@ -2,7 +2,7 @@
  * Request
  */
 export interface GetArticle {
-  data: Data
+  data?: Data
   message: string
   status: boolean
   [property: string]: any
