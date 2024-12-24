@@ -45,6 +45,10 @@ router.post("/", async (req, res, next) => {
     const findUser = await User.findOne({
       where: { [Op.or]: { email, account } },
     })
+    if (findUser?.account && account === findUser?.account)
+      return res.result(void 0, "账号重复了哦~", false, 400)
+    if (findUser?.email && email === findUser?.email)
+      return res.result(void 0, "邮箱重复了哦~", false, 400)
     if (findUser !== null) {
       return res.result(void 0, "请勿重复注册~", false, 400)
     }

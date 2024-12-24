@@ -16,7 +16,7 @@ const { announce } = storeToRefs(useAnnounceAndRecentPagesStore())
 const { reqAnnounce } = useAnnounceAndRecentPagesStore()
 // 发起请求
 onMounted(async () => {
-  await reqAnnounce
+  await reqAnnounce()
 })
 </script>
 

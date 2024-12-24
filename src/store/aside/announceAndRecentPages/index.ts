@@ -11,7 +11,7 @@ export const useAnnounceAndRecentPagesStore = defineStore(
     // 发起请求
     const reqAnnounce = async () => {
       const result = await getAnnounce()
-      announce.value = result.announce
+      result?.announce ? (announce.value = result.announce) : undefined
     }
 
     // 最新文章
@@ -19,8 +19,8 @@ export const useAnnounceAndRecentPagesStore = defineStore(
     const pages = ref<GetRecentPages["data"] | null>()
     // 发起请求
     const reqRecentPages = async () => {
-      pages.value = await getRecentPages()
-      pages.value = null
+      const result = await getRecentPages()
+      result ? (pages.value = result) : undefined
     }
 
     return { reqAnnounce, announce, pages, reqRecentPages }

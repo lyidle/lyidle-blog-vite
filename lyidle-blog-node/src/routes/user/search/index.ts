@@ -1,5 +1,5 @@
 import express from "express"
-import { Op } from "sequelize"
+import { Op, literal } from "sequelize"
 const router = express.Router()
 // 导入模型
 const { Article, User, UserInfo } = require("@/db/models")
@@ -37,10 +37,7 @@ const search = async (req: any, res: any, exact?: boolean) => {
       nickName: nickName,
     }
   // 按照角色查询
-  if (role)
-    commend.where = {
-      role: role,
-    }
+  if (role) commend.where = literal(`JSON_CONTAINS(role, '"${role}"')`)
   // 按照邮箱查询
   if (email)
     commend.where = {

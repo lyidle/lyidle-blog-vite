@@ -23,6 +23,8 @@ router.use((req, res, next) => {
       next(err)
       return
     }
+    // 打印错误信息
+    console.log(err)
     cb()
     return
   }

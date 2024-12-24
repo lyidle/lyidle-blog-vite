@@ -42,18 +42,12 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
     } = await getWebInfo()
     // 整理参数
     if (totalPages) webTotalPages.value = numberTransform(totalPages)
-    else webTotalPages.value = ""
     if (userCounts) webUserCounts.value = numberTransform(userCounts)
-    else webUserCounts.value = ""
     if (tourists) touristCounts.value = numberTransform(tourists)
-    else touristCounts.value = ""
     if (totalPersonCounts)
       webTotalPersonCounts.value = numberTransform(totalPersonCounts)
-    else ""
     if (createdAt) webCreatedAt.value = moment(createdAt)
-    else webCreatedAt.value = ""
     if (updatedAt) webUpdatedAt.value = moment(updatedAt)
-    else webUpdatedAt.value = ""
     let words = 0
     if (totalWordsData)
       for (let i = 0; i < totalWordsData.length; i++) {
@@ -62,7 +56,6 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
           words += Number(item.UserInfo?.totalWords)
       }
     if (words) webTotalWords.value = numberTransform(words)
-    else webTotalWords.value = ""
     // 都没有弹出失败信息
     if (!isDataShow.value) ElMessage.error("获取公告失败~")
   }

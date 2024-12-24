@@ -11,7 +11,7 @@ const search = async (req: any, res: any, exact?: boolean) => {
   if (!(id || author || title || desc || category || tags))
     return res.result(
       void 0,
-      "请至少传入author、title、desc、category、tip中的一个参数~",
+      "请至少传入author、title、desc、category、tags中的一个参数~",
       false,
       400
     )

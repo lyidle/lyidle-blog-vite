@@ -11,7 +11,7 @@ router.get("/", async (req, res, next) => {
     const findUser = await User.findOne({
       where: { id },
       attributes: {
-        exclude: ["pwd"],
+        exclude: ["pwd", "status"],
       },
       include: [
         {

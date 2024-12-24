@@ -11,8 +11,10 @@ import moment from "@/utils/moment"
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
-  secure: JSON.parse(process.env.secure ? process.env.secure : ""),
-  requireTLS: JSON.parse(process.env.requireTLS ? process.env.requireTLS : ""),
+  secure: JSON.parse(process.env.secure ? process.env.secure : "false"),
+  requireTLS: JSON.parse(
+    process.env.requireTLS ? process.env.requireTLS : "true"
+  ),
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PWD,
