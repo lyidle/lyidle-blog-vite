@@ -2,39 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("MenuLists", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      account: {
-        type: Sequelize.STRING,
+      menuId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Menus",
+          key: "id",
+        },
       },
-      pwd: {
-        type: Sequelize.STRING,
+      name: {
+        type: Sequelize.STRING(32),
+        allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
-      },
-      avater: {
+      icon: {
         type: Sequelize.TEXT,
+        allowNull: false,
       },
-      signer: {
+      to: {
         type: Sequelize.STRING,
-      },
-      createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
+      bannerImg: {
+        type: Sequelize.JSON,
       },
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users")
+    await queryInterface.dropTable("MenuLists")
   },
 }

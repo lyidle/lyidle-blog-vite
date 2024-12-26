@@ -5,11 +5,11 @@ declare global {
     interface Request {
       auth: {
         id: number | string
-        account?: string
+        account: string
         nickName: string
-        avater: string
-        signer: string
-        email?: string
+        avater?: string
+        signer?: string
+        email: string
         role: string
         iat?: Date
         exp?: Date
@@ -19,7 +19,7 @@ declare global {
     interface Response {
       result: (
         data: any,
-        message: string,
+        message: string | string[],
         status?: boolean,
         resultCode?: number
       ) => void

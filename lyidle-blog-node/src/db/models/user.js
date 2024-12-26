@@ -1,10 +1,16 @@
 "use strict"
 const { Model } = require("sequelize")
+//导入bcryptjs模块 加密
+const bcrypt = require("bcryptjs")
+// 引入验证
 const {
   accountReg,
   nickNameReg,
+  pwdReg,
   emailReg,
 } = require("@/routes/user/reg/RegExp")
+// 引入普通用户 权限组
+const default_user = process.env.default_user
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -15,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // 一个用户可以有多篇文章
       User.hasMany(models.Article)
+      // 一个用户有多个菜单
+      User.hasMany(models.Menu)
       // 一个用户有一个用户信息
       User.hasOne(models.UserInfo)
     }
@@ -22,25 +30,32 @@ module.exports = (sequelize, DataTypes) => {
   User.init(
     {
       account: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(32),
         allowNull: false,
-        unique: true,
         validate: {
           notNull: { msg: "账号不能为空哦~" },
           notEmpty: { msg: "账号不能为空哦~" },
-          isReg(value) {
-            const { reg, msg } = accountReg
-            if (!reg.test(value)) {
-              throw new Error(msg)
-            }
+          is: {
+            args: accountReg.reg,
+            msg: accountReg.msg,
           },
           async isUnique(value) {
             const findOne = await sequelize.models.User.findOne({
               where: { account: value },
             })
-            if (findOne) {
-              throw new Error("用户已存在")
-            }
+            if (findOne) throw new Error("用户已存在哦~")
+          },
+        },
+      },
+      nickName: {
+        type: DataTypes.STRING(32),
+        allowNull: false,
+        validate: {
+          notNull: { msg: "用户名不能为空哦~" },
+          notEmpty: { msg: "用户名不能为空哦~" },
+          is: {
+            args: nickNameReg.reg,
+            msg: nickNameReg.msg,
           },
         },
       },
@@ -51,19 +66,21 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "密码不能为空哦~" },
           notEmpty: { msg: "密码不能为空哦~" },
         },
+        // 使用hash加密
+        set(value) {
+          if (!pwdReg.reg.test(value)) throw new Error(pwdReg.msg)
+          this.setDataValue("pwd", bcrypt.hashSync(value, 10))
+        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
           notNull: { msg: "邮箱不能为空哦~" },
           notEmpty: { msg: "邮箱不能为空哦~" },
-          isReg(value) {
-            const { reg, msg } = emailReg
-            if (!reg.test(value)) {
-              throw new Error(msg)
-            }
+          is: {
+            args: emailReg.reg,
+            msg: emailReg.msg,
           },
           async isUnique(value) {
             const findOne = await sequelize.models.User.findOne({
@@ -75,40 +92,27 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      avater: DataTypes.TEXT,
+      avater: DataTypes.STRING,
       signer: DataTypes.STRING,
       role: {
         type: DataTypes.JSON,
         allowNull: false,
+        defaultValue: default_user,
         validate: {
           notNull: { msg: "角色不能为空哦~" },
           notEmpty: { msg: "角色不能为空哦~" },
-          async isArray(value) {
-            if (!Array.isArray(value)) {
-              throw new Error("角色必须是一个数组哦~")
-            }
-          },
-        },
-      },
-      nickName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "用户名不能为空哦~" },
-          notEmpty: { msg: "用户名不能为空哦~" },
-          isReg(value) {
-            const { reg, msg } = nickNameReg
-            if (!reg.test(value)) {
-              throw new Error(msg)
-            }
+          set(value) {
+            if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
+            // 保证至少有个 普通用户组的权限
+            this.setDataValue("role", [
+              ...new Set(value.flat(Infinity), ...JSON.parse(default_user)),
+            ])
           },
         },
       },
       token: DataTypes.STRING(500),
       status: {
         type: DataTypes.TINYINT,
-        allowNull: false,
-        defaultValue: 0,
         validate: {
           isTiny(value) {
             if (value !== 0 && value !== 1) throw new Error("status只能为0和1")

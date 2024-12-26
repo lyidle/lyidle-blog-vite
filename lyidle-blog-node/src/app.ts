@@ -57,7 +57,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "PermissionError~")
     return res.result(void 0, "没有权限访问~", false, 403)
   // 打印其他错误
-  console.log(err)
+  // console.log(err)
 })
 
 app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))

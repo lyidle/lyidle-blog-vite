@@ -20,6 +20,7 @@
     "db:up": "sequelize db:migrate",
     "db:seed": "sequelize db:seed",
     "db:seed:all": "sequelize db:seed:all",
+    "model:create": "sequelize model:generate --name",
     "migrate:create": "sequelize migration:generate --name",
     "seed:create": "sequelize seed:generate --name",
     "db:restore": "pnpm db:undo:all && pnpm db:up && pnpm db:seed:all"

@@ -1,6 +1,7 @@
 "use strict"
 const data = require("../mock/menulist")
 /** @type {import('sequelize-cli').Migration} */
+const default_user = JSON.parse(process.env.default_user)
 module.exports = {
   async up(queryInterface, Sequelize) {
     const menuList = []

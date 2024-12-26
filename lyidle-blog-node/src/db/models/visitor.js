@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
           notNull: { msg: "访客标识不能为空哦~" },
           notEmpty: { msg: "访客标识不能为空哦~" },

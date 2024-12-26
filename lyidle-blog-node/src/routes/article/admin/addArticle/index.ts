@@ -20,7 +20,7 @@ router.post("/", async (req, res, next) => {
     author,
     category,
     tags,
-    carousel: Number(carousel),
+    carousel: carousel ?? 0,
     desc,
     poster,
     length,
@@ -64,7 +64,6 @@ router.post("/", async (req, res, next) => {
     }
     return res.result(void 0, "增加文章成功~")
   } catch (err) {
-    console.log(err)
     return res.validateAuth(err, next, () =>
       res.result(err, "增加文章失败~", false)
     )

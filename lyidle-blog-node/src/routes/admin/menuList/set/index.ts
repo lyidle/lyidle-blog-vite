@@ -1,8 +1,8 @@
 import express from "express"
-// 引入jwt
-import { jwt } from "@/middleware/auth"
-// 引入管理权限判断
-import { admin } from "@/middleware/auth"
+// 类型
+import type { Request, Response, NextFunction } from "express"
+// 引入权限判断
+import { jwt, jwtExpand, isAdmin } from "@/middleware/auth"
 // 引入模型
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()
@@ -31,57 +31,61 @@ const extractBannerImg = (data: any, result: any) => {
   } else return result
 }
 // 设置菜单 增加和修改一体
-router.put("/", jwt, admin, async (req, res, next) => {
-  const data = req.body
-  if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
-  try {
-    for (let i = 0; i < data.length; i++) {
-      const menu = data[i]
-      const { name, icon, to, children, layout, bannerImg } = menu
-      let result: any = { name, icon, to, layout: {}, bannerImg: {} }
-      // 处理 layout 和 bannerImg
-      result = extractLayout(layout, result)
-      result = extractBannerImg(bannerImg, result)
-      const findMenu = await Menu.findOne({ where: { name } })
-      let menuId = findMenu?.dataValues.id
-      // 有无 菜单
-      if (findMenu) {
-        // 更新需要处理 layout、bannerImg 防止覆盖
-        const { layout, bannerImg } = findMenu.dataValues
+router.put(
+  "/",
+  [jwt, jwtExpand, isAdmin],
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = req.body
+    if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
+    try {
+      for (let i = 0; i < data.length; i++) {
+        const menu = data[i]
+        const { name, icon, to, children, layout, bannerImg } = menu
+        let result: any = { name, icon, to, layout: {}, bannerImg: {} }
+        // 处理 layout 和 bannerImg
         result = extractLayout(layout, result)
         result = extractBannerImg(bannerImg, result)
-        findMenu.update(result)
-      } else {
-        const data = await Menu.create(result)
-        menuId = data.dataValues.id
-      }
-      // 有无 children
-      if (children) {
-        // 添加 children
-        for (let i = 0; i < children.length; i++) {
-          const item = children[i]
-          const { name, to, icon, bannerImg } = item
-          let result: any = { name, to, icon, menuId: menuId, bannerImg: {} }
-          // 处理 bannerImg
+        const findMenu = await Menu.findOne({ where: { name } })
+        let menuId = findMenu?.dataValues.id
+        // 有无 菜单
+        if (findMenu) {
+          // 更新需要处理 layout、bannerImg 防止覆盖
+          const { layout, bannerImg } = findMenu.dataValues
+          result = extractLayout(layout, result)
           result = extractBannerImg(bannerImg, result)
-          const findList = await MenuList.findOne({ where: { name } })
-          // 有无 子项
-          if (findList) {
-            // 更新需要处理 bannerImg 防止覆盖
-            const { bannerImg } = findList.dataValues
+          findMenu.update(result)
+        } else {
+          const data = await Menu.create(result)
+          menuId = data.dataValues.id
+        }
+        // 有无 children
+        if (children) {
+          // 添加 children
+          for (let i = 0; i < children.length; i++) {
+            const item = children[i]
+            const { name, to, icon, bannerImg } = item
+            let result: any = { name, to, icon, menuId: menuId, bannerImg: {} }
+            // 处理 bannerImg
             result = extractBannerImg(bannerImg, result)
-            await findList.update(result)
-          } else {
-            await MenuList.create(result)
+            const findList = await MenuList.findOne({ where: { name } })
+            // 有无 子项
+            if (findList) {
+              // 更新需要处理 bannerImg 防止覆盖
+              const { bannerImg } = findList.dataValues
+              result = extractBannerImg(bannerImg, result)
+              await findList.update(result)
+            } else {
+              await MenuList.create(result)
+            }
           }
         }
       }
+      return res.result(void 0, "设置菜单成功~")
+    } catch (error) {
+      return res.validateAuth(error, next, () =>
+        res.result(void 0, "设置菜单失败~")
+      )
     }
-    return res.result(void 0, "设置菜单成功~")
-  } catch (error) {
-    return res.validateAuth(error, next, () =>
-      res.result(void 0, "设置菜单失败~")
-    )
   }
-})
+)
 export default router

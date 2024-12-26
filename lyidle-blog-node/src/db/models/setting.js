@@ -15,16 +15,19 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
         validate: {
           async isUnique(value) {
             const find = await Setting.findOne({ where: { name: value } })
-            if (find) throw new Error("设置信息不能重复")
+            if (find) throw new Error("设置信息不能重复哦~")
           },
         },
       },
-      content: DataTypes.STRING,
+      content: {
+        type: DataTypes.STRING,
+        validate: {
+          len: { args: [0, 255], msg: "设置信息长度必须在1-255之间哦~" },
+        },
+      },
     },
     {
       sequelize,

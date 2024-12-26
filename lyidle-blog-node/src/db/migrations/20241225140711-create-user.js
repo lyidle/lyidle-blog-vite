@@ -1,51 +1,50 @@
 "use strict"
 /** @type {import('sequelize-cli').Migration} */
+// 引入普通用户 权限组
+const default_user = process.env.default_user
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Articles", {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      title: {
+      account: {
+        type: Sequelize.STRING(32),
+        allowNull: false,
+        unique: true,
+      },
+      nickName: {
+        type: Sequelize.STRING(32),
+        allowNull: false,
+      },
+      pwd: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      avater: {
         type: Sequelize.STRING,
       },
-      content: {
-        type: Sequelize.TEXT,
-      },
-      author: {
+      signer: {
         type: Sequelize.STRING,
       },
-      category: {
-        type: Sequelize.STRING,
-      },
-      tags: {
+      role: {
         type: Sequelize.JSON,
         allowNull: false,
+        defaultValue: default_user,
       },
-      carousel: {
+      token: {
+        type: Sequelize.STRING(500),
+      },
+      status: {
         type: Sequelize.TINYINT,
-        allowNull: false,
-        defaultValue: 0,
-      },
-      desc: {
-        type: Sequelize.STRING,
-      },
-      poster: {
-        type: Sequelize.TEXT,
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Users", // 指向 User 表
-          key: "id",
-        },
-        allowNull: false, // 设置为非空
-      },
-      length: {
-        type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 0,
       },
@@ -60,6 +59,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Articles")
+    await queryInterface.dropTable("Users")
   },
 }

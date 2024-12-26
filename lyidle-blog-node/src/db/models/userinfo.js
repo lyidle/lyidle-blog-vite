@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.UserInfo.belongsTo(models.User)
+      // 一个用户信息 属于一个用户
+      UserInfo.belongsTo(models.User)
+      // 一个用户可以有多篇文章
+      UserInfo.hasMany(models.Article)
     }
   }
   UserInfo.init(
@@ -19,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章总数不能为空哦~" },
           notEmpty: { msg: "文章总数不能为空哦~" },
+          isInt: { msg: "文章总数必须要是个整数哦~" },
         },
       },
       tags: {
@@ -27,10 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章标签不能为空哦~" },
           notEmpty: { msg: "文章标签不能为空哦~" },
-          isArray(value) {
-            if (!Array.isArray(value)) {
+          set(value) {
+            if (!Array.isArray(value))
               throw new Error("文章标签必须是一个数组哦~")
-            }
+            this.setDataValue("tags", [...new Set(value.flat(Infinity))])
           },
         },
       },
@@ -40,10 +44,10 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章分类不能为空哦~" },
           notEmpty: { msg: "文章分类不能为空哦~" },
-          isArray(value) {
-            if (!Array.isArray(value)) {
+          set(value) {
+            if (!Array.isArray(value))
               throw new Error("文章分类必须是一个数组哦~")
-            }
+            this.setDataValue("categories", [...new Set(value.flat(Infinity))])
           },
         },
       },
@@ -53,14 +57,16 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "总字数不能为空哦~" },
           notEmpty: { msg: "总字数不能为空哦~" },
+          isInt: { msg: "文章字数必须要是个整数哦~" },
         },
       },
       userId: {
         type: DataTypes.INTEGER,
-        allowNull: false, // 设置为非空
+        allowNull: false,
         validate: {
           notNull: { msg: "用户id不能为空哦~" },
           notEmpty: { msg: "用户id不能为空哦~" },
+          isInt: { msg: "用户id必须要是个整数哦~" },
         },
       },
     },

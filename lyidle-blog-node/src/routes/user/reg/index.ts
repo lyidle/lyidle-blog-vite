@@ -1,24 +1,16 @@
 import express from "express"
 import email from "./email"
-import { Op } from "sequelize"
-//导入bcryptjs模块 加密
-const bcrypt = require("bcryptjs")
 const router = express.Router()
 // 正则判断
-const { pwdReg, codeReg } = require("@/routes/user/reg/RegExp")
+const { codeReg } = require("@/routes/user/reg/RegExp")
 // 引入模型
 const { Email, User } = require("@/db/models")
 // 注册接口
 router.post("/", async (req, res, next) => {
   const { account, nickName, email, code, password, confirmPassword } = req.body
-  // 判断密码是否合格
-  if (!pwdReg.reg.test(password)) {
-    return res.result(void 0, pwdReg.msg, false, 400)
-  }
-  // 账号与密码不一致
-  if (password !== confirmPassword) {
+  // 密码与确认密码不一致
+  if (password !== confirmPassword)
     return res.result(void 0, "账号与密码不一致~", false, 400)
-  }
   const { reg, msg } = codeReg
   // 验证码不合格
   if (!reg.test(code)) {
@@ -41,21 +33,10 @@ router.post("/", async (req, res, next) => {
     if (findCode != code) {
       return res.result(void 0, "验证码不正确~", false, 400)
     }
-    // 判断有无重复用户
-    const findUser = await User.findOne({
-      where: { [Op.or]: { email, account } },
-    })
-    if (findUser?.account && account === findUser?.account)
-      return res.result(void 0, "账号重复了哦~", false, 400)
-    if (findUser?.email && email === findUser?.email)
-      return res.result(void 0, "邮箱重复了哦~", false, 400)
-    if (findUser !== null) {
-      return res.result(void 0, "请勿重复注册~", false, 400)
-    }
     const user = {
       account,
       nickName,
-      pwd: bcrypt.hashSync(password, 10),
+      pwd: password,
       email,
       role: ["user"],
     }

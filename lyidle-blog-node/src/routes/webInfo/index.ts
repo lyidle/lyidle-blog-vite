@@ -72,7 +72,6 @@ router.get("/", async (req, res, next) => {
       "查询网站咨询成功~"
     )
   } catch (error) {
-    console.log(error)
     res.validateAuth(error, next, () =>
       res.result(void 0, "查询网站咨询失败~", false)
     )

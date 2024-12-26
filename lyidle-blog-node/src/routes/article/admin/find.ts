@@ -10,7 +10,7 @@ export default async (req: Request, res: Response, cb?: Function) => {
     id: id,
   }
   cb && cb({ commend })
-  // 查找是否有文章 以及得到邮箱
+  // 查找是否有文章
   const findArticle = await Article.findOne(commend)
   // 没有找到文章
   if (!findArticle) return res.result(void 0, "没有找到文章哦~", false, 404)

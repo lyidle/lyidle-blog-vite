@@ -11,23 +11,27 @@ module.exports = {
       },
       pages: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       tags: {
         type: Sequelize.JSON,
+        allowNull: false,
       },
       categories: {
         type: Sequelize.JSON,
+        allowNull: false,
+      },
+      totalWords: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       userId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: "Users", // 指向 User 表
           key: "id",
         },
-        allowNull: false, // 设置为非空
-      },
-      totalWords: {
-        type: Sequelize.INTEGER,
       },
     })
   },

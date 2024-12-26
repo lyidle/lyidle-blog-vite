@@ -11,14 +11,19 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
       },
       regCode: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER(9),
       },
       forgetCode: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER(9),
       },
-      expiresAt: {
+      regExpiresAt: {
+        type: Sequelize.DATE,
+      },
+      forgetExpiresAt: {
         type: Sequelize.DATE,
       },
       // createdAt: {

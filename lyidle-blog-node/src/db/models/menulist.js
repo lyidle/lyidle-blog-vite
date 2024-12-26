@@ -19,22 +19,29 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "菜单id不能为空哦~" },
           notEmpty: { msg: "菜单id不能为空哦~" },
+          isInt: { msg: "菜单id必须要是个整数哦~" },
         },
       },
       name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(32),
         allowNull: false,
         validate: {
           notNull: { msg: "子菜单title不能为空哦~" },
           notEmpty: { msg: "子菜单title不能为空哦~" },
+          len: { arg: [1, 32], msg: "菜单长度必须在1-32之间哦~" },
         },
       },
       icon: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
           notNull: { msg: "子菜单icon不能为空哦~" },
           notEmpty: { msg: "子菜单icon不能为空哦~" },
+          isSvg(value) {
+            if (!(value.includes("<svg") && value.includes("</svg>"))) {
+              throw new Error("icon必须要是一个svg哦~")
+            }
+          },
         },
       },
       to: {

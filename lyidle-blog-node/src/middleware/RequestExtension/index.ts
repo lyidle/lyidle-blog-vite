@@ -4,7 +4,7 @@ router.use((req, res, next) => {
   // 配置通用的返回格式
   res.result = (
     data: object,
-    message: string,
+    message: string | string[],
     status: boolean = true,
     resultCode?: number
   ) => {
@@ -13,7 +13,12 @@ router.use((req, res, next) => {
     res.status(resultCode ? resultCode : !status ? 404 : 200).send({
       status,
       data,
-      message,
+      // 确保返回的错误信息为一个数组
+      message: status
+        ? message
+        : Array.isArray(message)
+        ? [...new Set(message.flat(Infinity))]
+        : [message],
     })
     return
   }
@@ -23,7 +28,7 @@ router.use((req, res, next) => {
       next(err)
       return
     }
-    // 打印错误信息
+    // 打印其他不是验证错误的信息
     console.log(err)
     cb()
     return

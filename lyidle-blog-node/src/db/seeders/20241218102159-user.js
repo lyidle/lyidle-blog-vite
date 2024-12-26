@@ -1,11 +1,14 @@
 "use strict"
 const bcrypt = require("bcryptjs")
 /** @type {import('sequelize-cli').Migration} */
+
+// 引入普通用户 权限组
+const default_user = JSON.parse(process.env.default_user)
 module.exports = {
   async up(queryInterface, Sequelize) {
     const users = []
     const counts = 50
-    const roles = ["user", "admin", "other"]
+    const roles = [...new Set([...default_user, "admin", "other"])]
     const setRole = (i) => {
       if (i === 1) return JSON.stringify(["admin", "webDev"])
       return JSON.stringify([

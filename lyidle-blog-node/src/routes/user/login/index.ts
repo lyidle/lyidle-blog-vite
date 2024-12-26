@@ -26,7 +26,16 @@ router.get("/", async (req, res, next) => {
           email: account,
         },
       },
-      attributes: { exclude: ["createdAt", "updatedAt", "status", "token"] },
+      attributes: [
+        "id",
+        "account",
+        "avater",
+        "signer",
+        "email",
+        "nickName",
+        "role",
+        "pwd",
+      ],
     })
     // 判断有无找到用户
     if (findUser == null) {
