@@ -6,8 +6,6 @@ import type { NextFunction, Request, Response } from "express"
 import findArticleFn from "@/routes/article/admin/find"
 // 引入 jwt
 import { jwt, jwtExpand } from "@/middleware/auth"
-// 引入模型
-const { UserInfo } = require("@/db/models")
 
 const router = express.Router()
 router.put(

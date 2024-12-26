@@ -6,6 +6,7 @@ require("dotenv").config()
 if (JSON.parse(process.env.isPro)) {
   require("module-alias/register")
 }
+
 const app = express()
 // api端口
 const api_port = process.env.api_port

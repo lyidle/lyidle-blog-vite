@@ -9,6 +9,8 @@ const {
   pwdReg,
   emailReg,
 } = require("@/routes/user/reg/RegExp")
+// 引入普通用户 权限组
+const default_user = JSON.parse(process.env.default_user)
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
