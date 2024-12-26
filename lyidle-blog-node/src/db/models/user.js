@@ -9,8 +9,6 @@ const {
   pwdReg,
   emailReg,
 } = require("@/routes/user/reg/RegExp")
-// 引入普通用户 权限组
-const default_user = process.env.default_user
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -21,8 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // 一个用户可以有多篇文章
       User.hasMany(models.Article)
-      // 一个用户有多个菜单
-      User.hasMany(models.Menu)
       // 一个用户有一个用户信息
       User.hasOne(models.UserInfo)
     }
@@ -97,7 +93,6 @@ module.exports = (sequelize, DataTypes) => {
       role: {
         type: DataTypes.JSON,
         allowNull: false,
-        defaultValue: default_user,
         validate: {
           notNull: { msg: "角色不能为空哦~" },
           notEmpty: { msg: "角色不能为空哦~" },

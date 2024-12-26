@@ -1,7 +1,8 @@
 "use strict"
 const bcrypt = require("bcryptjs")
 /** @type {import('sequelize-cli').Migration} */
-
+// 导入环境变量
+require("dotenv").config()
 // 引入普通用户 权限组
 const default_user = JSON.parse(process.env.default_user)
 module.exports = {

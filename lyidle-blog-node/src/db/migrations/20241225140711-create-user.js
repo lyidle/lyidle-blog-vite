@@ -1,7 +1,5 @@
 "use strict"
 /** @type {import('sequelize-cli').Migration} */
-// 引入普通用户 权限组
-const default_user = process.env.default_user
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Users", {
@@ -38,7 +36,6 @@ module.exports = {
       role: {
         type: Sequelize.JSON,
         allowNull: false,
-        defaultValue: default_user,
       },
       token: {
         type: Sequelize.STRING(500),
@@ -58,6 +55,7 @@ module.exports = {
       },
     })
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Users")
   },

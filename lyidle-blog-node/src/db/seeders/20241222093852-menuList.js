@@ -1,7 +1,10 @@
 "use strict"
 const data = require("../mock/menulist")
 /** @type {import('sequelize-cli').Migration} */
-const default_user = JSON.parse(process.env.default_user)
+// 导入环境变量
+require("dotenv").config()
+// 引入普通用户 权限组
+const default_user = process.env.default_user
 module.exports = {
   async up(queryInterface, Sequelize) {
     const menuList = []
@@ -23,6 +26,7 @@ module.exports = {
         to: item.to ?? `/test/${id + 1}`,
         bannerImg: JSON.stringify(item.bannerImg),
         layout: JSON.stringify(item.layout),
+        role: default_user,
       }
     })
     await queryInterface.bulkInsert("Menus", menu, {})

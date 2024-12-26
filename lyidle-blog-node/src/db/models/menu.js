@@ -1,7 +1,5 @@
 "use strict"
 const { Model } = require("sequelize")
-// 引入普通用户 权限组
-const default_user = process.env.default_user
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     /**
@@ -10,8 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // 属于 user
-      Menu.belongsTo(models.User)
       // 很多子菜单
       Menu.hasMany(models.MenuList, { as: "children" }) // 指定别名 'children'
     }
@@ -53,7 +49,6 @@ module.exports = (sequelize, DataTypes) => {
     role: {
       type: DataTypes.JSON,
       notNull: false,
-      defaultValue: default_user,
       validate: {
         notNull: { msg: "角色不能为空哦~" },
         notEmpty: { msg: "角色不能为空哦~" },
