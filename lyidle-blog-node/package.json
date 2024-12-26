@@ -18,6 +18,7 @@
     "db:undo": "sequelize db:migrate:undo",
     "db:undo:all": "sequelize db:migrate:undo:all",
     "db:up": "sequelize db:migrate",
+    "db:up:new": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "db:seed": "sequelize db:seed",
     "db:seed:all": "sequelize db:seed:all",
     "model:create": "sequelize model:generate --name",
