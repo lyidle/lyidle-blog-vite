@@ -58,9 +58,8 @@ module.exports = (sequelize, DataTypes) => {
           set(value) {
             if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
             // 保证至少有个 普通用户组的权限
-            this.setDataValue("role", [
-              ...new Set(value.flat(Infinity), ...JSON.parse(default_user)),
-            ])
+            const result = [...new Set([value, default_user].flat(Infinity))]
+            this.setDataValue("role", result)
           },
         },
       },

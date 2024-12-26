@@ -32,9 +32,10 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "文章标签不能为空哦~" },
           notEmpty: { msg: "文章标签不能为空哦~" },
           set(value) {
-            if (!Array.isArray(value))
+            if (!Array.isArray(result))
               throw new Error("文章标签必须是一个数组哦~")
-            this.setDataValue("tags", [...new Set(value.flat(Infinity))])
+            const result = [...new Set([value].flat(Infinity))]
+            this.setDataValue("tags", result)
           },
         },
       },
@@ -45,9 +46,10 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "文章分类不能为空哦~" },
           notEmpty: { msg: "文章分类不能为空哦~" },
           set(value) {
-            if (!Array.isArray(value))
-              throw new Error("文章分类必须是一个数组哦~")
-            this.setDataValue("categories", [...new Set(value.flat(Infinity))])
+            if (!Array.isArray(result))
+              throw new Error("文章标签必须是一个数组哦~")
+            const result = [...new Set([value].flat(Infinity))]
+            this.setDataValue("categories", result)
           },
         },
       },
