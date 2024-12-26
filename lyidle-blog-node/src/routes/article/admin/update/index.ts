@@ -2,10 +2,10 @@ import express from "express"
 // 引入类型
 import type { FindOptions } from "sequelize"
 import type { NextFunction, Request, Response } from "express"
-// 引入查找函数
-import findArticleFn from "@/routes/article/admin/find"
 // 引入 jwt
 import { jwt, jwtExpand } from "@/middleware/auth"
+// 引入查找函数
+import findArticleFn from "@/routes/article/admin/find"
 
 const router = express.Router()
 router.put(
