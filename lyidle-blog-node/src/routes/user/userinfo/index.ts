@@ -29,6 +29,8 @@ router.get(
           },
         ],
       })
+      if (!findUser?.dataValues?.token)
+        return res.result(void 0, "获取用户信息失败~", false)
       return res.result(findUser, "获取用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

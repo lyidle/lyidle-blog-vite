@@ -82,6 +82,7 @@ router.put(
 
       // 更新的用户失去token 信息 mysql
       result.token = null
+      console.log(result)
       // 整理完毕更新
       await findUser.update(result)
 

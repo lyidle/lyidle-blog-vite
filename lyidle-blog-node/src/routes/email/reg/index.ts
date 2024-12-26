@@ -1,6 +1,6 @@
 import { Router } from "express"
 // 引入 发送邮箱的函数
-import sendEmail from "@/routes/email/send"
+import sendEmail from "@/middleware/emailSend"
 // 构建HTML模板
 const template = (email: string, code: string, createTime?: string) => {
   return `
