@@ -1,5 +1,5 @@
 import express from "express"
-import email from "./email"
+import email from "@/routes/email/reg"
 const router = express.Router()
 // 正则判断
 const { codeReg } = require("@/routes/user/reg/RegExp")
@@ -24,9 +24,9 @@ router.post("/", async (req, res, next) => {
     if (findRegEmail === null) {
       return res.result(void 0, "请重新发送验证码~", false, 400)
     }
-    const { regCode: findCode, expiresAt } = findRegEmail.dataValues
+    const { regCode: findCode, regExpiresAt } = findRegEmail.dataValues
     // 判断验证码是否过期
-    if (expiresAt < new Date()) {
+    if (regExpiresAt < new Date()) {
       return res.result(void 0, "验证码过期~", false, 400)
     }
     // 判断验证码是否符合
@@ -38,7 +38,7 @@ router.post("/", async (req, res, next) => {
       nickName,
       pwd: password,
       email,
-      role: ["user"],
+      role: JSON.stringify(["user"]),
     }
     // 通过校验插入用户 插入用户组 sequelize模型设置了验证器
     await User.create(user)

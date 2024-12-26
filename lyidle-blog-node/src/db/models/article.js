@@ -58,9 +58,10 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "文章标签不能为空哦~" },
           notEmpty: { msg: "文章标签不能为空哦~" },
           set(value) {
-            if (!Array.isArray(value))
+            const result = JSON.parse(value)
+            if (!Array.isArray(result))
               throw new Error("文章标签必须是一个数组哦~")
-            this.setDataValue("tags", [...new Set(value.flat(Infinity))])
+            this.setDataValue("tags", [...new Set(result.flat(Infinity))])
           },
         },
       },

@@ -21,7 +21,7 @@ export const jwtExpand = async (
   const { id } = req.auth
   const findUser = await User.findByPk(id)
   // 没有token了就返回 没有权限
-  if (!findUser.dataValues.token) next(new myError("UnauthorizedError"))
+  if (!findUser?.dataValues?.token) next(new myError("UnauthorizedError"))
   next()
 }
 
