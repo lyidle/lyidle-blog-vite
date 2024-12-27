@@ -1,6 +1,6 @@
 <template>
   <div class="contain">
-    <carousel v-bind="props">
+    <carousel v-bind="$attrs">
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
           <div class="poster">
@@ -53,21 +53,6 @@ import moment from "@/utils/moment"
 // 引入类型
 import { Datum } from "@/api/article/types/getCarousel"
 const { cardBoxShadow } = storeToRefs(useSettingStore())
-const props = withDefaults(
-  defineProps<{
-    data: Datum[]
-    autoplay?: boolean
-    direction: "left" | "top"
-    dur?: number
-    gap?: number
-  }>(),
-  {
-    autoplay: false,
-    direction: "left",
-    dur: 1000,
-    gap: 1500,
-  }
-)
 </script>
 
 <style scoped lang="scss">
@@ -240,27 +225,11 @@ $mini-dur: 0.5s;
       }
     }
   }
-  // 768px
-  // @media screen and (max-width: $scr-xs) {
-  //   .data-item {
-  //     .poster {
-  //       width: 40%;
-  //     }
-  //     .content {
-  //       width: 60%;
-  //       height: 125px;
-  //       overflow: hidden;
-  //     }
-  //   }
-  // }
-  // 610px mi 768px xs
-  @media screen and (max-width: $scr-xs) {
-    $height: 400px;
-    height: $height;
-    margin-left: auto;
-    margin-right: auto;
+  @include media(xs) {
+    $carousel-height: 400px;
+    height: $carousel-height;
     .data-item {
-      height: $height;
+      height: $carousel-height;
       flex-direction: column;
       justify-content: start;
       gap: 20px;

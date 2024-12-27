@@ -3,13 +3,15 @@
 @use "./light.scss";
 // 项目的全局scss变量
 // 屏幕尺寸 参照 element-plus的layout
-$scr-mi: 610px;
-$scr-xs: 768px;
-$scr-sm: 992px;
-$scr-md: 1300px;
-$scr-lg: 1920px;
-$global-font: "LXGWW", "微软雅黑", sans-serif;
+$scr: (
+  mi: 610px,
+  xs: 768px,
+  sm: 992px,
+  md: 1300px,
+  lg: 1920px,
+);
 // #region layout
+$global-font: "LXGWW", "微软雅黑", sans-serif;
 :root {
   // 头部
   --header-height: 40px;
@@ -52,158 +54,3 @@ $scroll-thumb-border: 2px solid $scroll-bg;
 $scroll-button-bg: "%23a1c7ea";
 $scroll-button-bg-hover: "%236da3d5";
 // #endregion
-
-// #region Methods
-@mixin flex($justify: center, $align: center) {
-  display: flex;
-  justify-content: $justify;
-  align-items: $align;
-}
-
-// el-button
-@mixin primary-button {
-  transition: background var(--primary-during);
-  --el-button-bg-color: var(--primary-btn-bg);
-  --el-button-border-color: var(--primary-btn-bg);
-  --el-button-text-color: var(--primary-btn-color);
-  outline: none;
-  --el-button-hover-bg-color: var(--primary-btn-hover-bg);
-  --el-button-hover-border-color: var(--primary-btn-hover-bg);
-  --el-button-hover-text-color: var(--primary-btn-hover-color);
-  --el-button-active-bg-color: var(--primary-btn-hover-bg);
-  --el-button-active-border-color: var(--primary-btn-hover-bg);
-  --el-button-active-text-color: var(--primary-btn-hover-color);
-  // disable
-  // --el-button-disabled-bg-color:var(--login-disabled-bg);
-}
-// login-button
-@mixin login-button {
-  // active
-  transition: background var(--primary-during);
-  --el-button-bg-color: var(--login-btn-bg);
-  --el-button-border-color: var(--login-btn-bg);
-  --el-button-text-color: var(--login-btn-color);
-  outline: none;
-  --el-button-hover-bg-color: var(--login-btn-hover-bg);
-  --el-button-hover-border-color: var(--login-btn-hover-bg);
-  --el-button-hover-text-color: var(--login-btn-hover-color);
-  --el-button-active-bg-color: var(--login-btn-hover-bg);
-  --el-button-active-border-color: var(--login-btn-hover-bg);
-  --el-button-active-text-color: var(--login-btn-hover-color);
-  // disable
-  --el-button-disabled-bg-color: var(--login-disabled-bg);
-}
-// el-input
-// login-input
-@mixin login-input {
-  .el-input__wrapper {
-    background-color: unset;
-    box-shadow: unset;
-    border-radius: unset;
-    border-bottom: 1px solid var(--login-input-underline-bg);
-    margin: 1px 11px;
-    padding: unset;
-    --el-color-danger: transparent;
-    input {
-      height: 24px;
-      border: none;
-      outline: none;
-      width: 100%;
-      font-size: 13px;
-      transition: font-size var(--primary-during);
-      color: var(--login-input-color);
-      &:focus {
-        font-size: 15px;
-      }
-      &::placeholder {
-        color: var(--login-input-placeholder);
-      }
-    }
-  }
-}
-// #endregion
-
-// #region animation
-// 定义menu的悬浮动画
-@mixin menuHover($target, $list, $top) {
-  // 定义menu的 父级悬浮元素 类名的形式
-  $list: $list;
-  @each $mEl in $list {
-    .#{$mEl}:hover {
-      > .#{$target} {
-        // 动画
-        pointer-events: unset;
-        top: $top;
-        opacity: 1;
-      }
-    }
-  }
-}
-// userinfo-btn-car
-@mixin car($el, $during, $size) {
-  #{$el} {
-    animation: an-car infinite $during linear;
-  }
-  @keyframes an-car {
-    0% {
-      left: 0;
-      opacity: 0;
-    }
-    50% {
-      left: calc(55% - $size);
-      opacity: 1;
-    }
-    100% {
-      left: calc(100% - $size);
-      opacity: 0;
-    }
-  }
-}
-// shake
-@mixin shake($target: false, $during: 0.8s, $scale: 1.1, $rotate: 5deg) {
-  &:hover {
-    @if $target {
-      #{$target} {
-        animation: shake $during infinite alternate-reverse;
-      }
-    } @else {
-      animation: shake $during infinite alternate-reverse;
-    }
-  }
-  @keyframes shake {
-    50% {
-      transform: scale($scale);
-    }
-    70% {
-      transform: scale($scale) rotate(-$rotate);
-    }
-    100% {
-      transform: scale($scale) rotate($rotate);
-    }
-  }
-}
-// 内容区域的侧边信息 的头部相关
-@mixin content-aside-title($color) {
-  ::v-deep(.title) {
-    // 图标
-    i {
-      font-size: 1.4375rem;
-      color: $color;
-    }
-    // 引入悬浮动画
-    @include shake(i);
-    span {
-      font-size: 1.0625rem;
-      color: $color;
-      font-weight: bold;
-    }
-  }
-}
-// 页面中的跳转链接的悬浮函数
-@mixin pages-links-hover {
-  &:hover {
-    color: var(--pages-links-hover);
-    transition: color var(--primary-during);
-  }
-}
-// #endregion animation

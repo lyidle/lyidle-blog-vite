@@ -1,15 +1,16 @@
 /**
  * Request
  */
-export interface GetUserInfo {
-  data?: Data
+export interface SearchUser {
+  data?: Datum[]
   message: string
   status: boolean
   [property: string]: any
 }
 
-export interface Data {
+export interface Datum {
   account: string
+  articles: Article[]
   avater: null | string
   createdAt: string
   email: string
@@ -17,9 +18,18 @@ export interface Data {
   nickName: string
   role: string[]
   signer: null | string
-  token: string
+  status: number
+  token: null | string
   updatedAt: string
   userInfo: null | UserInfo
+  [property: string]: any
+}
+
+export interface Article {
+  category: string
+  tags: string[]
+  title: string
+  userId: number
   [property: string]: any
 }
 
@@ -29,5 +39,6 @@ export interface UserInfo {
   pages: number
   tags: string[]
   totalWords: number
+  userId: number
   [property: string]: any
 }

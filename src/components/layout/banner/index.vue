@@ -133,7 +133,7 @@ onMounted(async () => {
       text-overflow: ellipsis;
       text-wrap: nowrap;
     }
-    @media screen and (max-width: $scr-xs) {
+    @include media(xs) {
       .title {
         font-size: 1.5625rem;
       }

@@ -1,5 +1,10 @@
-import { GetMenuList } from "@/api/admin/types/getMenuList"
+// 引入api
 import { getMenuList } from "@/api/admin"
+import { getUserInfo } from "@/api/user"
+import { searchUser } from "@/api/user"
+// 引入类型
+import type { GetMenuList } from "@/api/admin/types/getMenuList"
+import { Datum } from "@/api/user/types/searchUser"
 // 把用户数据进行加密与解密
 import { aes_encrypt, aes_decrypt } from "@/utils/crypto-aes"
 export const useUserStore = defineStore(
@@ -14,27 +19,28 @@ export const useUserStore = defineStore(
       userMenuList.value = result
     }
 
-    // 用户名
-    const userUserName = ref("Fut🥝")
+    // 用户信息
+    const userInfo = ref<Datum>()
 
-    // 用户头像
-    const userAvater = ref(
-      "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
-    )
-
-    // 个性签名
-    const userSigner = ref("Future is now 🍭🍭🍭")
-
-    // 用户令牌
-    const userToken = ref("")
+    const reqUserInfo = async () => {
+      const result = await getUserInfo()
+      console.log(result)
+      // 如果没有登录
+      if (!result) {
+        // 获取admin的信息
+        const result = await searchUser({ role: "admin" })
+        if (result) userInfo.value = result[0]
+        console.log(result)
+      }
+      // @ts-ignore
+      userInfo.value = result
+    }
 
     return {
       reqUserMenuList,
       userMenuList,
-      userUserName,
-      userAvater,
-      userSigner,
-      userToken,
+      userInfo,
+      reqUserInfo,
     }
   },
   // 对用户信息加密 有token

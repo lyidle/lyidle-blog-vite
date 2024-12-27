@@ -41,7 +41,7 @@
           </el-input>
           <el-button
             type="primary"
-            class="primary-button w-50px ml-10px"
+            class="w-50px ml-10px"
             @click="handlerCode"
             :disabled="!codeIsActive"
           >
@@ -67,10 +67,7 @@
           :prefix-icon="confirmPassIcon"
         ></el-input>
       </el-form-item>
-      <el-button
-        type="primary"
-        class="primary-button w-100% mt-5px"
-        @click="handlerReg"
+      <el-button type="primary" class="w-100% mt-5px" @click="handlerReg"
         >注册</el-button
       >
     </el-form>

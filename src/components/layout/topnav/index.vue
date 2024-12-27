@@ -100,7 +100,7 @@ $list-gap: 5px;
 .topnav {
   display: flex;
   height: 100%;
-  @media screen and (max-width: $scr-sm) {
+  @include media(sm) {
     display: none;
   }
   // 导航项目

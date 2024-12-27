@@ -1,0 +1,34 @@
+@use "sass:map";
+// #region Methods
+// 屏幕尺寸 参照 element-plus的layout
+$scr: (
+  mi: 610px,
+  xs: 768px,
+  sm: 992px,
+  md: 1300px,
+  lg: 1920px,
+);
+
+// 快速创建响应式媒体查询的 mixin。 基于 max-width
+/// @param {String} $size - 预定义屏幕尺寸的键，例如：`mi`、`xs`、`sm`、`md`、`lg`。
+// 如果传入的 `$size` 不在 `$scr` 中，将发出警告。
+@mixin media($size) {
+  @if map.has-key($scr, $size) {
+    @media screen and (max-width: map.get($scr, $size)) {
+      @content;
+    }
+  } @else {
+    @warn "Size #{$size} not found in predefined screen sizes.";
+  }
+}
+
+/// 快速创建 Flex 布局的 mixin。
+/// @param {String} $justify - 主轴上的对齐方式，默认为 `center`。
+/// @param {String} $align - 交叉轴上的对齐方式，默认为 `center`。
+
+@mixin flex($justify: center, $align: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+// #endregion

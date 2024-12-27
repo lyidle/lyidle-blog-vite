@@ -11,7 +11,7 @@ import "@/components/icon/unocss"
 // 重置样式
 import "normalize.css"
 // 引入全局样式
-import "@/styles/global.scss"
+import "@/styles/reset.scss"
 export default {
   // 安装插件
   install(app: any) {

@@ -61,12 +61,6 @@ $color: var(--primary-color);
       color: var(--primary-color);
       padding-right: unset;
     }
-    // 应用按钮样式
-    .primary-button {
-      @include login-button;
-    }
-    // el-input
-    @include login-input;
     // 表单验证的提示信息
     .el-form-item__error {
       left: 10px;
@@ -75,6 +69,49 @@ $color: var(--primary-color);
   .reg {
     // 先隐藏注册
     transform: rotateY(180deg);
+  }
+}
+// 按钮
+// button样式
+.el-button--primary {
+  // active
+  transition: background var(--primary-during);
+  --el-button-bg-color: var(--login-btn-bg);
+  --el-button-border-color: var(--login-btn-bg);
+  --el-button-text-color: var(--login-btn-color);
+  outline: none;
+  --el-button-hover-bg-color: var(--login-btn-hover-bg);
+  --el-button-hover-border-color: var(--login-btn-hover-bg);
+  --el-button-hover-text-color: var(--login-btn-hover-color);
+  --el-button-active-bg-color: var(--login-btn-hover-bg);
+  --el-button-active-border-color: var(--login-btn-hover-bg);
+  --el-button-active-text-color: var(--login-btn-hover-color);
+  // disable
+  --el-button-disabled-bg-color: var(--login-disabled-bg);
+}
+// input
+.el-input__wrapper {
+  background-color: unset;
+  box-shadow: unset;
+  border-radius: unset;
+  border-bottom: 1px solid var(--login-input-underline-bg);
+  margin: 1px 11px;
+  padding: unset;
+  --el-color-danger: transparent;
+  input {
+    height: 24px;
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    transition: font-size var(--primary-during);
+    color: var(--login-input-color);
+    &:focus {
+      font-size: 15px;
+    }
+    &::placeholder {
+      color: var(--login-input-placeholder);
+    }
   }
 }
 </style>

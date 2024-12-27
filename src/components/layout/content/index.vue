@@ -20,6 +20,7 @@
     <template #body>
       <layout-content-menu />
     </template>
+    <slot name="outer"></slot>
   </context-menu>
 </template>
 
@@ -75,10 +76,8 @@ $aside-pd: 20px;
       gap: $item-gap;
       flex-wrap: wrap;
       position: relative;
-      justify-content: center;
-      // 610px
-      @media screen and (max-width: $scr-mi) {
-        display: flex;
+      justify-content: space-between;
+      @include media(sm) {
         justify-content: center;
       }
       ::v-deep(.title) {
@@ -92,19 +91,16 @@ $aside-pd: 20px;
         transition: transform var(--primary-during),
           flex var(--content-card-flex-during);
         box-shadow: v-bind(cardBoxShadow);
-        // 自适应1300px
-        @media screen and (max-width: $scr-md) {
+        @include media(md) {
           flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
         }
-        // 992px
-        @media screen and (max-width: $scr-sm) {
+        @include media(sm) {
           flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
         }
-        // 768px
-        @media screen and (max-width: $scr-xs) {
+        @include media(xs) {
           flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
         }
-        @media screen and (max-width: $scr-mi) {
+        @include media(mi) {
           flex: unset;
           width: 100%;
         }
@@ -136,21 +132,16 @@ $aside-pd: 20px;
     display: flex;
     flex-direction: column;
     gap: $item-gap;
-    // 自适应1300px
-    @media screen and (max-width: $scr-md) {
+    @include media(md) {
       width: 300px;
     }
-    @media screen and (max-width: $scr-mi) {
+    @include media(mi) {
       display: none;
     }
     ::v-deep(.item-aside) {
       position: relative;
       padding: $aside-pd;
       border-radius: var(--pages-card-radius);
-      // transition: transform var(--primary-during);
-      // &:hover {
-      //   transform: translateY($translate-y);
-      // }
     }
   }
   // 卡片颜色

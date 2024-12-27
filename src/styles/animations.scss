@@ -1,0 +1,55 @@
+// #region animation
+/// 为目标元素添加抖动动画效果。
+/// @param {Boolean} $target - 是否对指定目标应用动画，默认为 `false`。
+/// @param {Time} $during - 动画持续时间，默认为 `0.8s`。
+/// @param {Number} $scale - 抖动时的缩放比例，默认为 `1.1`。
+/// @param {Angle} $rotate - 抖动时的旋转角度，默认为 `5deg`。
+@mixin shake($target: false, $during: 0.8s, $scale: 1.1, $rotate: 5deg) {
+  &:hover {
+    @if $target {
+      #{$target} {
+        animation: shake $during infinite alternate-reverse;
+      }
+    } @else {
+      animation: shake $during infinite alternate-reverse;
+    }
+  }
+  @keyframes shake {
+    50% {
+      transform: scale($scale);
+    }
+    70% {
+      transform: scale($scale) rotate(-$rotate);
+    }
+    100% {
+      transform: scale($scale) rotate($rotate);
+    }
+  }
+}
+
+// 内容区域的侧边信息 的title头部相关
+@mixin content-aside-title($color) {
+  ::v-deep(.title) {
+    // 图标
+    i {
+      font-size: 1.4375rem;
+      color: $color;
+    }
+    // 引入悬浮动画
+    @include shake(i);
+    span {
+      font-size: 1.0625rem;
+      color: $color;
+      font-weight: bold;
+    }
+  }
+}
+
+// 页面中的跳转链接的悬浮函数
+@mixin pages-links-hover {
+  &:hover {
+    color: var(--pages-links-hover);
+    transition: color var(--primary-during);
+  }
+}
+// #endregion animation

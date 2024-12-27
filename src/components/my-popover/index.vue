@@ -61,8 +61,17 @@ $list: custom-popover-trigger;
 $menu-radius: 5px;
 $menu-border-width: 10px;
 $menu-color-light: v-bind(bg);
-// 悬浮动画
-@include menuHover(custom-popover, $list, v-bind(hoverTop));
+// 使用的嵌套写法 如果是菜单在body分开的话，定位有点死板
+@each $mEl in $list {
+  .#{$mEl}:hover {
+    > .custom-popover {
+      // 动画
+      pointer-events: unset;
+      top: v-bind(hoverTop);
+      opacity: 1;
+    }
+  }
+}
 .custom-popover {
   width: v-bind(width);
   height: v-bind(height);

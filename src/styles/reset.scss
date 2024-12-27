@@ -99,14 +99,12 @@ i {
 html {
   font-size: 16px;
 }
-// 自适应1300px
-@media screen and (max-width: $scr-md) {
+@include media(md) {
   html {
     font-size: 14px;
   }
 }
-// 992px
-@media screen and (max-width: $scr-sm) {
+@include media(sm) {
   html {
     font-size: 13.2px;
   }
@@ -115,8 +113,7 @@ html {
     --header-pd: 20px;
   }
 }
-// 768px
-@media screen and (max-width: $scr-xs) {
+@include media(xs) {
   // header
   :root {
     --header-pd: 20px;

@@ -51,12 +51,20 @@ nextTick(() => {
   }
 })
 </script>
-
 <style scoped lang="scss">
 // 需要悬浮的父级列表
 $list: custom-menu-trigger;
-// 引入头部变量
-@include menuHover(custom-menu, $list, v-bind(hoverTop));
+// 使用的嵌套写法 如果是菜单在body分开的话，定位有点死板
+@each $mEl in $list {
+  .#{$mEl}:hover {
+    > .custom-menu {
+      // 动画
+      pointer-events: unset;
+      top: v-bind(hoverTop);
+      opacity: 1;
+    }
+  }
+}
 $menu-radius: 5px;
 $menu-triangle-width: 10px;
 .custom-menu {

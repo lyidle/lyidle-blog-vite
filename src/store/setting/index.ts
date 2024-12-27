@@ -20,7 +20,6 @@ export const useSettingStore = defineStore(
         ? "var(--pages-shadow-fixed)"
         : "var(--pages-shadow)"
     })
-
     // 菜单信息
     // 是否全屏
     const isFullScreen = ref<boolean>(false)

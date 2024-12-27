@@ -149,7 +149,7 @@ a {
     }
   }
   .aside-switch {
-    @media screen and (max-width: $scr-mi) {
+    @include media(mi) {
       display: none;
     }
   }

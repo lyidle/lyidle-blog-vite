@@ -69,7 +69,7 @@ const props = withDefaults(
   defineProps<{
     data: any
     autoplay?: boolean
-    direction: "left" | "top"
+    direction?: "left" | "top"
     dur?: number
     gap?: number
   }>(),
@@ -242,8 +242,9 @@ const content = ref()
 
 // 组件挂载初始化
 onMounted(() => {
-  // 把第一个复制一份 添加到最后 实现无缝轮播
-  content.value.appendChild(itemInstance.value[0].cloneNode(true))
+  if (itemInstance.value?.[0])
+    // 把第一个复制一份 添加到最后 实现无缝轮播
+    content.value.appendChild(itemInstance.value?.[0].cloneNode(true))
   carousel.value.style[props.direction] = "0"
   // 确定 flex 布局方向
   content.value.style.flexDirection = map[props.direction]

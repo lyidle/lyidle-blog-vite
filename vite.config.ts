@@ -28,7 +28,11 @@ export default defineConfig(({ mode }) => {
         scss: {
           // scss全局变量的配置
           // javascriptEnabled: true,
-          additionalData: '@use "@/styles/variable.scss" as *;',
+          additionalData: `
+            @use "@/styles/variable.scss" as *;
+            @use "@/styles/mixins.scss" as *;
+            @use "@/styles/animations.scss" as *;
+          `,
           sassOptions: { quietDeps: true },
           api: "modern-compiler",
         },

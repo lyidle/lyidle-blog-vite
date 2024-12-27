@@ -54,6 +54,18 @@
         <template #update>{{ moment(item.updatedAt) }}</template>
       </layout-content-card>
     </template>
+    <template #content-end>
+      <div class="flex justify-center m-t-[var(--content-gap)]">
+        <el-pagination
+          v-if="pagination?.total"
+          background
+          layout="prev, pager, next, sizes"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 30]"
+          @change="reqArticles"
+        />
+      </div>
+    </template>
   </layout-content>
 </template>
 
@@ -61,8 +73,8 @@
 // 引入api
 import { getCarousel, getArticle } from "@/api/article"
 // 引入类型
-import { Article } from "@/api/article/types/getArticle"
-import { GetCarousel } from "@/api/article/types/getCarousel"
+import type { Article, Pagination } from "@/api/article/types/getArticle"
+import type { GetCarousel } from "@/api/article/types/getCarousel"
 // 引入moment格式化时间
 import moment from "@/utils/moment"
 
@@ -76,12 +88,13 @@ const reqCarousel = async () => {
   const Carousel = await getCarousel()
   carousel.value = Carousel
 }
+const pagination = ref<Pagination>()
 // 获取文章
-const reqArticles = async () => {
-  const Article = await getArticle()
+const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
+  const Article = await getArticle(currentPage, pageSize)
   article.value = Article?.article
+  pagination.value = Article?.pagination
 }
-
 // 初始化数据
 onMounted(async () => {
   await reqCarousel()

@@ -70,8 +70,7 @@ $header-content-pd: 20px;
   position: relative;
   height: 100%;
   display: none;
-  // 显示与隐藏
-  @media screen and (max-width: $scr-sm) {
+  @include media(sm) {
     display: flex;
   }
   .topnav {

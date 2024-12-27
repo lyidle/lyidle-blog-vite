@@ -1,5 +1,5 @@
 <template>
-  <context-menu>
+  <context-menu v-if="userInfo">
     <my-card class="item-aside">
       <template #body>
         <div class="aside-container aside-userinfo">
@@ -7,26 +7,28 @@
             <div class="avater">
               <router-link to="">
                 <img
-                  :src="userAvater"
+                  :src="userInfo.avater as string "
                   alt=""
                   class="w-100% h-100% object-cover"
                 />
               </router-link>
             </div>
             <div class="username font-size-1.5625rem text-center text">
-              {{ userUserName }}
+              {{ userInfo?.account }}
             </div>
-            <div class="signer text-center text">{{ userSigner }}</div>
+            <div class="signer text-center text" v-if="userInfo?.signer">
+              {{ userInfo.signer }}
+            </div>
           </div>
           <div class="pages">
             <layout-link-pages></layout-link-pages>
           </div>
-          <el-button type="primary" class="userinfo-btn">
+          <primary-button type="primary" class="userinfo-btn">
             <div class="tip">前往小窝</div>
             <div class="car">
               <icon-car></icon-car>
             </div>
-          </el-button>
+          </primary-button>
           <div class="links">
             <a
               href="https://res.abeim.cn/api/qq/?qq=912512766"
@@ -73,7 +75,11 @@
 <script setup lang="ts" name="IntroduceSelf">
 // 引入仓库
 import { useUserStore } from "@/store/user"
-const { userUserName, userAvater, userSigner } = storeToRefs(useUserStore())
+const { userInfo } = storeToRefs(useUserStore())
+const { reqUserInfo } = useUserStore()
+onMounted(async () => {
+  await reqUserInfo()
+})
 </script>
 
 <style scoped lang="scss">
@@ -115,7 +121,6 @@ $userinfo-btn-car-size: 25px;
     height: 35px;
     font-size: 1rem;
     border-radius: 20px;
-    @include primary-button;
     position: relative;
     .tip {
       position: absolute;
@@ -132,9 +137,23 @@ $userinfo-btn-car-size: 25px;
         height: $userinfo-btn-car-size;
         top: 0;
         left: 0;
+        animation: an-car infinite 2s linear;
       }
-      // 引入悬浮动画
-      @include car(svg, 2s, $userinfo-btn-car-size);
+      // 小车移动动画
+      @keyframes an-car {
+        0% {
+          left: 0;
+          opacity: 0;
+        }
+        50% {
+          left: calc(55% - $userinfo-btn-car-size);
+          opacity: 1;
+        }
+        100% {
+          left: calc(100% - $userinfo-btn-car-size);
+          opacity: 0;
+        }
+      }
     }
   }
   .links {
