@@ -18,7 +18,6 @@ const deleted = async (delArticle: any) => {
   await delArticle.destroy()
   // 得到对应数据
   const {
-    pages,
     category,
     userInfoId,
     tags: delTags,
