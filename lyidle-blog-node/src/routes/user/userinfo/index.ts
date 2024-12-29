@@ -2,14 +2,14 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwt, jwtExpand } from "@/middleware/auth"
+import { jwtMiddleware } from "@/middleware/auth"
 const router = express.Router()
 // 导入模型
 const { UserInfo, User } = require("@/db/models")
 // 获取当前token用户信息
 router.get(
   "/",
-  [jwt, jwtExpand],
+  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 处理基础信息

@@ -2,12 +2,12 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwt, jwtExpand } from "@/middleware/auth"
+import { jwtMiddleware } from "@/middleware/auth"
 const { User } = require("@/db/models")
 const router = express.Router()
 router.put(
   "/",
-  [jwt, jwtExpand],
+  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id, account, pwd, email, avater, signer, nickName, role } =

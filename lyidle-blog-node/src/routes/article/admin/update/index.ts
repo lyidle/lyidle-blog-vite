@@ -3,14 +3,14 @@ import express from "express"
 import type { FindOptions } from "sequelize"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwt, jwtExpand } from "@/middleware/auth"
+import { jwtMiddleware } from "@/middleware/auth"
 // 引入查找函数
 import findArticleFn from "@/routes/article/admin/find"
 
 const router = express.Router()
 router.put(
   "/",
-  [jwt, jwtExpand],
+  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 调用查找函数

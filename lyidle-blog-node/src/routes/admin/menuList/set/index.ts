@@ -2,7 +2,7 @@ import express from "express"
 // 类型
 import type { Request, Response, NextFunction } from "express"
 // 引入权限判断
-import { jwt, jwtExpand, isAdmin } from "@/middleware/auth"
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入模型
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()
@@ -33,7 +33,7 @@ const extractBannerImg = (data: any, result: any) => {
 // 设置菜单 增加和修改一体
 router.put(
   "/",
-  [jwt, jwtExpand, isAdmin],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body
     if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
