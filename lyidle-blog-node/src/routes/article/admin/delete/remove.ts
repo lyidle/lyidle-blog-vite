@@ -1,8 +1,13 @@
 // 引入查找文章的函数
 import findArticleFn from "@/routes/article/admin/find"
-const ms = require("ms")
+// 引入类型
+import type { TimeValue } from "@/utils/moment"
+// 引入moment
+import { convert } from "@/utils/moment"
 // 软删除文章的时间
-const delete_article_expire = ms(process.env.delete_article_expire)
+const delete_article_expire = convert(
+  process.env.delete_article_expire as TimeValue
+)
 // 彻底删除函数
 const deleted = async (Article: any) => {
   // 删除文章

@@ -53,9 +53,6 @@ importers:
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
       mysql2:
         specifier: ^3.11.5
         version: 3.11.5

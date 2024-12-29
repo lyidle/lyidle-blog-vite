@@ -1,5 +1,9 @@
 import express from "express"
+// 引入api
+// 发送注册邮箱
 import email from "@/routes/email/reg"
+// 引入 redis
+import { getKey } from "@/utils/redis"
 const router = express.Router()
 // 正则判断
 const { codeReg } = require("@/routes/user/reg/RegExp")
@@ -11,24 +15,18 @@ router.post("/", async (req, res, next) => {
   // 密码与确认密码不一致
   if (password !== confirmPassword)
     return res.result(void 0, "账号与密码不一致~", false, 400)
-  const { reg, msg } = codeReg
+  const { reg: codeRef, msg: codeMsg } = codeReg
   // 验证码不合格
-  if (!reg.test(code)) {
-    return res.result(void 0, msg, false, 400)
+  if (!codeRef.test(code)) {
+    return res.result(void 0, codeMsg, false, 400)
   }
   try {
-    const findRegEmail = await Email.findOne({
-      where: { email },
-    })
+    const findRegEmail = await getKey(`${email}:regCode`)
     // 判断有无找到
     if (findRegEmail === null) {
       return res.result(void 0, "请重新发送验证码~", false, 400)
     }
-    const { regCode: findCode, regExpiresAt } = findRegEmail.dataValues
-    // 判断验证码是否过期
-    if (regExpiresAt < new Date()) {
-      return res.result(void 0, "验证码过期~", false, 400)
-    }
+    const { regCode: findCode } = findRegEmail
     // 判断验证码是否符合
     if (findCode != code) {
       return res.result(void 0, "验证码不正确~", false, 400)

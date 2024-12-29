@@ -6,7 +6,8 @@ let client: ReturnType<typeof createClient>
  */
 export const redisClient = async () => {
   if (client) return //如果客户端已经初始化，则不再重复初始化
-  client = await createClient({ password: "123456" })
+  client = await createClient()
+    // await createClient({ password: "123456", name: "vite-blog" })
     .on("error", (err) => console.log("Redis 连接失败", err))
     .connect()
 }
@@ -26,8 +27,10 @@ export const setkey = async (
   await client.set(key, value)
   //如果提供了ttl，则设置过期时间
   if (ttl !== null) {
-    await client.expire(key, ttl)
+    // await client.expire(key, ttl) //ttl 单位秒
+    await client.pExpire(key, ttl) //ttl 单位毫秒
   }
+  return value ? JSON.parse(value) : null //如果value为空，返回null而不是抛出错误
 }
 
 /*

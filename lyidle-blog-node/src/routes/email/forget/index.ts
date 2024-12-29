@@ -97,5 +97,5 @@ const template = (email: string, code: string, createTime?: string) => {
 `
 }
 const router = Router()
-router.use(sendEmail("/email", "regCode", template))
+router.use(sendEmail("/email", "forgetCode", template))
 export default router
