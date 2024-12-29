@@ -2,10 +2,6 @@ import express from "express"
 import type { Request, Response, NextFunction } from "express"
 // 导入环境变量
 require("dotenv").config()
-// @ts-ignore
-if (JSON.parse(process.env.isPro)) {
-  require("module-alias/register")
-}
 
 const app = express()
 // api端口

@@ -1,0 +1,29 @@
+# 用于控制是否是开发模式 验证码发送邮箱 
+isPro=false
+# api 端口
+api_port=3000
+# web 端口
+web_port=3579
+# 默认用户组
+default_user='["user"]'
+# admin 用户组
+Admin='["admin"]'
+# 生成jwt 的 hash
+jwt_hash=参与hash的值
+# 邮箱服务
+email_host=smtp.office365.com
+email_port=587
+email_secure=false
+email_requireTLS=true
+email_user=账号
+email_pwd=密码
+# 注册邮箱的平台
+email_reg_stage=注册邮箱发送的邮件中的平台名字
+# 验证码有效期
+code_expire=10s
+# 软删除文章的时间
+delete_article_expire=10s
+# 软删除用户的时间
+delete_user_expire=10s
+# token过期时间
+token_expire=10s

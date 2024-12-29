@@ -8,21 +8,23 @@ const { Email } = require("@/db/models")
 import moment from "@/utils/moment"
 // 邮箱的配置
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
-  secure: JSON.parse(process.env.secure ? process.env.secure : "false"),
+  host: process.env.email_host,
+  port: process.env.email_port,
+  secure: JSON.parse(
+    process.env.email_secure ? process.env.email_secure : "false"
+  ),
   requireTLS: JSON.parse(
-    process.env.requireTLS ? process.env.requireTLS : "true"
+    process.env.email_requireTLS ? process.env.email_requireTLS : "true"
   ),
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PWD,
+    user: process.env.email_user,
+    pass: process.env.email_pwd,
   },
 })
 // 发送函数
 const sendMail = async (to: string, subject: string, html: string) => {
   const mailOptions = {
-    from: process.env.MAIL_USER, // 发送者
+    from: process.env.email_user, // 发送者
     to, // 接收者
     subject, // 主题
     html, // HTML内容
@@ -32,7 +34,7 @@ const sendMail = async (to: string, subject: string, html: string) => {
 // map用于暂存 销毁函数的定时器
 const map = new Map()
 // code过期时间
-const codeExpire = ms(process.env.RegCode_EXPIRE)
+const codeExpire = ms(process.env.code_expire)
 
 // 邮箱发送接口
 export default (

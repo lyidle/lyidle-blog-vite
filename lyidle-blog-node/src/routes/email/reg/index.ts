@@ -72,7 +72,7 @@ const template = (email: string, code: string, createTime?: string) => {
   <body>
     <div class="container">
       <div class="header">
-        <h2>欢迎加入${process.env.MAIL_PLAT}~</h2>
+        <h2>欢迎加入${process.env.email_reg_stage}~</h2>
       </div>
       <div class="content">
         <h2>亲爱的用户您好</h2>

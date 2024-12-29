@@ -8,7 +8,7 @@ const { User } = require("@/db/models")
 const { expressjwt } = require("express-jwt")
 
 export const jwt = expressjwt({
-  secret: process.env.HASH,
+  secret: process.env.jwt_hash,
   algorithms: ["HS256"],
 })
 
