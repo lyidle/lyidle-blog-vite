@@ -23,20 +23,34 @@ const deleted = async (delArticle: any) => {
     userInfoId,
     tags: delTags,
     userId,
+    length,
   } = delArticle.dataValues
   // 找到UserInfo
   const findUserInfo = await UserInfo.findByPk(userInfoId)
+
+  // 最终更新的 UserInfo信息
+  const result: any = {}
+  // 得到对应的tags和categories
+  const {
+    categories,
+    tags,
+    pages: userPages,
+    totalWords,
+  } = findUserInfo.dataValues
+
+  // 处理pages
+  result.pages = userPages - 1
+  // 处理总字数
+  result.totalWords = totalWords - length
+
   // 只有一篇则删除了userInfo也该去掉
-  if (pages === 1) {
+  if (result.pages === 1) {
     // 删除userInfo
     await findUserInfo.destroy()
     return
   }
-  // 最终更新的 UserInfo信息
-  const result: any = {}
-  // 得到对应的tags和categories
-  const { categories, tags } = findUserInfo.dataValues
 
+  // #region 处理category
   // 查找 文章中 是否还有对应的 category
   const { count } = await Article.findAndCountAll({
     where: { category },
@@ -47,6 +61,9 @@ const deleted = async (delArticle: any) => {
     // 去掉对应category
     result.categories = categories.filter((item: string) => item !== category)
   }
+  // #endregion 处理category
+
+  // #region 处理 tags
   // 查找 文章中 是否还有 tags
   // 先查找用户所有的tags
   const allTags = await Article.findAll({
@@ -81,6 +98,8 @@ const deleted = async (delArticle: any) => {
   const delDiff = [...delDiff1, ...delDiff2]
   // 整理 需要的标签 排除 delDiff
   result.tags = tags.filter((item: string) => !delDiff.includes(item))
+  // #endregion 处理 tags
+
   // 更新用户信息
   await findUserInfo.update(result)
 }
