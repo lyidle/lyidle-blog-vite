@@ -5,7 +5,7 @@ import myError from "@/utils/Error"
 // 引入类型
 import type { NextFunction } from "express"
 // 引入查询
-import { literal, Op } from "sequelize"
+import { Op } from "sequelize"
 // 引入时间转换
 const ms = require("ms")
 // 软删除文章的时间
