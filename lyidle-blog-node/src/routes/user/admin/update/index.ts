@@ -3,6 +3,8 @@ import express from "express"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
+// 引入redis
+import { delKey } from "@/utils/redis"
 const { User } = require("@/db/models")
 const router = express.Router()
 router.put(
@@ -12,7 +14,6 @@ router.put(
     try {
       const { id, account, pwd, email, avater, signer, nickName, role } =
         req.body
-
       // 都没有时返回没有找到
       if (
         !id ||
@@ -79,13 +80,10 @@ router.put(
         // 都通过加入更新
         result.email = email
       }
-
-      // 更新的用户失去token 信息 mysql
-      result.token = null
-      console.log(result)
       // 整理完毕更新
       await findUser.update(result)
-
+      // 删除对应id的token
+      await delKey(`token:${id}`)
       return res.result(void 0, "修改用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

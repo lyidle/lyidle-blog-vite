@@ -21,7 +21,7 @@ router.post("/", async (req, res, next) => {
     return res.result(void 0, codeMsg, false, 400)
   }
   try {
-    const findRegEmail = await getKey(`${email}:regCode`)
+    const findRegEmail = await getKey(`regCode:${email}`)
     // 判断有无找到
     if (findRegEmail === null) {
       return res.result(void 0, "请重新发送验证码~", false, 400)

@@ -1,7 +1,7 @@
 import express from "express"
 import { Op } from "sequelize"
 // 设置 token
-import setToken from "@/utils/setToken"
+import { setToken } from "@/utils/token"
 const router = express.Router()
 // 对比密码
 const bcrypt = require("bcryptjs")
@@ -48,8 +48,7 @@ router.get("/", async (req, res, next) => {
     // 剔除密码
     delete findUser.dataValues.pwd
     // 登录验证成功后创建 token
-    const token = setToken(findUser.dataValues)
-    await findUser.update({ token })
+    const token = await setToken(findUser.dataValues)
     return res.result({ token }, "登录成功~")
   } catch (error) {
     res.validateAuth(error, next, () => {

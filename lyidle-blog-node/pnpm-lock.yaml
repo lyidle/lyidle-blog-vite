@@ -23,6 +23,9 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       device-detector-js:
         specifier: ^3.0.3
         version: 3.0.3
@@ -47,12 +50,12 @@ importers:
       module-alias:
         specifier: ^2.2.3
         version: 2.2.3
-      moment:
-        specifier: ^2.30.1
-        version: 2.30.1
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       mysql2:
         specifier: ^3.11.5
         version: 3.11.5
@@ -389,6 +392,9 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -1555,6 +1561,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  dayjs@1.11.13: {}
 
   debug@2.6.9:
     dependencies:

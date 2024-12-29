@@ -24,6 +24,7 @@ export const setkey = async (
 ) => {
   if (!client) await redisClient() //确保客户端已初始化
   value = JSON.stringify(value) //将对象转换为JSON字符串
+  console.log(key, value)
   await client.set(key, value)
   //如果提供了ttl，则设置过期时间
   if (ttl !== null) {

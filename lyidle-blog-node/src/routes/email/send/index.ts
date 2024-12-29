@@ -1,11 +1,12 @@
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
-import type { TimeValue } from "@/utils/moment"
 // 引入 redis
 import { setkey, getKey } from "@/utils/redis"
 const nodemailer = require("nodemailer")
-// 引入moment
-import { format, convert } from "@/utils/moment"
+// 引入时间转换
+const ms = require("ms")
+// 引入dayjs
+import dayjs from "dayjs"
 // 邮箱的配置
 const transporter = nodemailer.createTransport({
   host: process.env.email_host,
@@ -32,8 +33,7 @@ const sendMail = async (to: string, subject: string, html: string) => {
   return await transporter.sendMail(mailOptions)
 }
 // code过期时间
-const codeExpire = convert(process.env.code_expire as TimeValue)
-
+const codeExpire = ms(process.env.code_expire)
 // 邮箱发送接口
 export default (
   route: string,
@@ -47,9 +47,13 @@ export default (
       // 生成6位随机验证码
       const code = Math.random().toString().slice(2, 8).padEnd(6, "0")
       // 生成邮件模板
-      const genHtml = template(email, code, format(new Date(), "LLL"))
+      const genHtml = template(
+        email,
+        code,
+        dayjs().format("YYYY-MM-DD HH:mm:ss")
+      )
       // redis 插入的键值
-      const cacheKey = `${email}:${setData}`
+      const cacheKey = `${setData}:${email}`
       // redis插入的数据
       const cacheValue: {
         [property: string]: any

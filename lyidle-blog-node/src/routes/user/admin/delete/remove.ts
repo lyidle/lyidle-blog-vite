@@ -1,10 +1,8 @@
-// 引入类型
-import type { TimeValue } from "@/utils/moment"
-// 引入moment
-import { convert } from "@/utils/moment"
+// 引入时间转换
+const ms = require("ms")
 const { User, Article, UserInfo, Email } = require("@/db/models")
 // 软删除用户的时间
-const delete_user_expire = convert(process.env.delete_user_expire as TimeValue)
+const delete_user_expire = ms(process.env.delete_user_expire)
 // 彻底删除函数
 const deleted = async (findUser: any, userId: number, email: string) => {
   // 删除文章

@@ -3,38 +3,22 @@ import express from "express"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
+// 引入搜素函数
+import search from "@/routes/user/search/search"
 const router = express.Router()
-// 导入模型
-const { UserInfo, User } = require("@/db/models")
 // 获取当前token用户信息
 router.get(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // 处理基础信息
-      const { id } = req.auth
-      // 查询用户信息 统计个数
-      const findUser = await User.findOne({
-        where: { id },
-        attributes: {
-          exclude: ["pwd", "status"],
-        },
-        include: [
-          {
-            model: UserInfo,
-            attributes: {
-              exclude: ["UserId", "userId"],
-            },
-          },
-        ],
-      })
-      if (!findUser?.dataValues?.token)
-        return res.result(void 0, "获取用户信息失败~", false)
-      return res.result(findUser, "获取用户信息成功~")
+      // 得到id
+      const id = req.auth.id
+      // 查询对应id的信息
+      await search({ id: id as string }, req, res, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "获取用户信息失败~", false)
+        res.result(void 0, "查询用户信息失败~", false)
       )
     }
   }
