@@ -1,4 +1,7 @@
+// 引入类型
 import type { NextFunction, Request, Response } from "express"
+// 引入 redis
+import { setkey, getKey } from "@/utils/redis"
 const ms = require("ms")
 const nodemailer = require("nodemailer")
 // 引入模型
