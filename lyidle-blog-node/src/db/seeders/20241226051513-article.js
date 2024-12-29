@@ -34,7 +34,7 @@ module.exports = {
         id: id, // 确保与 article 的 userInfoId 对应
         pages: 1,
         tags: article.tags,
-        categories: JSON.stringify(article.category),
+        categories: JSON.stringify([article.category]),
         userId: article.userId, // userid 对应
         totalWords: `${content.length}`,
       }

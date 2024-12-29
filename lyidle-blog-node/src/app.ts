@@ -51,10 +51,10 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   //token解析失败导致的错误
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)
-  if (err.name === "PermissionError~")
+  if (err.name === "PermissionError")
     return res.result(void 0, "没有权限访问~", false, 403)
   // 打印其他错误
-  // console.log(err)
+  console.log(err)
 })
 
 app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))

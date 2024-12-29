@@ -2,16 +2,17 @@
 const bcrypt = require("bcryptjs")
 /** @type {import('sequelize-cli').Migration} */
 // 导入环境变量
-const default_user = require("dotenv").config()
+require("dotenv").config()
+// 引入普通用户 权限组
+const default_user = process.env.default_user
 // 引入普通用户 权限组
 module.exports = {
   async up(queryInterface, Sequelize) {
-    console.log(default_user)
     const users = []
     const counts = 50
-    const roles = [...new Set(["user", "admin", "other"])]
+    const roles = [...new Set(...[default_user, "test", "other"])]
     const setRole = (i) => {
-      if (i === 1) return JSON.stringify(["admin", "webDev"])
+      if (i === 1) return JSON.stringify(["admin"])
       return JSON.stringify([
         ...new Set([roles[Math.floor(Math.random() * roles.length)]]),
       ])

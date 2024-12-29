@@ -12,7 +12,7 @@ router.delete(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await remove(req, res)
+      await remove(req, res, next)
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "删除文章失败~", false)

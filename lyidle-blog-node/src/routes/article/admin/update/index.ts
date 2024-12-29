@@ -6,7 +6,10 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入查找函数
 import findArticleFn from "@/routes/article/admin/find"
-
+// 引入error 函数
+import myError from "@/utils/Error"
+// 引入模型
+const { UserInfo } = require("@/db/models")
 const router = express.Router()
 router.put(
   "/",
@@ -19,13 +22,13 @@ router.put(
         res,
         ({ commend }: { commend: FindOptions }) => {
           commend.attributes = {
-            exclude: ["updatedAt", "UserId", "userId"],
+            exclude: ["updatedAt", "UserId"],
           }
         }
       )
       if (!findArticles?.id) return
       // 找到提取
-      const { findArticle, id } = findArticles
+      const { findArticle } = findArticles
       // 提取body 信息
       const {
         title,
@@ -40,6 +43,11 @@ router.put(
         status,
       } = req.body
 
+      // 判断是否是用户的文章
+      if (req.auth.id !== findArticle.dataValues.userId) {
+        next(new myError("PermissionError"))
+        return
+      }
       // article 更新的数据
       const result: any = {}
 
@@ -57,11 +65,9 @@ router.put(
       if (desc) result.desc = desc
       if (poster) result.poster = poster
       result.status = status ?? findArticle.dataValues.status
-
       // 更新数据
       const returnData = await findArticle.update(result)
-
-      // // 找到对应信息 更新
+      // 找到对应信息 更新
       // const findUserInfo = await UserInfo.findByPk(userId)
       // // 更新的数据
       // const updateData: any = {}
@@ -76,11 +82,9 @@ router.put(
       // // 新的总字数
       // updateData.totalWords = newTotalWords
       // // 判断article还有无旧的tags，来进行增删
-
       // // updateData.tags = tags
       // // 更新用户数据
       // findUserInfo.update(updateData, { where: { id } })
-
       res.result({ ...returnData.dataValues }, "修改文章成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

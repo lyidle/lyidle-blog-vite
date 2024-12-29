@@ -5,15 +5,15 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 const router = express.Router()
 // 引入模型
-const { Article, User, UserInfo } = require("@/db/models")
+const { Article, UserInfo } = require("@/db/models")
 router.post(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     const {
+      author,
       title,
       content,
-      author,
       category,
       tags,
       carousel,
@@ -21,10 +21,10 @@ router.post(
       poster,
       length,
     } = req.body
-    const data: any = {
+    const ArticleData: any = {
+      author,
       title,
       content,
-      author,
       category,
       tags,
       carousel: carousel ?? 0,
@@ -33,42 +33,42 @@ router.post(
       length,
     }
     try {
-      if (!author) return res.result(void 0, "文章作者不能为空哦~", false)
-      const findUser = await User.findOne({
-        where: { account: author },
-        attributes: ["id"],
-      })
-      if (findUser == null) {
-        return res.result(void 0, "当前作者不存在~", false)
-      }
-      const userId = findUser.id
-      data.userId = userId
-      // 创建文章
-      await Article.create(data)
+      // 设置用户id
+      const userId = req.auth.id
+      ArticleData.userId = userId
       // 查找用户信息
-      const findUserInfo = await UserInfo.findOne({
-        where: { userId: userId },
+      let findUserInfo = await UserInfo.findOne({
+        where: { userId },
       })
       // 没有就创建 用户信息
       if (!findUserInfo) {
-        await UserInfo.create({
+        findUserInfo = await UserInfo.create({
           pages: 1,
-          tags: [...new Set(tags)],
+          tags: [tags],
           categories: [category],
-          userId: userId,
+          userId,
           totalWords: Number(length),
         })
       }
       // 有则更新
       if (findUserInfo) {
-        const { pages, tags, categories, totalWords } = findUserInfo.dataValues
-        await findUserInfo.update({
+        const {
+          pages,
+          tags: findTags,
+          categories,
+          totalWords,
+        } = findUserInfo.dataValues
+        findUserInfo = await findUserInfo.update({
           pages: pages + 1,
-          tags: [...new Set([...tags, ...tags])],
-          categories: [...new Set([category, ...categories])],
+          tags: [tags, findTags],
+          categories: [category, categories],
           totalWords: Number(length) + Number(totalWords),
         })
       }
+      // 设置文章的用户信息id
+      ArticleData.userInfoId = findUserInfo.dataValues.id
+      // 创建文章
+      await Article.create(ArticleData)
       return res.result(void 0, "增加文章成功~")
     } catch (err) {
       return res.validateAuth(err, next, () =>

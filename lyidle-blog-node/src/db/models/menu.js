@@ -1,7 +1,5 @@
 "use strict"
 const { Model } = require("sequelize")
-// 引入普通用户 权限组
-const default_user = JSON.parse(process.env.default_user)
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     /**
@@ -57,8 +55,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "角色不能为空哦~" },
           set(value) {
             if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
-            // 保证至少有个 普通用户组的权限
-            const result = [...new Set([value, default_user].flat(Infinity))]
+            const result = [...new Set([value].flat(Infinity))]
             this.setDataValue("role", result)
           },
         },
