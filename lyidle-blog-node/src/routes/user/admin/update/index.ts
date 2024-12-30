@@ -4,9 +4,11 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
-import { setkey, delKey } from "@/utils/redis"
+const { setKey, delKey } = require("@/utils/redis")
 // 引入错误函数
 import myError from "@/utils/Error"
+// 设置token
+import { setToken } from "@/utils/token"
 const { User } = require("@/db/models")
 const router = express.Router()
 router.put(
@@ -52,12 +54,12 @@ router.put(
         email: userEmail,
       } = findUser.dataValues
 
-      // 错误信息汇总
-      const erroArray: string[] = []
-      // 判断是否重复
-      if (account == userAccount) erroArray.push("账号不能和旧的账号重复~")
-      if (email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
-      if (erroArray.length) return res.result(void 0, erroArray, false)
+      // // 错误信息汇总
+      // const erroArray: string[] = []
+      // // 判断是否重复
+      // if (account == userAccount) erroArray.push("账号不能和旧的账号重复~")
+      // if (email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
+      // if (erroArray.length) return res.result(void 0, erroArray, false)
 
       // 都通过加入更新
       findUser.set("account", account || userAccount)
@@ -75,18 +77,10 @@ router.put(
         //删除token
         await delKey(`token:${id}`)
       else {
-        // 整理token
-        let token: Partial<typeof req.auth> = {}
-        token.id = dataValues.id
-        token.account = dataValues.account
-        token.avater = dataValues.avater
-        token.signer = dataValues.signer
-        token.email = dataValues.email
-        token.nickName = dataValues.nickName
-        token.role = dataValues.role
-        await setkey(`token:${id}`, token)
+        await setToken(dataValues)
       }
-
+      // 删除对应用户信息缓存
+      await delKey(`userInfo:${id}`)
       return res.result(void 0, "修改用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

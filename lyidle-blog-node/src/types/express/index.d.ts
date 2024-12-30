@@ -7,8 +7,8 @@ declare global {
         id: number | string
         account: string
         nickName: string
-        avater?: string
-        signer?: string
+        avater?: string | null
+        signer?: string | null
         email: string
         role: string
         iat?: Date

@@ -1,56 +1,53 @@
 import express from "express"
-// 引入统计访问量
-import visitor from "./visitor"
 const router = express.Router()
 // 引入模型
-const { Article, Visitor, User, UserInfo, Setting } = require("@/db/models")
+const { Article, Visitor, User, Setting } = require("@/db/models")
+// 引入 redis 设置缓存
+const { setKey, getKey, delKey } = require("@/utils/redis")
 router.get("/", async (req, res, next) => {
   try {
-    // 统计访客信息
-    await visitor(req, next)
+    // 获取创建站的时间
+    const webCreatedAt = await getKey("webCreatedAt")
+
+    // 获取到访客数量
+    let touristCounts = +(await getKey("touristCounts"))
+    if (!touristCounts) {
+      // 查询游客量
+      touristCounts = await Visitor.count()
+      await setKey("touristCounts", touristCounts)
+    }
 
     // 查询用户数量
-    const { count: webUserCounts, rows } = await User.findAndCountAll({
-      where: { isBin: 0 },
-      include: [
-        {
-          model: UserInfo,
-          attributes: { exclude: ["UserId"] },
-        },
-      ],
-      attributes: ["id"],
-    })
+    const webUserCounts = +(await getKey("userCounts"))
 
-    // 查询最后一篇文章更新时间
-    const { count: webTotalPages, rows: findUpdated } =
-      await Article.findAndCountAll({
+    // 总访问量
+    const webTotalPersonCounts = webUserCounts + touristCounts
+
+    // 网页总数
+    const webTotalPages = +(await getKey("webTotalPages"))
+
+    // 最后更新时间
+    const webUpdatedAt = await getKey("webUpdatedAt")
+
+    // 获取字数
+    let totalWords = await getKey("totalWords")
+    if (!totalWords) {
+      // 查询所有文章 统计字数
+      const totalWordsData = await Article.findAll({
         where: { isBin: 0 },
         order: [
           ["updatedAt", "desc"],
           ["id", "desc"],
         ],
-        attributes: ["updatedAt"],
+        attributes: ["length"],
       })
 
-    // 处理 最后更新时间
-    const webUpdatedAt =
-      JSON.stringify(findUpdated) === "[]"
-        ? null
-        : findUpdated[findUpdated.length - 1].dataValues.updatedAt
-
-    // 查询建站时间
-    const findCreated = await Setting.findOne({
-      where: { name: "createWedbAt" },
-      attributes: ["content"],
-    })
-    // 处理创站时间
-    const webCreatedAt = findCreated?.dataValues?.content ?? null
-
-    // 查询游客量
-    const touristCounts = await Visitor.count()
-
-    // 总访问量
-    const webTotalPersonCounts = webUserCounts + touristCounts
+      let totalCounts = 0
+      for (const data of JSON.parse(JSON.stringify(totalWordsData))) {
+        totalCounts += data.length
+      }
+      totalWords = await setKey("totalWords", totalCounts)
+    }
 
     return res.result(
       {
@@ -67,7 +64,7 @@ router.get("/", async (req, res, next) => {
         // 文章最后更新时间
         webUpdatedAt,
         // Words统计
-        totalWordsData: rows,
+        totalWords,
       },
       "查询网站咨询成功~"
     )

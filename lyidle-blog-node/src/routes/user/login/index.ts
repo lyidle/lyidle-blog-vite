@@ -9,6 +9,8 @@ const bcrypt = require("bcryptjs")
 const { accountReg, pwdReg } = require("@/routes/user/reg/RegExp")
 // 引入模型
 const { User } = require("@/db/models")
+// 引入 redis 设置缓存
+const { delKey } = require("@/utils/redis")
 router.get("/", async (req, res, next) => {
   try {
     const { account, password } = req.query
@@ -49,6 +51,7 @@ router.get("/", async (req, res, next) => {
     delete findUser.dataValues.pwd
     // 登录验证成功后创建 token
     const token = await setToken(findUser.dataValues)
+    await delKey(`userInfo:${findUser.dataValues.id}`)
     return res.result({ token }, "登录成功~")
   } catch (error) {
     res.validateAuth(error, next, () => {

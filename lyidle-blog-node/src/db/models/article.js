@@ -10,8 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // 一篇文章属于一个用户
       Article.belongsTo(models.User)
-      // 一篇文章属于一个用户信息
-      Article.belongsTo(models.UserInfo)
     }
   }
   Article.init(
@@ -97,15 +95,6 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "用户id不能为空哦~" },
           notEmpty: { msg: "用户id不能为空哦~" },
           isInt: { msg: "用户id必须要是个整数哦~" },
-        },
-      },
-      userInfoId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "用户信息id不能为空哦~" },
-          notEmpty: { msg: "用户信息id不能为空哦~" },
-          isInt: { msg: "用户信息id必须要是个整数哦~" },
         },
       },
       isBin: {

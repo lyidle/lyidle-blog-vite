@@ -1,5 +1,7 @@
 "use strict"
 const { Model } = require("sequelize")
+// 清除缓存
+const { setKey, getKey } = require("@/utils/redis")
 module.exports = (sequelize, DataTypes) => {
   class Visitor extends Model {
     /**
@@ -22,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
           async isUnique(value) {
             const find = await Visitor.findOne({ where: { name: value } })
             if (find) throw new Error("访客标识不能重复哦")
+            // 获取到访客数量
+            let touristCounts = +(await getKey("touristCounts"))
+            await setKey("touristCounts", touristCounts + 1)
           },
         },
       },

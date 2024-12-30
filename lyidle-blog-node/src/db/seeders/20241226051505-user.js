@@ -21,7 +21,7 @@ module.exports = {
       users.push({
         account: `test${i}`,
         nickName: "test",
-        pwd: bcrypt.hashSync(`test${i}@Aa`, 10),
+        pwd: bcrypt.hashSync(`123456`, 10),
         email: `${i}@qq.com`,
         role: setRole(i),
         createdAt: new Date(),

@@ -7,6 +7,8 @@ import user from "@/routes/user"
 import article from "@/routes/article"
 // 引入 api/webInfo
 import webInfo from "@/routes/webInfo"
+// 引入 api/visitor
+import visitor from "@/routes/visitor"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
@@ -15,6 +17,7 @@ router.get("/", (req, res) => {
 // 挂载路由
 router.use("/admin", admin)
 router.use("/user", user)
+router.use("/visitor", visitor)
 router.use("/article", article)
 router.use("/webInfo", webInfo)
 module.exports = router

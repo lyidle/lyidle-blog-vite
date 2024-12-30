@@ -1,7 +1,7 @@
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 redis
-import { setkey, getKey } from "@/utils/redis"
+const { setKey, getKey } = require("@/utils/redis")
 const nodemailer = require("nodemailer")
 // 引入时间转换
 const ms = require("ms")
@@ -34,6 +34,7 @@ const sendMail = async (to: string, subject: string, html: string) => {
 }
 // code过期时间
 const codeExpire = ms(process.env.code_expire)
+
 // 邮箱发送接口
 export default (
   route: string,
@@ -44,6 +45,24 @@ export default (
     route as string,
     async (req: Request, res: Response, next: NextFunction) => {
       const { email } = req.body
+      // redis 插入的键值
+      const cacheKey = `${setData}:${email}`
+      // 获取redis的数据
+      let result = await getKey(cacheKey)
+      if (result) {
+        if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
+          return res.result(
+            void 0,
+            `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
+            false
+          )
+        else
+          return res.result(
+            result,
+            `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
+            false
+          )
+      }
       // 生成6位随机验证码
       const code = Math.random().toString().slice(2, 8).padEnd(6, "0")
       // 生成邮件模板
@@ -52,8 +71,6 @@ export default (
         code,
         dayjs().format("YYYY-MM-DD HH:mm:ss")
       )
-      // redis 插入的键值
-      const cacheKey = `${setData}:${email}`
       // redis插入的数据
       const cacheValue: {
         [property: string]: any
@@ -62,12 +79,8 @@ export default (
       }
       // 更具传递的参数生成 是 发送的什么邮件
       cacheValue[setData] = code
-      // 获取redis的数据
-      let result = await getKey(cacheKey)
       // 如果redis没有 则设置
-      if (!result) {
-        result = await setkey(cacheKey, cacheValue, codeExpire)
-      }
+      result = await setKey(cacheKey, cacheValue, codeExpire)
       try {
         // 发送邮件
         if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
@@ -77,7 +90,9 @@ export default (
           res.result(void 0, "发送邮件失败~", false)
         )
       }
-      return res.result(result, "发送邮件成功~")
+      if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
+        return res.result(void 0, "发送邮件成功~")
+      else return res.result(result, "发送邮件成功~")
     }
   )
 }

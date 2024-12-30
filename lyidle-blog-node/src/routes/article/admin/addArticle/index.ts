@@ -5,24 +5,17 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 const router = express.Router()
 // 引入模型
-const { Article, UserInfo } = require("@/db/models")
+const { Article } = require("@/db/models")
+// 引入 redis 设置缓存
+const { setKey, getKey, delKey } = require("@/utils/redis")
 router.post(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    const {
-      author,
-      title,
-      content,
-      category,
-      tags,
-      carousel,
-      desc,
-      poster,
-      length,
-    } = req.body
+    const { title, content, category, tags, carousel, desc, poster, length } =
+      req.body
     const ArticleData: any = {
-      author,
+      author: req.auth.account,
       title,
       content,
       category,
@@ -31,44 +24,20 @@ router.post(
       desc,
       poster,
       length,
+      userId: req.auth.id,
     }
     try {
-      // 设置用户id
-      const userId = req.auth.id
-      ArticleData.userId = userId
-      // 查找用户信息
-      let findUserInfo = await UserInfo.findOne({
-        where: { userId },
-      })
-      // 没有就创建 用户信息
-      if (!findUserInfo) {
-        findUserInfo = await UserInfo.create({
-          pages: 1,
-          tags: [tags],
-          categories: [category],
-          userId,
-          totalWords: Number(length),
-        })
-      }
-      // 有则更新
-      if (findUserInfo) {
-        const {
-          pages,
-          tags: findTags,
-          categories,
-          totalWords,
-        } = findUserInfo.dataValues
-        findUserInfo = await findUserInfo.update({
-          pages: pages + 1,
-          tags: [tags, findTags],
-          categories: [category, categories],
-          totalWords: Number(length) + Number(totalWords),
-        })
-      }
-      // 设置文章的用户信息id
-      ArticleData.userInfoId = findUserInfo.dataValues.id
       // 创建文章
       await Article.create(ArticleData)
+      // 创建成功文章数 +1
+      const webTotalPages = await getKey("webTotalPages")
+      await setKey("webTotalPages", +webTotalPages + 1)
+      // 网站文章最新更新时间 刷新
+      await setKey("webUpdatedAt", new Date())
+      // 删除总字数统计缓存
+      await delKey("totalWords")
+      // 删除用户信息缓存
+      await delKey(`userInfo:${ArticleData.userId}`)
       return res.result(void 0, "增加文章成功~")
     } catch (err) {
       return res.validateAuth(err, next, () =>

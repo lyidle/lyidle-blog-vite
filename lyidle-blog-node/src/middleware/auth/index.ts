@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "express"
 // 引用封装的错误函数
 import myError from "@/utils/Error"
 // 引入redis
-import { getKey } from "@/utils/redis"
+const { getKey } = require("@/utils/redis")
 // 引入jwt
 import { expressjwt } from "express-jwt"
 

@@ -1,5 +1,7 @@
 import express from "express"
 import type { Request, Response, NextFunction } from "express"
+// 引入初始化
+import initialEnvironment from "@/utils/initial"
 // 导入环境变量
 require("dotenv").config()
 
@@ -28,6 +30,8 @@ app.use(RequestExtension)
 
 // 导入路由
 const api = require("@/routes")
+
+;(async () => await initialEnvironment())()
 
 app.get("/", (req, res) => {
   res.send("hello")

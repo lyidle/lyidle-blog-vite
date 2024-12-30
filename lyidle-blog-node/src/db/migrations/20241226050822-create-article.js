@@ -53,14 +53,6 @@ module.exports = {
           key: "id",
         },
       },
-      userInfoId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "UserInfos",
-          key: "id",
-        },
-      },
       isBin: {
         type: Sequelize.TINYINT,
         allowNull: false,

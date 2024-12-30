@@ -23,8 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // 一个用户可以有多篇文章
       User.hasMany(models.Article)
-      // 一个用户有一个用户信息
-      User.hasOne(models.UserInfo)
     }
   }
   User.init(

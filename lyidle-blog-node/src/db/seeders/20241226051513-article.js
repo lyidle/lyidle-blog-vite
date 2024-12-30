@@ -5,7 +5,6 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     // 文章数组
     const articles = []
-    const userInfo = []
     const counts = 50
     const category = ["前端", "后端", "软件", "游戏", "test88888"]
     const tags = ["html", "css", "js", "test8888"]
@@ -22,7 +21,6 @@ module.exports = {
         category: category[Math.floor(Math.random() * category.length)],
         tags: JSON.stringify([tags[Math.floor(Math.random() * tags.length)]]),
         userId: id, //与user id 对应
-        userInfoId: id, // 与 userinfo id对应
         carousel: [0, 1][Math.floor(Math.random() * 2)],
         desc: `文章的描述${i}`,
         length: content.length,
@@ -30,26 +28,12 @@ module.exports = {
         updatedAt: new Date(),
       }
 
-      const user = {
-        id: id, // 确保与 article 的 userInfoId 对应
-        pages: 1,
-        tags: article.tags,
-        categories: JSON.stringify([article.category]),
-        userId: article.userId, // userid 对应
-        totalWords: `${content.length}`,
-      }
       articles.push(article)
-      userInfo.push(user)
     }
-
-    // 先插入 UserInfos 表数据
-    await queryInterface.bulkInsert("UserInfos", userInfo, {})
-
     // 再插入 Articles 表数据
     await queryInterface.bulkInsert("Articles", articles, {})
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("Articles", null, {})
-    await queryInterface.bulkDelete("UserInfos", null, {})
   },
 }

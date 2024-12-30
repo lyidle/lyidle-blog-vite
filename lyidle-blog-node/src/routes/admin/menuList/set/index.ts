@@ -3,6 +3,8 @@ import express from "express"
 import type { Request, Response, NextFunction } from "express"
 // 引入权限判断
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+// 引入redis 更新缓存
+const { delKey } = require("@/utils/redis")
 // 引入模型
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()
@@ -80,6 +82,8 @@ router.put(
           }
         }
       }
+      // 删除缓存
+      await delKey("menuList")
       return res.result(void 0, "设置菜单成功~")
     } catch (error) {
       return res.validateAuth(error, next, () =>

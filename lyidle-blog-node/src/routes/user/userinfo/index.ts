@@ -6,7 +6,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入搜素函数
 import search from "@/routes/user/search/search"
 // 引入redis
-import { getKey } from "@/utils/redis"
+const { setKey, getKey } = require("@/utils/redis")
 const router = express.Router()
 // 获取当前token用户信息
 router.get(
@@ -16,17 +16,13 @@ router.get(
     try {
       // 得到id
       const id = req.auth.id
+      // 缓存用户信息
+      const cacheValue = await getKey(`userInfo:${id}`)
+      if (cacheValue) return res.result(cacheValue, "查询用户信息成功~")
       // 查询对应id的信息
-      await search(
-        { id: id as string },
-        req,
-        res,
-        true,
-        async ({ findUser }: { findUser: any }) => {
-          // 增加token信息
-          findUser[0].dataValues.token = await getKey(`token:${id}`)
-        }
-      )
+      const findUser = await search({ id: id as string }, req, res, true)
+      // 存储用户信息 到 redis
+      await setKey(`userInfo:${id}`, findUser)
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "查询用户信息失败~", false)

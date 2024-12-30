@@ -2,22 +2,32 @@
 import myError from "@/utils/Error"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
+// 引入redis
+const { delKey, setKey, getKey } = require("@/utils/redis")
 // 引入时间转换
 const ms = require("ms")
-const { User, Article, UserInfo, Email } = require("@/db/models")
+const { User, Article } = require("@/db/models")
 // 软删除用户的时间
 const delete_user_expire = ms(process.env.delete_user_expire)
 // 彻底删除函数
 const deleted = async (findUser: any, userId: number, email: string) => {
   // 删除文章
   await Article.destroy({ where: { userId } })
-  // 删除 邮箱
-  await Email.destroy({ where: { email } })
-  // 删除 用户信息
-  await UserInfo.destroy({ where: { userId } })
   // 删除用户
   await findUser.destroy()
+  // 删除token
+  await delKey(`token:${userId}`)
+  // 删除临时的userBin
+  await delKey(`userBin:${userId}`)
+  // 删除时用户数量-1
+  const userCounts = await getKey("userCounts")
+  await setKey("userCounts", +userCounts - 1)
+  // 删除对应用户信息缓存
+  await delKey(`userInfo:${userId}`)
+  // 删除文章的缓存
+  await delKey(`totalWords`)
 }
+
 // 删除函数await
 const remove = async (
   req: Request,
@@ -45,7 +55,7 @@ const remove = async (
   // 没有找到用户
   if (!findUser) return res.result(void 0, "没有找到用户哦~", false, 404)
 
-  // 判断是否是用户的文章
+  // 判断是否是该用户
   if (req.auth.id !== findUser.dataValues.id) {
     next(new myError("PermissionError"))
     return
@@ -54,8 +64,12 @@ const remove = async (
   // 提取需要的信息
   const { email, id: userId } = findUser.dataValues
   if (bin) {
+    // 只能点击移动到一次垃圾桶
+    const isBin = await getKey(`userBin:${userId}`)
+    if (isBin) return res.result(void 0, "请勿重复操作~", false)
     const data = { isBin: 1 }
     await findUser.update(data, { where: { id: userId } })
+    await setKey(`userBin:${userId}`, true)
     // 到时间自动删除
     let tim: NodeJS.Timeout | null = setTimeout(async () => {
       // 查询是否真的移除用户
@@ -70,6 +84,7 @@ const remove = async (
     }, delete_user_expire)
     return res.result(void 0, "用户成功移动到回收站~")
   }
+
   // 彻底删除
   await deleted(findUser, userId, email)
   return res.result(void 0, "删除用户成功~")

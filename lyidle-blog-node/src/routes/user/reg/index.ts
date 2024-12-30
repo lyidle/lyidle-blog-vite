@@ -2,13 +2,13 @@ import express from "express"
 // 引入api
 // 发送注册邮箱
 import email from "@/routes/email/reg"
-// 引入 redis
-import { getKey } from "@/utils/redis"
+// 引入 redis 设置缓存
+const { setKey, getKey, delKey } = require("@/utils/redis")
 const router = express.Router()
 // 正则判断
 const { codeReg } = require("@/routes/user/reg/RegExp")
 // 引入模型
-const { Email, User } = require("@/db/models")
+const { User } = require("@/db/models")
 // 注册接口
 router.post("/", async (req, res, next) => {
   const { account, nickName, email, code, password, confirmPassword } = req.body
@@ -40,6 +40,11 @@ router.post("/", async (req, res, next) => {
     }
     // 通过校验插入用户 插入用户组 sequelize模型设置了验证器
     await User.create(user)
+    // 注册成功后删除缓存
+    await delKey(`regCode:${email}`)
+    // 注册成功用户数+1
+    const userCounts = await getKey("userCounts")
+    await setKey("userCounts", +userCounts + 1)
     return res.result(void 0, "注册成功~")
   } catch (err: any) {
     return res.validateAuth(err, next, () =>

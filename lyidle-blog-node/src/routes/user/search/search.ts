@@ -2,7 +2,7 @@ import { Op, literal } from "sequelize"
 // 引入类型
 import { Request, Response } from "express"
 // 导入模型
-const { Article, User, UserInfo } = require("@/db/models")
+const { Article, User } = require("@/db/models")
 interface RequestData {
   id?: string
   account?: string
@@ -15,23 +15,20 @@ export default async (
   data: RequestData | Request["query"],
   req: Request,
   res: Response,
-  exact?: boolean,
-  cb?: Function
+  exact?: boolean
 ) => {
   const { id, account, email, role, nickName } = data
+
   const commend: any = {
     include: [
       {
         model: Article, // 包括 Article 模型
-        attributes: ["title", "category", "tags", "userId"], // 可以指定要查询的字段
-      },
-      {
-        model: UserInfo, // 包括 Article 模型
-        attributes: { exclude: ["UserId"] },
+        attributes: ["title", "category", "tags", "userId", "length", "id"], // 可以指定要查询的字段
       },
     ],
     attributes: { exclude: ["pwd"] },
   }
+
   if (!(id || account || email || role || nickName))
     return res.result(
       void 0,
@@ -39,33 +36,40 @@ export default async (
       false,
       400
     )
+
   // 按照nickName查询
   if (nickName)
     commend.where = {
       nickName: { [Op.like]: `%${nickName}%` },
     }
+
   // 按照nickName精确查询
   if (nickName && exact)
     commend.where = {
       nickName: nickName,
     }
+
   // 按照角色查询
   if (role) commend.where = literal(`JSON_CONTAINS(role, '"${role}"')`)
+
   // 按照邮箱查询
   if (email)
     commend.where = {
       email,
     }
+
   // 按照账号查询
   if (account)
     commend.where = {
       account: { [Op.like]: `%${account}%` },
     }
+
   // 按照账号精确查询
   if (account && exact)
     commend.where = {
       account: account,
     }
+
   // 按照id查询
   if (id) {
     commend.where = {
@@ -77,6 +81,6 @@ export default async (
   const findUser = await User.findAll(commend)
   if (JSON.stringify(findUser) === "[]")
     return res.result(void 0, "查询用户信息失败~", false)
-  cb && (await cb({ findUser }))
-  return res.result(findUser, "查询用户信息成功~")
+  res.result(findUser, "查询用户信息成功~")
+  return findUser
 }
