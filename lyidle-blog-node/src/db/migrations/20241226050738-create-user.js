@@ -37,9 +37,6 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false,
       },
-      token: {
-        type: Sequelize.STRING(500),
-      },
       status: {
         type: Sequelize.TINYINT,
         allowNull: false,

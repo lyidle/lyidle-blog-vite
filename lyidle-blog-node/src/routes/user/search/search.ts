@@ -15,7 +15,8 @@ export default async (
   data: RequestData | Request["query"],
   req: Request,
   res: Response,
-  exact?: boolean
+  exact?: boolean,
+  cb?: Function
 ) => {
   const { id, account, email, role, nickName } = data
   const commend: any = {
@@ -74,9 +75,8 @@ export default async (
   commend.where.status = 0
   // 查询用户的所有文章
   const findUser = await User.findAll(commend)
-  // 计算数量
-  // await totalCounts(findUser)
   if (JSON.stringify(findUser) === "[]")
     return res.result(void 0, "查询用户信息失败~", false)
+  cb && (await cb({ findUser }))
   return res.result(findUser, "查询用户信息成功~")
 }

@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs")
 // 导入环境变量
 require("dotenv").config()
 // 引入普通用户 权限组
-const default_user = process.env.default_user
+const default_user = JSON.parse(process.env.default_user)
 // 引入普通用户 权限组
 module.exports = {
   async up(queryInterface, Sequelize) {

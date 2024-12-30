@@ -1,5 +1,9 @@
 "use strict"
 const { Model } = require("sequelize")
+// 导入环境变量
+require("dotenv").config()
+// 引入普通用户 权限组
+const default_user = JSON.parse(process.env.default_user)
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     /**
@@ -53,11 +57,11 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "角色不能为空哦~" },
           notEmpty: { msg: "角色不能为空哦~" },
-          set(value) {
-            if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
-            const result = [...new Set([value].flat(Infinity))]
-            this.setDataValue("role", result)
-          },
+        },
+        set(value) {
+          if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
+          const result = [...new Set([value, default_user].flat(Infinity))]
+          this.setDataValue("role", result)
         },
       },
     },

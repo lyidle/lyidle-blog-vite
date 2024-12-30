@@ -4,7 +4,9 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
-import { delKey } from "@/utils/redis"
+import { setkey, delKey } from "@/utils/redis"
+// 引入错误函数
+import myError from "@/utils/Error"
 const { User } = require("@/db/models")
 const router = express.Router()
 router.put(
@@ -29,7 +31,6 @@ router.put(
         )
       )
         return res.result(void 0, "没有找到对应用户信息~", false)
-
       // 查询
       const findUser = await User.findByPk(id, {
         attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -38,23 +39,18 @@ router.put(
       // 判断有无找到用户
       if (!findUser) return res.result(void 0, "没有找到对应用户信息~", false)
 
+      // 判断是否是用户的文章
+      if (req.auth.id !== findUser.dataValues.id) {
+        next(new myError("PermissionError"))
+        return
+      }
+
       // 提取需要的变量
       const {
         account: userAccount,
         nickName: userNickName,
         email: userEmail,
       } = findUser.dataValues
-
-      // 提取变量 可以直接放入的
-      const result: any = {}
-      // 整理数据
-      result.avater = avater ?? null
-      result.signer = signer ?? null
-      result.nickName = nickName || userNickName
-      // 判断有无值
-      if (result.pwd) result.pwd = pwd
-      // 判断有无值
-      result.role = role ?? ["user"]
 
       // 错误信息汇总
       const erroArray: string[] = []
@@ -63,27 +59,34 @@ router.put(
       if (email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
       if (erroArray.length) return res.result(void 0, erroArray, false)
 
-      // 判断账号是否重复
-      if (account) {
-        // 查询是否重名
-        const findAccount = await User.findOne({ where: { account } })
-        if (findAccount) return res.result(void 0, "账号名重复了~", false)
-        // 都通过加入更新
-        result.account = account
+      // 都通过加入更新
+      findUser.set("account", account || userAccount)
+      findUser.set("nickName", nickName || userNickName)
+      if (pwd) findUser.set("pwd", pwd)
+      findUser.set("email", email || userEmail)
+      findUser.set("avater", avater || null)
+      findUser.set("signer", signer || null)
+      findUser.set("role", role || [])
+      // 更新数据库
+      const { dataValues } = await findUser.save()
+
+      // 改变了pwd 需要重新登录
+      if (pwd)
+        //删除token
+        await delKey(`token:${id}`)
+      else {
+        // 整理token
+        let token: Partial<typeof req.auth> = {}
+        token.id = dataValues.id
+        token.account = dataValues.account
+        token.avater = dataValues.avater
+        token.signer = dataValues.signer
+        token.email = dataValues.email
+        token.nickName = dataValues.nickName
+        token.role = dataValues.role
+        await setkey(`token:${id}`, token)
       }
 
-      // 判断邮箱是否重复
-      if (email) {
-        // 查询是否重名
-        const findEmail = await User.findOne({ where: { email } })
-        if (findEmail) return res.result(void 0, "邮箱重复了~", false)
-        // 都通过加入更新
-        result.email = email
-      }
-      // 整理完毕更新
-      await findUser.update(result)
-      // 删除对应id的token
-      await delKey(`token:${id}`)
       return res.result(void 0, "修改用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

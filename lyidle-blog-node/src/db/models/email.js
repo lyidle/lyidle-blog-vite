@@ -39,18 +39,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         validate: {
           isDate: { msg: "只允许设置日期字符串哦~" },
-          get(value) {
-            return new Date(value)
-          },
+        },
+        get(value) {
+          return new Date(value)
         },
       },
       forgetExpiresAt: {
         type: DataTypes.DATE,
         validate: {
           isDate: { msg: "只允许设置日期字符串哦~" },
-          get(value) {
-            return new Date(value)
-          },
+        },
+        get(value) {
+          return new Date(value)
         },
       },
     },
