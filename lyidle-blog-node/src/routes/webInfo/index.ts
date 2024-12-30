@@ -11,7 +11,7 @@ router.get("/", async (req, res, next) => {
 
     // 查询用户数量
     const { count: webUserCounts, rows } = await User.findAndCountAll({
-      where: { status: 0 },
+      where: { isBin: 0 },
       include: [
         {
           model: UserInfo,
@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
     // 查询最后一篇文章更新时间
     const { count: webTotalPages, rows: findUpdated } =
       await Article.findAndCountAll({
-        where: { status: 0 },
+        where: { isBin: 0 },
         order: [
           ["updatedAt", "desc"],
           ["id", "desc"],

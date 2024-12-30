@@ -120,13 +120,13 @@ const remove = async (
     return
   }
   if (bin) {
-    const data = { status: 1 }
+    const data = { isBin: 1 }
     await findArticle.update(data, { where: { id } })
     // 到时间自动删除
     let tim: NodeJS.Timeout | null = setTimeout(async () => {
       // 查询是否真的移除用户
       const result = await Article.findByPk(id)
-      if (result.dataValues.status) {
+      if (result.dataValues.isBin) {
         // 彻底删除
         await deleted(findArticle)
       }

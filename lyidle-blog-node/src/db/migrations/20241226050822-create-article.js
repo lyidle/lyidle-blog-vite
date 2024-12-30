@@ -61,7 +61,7 @@ module.exports = {
           key: "id",
         },
       },
-      status: {
+      isBin: {
         type: Sequelize.TINYINT,
         allowNull: false,
         defaultValue: 0,

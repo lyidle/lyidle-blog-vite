@@ -5,16 +5,16 @@ router.use((req, res, next) => {
   res.result = (
     data: object,
     message: string | string[],
-    status: boolean = true,
+    isBin: boolean = true,
     resultCode?: number
   ) => {
     // 有最后一位 就以最后传入的状态码为准
-    // 否则判断 status 来决定状态码
-    res.status(resultCode ? resultCode : !status ? 404 : 200).send({
-      status,
+    // 否则判断 isBin 来决定状态码
+    res.status(resultCode ? resultCode : !isBin ? 404 : 200).send({
+      isBin,
       data,
       // 确保返回的错误信息为一个数组
-      message: status
+      message: isBin
         ? message
         : Array.isArray(message)
         ? [...new Set(message.flat(Infinity))]

@@ -26,7 +26,7 @@ module.exports = {
       bannerImg: {
         type: Sequelize.JSON,
       },
-      status: {
+      isBin: {
         type: Sequelize.TINYINT,
         allowNull: false,
         defaultValue: 0,

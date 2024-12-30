@@ -1,3 +1,7 @@
+// 引入错误函数
+import myError from "@/utils/Error"
+// 引入类型
+import type { NextFunction, Request, Response } from "express"
 // 引入时间转换
 const ms = require("ms")
 const { User, Article, UserInfo, Email } = require("@/db/models")
@@ -15,7 +19,12 @@ const deleted = async (findUser: any, userId: number, email: string) => {
   await findUser.destroy()
 }
 // 删除函数await
-const remove = async (req: any, res: any, bin: boolean = false) => {
+const remove = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  bin: boolean = false
+) => {
   const { id, account } = req.body
   const commend: any = {
     attributes: ["email", "id"],
@@ -35,15 +44,24 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   const findUser = await User.findOne(commend)
   // 没有找到用户
   if (!findUser) return res.result(void 0, "没有找到用户哦~", false, 404)
+
+  // 判断是否是用户的文章
+  if (req.auth.id !== findUser.dataValues.id) {
+    next(new myError("PermissionError"))
+    return
+  }
+
+  // 提取需要的信息
   const { email, id: userId } = findUser.dataValues
   if (bin) {
-    const data = { status: 1 }
+    const data = { isBin: 1 }
     await findUser.update(data, { where: { id: userId } })
     // 到时间自动删除
     let tim: NodeJS.Timeout | null = setTimeout(async () => {
       // 查询是否真的移除用户
       const result = await User.findByPk(userId)
-      if (result.dataValues.status) {
+      // 判断是否真的删除了
+      if (result.dataValues.isBin) {
         // 彻底删除
         await deleted(findUser, userId, email)
       }

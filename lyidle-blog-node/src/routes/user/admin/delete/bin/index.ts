@@ -12,7 +12,7 @@ router.delete(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await remove(req, res, true)
+      await remove(req, res, next, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "删除用户失败~", false)

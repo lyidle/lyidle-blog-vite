@@ -40,7 +40,7 @@ router.put(
         poster,
         length,
         oldLength,
-        status,
+        isBin,
       } = req.body
 
       // 判断是否是用户的文章
@@ -64,7 +64,7 @@ router.put(
       result.carousel = carousel ?? 0
       if (desc) result.desc = desc
       if (poster) result.poster = poster
-      result.status = status ?? findArticle.dataValues.status
+      result.isBin = isBin ?? findArticle.dataValues.isBin
       // 更新数据
       const returnData = await findArticle.update(result)
       // 找到对应信息 更新

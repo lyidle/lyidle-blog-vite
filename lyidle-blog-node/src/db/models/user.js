@@ -109,11 +109,11 @@ module.exports = (sequelize, DataTypes) => {
           this.setDataValue("role", result)
         },
       },
-      status: {
+      isBin: {
         type: DataTypes.TINYINT,
         validate: {
           isTiny(value) {
-            if (value !== 0 && value !== 1) throw new Error("status只能为0和1")
+            if (value !== 0 && value !== 1) throw new Error("isBin只能为0和1")
           },
         },
       },

@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
         ["updatedAt", "desc"],
         ["id", "desc"],
       ],
-      where: { status: 0 },
+      where: { isBin: 0 },
     })
     if (JSON.stringify(result) === "[]")
       return res.result(void 0, "获取最新文章失败~", false)

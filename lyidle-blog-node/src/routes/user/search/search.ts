@@ -72,7 +72,7 @@ export default async (
       id,
     }
   }
-  commend.where.status = 0
+  commend.where.isBin = 0
   // 查询用户的所有文章
   const findUser = await User.findAll(commend)
   if (JSON.stringify(findUser) === "[]")

@@ -37,7 +37,7 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false,
       },
-      status: {
+      isBin: {
         type: Sequelize.TINYINT,
         allowNull: false,
         defaultValue: 0,

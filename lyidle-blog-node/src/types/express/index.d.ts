@@ -14,13 +14,12 @@ declare global {
         iat?: Date
         exp?: Date
       }
-      token: Set
     }
     interface Response {
       result: (
         data: any,
         message: string | string[],
-        status?: boolean,
+        isBin?: boolean,
         resultCode?: number
       ) => void
       validateAuth: (err: any, next: NextFunction, cb: Function) => void

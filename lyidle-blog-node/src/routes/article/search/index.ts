@@ -61,7 +61,7 @@ const search = async (req: any, res: any, exact?: boolean) => {
       id,
     }
   }
-  commend.where.status = 0
+  commend.where.isBin = 0
   // 查询用户的所有文章
   const result = await Article.findAll(commend)
   if (JSON.stringify(result) === "[]")
