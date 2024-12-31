@@ -37,16 +37,17 @@ const remove = async (
     next(new myError("PermissionError"))
     return
   }
+
+  // 删除用户信息缓存
+  await delKey(`userInfo:${userId}`)
+  // 删除文章的缓存
+  await delKey(`webTotalPages`)
+  await delKey(`totalWords`)
+
   if (bin) {
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userArticleBin:${id}`)
     if (isBin) return res.result(void 0, "请勿重复操作~", false)
-
-    // 删除用户信息缓存
-    await delKey(`userInfo:${userId}`)
-    // 删除文章的缓存
-    await delKey(`webTotalPages`)
-    await delKey(`totalWords`)
 
     const data = { isBin: 1 }
     await findArticle.update(data, { where: { id } })

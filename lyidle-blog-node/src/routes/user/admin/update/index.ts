@@ -16,11 +16,11 @@ router.put(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, account, pwd, email, avater, signer, nickName, role } =
-        req.body
+      const { account, pwd, email, avater, signer, nickName, role } = req.body
+      const id = req.auth.id
+
       // 都没有时返回没有找到
       if (
-        !id ||
         !(
           pwd ||
           email ||
@@ -37,6 +37,7 @@ router.put(
           "请至少传入以下信息中的一个pwd、email、avater、signer、nickName、role,~",
           false
         )
+
       // 查询
       const findUser = await User.findByPk(id, {
         attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -44,12 +45,6 @@ router.put(
 
       // 判断有无找到用户
       if (!findUser) return res.result(void 0, "没有找到对应用户信息~", false)
-
-      // 判断是否是用户的文章
-      if (req.auth.id !== findUser.dataValues.id) {
-        next(new myError("PermissionError"))
-        return
-      }
 
       // 提取需要的变量
       const {

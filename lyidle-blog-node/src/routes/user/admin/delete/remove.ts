@@ -58,18 +58,19 @@ const remove = async (
 
   // 提取需要的信息
   const { email, id: userId } = findUser.dataValues
+
+  // 删除用户信息缓存
+  await delKey(`token:${userId}`)
+  await delKey(`userInfo:${userId}`)
+  // 删除文章的缓存
+  await delKey(`userArticleBin`)
+  await delKey(`webTotalPages`)
+  await delKey(`totalWords`)
+
   if (bin) {
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userBin:${userId}`)
     if (isBin) return res.result(void 0, "请勿重复操作~", false)
-
-    // 删除用户信息缓存
-    await delKey(`token:${userId}`)
-    await delKey(`userInfo:${userId}`)
-    // 删除文章的缓存
-    await delKey(`userArticleBin`)
-    await delKey(`webTotalPages`)
-    await delKey(`totalWords`)
 
     const data = { isBin: 1 }
     await findUser.update(data, { where: { id: userId } })
