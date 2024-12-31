@@ -20,9 +20,17 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     // 这里的状态码是后端返回的状态码
-    if (response.data.status) return response.data?.data || response.data
+    if (response.data.status && !response.data?.code)
+      return response.data?.data || response.data
     else {
-      // 返回错误信息
+      // 错误提示信息 服务器有返回信息
+      if (response.data?.code === 400) {
+        response?.data?.message?.forEach((item: string) => {
+          ElMessage.error(item)
+        })
+        return
+      }
+      // 返回其他错误信息
       throw new Error(response.data.message)
     }
   },
@@ -49,18 +57,6 @@ request.interceptors.response.use(
         message = "服务器出现问题哦~"
         break
     }
-    // 得到token
-    const { userInfo } = storeToRefs(useUserStore())
-    const token = userInfo.value?.token
-    // 判断没有token 且status为401时不提示 因为没有登录
-    if (error.status !== 401 && token)
-      if (error?.response?.data.message) {
-        // 错误提示信息 服务器有返回信息
-        error?.response?.data.message.forEach((item: string) => {
-          ElMessage.error(item)
-        })
-        return
-      }
     // 否则 则使用
     return Promise.reject(
       error?.response?.data.message || new Error(message || "网络出现问题")

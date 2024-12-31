@@ -14,10 +14,6 @@ module.exports = {
           name: "copyright",
           content: "©2022-2023",
         },
-        {
-          name: "createWedbAt",
-          content: `${new Date()}`,
-        },
       ],
       {}
     )

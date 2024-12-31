@@ -49,8 +49,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       //   ? err.errors[0].message
       //   :
       err.errors.map((item: any) => item.message),
-      false,
-      400
+      false
     )
   //token解析失败导致的错误
   if (err.name === "UnauthorizedError")

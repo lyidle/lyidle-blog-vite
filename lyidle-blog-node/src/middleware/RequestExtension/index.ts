@@ -9,8 +9,8 @@ router.use((req, res, next) => {
     resultCode?: number
   ) => {
     // 有最后一位 就以最后传入的状态码为准
-    // 否则判断 isBin 来决定状态码
-    res.status(resultCode ? resultCode : !status ? 404 : 200).send({
+    // 否则判断 status 来决定状态码 把错误状态码放到返回的 data 中
+    res.status(resultCode ? resultCode : status ? 200 : 200).send({
       status,
       data,
       // 确保返回的错误信息为一个数组
@@ -19,6 +19,7 @@ router.use((req, res, next) => {
         : Array.isArray(message)
         ? [...new Set(message.flat(Infinity))]
         : [message],
+      code: status ? 200 : 400,
     })
     return
   }
