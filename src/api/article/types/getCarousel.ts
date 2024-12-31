@@ -2,9 +2,9 @@
  * Request
  */
 export interface GetCarousel {
+  code: number
   data?: Datum[]
-  message: string
-  status: boolean
+  message: string[] | string
   [property: string]: any
 }
 
@@ -12,8 +12,8 @@ export interface Datum {
   category: string
   desc: string
   id: number
-  poster: null | string
+  poster: null
   title: string
-  updatedAt: Date
+  updatedAt: string
   [property: string]: any
 }

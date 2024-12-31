@@ -2,9 +2,9 @@
  * Request
  */
 export interface Login {
-  data: Data
-  message: string
-  status: boolean
+  code: number
+  data?: Data
+  message: string[] | string
   [property: string]: any
 }
 

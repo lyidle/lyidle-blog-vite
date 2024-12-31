@@ -2,32 +2,33 @@
  * Request
  */
 export interface GetUserInfo {
-  data?: Data
-  message: string
-  status: boolean
+  code: number
+  data?: Datum[]
+  message: string[] | string
   [property: string]: any
 }
 
-export interface Data {
+export interface Datum {
   account: string
-  avater: null | string
+  Articles: Article[]
+  avater: null
   createdAt: string
   email: string
   id: number
+  isBin: number
   nickName: string
   role: string[]
-  signer: null | string
-  token: string
+  signer: null
   updatedAt: string
-  userInfo: null | UserInfo
   [property: string]: any
 }
 
-export interface UserInfo {
-  categories: string
+export interface Article {
+  category: string
   id: number
-  pages: number
+  length: number
   tags: string[]
-  totalWords: number
+  title: string
+  userId: number
   [property: string]: any
 }

@@ -2,15 +2,7 @@
  * Request
  */
 export interface RegEmail {
-  data: Data
-  message: string
-  status: boolean
-  [property: string]: any
-}
-
-export interface Data {
-  email: string
-  expiresAt: string
-  regCode: string
+  code: number
+  message: string[] | string
   [property: string]: any
 }

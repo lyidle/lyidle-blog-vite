@@ -2,18 +2,18 @@
  * Request
  */
 export interface GetRecentPages {
-  data?: Datum[] | null
-  message: string
-  status: boolean
+  code: number
+  data?: Datum[]
+  message: string[] | string
   [property: string]: any
 }
 
 export interface Datum {
-  category: string
-  createdAt: Date
-  id: number
-  poster?: null | string
-  title: string
-  updatedAt: Date
+  category?: string
+  createdAt?: string
+  id?: number
+  poster?: null
+  title?: string
+  updatedAt?: string
   [property: string]: any
 }

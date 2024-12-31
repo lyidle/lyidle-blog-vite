@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface RegBody {
+export interface Request {
   /**
    * 账号
    */
