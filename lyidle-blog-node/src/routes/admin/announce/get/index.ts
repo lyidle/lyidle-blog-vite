@@ -6,6 +6,9 @@ const { getKey, setKey } = require("@/utils/redis")
 const ip = require("ip")
 // 引入模型
 const { Setting } = require("@/db/models")
+// 判断是否是生成环境
+const is_production = JSON.parse(process.env.is_production!)
+
 const router = express.Router()
 router.get("/", async (req, res, next) => {
   try {
@@ -19,9 +22,11 @@ router.get("/", async (req, res, next) => {
 
     let ipRegion: ipRegionType | null = null
     // 是本地的跳过
-    if (!ip.isPrivate(userIp)) {
+    if (!ip.isPrivate(userIp) || !is_production) {
       const query = new IP2Region()
-      const data = query.search("120.24.78.68") as IP2RegionResult
+      let data
+      if (!is_production) data = query.search("120.24.78.68") as IP2RegionResult
+      else data = query.search(userIp) as IP2RegionResult
       if (data) {
         const { country, province, city } = data
         ipRegion = { country, province, city }

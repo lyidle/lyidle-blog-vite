@@ -35,6 +35,9 @@ const sendMail = async (to: string, subject: string, html: string) => {
 // code过期时间
 const codeExpire = ms(process.env.code_expire)
 
+// 判断是否是生成环境
+const is_production = JSON.parse(process.env.is_production!)
+
 // 邮箱发送接口
 export default (
   route: string,
@@ -50,7 +53,7 @@ export default (
       // 获取redis的数据
       let result = await getKey(cacheKey)
       if (result) {
-        if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
+        if (JSON.parse(is_production ? is_production : ""))
           return res.result(
             void 0,
             `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
@@ -83,14 +86,14 @@ export default (
       result = await setKey(cacheKey, cacheValue, codeExpire)
       try {
         // 发送邮件
-        if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
+        if (JSON.parse(is_production ? is_production : ""))
           await sendMail(email, "验证码", genHtml)
       } catch (err: any) {
         return res.validateAuth(err, next, () =>
           res.result(void 0, "发送邮件失败~", false)
         )
       }
-      if (JSON.parse(process.env.isPro ? process.env.isPro : ""))
+      if (JSON.parse(is_production ? is_production : ""))
         return res.result(void 0, "发送邮件成功~")
       else return res.result(result, "发送邮件成功~")
     }

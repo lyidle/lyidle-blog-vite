@@ -1,5 +1,5 @@
 # 用于控制是否是开发模式 验证码发送邮箱 
-isPro=false
+is_production=false
 # api 端口
 api_port=3000
 # web 端口
