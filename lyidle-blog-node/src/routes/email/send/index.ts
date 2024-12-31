@@ -52,20 +52,13 @@ export default (
       const cacheKey = `${setData}:${email}`
       // 获取redis的数据
       let result = await getKey(cacheKey)
-      if (result) {
-        if (JSON.parse(is_production ? is_production : ""))
-          return res.result(
-            void 0,
-            `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
-            false
-          )
-        else
-          return res.result(
-            result,
-            `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
-            false
-          )
-      }
+      // 有缓存 返回
+      if (result)
+        return res.result(
+          (!is_production && result) || void 0,
+          `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
+          false
+        )
       // 生成6位随机验证码
       const code = Math.random().toString().slice(2, 8).padEnd(6, "0")
       // 生成邮件模板
@@ -86,16 +79,13 @@ export default (
       result = await setKey(cacheKey, cacheValue, codeExpire)
       try {
         // 发送邮件
-        if (JSON.parse(is_production ? is_production : ""))
-          await sendMail(email, "验证码", genHtml)
+        is_production && (await sendMail(email, "验证码", genHtml))
       } catch (err: any) {
         return res.validateAuth(err, next, () =>
           res.result(void 0, "发送邮件失败~", false)
         )
       }
-      if (JSON.parse(is_production ? is_production : ""))
-        return res.result(void 0, "发送邮件成功~")
-      else return res.result(result, "发送邮件成功~")
+      return res.result((!is_production && result) || void 0, "发送邮件成功~")
     }
   )
 }

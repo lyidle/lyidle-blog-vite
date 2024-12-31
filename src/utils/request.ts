@@ -24,7 +24,7 @@ request.interceptors.response.use(
       return response.data?.data || response.data
     else {
       // 错误提示信息 服务器有返回信息
-      if (response.data?.code === 400) {
+      if (response.data?.code === 400 || response.data?.code === 401) {
         response?.data?.message?.forEach((item: string) => {
           ElMessage.error(item)
         })
@@ -57,6 +57,10 @@ request.interceptors.response.use(
         message = "服务器出现问题哦~"
         break
     }
+    error.response?.data?.message?.forEach((item: string) => {
+      ElMessage.error(item)
+      return
+    })
     // 否则 则使用
     return Promise.reject(
       error?.response?.data.message || new Error(message || "网络出现问题")

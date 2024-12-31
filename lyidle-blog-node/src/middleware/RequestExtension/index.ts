@@ -6,12 +6,13 @@ router.use((req, res, next) => {
     data: object,
     message: string | string[],
     status: boolean = true,
-    resultCode?: number
+    code?: number,
+    resCode?: number
   ) => {
     // 有最后一位 就以最后传入的状态码为准
     // 否则判断 status 来决定状态码 把错误状态码放到返回的 data 中
-    res.status(resultCode ? resultCode : status ? 200 : 200).send({
-      status,
+    res.status(resCode ? resCode : 200).send({
+      code: status ? 200 : code ? code : 400,
       data,
       // 确保返回的错误信息为一个数组
       message: status
@@ -19,7 +20,6 @@ router.use((req, res, next) => {
         : Array.isArray(message)
         ? [...new Set(message.flat(Infinity))]
         : [message],
-      code: status ? 200 : 400,
     })
     return
   }
