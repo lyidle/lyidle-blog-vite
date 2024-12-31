@@ -29,7 +29,7 @@ router.get("/", async (req, res, next) => {
       where: { isBin: 0 },
     })
     if (JSON.stringify(rows) === "[]")
-      return res.result(void 0, "查询文章失败~", false)
+      return res.result(void 0, "获取文章失败~", false)
     return res.result(
       {
         pagination: {
@@ -39,11 +39,11 @@ router.get("/", async (req, res, next) => {
         },
         article: rows,
       },
-      "查询文章成功~"
+      "获取文章成功~"
     )
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "查询文章失败~", false)
+      res.result(void 0, "获取文章失败~", false)
     )
   }
 })

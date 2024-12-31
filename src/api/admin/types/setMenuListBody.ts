@@ -20,15 +20,15 @@ export interface Child {
 }
 
 export interface BannerImg {
-  dark?: string
-  height?: string
-  light?: string
+  dark: string
+  height: string
+  light: string
   [property: string]: any
 }
 
 export interface Layout {
-  left?: string
-  top?: string
-  width?: string
+  left: string
+  top: string
+  width: string
   [property: string]: any
 }

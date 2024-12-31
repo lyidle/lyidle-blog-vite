@@ -2,9 +2,9 @@
  * Request
  */
 export interface GetArticle {
+  code: number
   data?: Data
-  message: string
-  status: boolean
+  message: string[] | string
   [property: string]: any
 }
 
@@ -16,13 +16,13 @@ export interface Data {
 
 export interface Article {
   category: string
-  createdAt: Date
+  createdAt: string
   desc: string
   id: number
-  poster: null | string
+  poster: null
   tags: string[]
   title: string
-  updatedAt: Date
+  updatedAt: string
   [property: string]: any
 }
 
