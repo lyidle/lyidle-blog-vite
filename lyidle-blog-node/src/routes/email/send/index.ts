@@ -37,6 +37,8 @@ const codeExpire = ms(process.env.code_expire)
 
 // 判断是否是生成环境
 const is_production = JSON.parse(process.env.is_production!)
+// 判断是否发送邮件
+const email_send = JSON.parse(process.env.email_send!)
 
 // 邮箱发送接口
 export default (
@@ -79,7 +81,7 @@ export default (
       result = await setKey(cacheKey, cacheValue, codeExpire)
       try {
         // 发送邮件
-        is_production && (await sendMail(email, "验证码", genHtml))
+        email_send && (await sendMail(email, "验证码", genHtml))
       } catch (err: any) {
         return res.validateAuth(err, next, () =>
           res.result(void 0, "发送邮件失败~", false)

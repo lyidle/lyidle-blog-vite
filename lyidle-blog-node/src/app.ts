@@ -42,7 +42,7 @@ app.use("/api", api)
 // 全局错误中间件
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   // 数据库插入校验
-  if (err.name === "SequelizeValidationError")
+  if (err.name === "SequelizeValidationError") {
     return res.result(
       void 0,
       // err.errors.length === 1
@@ -51,6 +51,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       err.errors.map((item: any) => item.message),
       false
     )
+  }
   //token解析失败导致的错误
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)

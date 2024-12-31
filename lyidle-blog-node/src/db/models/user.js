@@ -11,6 +11,8 @@ const {
 } = require("@/routes/user/reg/RegExp")
 // 导入环境变量
 require("dotenv").config()
+// 引入错误函数
+const setError = require("../utils/setError")
 // 引入普通用户 权限组
 const default_user = JSON.parse(process.env.default_user)
 module.exports = (sequelize, DataTypes) => {
@@ -66,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         // 使用hash加密
         set(value) {
-          if (!pwdReg.reg.test(value)) throw new Error(pwdReg.msg)
+          if (!pwdReg.reg.test(value)) throw new setError(pwdReg.msg)
           this.setDataValue("pwd", bcrypt.hashSync(value, 10))
         },
       },
@@ -100,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "角色不能为空哦~" },
         },
         set(value) {
-          if (!Array.isArray(value)) throw new Error("角色必须是一个数组哦~")
+          if (!Array.isArray(value)) throw new setError("角色必须是一个数组哦~")
           // 保证至少有个 普通用户组的权限
           const result = [...new Set([value, default_user].flat(Infinity))]
           console.log(result)

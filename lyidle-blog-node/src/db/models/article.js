@@ -1,5 +1,7 @@
 "use strict"
 const { Model } = require("sequelize")
+// 引入错误函数
+const setError = require("../utils/setError")
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     /**
@@ -58,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         set(value) {
           if (!Array.isArray(value))
-            throw new Error("文章标签必须是一个数组哦~")
+            throw new setError("文章标签必须是一个数组哦~")
           const result = [...new Set([value].flat(Infinity))]
           this.setDataValue("tags", result)
         },
