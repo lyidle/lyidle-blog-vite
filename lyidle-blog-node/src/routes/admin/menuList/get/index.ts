@@ -1,4 +1,5 @@
 import express from "express"
+import { literal } from "sequelize"
 // 设置redis 缓存
 const { getKey, setKey } = require("@/utils/redis")
 const { Menu, MenuList } = require("@/db/models")
@@ -9,6 +10,7 @@ router.get("/", async (req, res, next) => {
   if (cacheValue) return res.result(cacheValue, "获取菜单成功~")
   try {
     const result = await Menu.findAll({
+      where: { isBin: 0, role: literal(`JSON_CONTAINS(role, '"user"')`) },
       include: [
         {
           model: MenuList, // 包括 Article 模型
@@ -19,7 +21,7 @@ router.get("/", async (req, res, next) => {
         },
       ],
       attributes: {
-        exclude: ["createdAt", "updatedAt"],
+        exclude: ["createdAt", "updatedAt", "isBin", "role"],
       },
     })
     if (JSON.stringify(result) === "[]")

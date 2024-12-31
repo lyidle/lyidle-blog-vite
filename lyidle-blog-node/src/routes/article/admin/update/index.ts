@@ -47,8 +47,28 @@ router.put(
         length,
       } = req.body
 
-      // 检查并赋值字段
-      if (title) findArticle.set("title", title)
+      // 非空判断
+      if (
+        !(
+          title ||
+          content ||
+          category ||
+          newArticleTags ||
+          carousel ||
+          desc ||
+          poster ||
+          length
+        )
+      )
+        return res.result(
+          void 0,
+          "请至少传入以下信息中的一个title、content、category、tags、carousel、desc、poster、length~",
+          false
+        )
+
+      if (title)
+        // 检查并赋值字段
+        findArticle.set("title", title)
       if (content) findArticle.set("content", content)
       if (content && length) findArticle.set("length", length)
       if (category) findArticle.set("category", category)
@@ -56,15 +76,17 @@ router.put(
       if (carousel) findArticle.set("carousel", carousel)
       if (desc) findArticle.set("desc", desc)
       if (poster) findArticle.set("poster", poster)
+
       // 更新数据
-      const { datValues } = await findArticle.save()
+      const saveArticle = await findArticle.save()
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
       // 删除总字数统计缓存
       await delKey("totalWords")
       // 删除用户信息缓存
       await delKey(`userInfo:${req.auth.id}`)
-      res.result(datValues, "修改文章成功~")
+
+      res.result(saveArticle, "修改文章成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "修改文章失败~", false)

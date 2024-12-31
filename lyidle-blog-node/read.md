@@ -34,11 +34,13 @@
 
 `delKey(`userBin:${userId}`)`
 进入垃圾桶后禁止再次回收
+移除垃圾桶时也要删除
 
 ## userArticleBin 垃圾桶临时变量
 
 `delKey(`userArticleBin:${userId}`)`
 进入垃圾桶后禁止再次回收
+移除垃圾桶时也要删除
 
 ## userInfo 用户信息
 
@@ -51,6 +53,10 @@
 
 `getKey(`announce`)`
 获取和设置时设置值
+
+## upRegion ip 信息
+
+`getKey(`ipRegion:${userIp}`)`
 
 ## menuList 菜单
 

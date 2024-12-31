@@ -20,9 +20,12 @@ router.get("/", async (req, res, next) => {
           userIp?: string
         }
 
-    let ipRegion: ipRegionType | null = null
+    // 有缓存直接返回
+    let ipRegion: ipRegionType | null = await getKey(`ipRegion:${userIp}`)
+
+    // 没缓存 设置
     // 是本地的跳过
-    if (!ip.isPrivate(userIp) || !is_production) {
+    if (!ipRegion && (!ip.isPrivate(userIp) || !is_production)) {
       const query = new IP2Region()
       let data
       if (!is_production) data = query.search("120.24.78.68") as IP2RegionResult
@@ -32,18 +35,21 @@ router.get("/", async (req, res, next) => {
         ipRegion = { country, province, city }
       }
       ;(ipRegion as ipRegionType).userIp = userIp
+      await setKey(`ipRegion:${userIp}`, ipRegion)
     }
+
     // 有缓存直接返回
     const cacheValue = await getKey(`announce`)
     if (cacheValue) {
       return res.result(
         {
-          cacheValue,
+          announce: cacheValue,
           region: ipRegion === null ? null : { ...ipRegion },
         },
         "获取公告成功~"
       )
     }
+
     const findAnnounce = await Setting.findOne({
       where: { name: "announce" },
       attributes: ["content"],
@@ -52,8 +58,10 @@ router.get("/", async (req, res, next) => {
       ? findAnnounce?.dataValues?.content
       : null
     if (announce === null) return res.result(void 0, "获取公告失败~", false)
+
     // 没缓存设置
     await setKey("announce", announce)
+
     return res.result(
       {
         announce,

@@ -16,15 +16,8 @@ const { Article } = require("@/db/models")
 const deleted = async (delArticle: any, id: number | string) => {
   // 删除文章
   await delArticle.destroy()
-  // 删除临时的userArticleBin
-  await delKey(`userArticleBin:${id}`)
-  // 删除成功文章数 -1
-  const webTotalPages = await getKey("webTotalPages")
-  await setKey("webTotalPages", +webTotalPages - 1)
-  // 删除总字数统计缓存
-  await delKey("totalWords")
-  // 删除用户信息缓存
-  await delKey(`userInfo:${delArticle.dataValues.userId}`)
+  // 删除临时的 userArticleBin
+  await delKey(`userArticleBin`)
 }
 // 删除函数
 const remove = async (
@@ -38,9 +31,9 @@ const remove = async (
   if (!findArticles?.findArticle) return
   // 找到提取
   const { id, findArticle } = findArticles
-  console.log(req.auth.id, findArticle.dataValues.userId)
+  const userId = findArticle.dataValues.userId
   // 判断是否是用户的文章
-  if (req.auth.id !== findArticle.dataValues.userId) {
+  if (req.auth.id !== userId) {
     next(new myError("PermissionError"))
     return
   }
@@ -48,11 +41,20 @@ const remove = async (
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userArticleBin:${id}`)
     if (isBin) return res.result(void 0, "请勿重复操作~", false)
+
+    // 删除用户信息缓存
+    await delKey(`userInfo:${userId}`)
+    // 删除文章的缓存
+    await delKey(`webTotalPages`)
+    await delKey(`totalWords`)
+
     const data = { isBin: 1 }
     await findArticle.update(data, { where: { id } })
     await setKey(`userArticleBin:${id}`, true)
     // 到时间自动删除
     let tim: NodeJS.Timeout | null = setTimeout(async () => {
+      // 删除临时的userArticleBin
+      await delKey(`userArticleBin:${id}`)
       // 查询是否真的移除用户
       const result = await Article.findByPk(id)
       if (result.dataValues.isBin) {

@@ -15,17 +15,11 @@ const deleted = async (findUser: any, userId: number, email: string) => {
   await Article.destroy({ where: { userId } })
   // 删除用户
   await findUser.destroy()
-  // 删除token
-  await delKey(`token:${userId}`)
-  // 删除临时的userBin
-  await delKey(`userBin:${userId}`)
   // 删除时用户数量-1
   const userCounts = await getKey("userCounts")
   await setKey("userCounts", +userCounts - 1)
-  // 删除对应用户信息缓存
-  await delKey(`userInfo:${userId}`)
-  // 删除文章的缓存
-  await delKey(`totalWords`)
+  // 删除临时的userBin
+  await delKey(`userBin:${userId}`)
 }
 
 // 删除函数await
@@ -35,21 +29,22 @@ const remove = async (
   next: NextFunction,
   bin: boolean = false
 ) => {
-  const { id, account } = req.body
+  // const { id, account } = req.body
   const commend: any = {
     attributes: ["email", "id"],
+    where: { id: req.auth.id },
   }
-  if (!(id || account)) return res.result(void 0, "没有找到用户哦~", false)
-  // 按照account删除
-  if (account)
-    commend.where = {
-      account,
-    }
-  // 按照id删除
-  if (id)
-    commend.where = {
-      id: id,
-    }
+  // if (!(id || account)) return res.result(void 0, "没有找到用户哦~", false)
+  // // 按照account删除
+  // if (account)
+  //   commend.where = {
+  //     account,
+  //   }
+  // // 按照id删除
+  // if (id)
+  //   commend.where = {
+  //     id: id,
+  //   }
   // 查找是否有用户 以及得到邮箱
   const findUser = await User.findOne(commend)
   // 没有找到用户
@@ -67,6 +62,15 @@ const remove = async (
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userBin:${userId}`)
     if (isBin) return res.result(void 0, "请勿重复操作~", false)
+
+    // 删除用户信息缓存
+    await delKey(`token:${userId}`)
+    await delKey(`userInfo:${userId}`)
+    // 删除文章的缓存
+    await delKey(`userArticleBin`)
+    await delKey(`webTotalPages`)
+    await delKey(`totalWords`)
+
     const data = { isBin: 1 }
     await findUser.update(data, { where: { id: userId } })
     await setKey(`userBin:${userId}`, true)

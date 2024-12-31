@@ -32,7 +32,11 @@ router.put(
           role
         )
       )
-        return res.result(void 0, "没有找到对应用户信息~", false)
+        return res.result(
+          void 0,
+          "请至少传入以下信息中的一个pwd、email、avater、signer、nickName、role,~",
+          false
+        )
       // 查询
       const findUser = await User.findByPk(id, {
         attributes: { exclude: ["createdAt", "updatedAt"] },
