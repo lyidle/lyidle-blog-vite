@@ -33,16 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       icon: {
         type: DataTypes.TEXT,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "子菜单icon不能为空哦~" },
-          notEmpty: { msg: "子菜单icon不能为空哦~" },
-          isSvg(value) {
-            if (!(value.includes("<svg") && value.includes("</svg>"))) {
-              throw new Error("icon必须要是一个svg哦~")
-            }
-          },
-        },
       },
       to: {
         type: DataTypes.STRING,

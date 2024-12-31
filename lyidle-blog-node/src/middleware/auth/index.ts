@@ -37,11 +37,11 @@ export const jwtMiddleware = async (
 }
 
 // 管理员权限验证
-const adminData: string[] = JSON.parse(process.env.Admin as string)
+const adminData: string[] = JSON.parse(process.env.Admin!)
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { role: userRole } = req.auth
   // 判断是否有权限
-  if (!adminData.some((item) => item === userRole))
+  if (adminData.some((item) => item === userRole))
     next(new myError("PermissionError"))
   next()
 }

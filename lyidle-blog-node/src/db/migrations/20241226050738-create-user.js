@@ -28,7 +28,7 @@ module.exports = {
         unique: true,
       },
       avater: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       signer: {
         type: Sequelize.STRING,

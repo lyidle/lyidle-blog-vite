@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      avater: DataTypes.STRING,
+      avater: DataTypes.TEXT,
       signer: DataTypes.STRING,
       role: {
         type: DataTypes.JSON,

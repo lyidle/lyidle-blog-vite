@@ -57,7 +57,6 @@ router.get("/", async (req, res, next) => {
     const announce = findAnnounce?.dataValues?.content
       ? findAnnounce?.dataValues?.content
       : null
-    if (announce === null) return res.result(void 0, "获取公告失败~", false)
 
     // 没缓存设置
     await setKey("announce", announce)

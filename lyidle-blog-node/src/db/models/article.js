@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
           len: { args: [0, 255], msg: "文章描述长度必须在1-255之间哦~" },
         },
       },
-      poster: DataTypes.STRING,
+      poster: DataTypes.TEXT,
       length: {
         type: DataTypes.INTEGER,
         allowNull: false,

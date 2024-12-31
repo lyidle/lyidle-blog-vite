@@ -38,7 +38,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       poster: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       length: {
         type: Sequelize.INTEGER,

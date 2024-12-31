@@ -42,8 +42,15 @@ router.put(
     try {
       for (let i = 0; i < data.length; i++) {
         const menu = data[i]
-        const { name, icon, to, children, layout, bannerImg } = menu
-        let result: any = { name, icon, to, layout: {}, bannerImg: {} }
+        const { name, icon, to, children, layout, bannerImg, role } = menu
+        let result: any = {
+          name,
+          icon,
+          to,
+          layout: {},
+          bannerImg: {},
+          role: role ? role : [],
+        }
         // 处理 layout 和 bannerImg
         result = extractLayout(layout, result)
         result = extractBannerImg(bannerImg, result)

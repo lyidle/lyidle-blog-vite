@@ -31,16 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       icon: {
         type: DataTypes.TEXT,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "菜单icon不能为空哦~" },
-          notEmpty: { msg: "菜单icon不能为空哦~" },
-          isSvg(value) {
-            if (!(value.includes("<svg") && value.includes("</svg>"))) {
-              throw new Error("icon必须要是一个svg哦~")
-            }
-          },
-        },
       },
       to: DataTypes.STRING,
       layout: DataTypes.JSON,
@@ -62,7 +52,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         set(value) {
           if (!Array.isArray(value)) throw new setError("角色必须是一个数组哦~")
+          // 保证至少有个 普通用户组的权限
           const result = [...new Set([value, default_user].flat(Infinity))]
+          console.log(result)
           this.setDataValue("role", result)
         },
       },

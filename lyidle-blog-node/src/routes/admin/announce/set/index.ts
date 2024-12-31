@@ -21,7 +21,7 @@ router.put(
       })
       // 更新缓存
       await setKey("announce", announce)
-      return res.result({ msg: announce }, "设置通知成功~")
+      return res.result(void 0, "设置通知成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "设置通知失败~", false)
