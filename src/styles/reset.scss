@@ -21,10 +21,12 @@ li {
   src: url("/assets/font/LXGWWenKai-Regular.ttf");
 }
 html {
-  cursor: var(--cursor-default);
   font-family: $global-font;
   // 禁止勾选 ，只有文本能勾选
   user-select: none;
+}
+#app {
+  cursor: var(--cursor-default);
 }
 body {
   background-color: var(--body-bg);

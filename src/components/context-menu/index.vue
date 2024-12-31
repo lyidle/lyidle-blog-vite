@@ -1,8 +1,8 @@
 <template>
-  <!-- 阻止冒泡 防止多个菜单干扰 -->
-  <div ref="container" @click.stop @contextmenu.stop>
+  <div ref="container">
     <slot></slot>
     <teleport to="body">
+      <!-- 阻止冒泡 防止多个菜单干扰 -->
       <div class="menu-context" ref="menu" @contextmenu.capture.prevent.stop>
         <div class="title">
           <div class="icon" onclick="history.back()">

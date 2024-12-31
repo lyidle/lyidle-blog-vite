@@ -1,6 +1,6 @@
 <template>
   <context-menu v-if="userInfo">
-    <my-card class="item-aside">
+    <layout-content-aside-card>
       <template #body>
         <div class="aside-container aside-userinfo">
           <div class="userInfo">
@@ -23,12 +23,12 @@
           <div class="pages">
             <layout-link-pages></layout-link-pages>
           </div>
-          <primary-button type="primary" class="userinfo-btn">
+          <my-primary-button type="primary" class="userinfo-btn">
             <div class="tip">前往小窝</div>
             <div class="car">
               <icon-car></icon-car>
             </div>
-          </primary-button>
+          </my-primary-button>
           <div class="links">
             <a
               href="https://res.abeim.cn/api/qq/?qq=912512766"
@@ -61,7 +61,7 @@
           </div>
         </div>
       </template>
-    </my-card>
+    </layout-content-aside-card>
     <template #body>
       <context-menu-item
         :content="'编辑'"

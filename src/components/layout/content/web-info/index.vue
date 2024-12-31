@@ -39,7 +39,6 @@
 
 <script setup lang="ts" name="WebInfo">
 import { useWebInfoStore } from "@/store/aside/webInfo"
-
 const {
   webTotalPages,
   webUserCounts,
@@ -48,13 +47,25 @@ const {
   webCreatedAt,
   webUpdatedAt,
   webTotalWords,
-  isDataShow,
 } = storeToRefs(useWebInfoStore())
 
+// 判断是否有数据 显示和隐藏小站咨询
+const isDataShow = computed(() => {
+  return (
+    webTotalPages.value ||
+    webTotalWords.value ||
+    webUserCounts.value ||
+    touristCounts.value ||
+    webTotalPersonCounts.value ||
+    webCreatedAt.value ||
+    webUpdatedAt.value
+  )
+})
 const { reqWebInfo } = useWebInfoStore()
 // 组件初始化 加载数据
 onMounted(async () => {
   await reqWebInfo()
+  if (!isDataShow.value) ElMessage.warning("小站咨询加载失败~")
 })
 </script>
 

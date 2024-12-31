@@ -82,7 +82,7 @@ router.put(
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
       // 删除总字数统计缓存
-      await delKey("totalWords")
+      await delKey("webTotalWords")
       // 删除用户信息缓存
       await delKey(`userInfo:${req.auth.id}`)
 

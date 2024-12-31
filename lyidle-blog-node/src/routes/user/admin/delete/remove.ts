@@ -65,7 +65,7 @@ const remove = async (
   // 删除文章的缓存
   await delKey(`userArticleBin`)
   await delKey(`webTotalPages`)
-  await delKey(`totalWords`)
+  await delKey(`webTotalWords`)
 
   if (bin) {
     // 只能点击移动到一次垃圾桶

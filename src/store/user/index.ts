@@ -24,13 +24,11 @@ export const useUserStore = defineStore(
 
     const reqUserInfo = async () => {
       const result = await getUserInfo()
-      console.log(result)
       // 如果没有登录
       if (!result) {
         // 获取admin的信息
         const result = await searchUser({ role: "admin" })
         if (result) userInfo.value = result[0]
-        console.log(result)
       }
       // @ts-ignore
       userInfo.value = result

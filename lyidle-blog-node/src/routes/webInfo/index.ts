@@ -30,8 +30,8 @@ router.get("/", async (req, res, next) => {
     const webUpdatedAt = await getKey("webUpdatedAt")
 
     // 获取字数
-    let totalWords = await getKey("totalWords")
-    if (!totalWords) {
+    let webTotalWords = await getKey("webTotalWords")
+    if (!webTotalWords) {
       // 查询所有文章 统计字数
       const totalWordsData = await Article.findAll({
         where: { isBin: 0 },
@@ -46,7 +46,7 @@ router.get("/", async (req, res, next) => {
       for (const data of JSON.parse(JSON.stringify(totalWordsData))) {
         totalCounts += data.length
       }
-      totalWords = await setKey("totalWords", totalCounts)
+      webTotalWords = await setKey("webTotalWords", totalCounts)
     }
 
     return res.result(
@@ -64,7 +64,7 @@ router.get("/", async (req, res, next) => {
         // 文章最后更新时间
         webUpdatedAt,
         // Words统计
-        totalWords,
+        webTotalWords,
       },
       "查询网站咨询成功~"
     )

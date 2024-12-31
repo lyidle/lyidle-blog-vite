@@ -37,11 +37,9 @@ const asideStyle = computed(() => {
   const result: any = {}
   if (contentIsReverse.value) {
     result.margin = "unset"
-    result.marginRight = "var(--content-gap)"
     result.order = "-1"
   } else {
     result.margin = "unset"
-    result.marginLeft = "var(--content-gap)"
     result.order = "unset"
   }
   return result
@@ -59,6 +57,8 @@ $aside-pd: 20px;
   padding-top: $item-gap;
   transition: width var(--header-bg-during);
   display: flex;
+  justify-content: space-between;
+  gap: $item-gap;
   position: relative;
   z-index: 2;
   /* 左边内容区 */
@@ -67,7 +67,6 @@ $aside-pd: 20px;
     display: flex;
     flex-direction: column;
     gap: $item-gap;
-    overflow: hidden;
     // 内容区域卡片
     .contain {
       width: 100%;
@@ -75,14 +74,13 @@ $aside-pd: 20px;
       // 内容区域卡片的间距
       gap: $item-gap;
       flex-wrap: wrap;
-      position: relative;
       justify-content: space-between;
       @include media(sm) {
         justify-content: center;
       }
       ::v-deep(.title) {
         a {
-          @include pages-links-hover;
+          @include pages-links-hover();
         }
       }
       // 内容区的卡片
@@ -127,7 +125,6 @@ $aside-pd: 20px;
   /* 右边侧边栏 */
   .content-aside {
     width: 350px;
-    overflow: hidden;
     transition: width var(--primary-during);
     display: flex;
     flex-direction: column;

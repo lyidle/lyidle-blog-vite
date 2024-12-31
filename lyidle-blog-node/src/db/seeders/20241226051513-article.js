@@ -31,7 +31,7 @@ module.exports = {
       articles.push(article)
     }
     await setKey("webTotalPages", counts)
-    await setKey("totalWords", counts * 6)
+    await setKey("webTotalWords", counts * 6)
     await setKey("webUpdatedAt", new Date())
     // 再插入 Articles 表数据
     await queryInterface.bulkInsert("Articles", articles, {})

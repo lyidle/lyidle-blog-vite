@@ -2,16 +2,19 @@
 import { getAnnounce } from "@/api/admin"
 import { getRecentPages } from "@/api/article"
 import type { GetRecentPages } from "@/api/article/types/getRecentPages"
+import type { GetAnnounce } from "@/api/admin/types/getAnnounce"
 export const useAnnounceAndRecentPagesStore = defineStore(
   "AnnounceAndRecentPages",
   () => {
     // 公告
     // 展示的数据
-    const announce = ref<string>()
+    const announce = ref<GetAnnounce["data"]["announce"]>()
+    const region = ref<GetAnnounce["data"]["region"]>()
     // 发起请求
     const reqAnnounce = async () => {
       const result = await getAnnounce()
-      result?.announce ? (announce.value = result.announce) : undefined
+      announce.value = result.announce
+      region.value = result.region
     }
 
     // 最新文章
@@ -23,6 +26,6 @@ export const useAnnounceAndRecentPagesStore = defineStore(
       result ? (pages.value = result) : undefined
     }
 
-    return { reqAnnounce, announce, pages, reqRecentPages }
+    return { reqAnnounce, announce, region, pages, reqRecentPages }
   }
 )

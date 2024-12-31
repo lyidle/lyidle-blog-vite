@@ -20,7 +20,7 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     // 这里的状态码是后端返回的状态码
-    if (response.data.code === 200) return response.data?.data || response.data
+    if (response.data.code === 200) return response.data?.data
     else {
       const { userInfo } = storeToRefs(useUserStore())
       //config配置对象，headers属性请求头，经常给服务器端携带公共参数
@@ -28,13 +28,13 @@ request.interceptors.response.use(
       // 错误状态码汇总
       const errorCode = [400, 401, 403]
       // 如果没有token 则 401 不报错
-      if (!token && response.data.code === 401) return response.data?.message
+      if (!token && response.data.code === 401) return
       // 错误提示信息 服务器有返回信息
       if (errorCode.includes(response.data.code)) {
         response.data?.message?.forEach((item: string) => {
           ElMessage.error(item)
         })
-        return response.data?.message
+        return
       }
     }
     // 返回其他错误信息

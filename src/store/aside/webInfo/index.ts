@@ -13,19 +13,6 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
   const webUpdatedAt = ref<ReturnType<typeof moment> | string>()
   const webTotalWords = ref<string>()
 
-  // 判断是否有数据 显示和隐藏小站咨询
-  const isDataShow = computed(() => {
-    return (
-      webTotalPages.value ||
-      webTotalWords.value ||
-      webUserCounts.value ||
-      touristCounts.value ||
-      webTotalPersonCounts.value ||
-      webCreatedAt.value ||
-      webUpdatedAt.value
-    )
-  })
-
   // 发起请求
   const reqWebInfo = async () => {
     // 可以缓存处理以下
@@ -38,8 +25,9 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
       webTotalPersonCounts: totalPersonCounts,
       webCreatedAt: createdAt,
       webUpdatedAt: updatedAt,
-      totalWordsData,
+      webTotalWords: totalWords,
     } = await getWebInfo()
+
     // 整理参数
     if (totalPages) webTotalPages.value = numberTransform(totalPages)
     if (userCounts) webUserCounts.value = numberTransform(userCounts)
@@ -48,16 +36,7 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
       webTotalPersonCounts.value = numberTransform(totalPersonCounts)
     if (createdAt) webCreatedAt.value = moment(createdAt)
     if (updatedAt) webUpdatedAt.value = moment(updatedAt)
-    let words = 0
-    if (totalWordsData)
-      for (let i = 0; i < totalWordsData.length; i++) {
-        const item = totalWordsData[i]
-        if (item.UserInfo?.totalWords)
-          words += Number(item.UserInfo?.totalWords)
-      }
-    if (words) webTotalWords.value = numberTransform(words)
-    // 都没有弹出失败信息
-    if (!isDataShow.value) ElMessage.error("获取公告失败~")
+    if (totalWords) webTotalWords.value = numberTransform(totalWords)
   }
 
   return {
@@ -69,6 +48,5 @@ export const useWebInfoStore = defineStore("WebInfo", () => {
     webCreatedAt,
     webUpdatedAt,
     webTotalWords,
-    isDataShow,
   }
 })
