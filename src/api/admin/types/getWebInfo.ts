@@ -2,35 +2,19 @@
  * Request
  */
 export interface GetWebInfo {
+  code: number
   data: Data
   message: string
-  status: boolean
   [property: string]: any
 }
 
 export interface Data {
-  totalWordsData: TotalWordsDatum[]
+  totalWords: number
   touristCounts: number
-  webCreatedAt: Date | null
+  webCreatedAt: string
   webTotalPages: number
   webTotalPersonCounts: number
-  webUpdatedAt: Date | null
+  webUpdatedAt: string
   webUserCounts: number
-  [property: string]: any
-}
-
-export interface TotalWordsDatum {
-  id: number
-  userInfo: null | UserInfo
-  [property: string]: any
-}
-
-export interface UserInfo {
-  categories: string
-  id: number
-  pages: number
-  tags: string[]
-  totalWords: number
-  userId: number
   [property: string]: any
 }

@@ -2,7 +2,7 @@
  * Request
  */
 export interface SetAnnounce {
+  code: number
   message: string
-  status: boolean
   [property: string]: any
 }

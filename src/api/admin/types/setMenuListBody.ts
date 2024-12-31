@@ -3,9 +3,10 @@
  */
 export interface SetMenuListBody {
   children?: Child[]
-  icon: string
+  icon?: string
   layout?: Layout
   name: string
+  role?: string[]
   to: string
   [property: string]: any
 }

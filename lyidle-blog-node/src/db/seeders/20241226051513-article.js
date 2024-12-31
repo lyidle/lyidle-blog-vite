@@ -1,6 +1,6 @@
 "use strict"
-
 /** @type {import('sequelize-cli').Migration} */
+const { setKey } = require("../../utils/redis")
 module.exports = {
   async up(queryInterface, Sequelize) {
     // 文章数组
@@ -11,7 +11,7 @@ module.exports = {
 
     for (let i = 1; i <= counts; i++) {
       const curAuthor = `test${i}`
-      const content = `文章的内容...${i}`
+      const content = `文章的内容${i}`
       const id = i
 
       const article = {
@@ -30,6 +30,9 @@ module.exports = {
 
       articles.push(article)
     }
+    await setKey("webTotalPages", counts)
+    await setKey("totalWords", counts * 6)
+    await setKey("webUpdatedAt", new Date())
     // 再插入 Articles 表数据
     await queryInterface.bulkInsert("Articles", articles, {})
   },

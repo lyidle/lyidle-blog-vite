@@ -2,9 +2,9 @@
  * Request
  */
 export interface GetPoetry {
+  code: number
   data: Data
   message: string
-  status: boolean
   [property: string]: any
 }
 

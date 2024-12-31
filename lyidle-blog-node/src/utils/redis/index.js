@@ -1,6 +1,6 @@
-import { createClient } from "redis"
+const { createClient } = require("redis")
 //创建全局的Redis客户端实例
-let client: ReturnType<typeof createClient>
+let client
 /*
  * 初始化Redis客户端
  */
@@ -17,7 +17,7 @@ const redisClient = async () => {
  *@param value 要存储的值
  *@param ttl 可选，以秒为单位的过期时间，默认不设置
  */
-const setKey = async (key: string, value: any, ttl: number | null = null) => {
+const setKey = async (key, value, ttl = null) => {
   if (!client) await redisClient() //确保客户端已初始化
   value = JSON.stringify(value) //将对象转换为JSON字符串
   await client.set(key, value)
@@ -34,7 +34,7 @@ const setKey = async (key: string, value: any, ttl: number | null = null) => {
  *@param key键名
  *@returns {Promise<any>} 解析后的JSoN对象或数组
  */
-const getKey = async (key: string) => {
+const getKey = async (key) => {
   if (!client) await redisClient() //确保客户端已初始化
   const value = await client.get(key) //将获取到的JSoN字符串转换回对象
   return value ? JSON.parse(value) : null //如果value为空，返回null而不是抛出错误
@@ -45,7 +45,7 @@ const getKey = async (key: string) => {
  *@param key
  *@returns {Promise<void>}
  */
-const delKey = async (key: string) => {
+const delKey = async (key) => {
   if (!client) await redisClient() //确保客户端已初始化
   await client.del(key)
 }

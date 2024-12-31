@@ -2,9 +2,8 @@
  * Request
  */
 export interface GetMenuList {
-  data: Datum[]
+  data?: Datum[]
   message: string
-  status: boolean
   [property: string]: any
 }
 

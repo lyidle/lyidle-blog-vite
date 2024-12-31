@@ -2,7 +2,7 @@
  * Request
  */
 export interface SetMenuList {
-  message: string
-  status: boolean
+  code: number
+  message: string[] | string
   [property: string]: any
 }

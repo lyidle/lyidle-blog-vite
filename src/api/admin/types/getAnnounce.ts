@@ -2,14 +2,14 @@
  * Request
  */
 export interface GetAnnounce {
+  code: number
   data: Data
   message: string
-  status: boolean
   [property: string]: any
 }
 
 export interface Data {
-  announce: string
+  announce: null | string
   region: null | Region
   [property: string]: any
 }
