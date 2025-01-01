@@ -45,12 +45,6 @@ $scissors-size: 30px;
 // #endregion layout
 
 // #region scrollbar
-$scroll-bg: var(--scroll-bg);
-// 背景颜色分割 角度 一三的颜色 二四的颜色
-$scroll-thumb-bg: -45deg, rgb(141, 188, 220), rgb(80, 145, 189);
 $scroll-thumb-radius: 20px;
-$scroll-thumb-border: 2px solid $scroll-bg;
-// svg作为背景 需要把 十六进制的 # 符号换成 %23
-$scroll-button-bg: "%23a1c7ea";
-$scroll-button-bg-hover: "%236da3d5";
+$scroll-thumb-border-width: 2px;
 // #endregion

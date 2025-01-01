@@ -1,15 +1,8 @@
-body.light {
+html[themes="light"] {
   // 默认图片
   --default-img: url("@/assets/images/base-bg-light.png");
   // 内容区域背景颜色 没有背景固定时
   --body-bg: #f7fcff;
-  // 鼠标样式
-  --cursor-default: url("/assets/cursor/light/pointer.png") 0 0, default;
-  --cursor-pointer: url("/assets/cursor/light/link.png") 0 0, pointer;
-  --cursor-text: url("/assets/cursor/light/text.png") 18 5, text;
-  // 主要字体颜色 content 区域的字体
-  --primary-color: #2a4f7c;
-  --primary-bg: white;
   // header 和 mini-header-drawer
   --second-color: #203b5b;
   // 头部没有吸附的颜色
@@ -56,8 +49,6 @@ body.light {
   // pages 相关
   --pages-links-hover: rgb(197, 132, 57);
   --pages-card-bg: var(--primary-bg);
-  --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
-  --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
   // 内容卡片
   --content-card-pin-bg: #619ec7;
   --content-card-pin-color: #ecf8ff;

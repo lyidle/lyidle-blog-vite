@@ -14,12 +14,6 @@ export const useSettingStore = defineStore(
     const isAside = ref<boolean>(true)
     // #endregion 头部设置
 
-    // 卡片的阴影
-    const cardBoxShadow = computed(() => {
-      return bannerIsFixed.value
-        ? "var(--pages-shadow-fixed)"
-        : "var(--pages-shadow)"
-    })
     // 菜单信息
     // 是否全屏
     const isFullScreen = ref<boolean>(false)
@@ -33,8 +27,6 @@ export const useSettingStore = defineStore(
       clickEffect,
       moveEffect,
       isAside,
-      // 卡片阴影
-      cardBoxShadow,
       // 右键菜单 信息
       isFullScreen,
       contentIsReverse,
@@ -54,8 +46,6 @@ export const useSettingStore = defineStore(
         // 右键菜单 信息
         "contentIsReverse",
         "isFullScreen",
-        // 卡片阴影
-        "cardBoxShadow",
       ],
     },
   }

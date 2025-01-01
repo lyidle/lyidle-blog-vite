@@ -1,5 +1,5 @@
 @use "sass:map";
-// #region Methods
+@use "./theme.scss" as *;
 // 屏幕尺寸 参照 element-plus的layout
 $scr: (
   mi: 610px,
@@ -31,4 +31,19 @@ $scr: (
   justify-content: $justify;
   align-items: $align;
 }
-// #endregion
+
+// 设置 卡片的 阴影
+@mixin setCardShadow {
+  // 背景固定
+  body[banner-fixed="fixed"] & {
+    @include useTheme {
+      box-shadow: getvar(primary-shadow-fixed);
+    }
+  }
+  // 背景 没有固定
+  & {
+    @include useTheme {
+      box-shadow: getvar(primary-shadow);
+    }
+  }
+}

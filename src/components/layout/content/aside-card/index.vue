@@ -14,6 +14,10 @@
 </script>
 
 <style scoped lang="scss">
+// 设置 卡片 阴影
+.item-aside {
+  @include setCardShadow;
+}
 .title {
   display: flex;
   align-items: center;

@@ -8,9 +8,6 @@
 </template>
 
 <script setup lang="ts" name="Login">
-import { useSettingStore } from "@/store/setting"
-// 导出仓库需要的东西
-const { cardBoxShadow } = storeToRefs(useSettingStore())
 // 引入组件
 import loginCard from "./login/index.vue"
 import regCard from "./reg/index.vue"
@@ -22,7 +19,12 @@ const regRef = ref()
 <style lang="scss">
 $rotate-during: var(--login-rotate-during);
 $link-color: var(--login-link-color);
-$color: var(--primary-color);
+// 设置 卡片 阴影
+.login,
+.reg {
+  @include setCardShadow;
+}
+
 .login-container {
   position: absolute;
   width: 50%;
@@ -30,7 +32,9 @@ $color: var(--primary-color);
   // 水平居中
   inset: 0;
   margin: auto;
-  color: $color;
+  @include useTheme {
+    color: getvar(primary-color);
+  }
   // 使用flex 内容居中
   display: flex;
   align-items: center;
@@ -41,7 +45,6 @@ $color: var(--primary-color);
     position: absolute;
     padding: 20px 40px;
     border-radius: 15px;
-    box-shadow: v-bind(cardBoxShadow);
     background-color: var(--login-card-bg);
     backdrop-filter: blur(0.5px);
     // 旋转过渡
@@ -58,7 +61,9 @@ $color: var(--primary-color);
     }
     // el-label
     .el-form-item__label {
-      color: var(--primary-color);
+      @include useTheme {
+        color: getvar(primary-color);
+      }
       padding-right: unset;
     }
     // 表单验证的提示信息

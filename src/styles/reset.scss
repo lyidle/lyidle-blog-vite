@@ -26,16 +26,24 @@ html {
   user-select: none;
 }
 #app {
-  cursor: var(--cursor-default);
+  @include useTheme {
+    cursor: getvar(cursor-default);
+  }
 }
 body {
-  background-color: var(--body-bg);
+  @include useTheme {
+    background-color: getvar(primary-bg);
+  }
 }
 a {
-  cursor: var(--cursor-pointer);
+  @include useTheme {
+    cursor: getvar(cursor-pointer);
+  }
 }
 .text {
-  cursor: var(--cursor-text);
+  @include useTheme {
+    cursor: getvar(cursor-text);
+  }
   user-select: text;
 }
 a {
@@ -50,27 +58,35 @@ i {
 // background
 ::-webkit-scrollbar {
   width: 10px;
-  border: 5px solid $scroll-bg;
+  @include useTheme {
+    border: 5px solid getvar(scroll-bg);
+  }
 }
 // thumb
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    list.nth($scroll-thumb-bg, 1),
-    list.nth($scroll-thumb-bg, 3) 25%,
-    list.nth($scroll-thumb-bg, 2) 25% 50%,
-    list.nth($scroll-thumb-bg, 3) 50% 75%,
-    list.nth($scroll-thumb-bg, 2) 75% 100%
-  );
-  border: $scroll-thumb-border;
+  @include useTheme {
+    background: linear-gradient(
+      list.nth(getvar(scroll-thumb-bg), 1),
+      list.nth(getvar(scroll-thumb-bg), 3) 25%,
+      list.nth(getvar(scroll-thumb-bg), 2) 25% 50%,
+      list.nth(getvar(scroll-thumb-bg), 3) 50% 75%,
+      list.nth(getvar(scroll-thumb-bg), 2) 75% 100%
+    );
+    border: $scroll-thumb-border-width solid getvar(scroll-bg);
+  }
   border-radius: $scroll-thumb-radius;
 }
 // track
 ::-webkit-scrollbar-track {
-  background-color: $scroll-bg;
+  @include useTheme {
+    background-color: getvar(scroll-bg);
+  }
 }
 // Buttons
 ::-webkit-scrollbar-button:single-button {
-  background-color: $scroll-bg;
+  @include useTheme {
+    background-color: getvar(scroll-bg);
+  }
   display: block;
   background-size: 8px;
   background-repeat: no-repeat;
@@ -78,23 +94,40 @@ i {
 // Up
 ::-webkit-scrollbar-button:single-button:vertical:decrement {
   background-position: center;
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath ' + 'fill="' + $scroll-button-bg + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+  @include useTheme {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath ' + 'fill="' + getvar(
+        scroll-button-bg
+      ) + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+  }
 }
 
 ::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
   background-position: center;
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath ' + 'fill="' + $scroll-button-bg-hover + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+  @include useTheme {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath ' + 'fill="' + getvar(
+        scroll-button-bg-hover
+      ) + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+  }
 }
 // Down
 ::-webkit-scrollbar-button:single-button:vertical:increment {
   background-position: center;
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath ' + 'fill="' + $scroll-button-bg + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  @include useTheme {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath ' + 'fill="' + getvar(
+        scroll-button-bg
+      ) + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  }
 }
 
 ::-webkit-scrollbar-button:vertical:single-button:increment:hover {
   background-position: center;
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath ' + 'fill="' + $scroll-button-bg-hover + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  @include useTheme {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath ' + 'fill="' + getvar(
+        scroll-button-bg-hover
+      ) + '"' + ' d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  }
 }
+
 // #endregion
 
 // 自适应初始化

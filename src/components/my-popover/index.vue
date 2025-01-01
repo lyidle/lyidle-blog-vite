@@ -78,7 +78,9 @@ $menu-color-light: v-bind(bg);
   position: absolute;
   background-color: $menu-color-light;
   border-radius: $menu-radius;
-  color: var(--primary-color);
+  @include useTheme {
+    color: getvar(primary-color);
+  }
   // 动画
   transition: top 0.3s;
   top: v-bind(initialTop);

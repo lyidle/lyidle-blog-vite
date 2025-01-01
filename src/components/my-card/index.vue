@@ -20,6 +20,8 @@ const bg = props.bg
   border-radius: 10px;
   overflow: hidden;
   color: #2a4f7c;
-  box-shadow: -5px 5px 10px var(--primary-bg-shadow);
+  @include useTheme {
+    box-shadow: getvar(primary-shadow);
+  }
 }
 </style>

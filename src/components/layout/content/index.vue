@@ -25,10 +25,10 @@
 </template>
 
 <script setup lang="ts" name="Content">
+// 引入仓库
 import { useSettingStore } from "@/store/setting"
-const { cardBoxShadow, isAside, contentIsReverse } = storeToRefs(
-  useSettingStore()
-)
+// 提取需要的变量
+const { isAside, contentIsReverse } = storeToRefs(useSettingStore())
 // 中间内容区域 卡片个数
 const contentNum = computed(() => {
   return isAside.value ? 3 : 4
@@ -88,7 +88,6 @@ $aside-pd: 20px;
         flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
         transition: transform var(--primary-during),
           flex var(--content-card-flex-during);
-        box-shadow: v-bind(cardBoxShadow);
         @include media(md) {
           flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
         }
@@ -144,8 +143,9 @@ $aside-pd: 20px;
   // 卡片颜色
   ::v-deep(.myCard) {
     background-color: var(--pages-card-bg);
-    color: var(--primary-color);
-    box-shadow: v-bind(cardBoxShadow);
+    @include useTheme {
+      color: getvar(primary-color);
+    }
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="contain">
+  <div class="contain carousel">
     <carousel v-bind="$attrs">
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
@@ -48,16 +48,12 @@
 </template>
 
 <script setup lang="ts" name="MyCarousel">
-import { useSettingStore } from "@/store/setting"
 import moment from "@/utils/moment"
 // 引入类型
 import { Datum } from "@/api/article/types/getCarousel"
-const { cardBoxShadow } = storeToRefs(useSettingStore())
 </script>
-
 <style scoped lang="scss">
 $carousel-height: 260px;
-$carousel-bg: var(--primary-bg);
 $carousel-radius: 10px;
 $poster-ml: 20px;
 $poster-w: 330px;
@@ -92,14 +88,14 @@ $btns-radius: 10px;
 $btns-arrow-dur: 0.5s;
 $mini-dur: 0.5s;
 .contain {
+  // 设置 卡片 阴影
+  @include setCardShadow;
   --content-pd-r: 40px;
   --content-pd-l: 30px;
   height: $carousel-height;
   overflow: hidden;
   border-radius: $carousel-radius;
-  color: var(--primary-color);
   transition: width $mini-dur, height $mini-dur;
-  box-shadow: v-bind(cardBoxShadow);
   // 每一项
   .data-item {
     width: 100%;
@@ -107,7 +103,9 @@ $mini-dur: 0.5s;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    background-color: $carousel-bg;
+    @include useTheme {
+      background-color: getvar(primary-bg);
+    }
     transition: height $mini-dur;
     &:hover {
       img {
