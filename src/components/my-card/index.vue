@@ -19,9 +19,7 @@ const bg = props.bg
   background-color: v-bind(bg);
   border-radius: 10px;
   overflow: hidden;
-  color: #2a4f7c;
-  @include useTheme {
-    box-shadow: getvar(primary-shadow);
-  }
+  // color: #2a4f7c;
+  box-shadow: var(--primary-shadow);
 }
 </style>

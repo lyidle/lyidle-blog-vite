@@ -1,5 +1,5 @@
 @use "sass:map";
-@use "./theme.scss" as *;
+@use "./variable.scss" as *;
 // 屏幕尺寸 参照 element-plus的layout
 $scr: (
   mi: 610px,
@@ -32,18 +32,33 @@ $scr: (
   align-items: $align;
 }
 
-// 设置 卡片的 阴影
+// 快速 设置 card的shadow 分为 fixed 和 普通的
 @mixin setCardShadow {
-  // 背景固定
-  body[banner-fixed="fixed"] & {
-    @include useTheme {
-      box-shadow: getvar(primary-shadow-fixed);
+  @each $key, $value in $them {
+    html[themes="#{$key}"] body[banner-fixed="fixed"] & {
+      box-shadow: var(--pages-shadow-fixed);
+    }
+    html[themes="#{$key}"] & {
+      box-shadow: var(--pages-shadow);
     }
   }
-  // 背景 没有固定
-  & {
-    @include useTheme {
-      box-shadow: getvar(primary-shadow);
+}
+
+// 当前主题（默认 light）
+$currentTheme: light;
+
+// 快速 设置对应的 主题
+@mixin useTheme {
+  @each $key, $value in $them {
+    $currentTheme: $key !global;
+    html[themes="#{$key}"] & {
+      @content;
     }
   }
+}
+
+// Function: 获取变量
+@function getvar($key) {
+  $themeMap: map.get($them, $currentTheme);
+  @return map.get($themeMap, $key);
 }

@@ -32,7 +32,6 @@ export default defineConfig(({ mode }) => {
             @use "@/styles/variable.scss" as *;
             @use "@/styles/mixins.scss" as *;
             @use "@/styles/animations.scss" as *;
-            @use "@/styles/theme.scss" as *;
           `,
           sassOptions: { quietDeps: true },
           api: "modern-compiler",

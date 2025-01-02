@@ -48,7 +48,7 @@
 // 页面中的跳转链接的悬浮函数
 @mixin pages-links-hover {
   &:hover {
-    color: var(--pages-links-hover);
+    color: var(--primary-links-hover);
     transition: color var(--primary-during);
   }
 }

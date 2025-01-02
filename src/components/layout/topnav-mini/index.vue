@@ -27,7 +27,7 @@
           <!-- 头像 -->
           <img :src="userAvater" alt="" class="avater" />
           <layout-link-pages></layout-link-pages>
-          <Ribbon bg="var(--second-color)"></Ribbon>
+          <Ribbon bg="var(--header-color)"></Ribbon>
           <layout-header-menu-mini :style></layout-header-menu-mini>
         </div>
       </template>

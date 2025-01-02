@@ -77,8 +77,8 @@ $btns-width: 10px;
 $btns-height: $btns-width;
 $btns-height-active: 30px;
 
-// $btns-color: var(--content-carousel-btns-color);
-// $btns-color-hover: var(--content-carousel-btns-color-hover);
+$btns-color: var(--content-carousel-btns-color);
+$btns-color-hover: var(--content-carousel-btns-color-hover);
 $btns-bg: var(--content-carousel-btns-bg);
 $btns-bg-hover: var(--content-carousel-btns-bg-hover);
 $btns-bg-active: var(--content-carousel-btns-bg-active);
@@ -103,9 +103,7 @@ $mini-dur: 0.5s;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    @include useTheme {
-      background-color: getvar(primary-bg);
-    }
+    background-color: var(--pages-card-bg);
     transition: height $mini-dur;
     &:hover {
       img {
@@ -203,14 +201,14 @@ $mini-dur: 0.5s;
     flex-direction: column;
     .item {
       background-color: $btns-bg;
-      // color: $btns-color;
+      color: $btns-color;
       width: $btns-width;
       height: $btns-height;
       border-radius: $btns-radius;
       &:hover {
         transition: color $btns-arrow-dur, background-color $btns-arrow-dur;
         background-color: $btns-bg-hover;
-        // color: $btns-color-hover;
+        color: $btns-color-hover;
       }
       &.active {
         width: unset;

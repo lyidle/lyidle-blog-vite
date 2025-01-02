@@ -1,4 +1,5 @@
 @use "sass:list";
+@use "./mixins.scss" as *;
 // #region initial style
 div {
   box-sizing: border-box;
@@ -26,24 +27,16 @@ html {
   user-select: none;
 }
 #app {
-  @include useTheme {
-    cursor: getvar(cursor-default);
-  }
+  cursor: var(--cursor-default);
 }
 body {
-  @include useTheme {
-    background-color: getvar(primary-bg);
-  }
+  background-color: var(--body-bg);
 }
 a {
-  @include useTheme {
-    cursor: getvar(cursor-pointer);
-  }
+  cursor: var(--cursor-pointer);
 }
 .text {
-  @include useTheme {
-    cursor: getvar(cursor-text);
-  }
+  cursor: var(--cursor-text);
   user-select: text;
 }
 a {
@@ -58,35 +51,27 @@ i {
 // background
 ::-webkit-scrollbar {
   width: 10px;
-  @include useTheme {
-    border: 5px solid getvar(scroll-bg);
-  }
+  border: 5px solid var(--scroll-bg);
 }
 // thumb
 ::-webkit-scrollbar-thumb {
-  @include useTheme {
-    background: linear-gradient(
-      list.nth(getvar(scroll-thumb-bg), 1),
-      list.nth(getvar(scroll-thumb-bg), 3) 25%,
-      list.nth(getvar(scroll-thumb-bg), 2) 25% 50%,
-      list.nth(getvar(scroll-thumb-bg), 3) 50% 75%,
-      list.nth(getvar(scroll-thumb-bg), 2) 75% 100%
-    );
-    border: $scroll-thumb-border-width solid getvar(scroll-bg);
-  }
+  background: linear-gradient(
+    var(--scroll-thumb-deg),
+    var(--scroll-thumb-bg-secend) 25%,
+    var(--scroll-thumb-bg) 25% 50%,
+    var(--scroll-thumb-bg-secend) 50% 75%,
+    var(--scroll-thumb-bg) 75% 100%
+  );
+  border: $scroll-thumb-border-width solid var(--scroll-bg);
   border-radius: $scroll-thumb-radius;
 }
 // track
 ::-webkit-scrollbar-track {
-  @include useTheme {
-    background-color: getvar(scroll-bg);
-  }
+  background-color: var(--scroll-bg);
 }
 // Buttons
 ::-webkit-scrollbar-button:single-button {
-  @include useTheme {
-    background-color: getvar(scroll-bg);
-  }
+  background-color: var(--scroll-bg);
   display: block;
   background-size: 8px;
   background-repeat: no-repeat;

@@ -26,21 +26,21 @@ const _sticky = () => {
   if (document.documentElement.scrollTop > 0) {
     // 有缓存退出
     if (
-      headerBg.value === "var(--header-sticky-bg)" &&
-      headerColor.value === "var(--header-sticky-color)"
+      headerBg.value === "var(--header-bg-sticky)" &&
+      headerColor.value === "var(--header-color-sticky)"
     )
       return
-    headerBg.value = "var(--header-sticky-bg)"
-    headerColor.value = "var(--header-sticky-color)"
+    headerBg.value = "var(--header-bg-sticky)"
+    headerColor.value = "var(--header-color-sticky)"
   } else {
     // 有缓存退出
     if (
-      headerBg.value === "var(--header-bg)" &&
-      headerColor.value === "var(--header-color)"
+      headerBg.value === "var(--header-bg-initial)" &&
+      headerColor.value === "var(--header-color-initial)"
     )
       return
-    headerBg.value = "var(--header-bg)"
-    headerColor.value = "var(--header-color)"
+    headerBg.value = "var(--header-bg-initial)"
+    headerColor.value = "var(--header-color-initial)"
   }
 }
 onMounted(() => {
@@ -65,8 +65,8 @@ onUnmounted(() => {
   box-sizing: border-box;
   top: 0;
   z-index: 10;
-  transition: background-color var(--header-bg-during),
-    padding var(--header-bg-during);
+  transition: background-color var(--header-bg-initial-during),
+    padding var(--header-bg-initial-during);
   .logo {
     font-family: "LOGO";
   }

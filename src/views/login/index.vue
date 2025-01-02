@@ -32,9 +32,7 @@ $link-color: var(--login-link-color);
   // 水平居中
   inset: 0;
   margin: auto;
-  @include useTheme {
-    color: getvar(primary-color);
-  }
+  color: var(--primary-color);
   // 使用flex 内容居中
   display: flex;
   align-items: center;
@@ -61,9 +59,7 @@ $link-color: var(--login-link-color);
     }
     // el-label
     .el-form-item__label {
-      @include useTheme {
-        color: getvar(primary-color);
-      }
+      color: var(--primary-color);
       padding-right: unset;
     }
     // 表单验证的提示信息

@@ -1,6 +1,10 @@
 // 引入暗夜变量
-@use "./dark.scss";
-@use "./light.scss";
+@use "./dark.scss" as *;
+@use "./light.scss" as *;
+$them: (
+  light: $light,
+  dark: $dark,
+);
 // 项目的全局scss变量
 // 屏幕尺寸 参照 element-plus的layout
 $scr: (
@@ -15,7 +19,7 @@ $global-font: "LXGWW", "微软雅黑", sans-serif;
 :root {
   // 头部
   --header-height: 40px;
-  --header-bg-during: 0.3s;
+  --header-bg-initial-during: 0.3s;
   // 头部导航
   --header-topnav-margin: 20px;
   // 头部导航 底部线条

@@ -51,11 +51,12 @@ $item-gap: var(--content-gap);
 $translate-y: -5px;
 $aside-pd: 20px;
 .pages {
+  color: var(--primary-color);
   width: var(--content-width);
   inset: 0;
   margin: auto;
   padding-top: $item-gap;
-  transition: width var(--header-bg-during);
+  transition: width var(--header-bg-initial-during);
   display: flex;
   justify-content: space-between;
   gap: $item-gap;
@@ -143,9 +144,6 @@ $aside-pd: 20px;
   // 卡片颜色
   ::v-deep(.myCard) {
     background-color: var(--pages-card-bg);
-    @include useTheme {
-      color: getvar(primary-color);
-    }
   }
 }
 </style>

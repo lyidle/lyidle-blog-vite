@@ -162,9 +162,7 @@ $meta-gap: 5px;
         }
         // 除了最后的都有竖着的分割线
         &:not(:last-child) {
-          @include useTheme {
-            border-right: 1px solid getvar(primary-color);
-          }
+          border-right: 1px solid var(--primary-color);
         }
         // 选中奇数odd 设置 右边框
         &:nth-child(2n-1) {
