@@ -39,7 +39,9 @@
 </template>
 
 <script setup lang="ts" name="HeaderMenuMini">
+// 引入仓库
 import { useUserStore } from "@/store/user"
+
 // 定义接收的颜色值
 const props = withDefaults(
   defineProps<{
@@ -81,7 +83,11 @@ const {
   subtitleColor,
   subtitleColorHover,
 } = props.style
+
+// 使用仓库
 const userStore = useUserStore()
+
+// 定义map数据
 interface subStroreType {
   flag: boolean
   height: string
@@ -92,7 +98,7 @@ interface subStroreType {
 let subStore: Map<string, subStroreType> = new Map()
 const menu = ref()
 const toggle = (id: number | string) => {
-  const result = userStore.userMenuList.find((item) => {
+  const result = userStore.userMenuList?.find((item) => {
     if (item.id === id) return true
   })
   // 不存在则是一级菜单直接退出

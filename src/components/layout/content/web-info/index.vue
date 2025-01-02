@@ -72,7 +72,7 @@ onMounted(async () => {
 <style scoped lang="scss">
 $item-gap: 5px;
 .info-container {
-  @include content-aside-title(var(--aside-web-info-icon-bg));
+  @include content-aside-title(var(--aside-title-icon-bg));
   ::v-deep(.body) {
     display: flex;
     flex-direction: column;

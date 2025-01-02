@@ -9,11 +9,11 @@ export interface GetWebInfo {
 }
 
 export interface Data {
-  webTotalWords: number
   touristCounts: number
   webCreatedAt: string
   webTotalPages: number
   webTotalPersonCounts: number
+  webTotalWords: number
   webUpdatedAt: null | string
   webUserCounts: number
   [property: string]: any

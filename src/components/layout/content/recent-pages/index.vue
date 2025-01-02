@@ -57,7 +57,7 @@ $content-gap: 10px;
 // 底部poster与content的间距
 $container-gap: $content-gap;
 .aside-container {
-  @include content-aside-title(var(--aside-recent-pg-icon-bg));
+  @include content-aside-title(var(--aside-title-icon-bg));
   ::v-deep(.body) {
     display: flex;
     flex-direction: column;

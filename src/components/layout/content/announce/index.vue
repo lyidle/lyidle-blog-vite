@@ -12,11 +12,19 @@
         </div>
         <div class="content">
           <span class="text">欢迎来自</span>
-          <span class="info text">{{ region?.country }} </span>
-          <span class="info text">{{ region?.province }} </span>
-          <span class="info text"> {{ region?.city }}</span>
-          <span class="text">的小伙伴,当前的ip地址为:</span>
-          <span class="info text">{{ region?.userIp }}</span>
+          <span class="info text" v-if="region?.country"
+            >{{ region?.country }}
+          </span>
+          <span class="info text" v-if="region?.province"
+            >{{ region?.province }}
+          </span>
+          <span class="info text" v-if="region?.city"> {{ region?.city }}</span>
+          <span class="text" v-if="!region?.userIp">未知区域</span>
+          <span class="text">的小伙伴</span>
+          <span class="text" v-if="region?.userIp">,当前的ip地址为:</span>
+          <span class="info text" v-if="region?.userIp">{{
+            region?.userIp
+          }}</span>
           <span class="text">,现在时间为：{{ currentTime }}</span>
         </div>
       </div>
@@ -48,10 +56,10 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-@include content-aside-title(var(--aside-web-announce-icon-bg));
+@include content-aside-title(var(--aside-title-icon-bg));
 $welcome-info-gap: 3px;
-$welcome-info-color: #125a8a;
-$welcome-bg: rgb(227, 255, 254);
+$welcome-info-color: var(--aside-announce-welcome-color);
+$welcome-bg: var(--aside-announce-welcome-bg);
 $item-gap: 10px;
 .region {
   background-color: $welcome-bg;

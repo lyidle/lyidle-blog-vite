@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $light: (
   // svg作为按钮的背景 需要把 十六进制的 # 符号换成 %23
   scroll-button-bg: "%23a1c7ea",
@@ -7,7 +9,8 @@ $light: (
 // 白天模式
 html[themes="light"] {
   // 主要字体颜色 和 链接 悬浮样式
-  --primary-color: #2a4f7c;
+  $primary-color: #2a4f7c;
+  --primary-color: #{$primary-color};
   --primary-links-hover: rgb(197, 132, 57);
   // 默认图片
   --default-img: url("@/assets/images/base-bg-light.png");
@@ -43,7 +46,10 @@ html[themes="light"] {
   --header-setting-bg: var(--header-primary-bg);
   --header-setting-label-color: var(--header-color);
   $header-switch-bg: #8dbcdc;
-  --header-setting-switch-on: #{darken($header-switch-bg, 20%)};
+  --header-setting-switch-on: #{color.adjust(
+      $header-switch-bg,
+      $lightness: -20%
+    )};
   --header-setting-switch-off: #{$header-switch-bg};
   // 头部小屏drawer导航的菜单颜色
   $header-mini-bg-hover: #57aae1;
@@ -53,7 +59,10 @@ html[themes="light"] {
   --header-mini-title-color: var(--header-color);
   --header-mini-title-color-hover: #{$header-mini-color-hover};
   --header-mini-subtitle-bg: transparent;
-  --header-mini-subtitle-bg-hover: #{lighten($header-mini-bg-hover, 10%)};
+  --header-mini-subtitle-bg-hover: #{color.adjust(
+      $header-mini-bg-hover,
+      $lightness: 10%
+    )};
   --header-mini-subtitle-color: var(--header-color);
   --header-mini-subtitle-color-hover: #{$header-mini-color-hover};
   // 头部小屏drawer
@@ -70,7 +79,8 @@ html[themes="light"] {
     rgba(137, 137, 137, 0.3)
   );
   // pages 相关
-  --pages-card-bg: white;
+  $pages-card-bg: white;
+  --pages-card-bg: #{$pages-card-bg};
   --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
   --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
   // 内容卡片
@@ -89,35 +99,44 @@ html[themes="light"] {
   $content-carousel-btns-bg: #e2eaef;
   $content-carousel-btns-bg-active: #8dbcdc;
   --content-carousel-arrow-color: #{$content-carousel-arrow-color};
-  --content-carousel-arrow-color-hover: #{darken(
+  --content-carousel-arrow-color-hover: #{color.adjust(
       $content-carousel-arrow-color,
-      5%
+      $lightness: -5%
     )};
   --content-carousel-arrow-bg: #{$content-carousel-arrow-bg};
-  --content-carousel-arrow-bg-hover: #{darken($content-carousel-arrow-bg, 10%)};
+  --content-carousel-arrow-bg-hover: #{color.adjust(
+      $content-carousel-arrow-bg,
+      $lightness: -10%
+    )};
   --content-carousel-btns-color: #{$content-carousel-btns-color};
-  --content-carousel-btns-color-hover: #{darken(
+  --content-carousel-btns-color-hover: #{color.adjust(
       $content-carousel-btns-color,
-      10%
+      $lightness: -10%
     )};
   --content-carousel-btns-bg: #{$content-carousel-btns-bg};
-  --content-carousel-btns-bg-hover: #{darken($content-carousel-btns-bg, 10%)};
+  --content-carousel-btns-bg-hover: #{color.adjust(
+      $content-carousel-btns-bg,
+      $lightness: -10%
+    )};
   // 激活状态
   --content-carousel-btns-bg-active: #{$content-carousel-btns-bg-active};
-  --content-carousel-btns-bg-active-hover: #{darken(
+  --content-carousel-btns-bg-active-hover: #{color.adjust(
       $content-carousel-btns-bg-active,
-      10%
+      $lightness: -10%
     )};
+  // 侧边栏
+  --aside-title-icon-bg: #5091bd;
   // 侧边栏 用户信息链接颜色
   --aside-userinfo-wechat-color: #00c800;
   --aside-userinfo-qq-color: #329cff;
   --aside-userinfo-bilibili-color: #20b0e3;
   --aside-userinfo-mail-color: #000000;
-  // 侧边栏公告
-  --aside-web-announce-icon-bg: #5091bd;
-  // 侧边栏
-  --aside-web-info-icon-bg: #5091bd;
-  --aside-recent-pg-icon-bg: #5091bd;
+  // 侧边栏 通知区域 欢迎信息
+  --aside-announce-welcome-bg: #d7ebf8;
+  --aside-announce-welcome-color: #{color.adjust(
+      $primary-color,
+      $lightness: -0.3%
+    )};
   // login
   --login-card-bg: rgba(255, 255, 255, 0.685);
   --login-color: var(--primary-color);

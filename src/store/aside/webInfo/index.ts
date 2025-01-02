@@ -1,5 +1,5 @@
 // 引入api
-import { getWebInfo } from "@/api/admin"
+import { getWebInfo } from "@/api/webInfo"
 // 引入计数 转换函数
 import numberTransform from "@/utils/numberTransform"
 import moment from "@/utils/moment"
