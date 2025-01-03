@@ -3,7 +3,7 @@ export const useSettingStore = defineStore(
   () => {
     // #region 头部设置
     // 是否暗夜模式
-    const isDark = ref<boolean>(true)
+    const isDark = ref<boolean>(false)
     // banner 是否 固定
     const bannerIsFixed = ref<boolean>(false)
     // 是否开启鼠标点击特效
