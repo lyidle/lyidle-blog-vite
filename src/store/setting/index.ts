@@ -44,8 +44,8 @@ export const useSettingStore = defineStore(
         "moveEffect",
         "isAside",
         // 右键菜单 信息
-        "contentIsReverse",
         "isFullScreen",
+        "contentIsReverse",
       ],
     },
   }

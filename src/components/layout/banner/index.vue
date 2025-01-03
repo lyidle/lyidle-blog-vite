@@ -10,8 +10,8 @@
       }"
     >
       <div class="detail">
-        <div class="title text">{{ welcome }}</div>
-        <div class="subtitle text">
+        <div class="title cur-text">{{ welcome }}</div>
+        <div class="subtitle cur-text">
           {{ poetry?.content }}--{{ poetry?.author }}
         </div>
       </div>
@@ -20,7 +20,7 @@
   </context-menu>
 </template>
 
-<script setup lang="ts" name="Home">
+<script setup lang="ts" name="Banner">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"

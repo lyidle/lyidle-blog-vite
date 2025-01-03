@@ -15,7 +15,6 @@ module.exports = [
   {
     name: "作品",
     icon: "i-mdi:collection",
-    to: "/note/test",
     // 默认值
     layout: {
       width: "70px",

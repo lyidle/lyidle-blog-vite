@@ -9,7 +9,7 @@
   </my-card>
 </template>
 
-<script setup lang="ts" name="WebInfo">
+<script setup lang="ts" name="AsideCard">
 //
 </script>
 

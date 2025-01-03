@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <context-menu>
-      <router-view></router-view>
-    </context-menu>
-  </div>
+  <context-menu>
+    <router-view v-slot="{ Component, route }">
+      <component :is="Component" :key="route.path" />
+    </router-view>
+  </context-menu>
 </template>
 
 <script setup lang="ts" name="App">

@@ -12,6 +12,8 @@ import "@/components/icon/unocss"
 import "normalize.css"
 // 引入全局样式
 import "@/styles/reset.scss"
+// 引入 自定义指令
+import directives from "@/directive"
 export default {
   // 安装插件
   install(app: any) {
@@ -19,5 +21,7 @@ export default {
     app.use(pinia)
     // 安装路由
     app.use(router)
+    // 安装自定义指令
+    app.use(directives)
   },
 }

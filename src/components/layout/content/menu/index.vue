@@ -3,7 +3,7 @@
   <layout-content-menu-reverse />
 </template>
 
-<script setup lang="ts" name="pages-menu">
+<script setup lang="ts" name="ContentMenu">
 //
 </script>
 

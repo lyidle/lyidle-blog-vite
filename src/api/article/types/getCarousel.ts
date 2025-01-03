@@ -9,10 +9,11 @@ export interface GetCarousel {
 }
 
 export interface Datum {
+  author: string
   category: string
   desc: string
   id: number
-  poster: null
+  poster: null | string
   title: string
   updatedAt: string
   [property: string]: any

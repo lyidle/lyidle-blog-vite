@@ -11,14 +11,14 @@ export interface GetUserInfo {
 export interface Datum {
   account: string
   Articles: Article[]
-  avater: null
+  avatar: null | string
   createdAt: string
   email: string
   id: number
   isBin: number
   nickName: string
   role: string[]
-  signer: null
+  signer: null | string
   updatedAt: string
   [property: string]: any
 }

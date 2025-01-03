@@ -39,7 +39,6 @@ export const constantRoute = [
     name: "Person",
     meta: { title: "个人" },
     component: () => import("@/components/layout/index.vue"),
-    redirect: "/about",
     children: [
       {
         path: "/person/about",

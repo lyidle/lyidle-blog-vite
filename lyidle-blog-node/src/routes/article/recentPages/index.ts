@@ -8,6 +8,7 @@ router.get("/", async (req, res, next) => {
     const limit = req.query.limit ?? 4
     const result = await Article.findAll({
       attributes: [
+        "author",
         "poster",
         "title",
         "createdAt",

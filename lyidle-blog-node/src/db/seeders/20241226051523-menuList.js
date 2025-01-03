@@ -23,7 +23,7 @@ module.exports = {
       return {
         name: item.name ?? `${id + 1}`,
         icon: item.icon ?? `${id + 1}`,
-        to: item.to ?? `/test/${id + 1}`,
+        to: item?.to,
         bannerImg: JSON.stringify(item.bannerImg),
         layout: JSON.stringify(item.layout),
         role: JSON.stringify([...new Set(default_user)]),

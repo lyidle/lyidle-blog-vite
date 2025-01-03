@@ -15,11 +15,12 @@ export interface Data {
 }
 
 export interface Article {
+  author: string
   category: string
   createdAt: string
   desc: string
   id: number
-  poster: null
+  poster: null | string
   tags: string[]
   title: string
   updatedAt: string

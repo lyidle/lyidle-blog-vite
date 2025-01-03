@@ -35,9 +35,12 @@ body {
 a {
   cursor: var(--cursor-pointer);
 }
-.text {
+.cur-text {
   cursor: var(--cursor-text);
   user-select: text;
+}
+.cur-pointer {
+  cursor: var(--cursor-pointer);
 }
 a {
   color: inherit;

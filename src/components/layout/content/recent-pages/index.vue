@@ -29,7 +29,7 @@
                 {{ item.title }}
               </div>
             </router-link>
-            <div class="date text">{{ moment(item.updatedAt) }}</div>
+            <div class="date cur-text">{{ moment(item.updatedAt) }}</div>
           </div>
         </template>
       </div>
@@ -37,12 +37,21 @@
   </layout-content-aside-card>
 </template>
 
-<script setup lang="ts" name="WebInfo">
-import { useAnnounceAndRecentPagesStore } from "@/store/aside/announceAndRecentPages"
+<script setup lang="ts" name="AsideRecentPages">
 import moment from "@/utils/moment"
-const { reqRecentPages } = useAnnounceAndRecentPagesStore()
-const { pages } = storeToRefs(useAnnounceAndRecentPagesStore())
+import { getRecentPages } from "@/api/article"
+import type { GetRecentPages } from "@/api/article/types/getRecentPages"
 
+// 最新文章
+//  展示的数据
+const pages = ref<GetRecentPages["data"] | null>()
+// 发起请求
+const reqRecentPages = async () => {
+  const result = await getRecentPages()
+  result ? (pages.value = result) : undefined
+}
+
+// 初始化 发起请求
 onMounted(async () => {
   await reqRecentPages()
 })

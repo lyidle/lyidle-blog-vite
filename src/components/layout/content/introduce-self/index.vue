@@ -1,23 +1,32 @@
 <template>
-  <context-menu v-if="userInfo">
+  <context-menu>
     <layout-content-aside-card>
       <template #body>
         <div class="aside-container aside-userinfo">
+          <div class="pin" content="admin" v-if="!userAccount"></div>
           <div class="userInfo">
             <div class="avater">
-              <router-link to="">
+              <router-link :to="`/space/${userAccount || adminAccount}`">
                 <img
-                  :src="userInfo.avater as string "
+                  :style="{
+                    background: 'no-repeat center',
+                    backgroundSize: 'cover',
+                    backgroundImage:
+                      userAvatar ||
+                      (userAccount
+                        ? 'var(--default-avater)'
+                        : adminAvatar || 'var(--default-avater)'),
+                  }"
                   alt=""
                   class="w-100% h-100% object-cover"
                 />
               </router-link>
             </div>
-            <div class="username font-size-1.5625rem text-center text">
-              {{ userInfo?.account }}
+            <div class="username font-size-1.5625rem text-center cur-text">
+              {{ userNickName || (userAccount ? "" : adminNickName) }}
             </div>
-            <div class="signer text-center text" v-if="userInfo?.signer">
-              {{ userInfo.signer }}
+            <div class="signer text-center cur-text">
+              {{ userSigner || (userAccount ? "" : adminSigner) }}
             </div>
           </div>
           <div class="pages">
@@ -31,30 +40,32 @@
           </my-primary-button>
           <div class="links">
             <a
-              href="https://res.abeim.cn/api/qq/?qq=912512766"
               class="color-[var(--aside-userinfo-wechat-color)]"
-              target="_self"
+              @click="copyToClipboard('微信号', ownerWeChat)"
+              v-if="ownerWeChat"
             >
               <i class="i-ic:twotone-wechat"></i>
             </a>
             <a
-              href="https://res.abeim.cn/api/qq/?qq=912512766"
               class="color-[var(--aside-userinfo-qq-color)]"
-              target="_self"
+              @click="copyToClipboard('QQ号', ownerQQ)"
+              v-if="ownerQQ"
             >
               <icon-qq></icon-qq>
             </a>
             <a
-              href="https://space.bilibili.com/238728646?spm_id_from=333.1007.0.0"
+              :href="ownerBiliBili"
               target="_blank"
               class="color-[var(--aside-userinfo-bilibili-color)]"
+              v-if="ownerBiliBili"
             >
               <i class="i-simple-icons:bilibili"></i>
             </a>
             <a
-              href="mailto:912512766@qq.com"
+              :href="`mailto:${ownerEmail}`"
               class="color-[var(--aside-userinfo-mail-color)]"
               target="_self"
+              v-if="ownerEmail"
             >
               <i class="i-fluent-color:mail-24"></i>
             </a>
@@ -72,14 +83,44 @@
   </context-menu>
 </template>
 
-<script setup lang="ts" name="IntroduceSelf">
+<script setup lang="ts" name="AsideIntroduceSelf">
 // 引入仓库
 import { useUserStore } from "@/store/user"
-const { userInfo } = storeToRefs(useUserStore())
+import { useOwnerStore } from "@/store/owner"
+// 提取需要的数据
+const {
+  // 用户信息
+  userAccount,
+  userNickName,
+  userAvatar,
+  userSigner,
+} = storeToRefs(useUserStore())
+const {
+  // 管理员信息 用于展示没登陆的默认信息
+  adminAccount,
+  adminNickName,
+  adminAvatar,
+  adminSigner,
+  // 网站 所有者信息
+  ownerWeChat,
+  ownerQQ,
+  ownerBiliBili,
+  ownerEmail,
+} = storeToRefs(useOwnerStore())
+// 提取请求
 const { reqUserInfo } = useUserStore()
+// 发起请求
 onMounted(async () => {
   await reqUserInfo()
 })
+const copyToClipboard = async (type: string, text: string) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    ElMessage.success(`复制${type}成功~`)
+  } catch (error) {
+    console.log(`复制${type}失败,请重试！`)
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -93,6 +134,24 @@ $userinfo-btn-car-size: 25px;
   display: flex;
   flex-direction: column;
   gap: $gap;
+  .pin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.5rem;
+    height: 5rem;
+    background-color: var(--content-card-pin-bg);
+    clip-path: polygon(0 0, 0% 100%, 100% 0);
+    color: var(--content-card-pin-color);
+    &::before {
+      content: attr(content);
+      display: block;
+      position: absolute;
+      transform: rotate(295deg);
+      left: -0.5rem;
+      top: 0.9375rem;
+    }
+  }
   .userInfo {
     width: 100%;
     display: flex;

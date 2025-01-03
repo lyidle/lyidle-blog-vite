@@ -16,6 +16,7 @@ router.get("/", async (req, res, next) => {
     const { count, rows } = await Article.findAndCountAll({
       attributes: [
         "id",
+        "author",
         "poster",
         "desc",
         "title",

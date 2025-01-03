@@ -3,33 +3,36 @@
     <ul class="header-menu" ref="menu">
       <template v-for="item in userStore.userMenuList" :key="item.id">
         <li v-if="item.id">
-          <router-link :to="item.children ? '' : item.to" v-if="item.to">
-            <div class="title" @click="toggle(item.id)">
+          <div class="title">
+            <router-link
+              :to="item.to || item.children?.[0]?.to || ''"
+              v-if="item.to || item.children?.[0]?.to"
+            >
               <i :class="item.icon"></i>
               {{ item.name }}
-              <div
-                v-if="item.children"
-                class="i-ic:baseline-plus w-1em h-1em right"
-              />
+            </router-link>
+            <a
+              v-else
+              v-dev-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }"
+            >
+              <i :class="item.icon" class="w-1em h-1em"></i>
+              {{ item.name }}
+            </a>
+            <div
+              class="right cur-pointer"
+              @click="toggle(item.id)"
+              v-if="JSON.stringify(item.children) !== '[]'"
+            >
+              <i class="toggle i-ic:baseline-plus w-1em h-1em"></i>
             </div>
-          </router-link>
-          <a v-else>
-            <div class="title" @click="toggle(item.id)">
-              <i :class="item.icon"></i>
-              {{ item.title }}
-              <div
-                v-if="item.children"
-                class="i-ic:baseline-plus w-1em h-1em right"
-              />
-            </div>
-          </a>
+          </div>
           <ul class="contain" v-if="item.children" :data-id="item.id">
             <template v-for="sub in item.children" :key="item.id">
-              <router-link :to="sub.to">
-                <li class="subtitle">
+              <li class="subtitle">
+                <router-link :to="sub.to">
                   <i :class="sub.icon"></i>{{ sub.name }}
-                </li>
-              </router-link>
+                </router-link>
+              </li>
             </template>
           </ul>
         </li>
@@ -94,9 +97,13 @@ interface subStroreType {
   element: HTMLDivElement
   toggle: HTMLDivElement
 }
+
 // 记录值去重
-let subStore: Map<string, subStroreType> = new Map()
+const subStore: Map<string, subStroreType> = new Map()
+
+// 菜单容器实列
 const menu = ref()
+
 const toggle = (id: number | string) => {
   const result = userStore.userMenuList?.find((item) => {
     if (item.id === id) return true
@@ -119,6 +126,7 @@ const toggle = (id: number | string) => {
     subStore.set(`${id}`, { height, flag: true, element, toggle })
   }
 }
+
 onMounted(() => {
   // 初始化时获取到二级菜单的存放到map中高度
   const nodeList = menu.value.querySelectorAll(".contain")
@@ -130,11 +138,12 @@ onMounted(() => {
     // 记录高度
     const height = element.offsetHeight
     element.style.height = "0"
-    const toggle = element.previousSibling.querySelector(".right")
+    const toggle = element.previousSibling.querySelector(".right .toggle")
     // id 是dataset上的 是字符串 ，取的时候也要字符串
     subStore.set(id, { height, flag: true, element, toggle })
   }
 })
+
 onUnmounted(() => {
   subStore.clear()
 })
@@ -150,14 +159,18 @@ $menu-radius: 5px;
   // 初始化布局
   .title,
   .subtitle {
-    // 上下边距撑开容器
-    padding: 10px 0;
     display: flex;
     align-items: center;
-    // 图标和文字的距离
-    gap: 10px;
     box-sizing: border-box;
-    > i {
+    a {
+      display: flex;
+      width: 100%;
+      // 图标和文字的距离
+      gap: 10px;
+      // 上下边距撑开容器
+      padding: 10px 0;
+    }
+    i:not(.toggle) {
       // 左边距
       margin-left: $item-ident;
     }
@@ -169,8 +182,15 @@ $menu-radius: 5px;
     position: relative;
     .right {
       position: absolute;
-      right: 10px;
-      cursor: pointer;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      display: flex;
+      justify-content: end;
+      align-items: center;
+      i {
+        margin-right: 10px;
+      }
     }
     // 悬浮样式
     &:hover {

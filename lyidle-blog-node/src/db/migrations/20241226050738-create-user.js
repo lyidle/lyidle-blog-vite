@@ -27,7 +27,7 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      avater: {
+      avatar: {
         type: Sequelize.TEXT,
       },
       signer: {

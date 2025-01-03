@@ -1,6 +1,6 @@
 <template>
   <div class="header" ref="header">
-    <div class="logo text">
+    <div class="logo">
       <router-link to="/">{{ LOGO }}</router-link>
     </div>
     <layout-topnav :menuList="userMenuList"></layout-topnav>

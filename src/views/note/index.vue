@@ -1,7 +1,4 @@
-<template>
-  <layout-banner></layout-banner>
-  <layout-content></layout-content>
-</template>
+<template></template>
 
 <script setup lang="ts" name="Note">
 //

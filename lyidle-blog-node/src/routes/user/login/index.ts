@@ -31,7 +31,7 @@ router.get("/", async (req, res, next) => {
       attributes: [
         "id",
         "account",
-        "avater",
+        "avatar",
         "signer",
         "email",
         "nickName",

@@ -5,44 +5,67 @@
       <span>公告</span>
     </template>
     <template #body>
-      <div class="text">{{ announce }}</div>
+      <div class="cur-text">{{ announce }}</div>
       <div class="region">
-        <div class="title text">
+        <div class="title cur-text">
           🎉欢迎信息<span class="rotate-y-180deg inline-block">🎉</span>
         </div>
         <div class="content">
-          <span class="text">欢迎来自</span>
-          <span class="info text" v-if="region?.country"
-            >{{ region?.country }}
+          <span class="cur-text">欢迎来自</span>
+          <span class="info cur-text" v-if="region_country"
+            >{{ region_country }}
           </span>
-          <span class="info text" v-if="region?.province"
-            >{{ region?.province }}
+          <span class="info cur-text" v-if="region_province"
+            >{{ region_province }}
           </span>
-          <span class="info text" v-if="region?.city"> {{ region?.city }}</span>
-          <span class="text" v-if="!region?.userIp">未知区域</span>
-          <span class="text">的小伙伴</span>
-          <span class="text" v-if="region?.userIp">,当前的ip地址为:</span>
-          <span class="info text" v-if="region?.userIp">{{
-            region?.userIp
+          <span class="info cur-text" v-if="region_city">
+            {{ region_city }}</span
+          >
+          <span class="cur-text" v-if="!region_userIp">未知区域</span>
+          <span class="cur-text">的小伙伴</span>
+          <span class="cur-text" v-if="region_userIp">,当前的ip地址为:</span>
+          <span class="info cur-text" v-if="region_userIp">{{
+            region_userIp
           }}</span>
-          <span class="text">,现在时间为：{{ currentTime }}</span>
+          <span class="cur-text">,现在时间为：{{ currentTime }}</span>
         </div>
       </div>
     </template>
   </layout-content-aside-card>
 </template>
 
-<script setup lang="ts" name="WebNotification">
-// 引入仓库
-import { useAnnounceAndRecentPagesStore } from "@/store/aside/announceAndRecentPages"
+<script setup lang="ts" name="AsideAnnounce">
+// 引入api
+import { getAnnounce } from "@/api/admin"
+import type { GetAnnounce } from "@/api/admin/types/getAnnounce"
+// 引入 moment
 import moment from "@/utils/moment"
-// 提取需要的数据
-const { announce, region } = storeToRefs(useAnnounceAndRecentPagesStore())
-// 提取请求
-const { reqAnnounce } = useAnnounceAndRecentPagesStore()
+// 显示当前时间
 const currentTime = ref(moment(new Date(), "a h:mm:ss"))
+// 记录当前时间的 setInterval
 let updateTime: ReturnType<typeof setInterval>
+
+// 公告
+// 展示的数据
+const announce = ref<GetAnnounce["data"]["announce"]>()
+const region_city = ref<string | null>()
+const region_country = ref<string | null>()
+const region_province = ref<string | null>()
+const region_userIp = ref<string | null>()
+
 // 发起请求
+const reqAnnounce = async () => {
+  const result = await getAnnounce()
+  console.log
+  announce.value = result.announce
+  // 设置 region 的值
+  region_city.value = result.region?.city
+  region_country.value = result.region?.country
+  region_province.value = result.region?.province
+  region_userIp.value = result.region?.userIp
+}
+
+// 初始化 发起请求
 onMounted(async () => {
   await reqAnnounce()
   // 自动更新 时间
@@ -50,6 +73,7 @@ onMounted(async () => {
     currentTime.value = moment(new Date(), "a h:mm:ss")
   }, 1000)
 })
+
 onUnmounted(() => {
   clearInterval(updateTime)
 })

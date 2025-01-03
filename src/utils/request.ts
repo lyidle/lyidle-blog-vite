@@ -6,9 +6,9 @@ const request = axios.create({
 })
 // 第二步：req实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
-  const { userInfo } = storeToRefs(useUserStore())
+  const { userToken } = storeToRefs(useUserStore())
   //config配置对象，headers属性请求头，经常给服务器端携带公共参数
-  const token = userInfo.value?.token
+  const token = userToken.value
   // 存在token 就携带token发起信息
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -22,9 +22,9 @@ request.interceptors.response.use(
     // 这里的状态码是后端返回的状态码
     if (response.data.code === 200) return response.data?.data
     else {
-      const { userInfo } = storeToRefs(useUserStore())
+      const { userToken } = storeToRefs(useUserStore())
       //config配置对象，headers属性请求头，经常给服务器端携带公共参数
-      const token = userInfo.value?.token
+      const token = userToken.value
       // 错误状态码汇总
       const errorCode = [400, 401, 403]
       // 如果没有token 则 401 不报错

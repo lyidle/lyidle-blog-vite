@@ -16,7 +16,7 @@ router.put(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { account, pwd, email, avater, signer, nickName, role } = req.body
+      const { account, pwd, email, avatar, signer, nickName, role } = req.body
       const id = req.auth.id
 
       // 都没有时返回没有找到
@@ -24,9 +24,9 @@ router.put(
         !(
           pwd ||
           email ||
-          avater ||
+          avatar ||
           signer ||
-          avater === null ||
+          avatar === null ||
           signer === null ||
           nickName ||
           role
@@ -34,7 +34,7 @@ router.put(
       )
         return res.result(
           void 0,
-          "请至少传入以下信息中的一个pwd、email、avater、signer、nickName、role,~",
+          "请至少传入以下信息中的一个pwd、email、avatar、signer、nickName、role,~",
           false
         )
 
@@ -65,7 +65,7 @@ router.put(
       findUser.set("nickName", nickName || userNickName)
       if (pwd) findUser.set("pwd", pwd)
       findUser.set("email", email || userEmail)
-      findUser.set("avater", avater || null)
+      findUser.set("avatar", avatar || null)
       findUser.set("signer", signer || null)
       findUser.set("role", role || [])
       // 更新数据库

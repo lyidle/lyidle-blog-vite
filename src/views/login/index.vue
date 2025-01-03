@@ -1,5 +1,5 @@
 <template>
-  <layout-header></layout-header>
+  <layout-header />
   <layout-banner></layout-banner>
   <div class="login-container">
     <loginCard ref="loginRef" :reg="regRef?.reg"></loginCard>

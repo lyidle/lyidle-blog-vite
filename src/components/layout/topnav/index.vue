@@ -1,21 +1,24 @@
 <template>
   <ul class="topnav">
-    <template v-for="menuList in menuList" :key="menuList.id">
-      <li class="custom-menu-trigger" v-if="menuList.id">
-        <router-link :to="menuList.to" v-if="menuList.to">
-          <i :class="menuList.icon" class="w-1em h-1em"></i>
-          {{ menuList.name }}
+    <template v-for="item in menuList" :key="item.id">
+      <li class="custom-menu-trigger" v-if="item.id">
+        <router-link
+          :to="item.to || item.children?.[0]?.to || ''"
+          v-if="item.to || item.children?.[0]?.to"
+        >
+          <i :class="item.icon" class="w-1em h-1em"></i>
+          {{ item.name }}
         </router-link>
-        <a v-else>
-          <i :class="menuList.icon" class="w-1em h-1em"></i>
-          {{ menuList.name }}
+        <a v-else v-dev-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
+          <i :class="item.icon" class="w-1em h-1em"></i>
+          {{ item.name }}
         </a>
         <my-menu
-          :data="menuList.children"
-          v-if="menuList.children"
+          :data="item.children"
+          v-if="item.children"
           :triangle="true"
-          :top="menuList?.layout?.top ? menuList?.layout?.top : '30px'"
-          :left="menuList?.layout?.left ? menuList?.layout?.left : '-15px'"
+          :top="item?.layout?.top ? item?.layout?.top : '30px'"
+          :left="item?.layout?.left ? item?.layout?.left : '-15px'"
           :style
         >
           <template #body="{ item }: { item: MenuListDatum }">
@@ -23,9 +26,7 @@
               :to="item.to"
               class="topnav-menu-item"
               :style="{
-                width: menuList?.layout?.width
-                  ? menuList?.layout?.width
-                  : '70px',
+                width: item?.layout?.width ? item?.layout?.width : '70px',
               }"
             >
               <i :class="item.icon"></i> <span>{{ item.name }}</span>
@@ -59,15 +60,15 @@
         top="30px"
         left="-15px"
       >
-        <template #body="{ item }: { item: MenuListDatum }">
+        <template #body="{ item: sub }: { item: MenuListDatum }">
           <router-link
-            :to="item.to"
+            :to="sub.to"
             class="topnav-menu-item"
             :style="{
               width: '70px',
             }"
           >
-            <i :class="item.icon"></i> <span>{{ item.name }}</span>
+            <i :class="sub.icon"></i> <span>{{ sub.name }}</span>
           </router-link>
         </template>
       </my-menu>

@@ -1,5 +1,4 @@
 <template>
-  <layout-banner></layout-banner>
   <layout-content>
     <template #content-start>
       <my-card>

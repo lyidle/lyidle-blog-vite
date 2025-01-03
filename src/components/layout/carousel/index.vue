@@ -20,7 +20,7 @@
             </router-link>
           </div>
           <div class="content">
-            <div class="date text">
+            <div class="date cur-text">
               {{ moment(item.updatedAt) }}
             </div>
             <div class="title line-clamp-1">
@@ -28,7 +28,7 @@
                 {{ item.title }}
               </router-link>
             </div>
-            <div class="description text line-clamp-3">
+            <div class="description cur-text line-clamp-3">
               {{ item.desc }}
             </div>
           </div>

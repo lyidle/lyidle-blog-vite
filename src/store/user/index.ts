@@ -1,12 +1,14 @@
 // 引入api
 import { getMenuList } from "@/api/admin"
 import { getUserInfo } from "@/api/user"
-import { searchUser } from "@/api/user"
+// 引入 owner 仓库
+import { useOwnerStore } from "@/store/owner"
 // 引入类型
 import type { GetMenuList } from "@/api/admin/types/getMenuList"
-import { Datum } from "@/api/user/types/searchUser"
-// 把用户数据进行加密与解密
-import { aes_encrypt, aes_decrypt } from "@/utils/crypto-aes"
+
+// 引入 整理 函数
+import tinyCounts from "@/utils/tinyCounts"
+
 export const useUserStore = defineStore(
   "User",
   () => {
@@ -20,37 +22,69 @@ export const useUserStore = defineStore(
     }
 
     // 用户信息
-    const userInfo = ref<Datum>()
-
+    const userAccount = ref<string>()
+    const userNickName = ref<string>()
+    const userEmail = ref<string>()
+    const userAvatar = ref<string | null>()
+    const userSigner = ref<string | null>()
+    const userRole = ref<string[]>([])
+    const userToken = ref<string>()
+    const userPages = ref<number>()
+    const userTags = ref<number>()
+    const userCategories = ref<number>()
     const reqUserInfo = async () => {
       const result = await getUserInfo()
-      // 如果没有登录
-      if (!result) {
-        // 获取admin的信息
-        const result = await searchUser({ role: "admin" })
-        if (result) userInfo.value = result[0]
+      // 有用户信息 赋值
+      if (result) {
+        userRole.value = result?.[0]?.role || []
+        userAccount.value = result?.[0]?.account
+        userNickName.value = result?.[0]?.nickName
+        userEmail.value = result?.[0]?.email
+        userAvatar.value = result?.[0]?.avatar || null
+        userSigner.value = result?.[0]?.signer || null
+        const { pages, tags, categories } = tinyCounts(result?.[0]?.Articles)
+        userPages.value = pages
+        userTags.value = tags
+        userCategories.value = categories
+        return
       }
-      // @ts-ignore
-      userInfo.value = result
+      // 如果没有登录
+      // 获取admin的信息
+      const { getAdminUserInfo } = useOwnerStore()
+      await getAdminUserInfo()
     }
 
     return {
       reqUserMenuList,
       userMenuList,
-      userInfo,
       reqUserInfo,
+      // 用户信息
+      userAccount,
+      userNickName,
+      userEmail,
+      userAvatar,
+      userSigner,
+      userRole,
+      userPages,
+      userTags,
+      userCategories,
+      userToken,
     }
   },
   // 对用户信息加密 有token
   {
     persist: {
-      serializer: {
-        deserialize: aes_decrypt,
-        serialize: aes_encrypt,
-      },
       key: "User",
       storage: localStorage,
-      pick: ["userUserName", "userAvater", "userSigner", "userToken"],
+      pick: [
+        "userAccount",
+        "userNickName",
+        "userEmail",
+        "userAvatar",
+        "userSigner",
+        "userRole",
+        "userToken",
+      ],
     },
   }
 )

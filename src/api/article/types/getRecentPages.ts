@@ -9,10 +9,11 @@ export interface GetRecentPages {
 }
 
 export interface Datum {
+  author: string
   category?: string
   createdAt?: string
   id?: number
-  poster?: null
+  poster: null | string
   title?: string
   updatedAt?: string
   [property: string]: any

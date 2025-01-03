@@ -24,8 +24,23 @@
     >
       <template #body>
         <div class="top-avater-container">
+          <div class="pin" content="admin" v-if="!userAccount"></div>
           <!-- 头像 -->
-          <img :src="userAvater" alt="" class="avater" />
+          <router-link :to="`/space/${userAccount || adminAccount}`">
+            <img
+              :style="{
+                background: 'no-repeat center',
+                backgroundSize: 'cover',
+                backgroundImage:
+                  userAvatar ||
+                  (userAccount
+                    ? 'var(--default-avater)'
+                    : adminAvatar || 'var(--default-avater)'),
+              }"
+              alt=""
+              class="avater"
+            />
+          </router-link>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--header-color)"></Ribbon>
           <layout-header-menu-mini :style></layout-header-menu-mini>
@@ -37,7 +52,17 @@
 <script setup lang="ts">
 // 引入仓库
 import { useUserStore } from "@/store/user"
-const { userAvater } = storeToRefs(useUserStore())
+import { useOwnerStore } from "@/store/owner"
+const {
+  // 用户信息
+  userAccount,
+  userAvatar,
+} = storeToRefs(useUserStore())
+const {
+  // 管理员信息 用于展示没登陆的默认信息
+  adminAccount,
+  adminAvatar,
+} = storeToRefs(useOwnerStore())
 const drawer = ref(false)
 // 展示drawer
 const isShow = () => {
@@ -105,6 +130,25 @@ $header-content-pd: 20px;
     color: var(--header-drawer-title-color);
     box-sizing: border-box;
     position: relative;
+    .pin {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2.5rem;
+      height: 5rem;
+      background-color: var(--content-card-pin-bg);
+      clip-path: polygon(0 0, 0% 100%, 100% 0);
+      color: var(--content-card-pin-color);
+      &::before {
+        content: attr(content);
+        display: block;
+        position: absolute;
+        transform: rotate(295deg);
+        left: -0.5rem;
+        top: 0.9375rem;
+      }
+    }
+
     .avater {
       width: 100px;
       height: 100px;

@@ -8,7 +8,15 @@ router.get("/", async (req, res, next) => {
     const limit = req.query.limit ?? 5
     const data = await Article.findAll({
       where: { carousel: 1, isBin: 0 },
-      attributes: ["poster", "updatedAt", "title", "desc", "category", "id"],
+      attributes: [
+        "author",
+        "poster",
+        "updatedAt",
+        "title",
+        "desc",
+        "category",
+        "id",
+      ],
       limit: Number(limit),
       order: [
         ["updatedAt", "desc"],

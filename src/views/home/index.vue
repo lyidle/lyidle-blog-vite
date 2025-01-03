@@ -1,5 +1,4 @@
 <template>
-  <layout-banner> </layout-banner>
   <layout-content>
     <template #content-start>
       <layout-carousel
@@ -16,42 +15,9 @@
       <layout-content-card
         v-for="item in article"
         class="content-card"
-        :category="{
-          to: `/categories/${item.category}`,
-          content: item.category,
-        }"
-        :label="item.tags"
-        :key="item.id"
+        :article="item"
         v-if="article"
       >
-        <template #poster>
-          <router-link :to="`/categories/${item.category}/${item.id}`">
-            <img
-              class="poster scale-[1.01]"
-              :style="{
-                background: 'no-repeat center',
-                backgroundSize: 'cover',
-                backgroundImage: item.poster
-                  ? item.poster
-                  : 'var(--default-img)',
-              }"
-              alt=""
-            />
-          </router-link>
-        </template>
-        <template #description>{{ item.desc }}</template>
-        <template #title>
-          <router-link
-            :to="`/categories/${item.category}/${item.id}`"
-            class="line-clamp-2 p-x-20px text-center"
-          >
-            <span>
-              {{ item.title }}
-            </span>
-          </router-link>
-        </template>
-        <template #publish>{{ moment(item.createdAt) }}</template>
-        <template #update>{{ moment(item.updatedAt) }}</template>
       </layout-content-card>
     </template>
     <template #content-end>
@@ -75,8 +41,6 @@ import { getCarousel, getArticle } from "@/api/article"
 // 引入类型
 import type { Article, Pagination } from "@/api/article/types/getArticle"
 import type { GetCarousel } from "@/api/article/types/getCarousel"
-// 引入moment格式化时间
-import moment from "@/utils/moment"
 
 // 存储焦点轮播图数据
 const carousel = ref<GetCarousel["data"]>()

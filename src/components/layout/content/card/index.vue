@@ -2,10 +2,22 @@
   <my-card class="content">
     <template #body>
       <div class="content-header">
-        <slot name="poster"></slot>
+        <router-link :to="`/doc/${article.category}/${article.id}`">
+          <img
+            class="poster scale-[1.01]"
+            :style="{
+              background: 'no-repeat center',
+              backgroundSize: 'cover',
+              backgroundImage: article.poster
+                ? article.poster
+                : 'var(--default-img)',
+            }"
+            alt=""
+          />
+        </router-link>
         <div class="mask">
           <div class="poster-container line-clamp-2">
-            『<slot name="description"></slot>』
+            『{{ article.desc }}』
           </div>
           <div class="pin">
             <i class="i-mynaui:pin-solid"></i>
@@ -14,26 +26,35 @@
       </div>
       <div class="content-info">
         <div class="title">
-          <slot name="title"></slot>
+          <router-link
+            :to="`/doc/${article.category}/${article.id}`"
+            class="line-clamp-2 p-x-20px text-center"
+          >
+            <span>
+              {{ article.title }}
+            </span>
+          </router-link>
         </div>
         <div class="meta-contain">
           <div class="info-meta">
-            <div class="item text">
+            <div class="item cur-text">
               <i class="i-oui:token-date font-size-17px"></i>
-              <slot name="publish"></slot>
+              {{ moment(article.createdAt) }}
             </div>
-            <div class="item text">
+            <div class="item cur-text">
               <i class="i-mingcute:refresh-3-line font-size-15px mr-1px" />
-              <slot name="update"></slot>
+              {{ moment(article.updatedAt) }}
             </div>
           </div>
           <div class="info-meta">
             <div class="item">
               <i class="i-tabler:clover-filled font-size-14px mr-2px" />
-              <router-link :to="category.to">
+              <router-link
+                :to="`/user/categories?user=${article.author}&category=${article.category}`"
+              >
                 <div class="item">
                   <span class="max-w-110px truncate">
-                    {{ category.content }}
+                    {{ article.category }}
                   </span>
                 </div>
               </router-link>
@@ -43,10 +64,14 @@
                 <i
                   class="i-mynaui:label-solid font-size-14px mr-2px translate-y-3px"
                 />
-                <template v-for="(item, index) in label" :key="item">
-                  <router-link :to="`/tags/${item}`">
+                <template v-for="(item, index) in article.tags" :key="item">
+                  <router-link
+                    :to="`/user/tags?author=${article.author}&tags=${item}`"
+                  >
                     <span>{{ item }}</span>
-                    <span v-if="index !== label.length - 1" class="m-x-2px"
+                    <span
+                      v-if="index !== article.tags.length - 1"
+                      class="m-x-2px"
                       >•</span
                     >
                   </router-link>
@@ -61,12 +86,13 @@
 </template>
 
 <script setup lang="ts" name="ContentCard">
+// 引入moment格式化时间
+import moment from "@/utils/moment"
+// 引入 类型
 import type { Article } from "@/api/article/types/getArticle"
-interface dataType {
-  to: string
-  content: string
-}
-defineProps<{ category: dataType; label: Article["tags"] }>()
+defineProps<{
+  article: Article
+}>()
 </script>
 
 <style scoped lang="scss">
@@ -109,8 +135,8 @@ $meta-gap: 5px;
         position: absolute;
         top: 0;
         left: 0;
-        width: 30px;
-        height: 30px;
+        width: 1.875rem;
+        height: 1.875rem;
         background-color: var(--content-card-pin-bg);
         clip-path: polygon(0 0, 0% 100%, 100% 0);
         i {
