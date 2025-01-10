@@ -1,5 +1,4 @@
 "use strict"
-const { setKey } = require("../../utils/redis")
 const bcrypt = require("bcryptjs")
 /** @type {import('sequelize-cli').Migration} */
 // 导入环境变量
@@ -29,7 +28,6 @@ module.exports = {
         updatedAt: new Date(),
       })
     }
-    await setKey("userCounts", counts)
     await queryInterface.bulkInsert("Users", users, {})
   },
 

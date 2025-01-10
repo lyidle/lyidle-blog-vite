@@ -42,6 +42,9 @@ a {
 .cur-pointer {
   cursor: var(--cursor-pointer);
 }
+.cur-move {
+  cursor: var(--cursor-move);
+}
 a {
   color: inherit;
   text-decoration: none;

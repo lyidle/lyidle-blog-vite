@@ -11,6 +11,15 @@
           <div class="icon" onclick="history.forward()">
             <i class="i-lets-icons:arrow-right"></i>
           </div>
+          <div class="icon" @click="screen?.fullScreenCb">
+            <i
+              :class="
+                isFullScreen
+                  ? 'i-tdesign:fullscreen-exit'
+                  : 'i-tdesign:fullscreen-1'
+              "
+            ></i>
+          </div>
           <div class="icon" onclick="location.reload()">
             <i class="i-tabler:refresh"></i>
           </div>
@@ -34,15 +43,10 @@
         >
         </context-menu-item>
         <context-menu-item
-          :content="isFullScreen ? '退出全屏' : '进入全屏'"
-          :icon="
-            isFullScreen
-              ? 'i-tdesign:fullscreen-exit'
-              : 'i-tdesign:fullscreen-1'
-          "
-          :onclick="screen?.fullScreenCb"
-        >
-        </context-menu-item>
+          :content="'个性化设置'"
+          :icon="'i-basil:edit-outline'"
+          @click="openSettings"
+        ></context-menu-item>
         <context-menu-item
           :content="'打印页面'"
           :icon="'i-material-symbols-light:print'"
@@ -57,9 +61,15 @@
 <script setup lang="ts" name="context-menu">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-const { isDark, bannerIsFixed, isFullScreen } = storeToRefs(useSettingStore())
 // 引入 utils
 import useFullScreen from "@/hooks/fullscreen"
+// 提取需要的变量
+const { isDark, bannerIsFixed, isFullScreen, setScene, iShowSet } = storeToRefs(
+  useSettingStore()
+)
+
+const props = defineProps<{ scene?: string | number }>()
+
 const menu = ref()
 // 菜单绑定的元素
 const container = ref()
@@ -107,6 +117,12 @@ const scrollBottom = () => {
 // 全屏
 const screen = useFullScreen()
 
+// 打开 个性化设置
+const openSettings = () => {
+  iShowSet.value = true
+  if (props.scene) setScene.value = props.scene
+}
+
 onMounted(() => {
   // 记录高度
   menuHeigh.value = menu.value.offsetHeight + "px"
@@ -141,6 +157,7 @@ $item-gap: 5px;
   color: var(--header-menu-color);
   border-radius: $wrap-radius;
   overflow: hidden;
+  box-shadow: var(--context-menu-shadow);
   & > div {
     min-width: $item-min-w;
     min-height: $item-min-h;
@@ -150,7 +167,7 @@ $item-gap: 5px;
     display: flex;
     justify-content: center;
     gap: $title-gap;
-    border-bottom: 1px solid #c9c9c9;
+    border-bottom: var(--context-menu-title-hr);
     padding: $item-gap;
     .icon {
       padding: $title-icon-pd;

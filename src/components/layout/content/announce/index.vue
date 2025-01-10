@@ -5,7 +5,7 @@
       <span>公告</span>
     </template>
     <template #body>
-      <div class="cur-text">{{ announce }}</div>
+      <div class="cur-text">{{ announce.content }}</div>
       <div class="region">
         <div class="title cur-text">
           🎉欢迎信息<span class="rotate-y-180deg inline-block">🎉</span>

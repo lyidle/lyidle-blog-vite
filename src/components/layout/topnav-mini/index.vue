@@ -53,6 +53,8 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+// 引入自定义 函数
+import debounce from "@/utils/debounce"
 const {
   // 用户信息
   userAccount,
@@ -64,17 +66,33 @@ const {
   adminAvatar,
 } = storeToRefs(useOwnerStore())
 const drawer = ref(false)
+const resizeCb = debounce(() => {
+  // src/styles/variable.scss 的变量 sm 的值
+  if (document.documentElement.offsetWidth > 992) {
+    // 显示 滚动条
+    document.documentElement.style.overflow = "unset"
+  } else {
+    // 隐藏 html 的滚动条
+    document.documentElement.style.overflow = "hidden"
+  }
+}, 200)
 // 展示drawer
 const isShow = () => {
   // 隐藏 html 的滚动条
-  document.documentElement.style.overflowY = "hidden"
+  document.documentElement.style.overflow = "hidden"
   drawer.value = true
+  window.addEventListener("resize", resizeCb)
 }
 // 关闭drawer
 const handlerClose = () => {
   // 打开 html 的滚动条
-  document.documentElement.style.overflowY = "scroll"
+  document.documentElement.style.overflow = "unset"
+  window.removeEventListener("resize", resizeCb)
 }
+
+onUnmounted(() => {
+  window.addEventListener("resize", resizeCb)
+})
 const style = {
   icon: { plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" },
   titleBg: "var(--header-mini-title-bg)",

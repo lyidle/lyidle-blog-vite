@@ -1,5 +1,6 @@
 <template>
   <context-menu>
+    <layout-theme></layout-theme>
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="route.path" />
     </router-view>

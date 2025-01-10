@@ -74,10 +74,6 @@
       </template>
     </layout-content-aside-card>
     <template #body>
-      <context-menu-item
-        :content="'编辑'"
-        :icon="'i-basil:edit-outline'"
-      ></context-menu-item>
       <layout-content-menu />
     </template>
   </context-menu>

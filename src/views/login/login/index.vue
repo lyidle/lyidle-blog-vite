@@ -95,7 +95,7 @@ const login = ref()
 const handlerLogin = async () => {
   await loginForm.value.validateField()
   const result = await reqLogin(loginData)
-  userToken.value = result.token
+  userToken.value = result?.token
   ElMessage.success("登录成功~")
 }
 // 前往注册的切换动画

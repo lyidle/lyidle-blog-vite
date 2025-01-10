@@ -10,7 +10,7 @@ $dark: (
 html[themes="dark"] {
   // 主要字体颜色 和 链接 悬浮样式
   $primary-color: #c7d4e4;
-  --primary-color: #c7d4e4;
+  --primary-color: #{$primary-color};
   --primary-links-hover: rgb(197, 132, 57);
   // 默认图片
   --default-img: url("@/assets/images/base-bg-dark.png");
@@ -22,11 +22,48 @@ html[themes="dark"] {
   --cursor-default: url("/assets/cursor/dark/pointer.png") 0 0, default;
   --cursor-pointer: url("/assets/cursor/dark/link.png") 0 0, pointer;
   --cursor-text: url("/assets/cursor/dark/text.png") 18 5, text;
+  --cursor-move: url("/assets/cursor/dark/move.png") 18 5, move;
+  // 右键菜单 阴影
+  --context-menu-shadow: 0 0 3px rgb(42, 42, 42);
+  --context-menu-title-hr: 1px solid #6887a8;
+  // 右键 菜单 的编辑（个性化）项目
+  $theme-setting-title-bg: #375366;
+  $theme-setting-aside-bg: #264050;
+  $theme-setting-aside-hover-active-color: #e0eeff;
+  --theme-setting-mask: #0000005a;
+  --theme-setting-bg: #{color.adjust($theme-setting-title-bg, $lightness: 5%)};
+  --theme-setting-title-bg: #{$theme-setting-title-bg};
+  --theme-setting-title-color: $primary-color;
+  --theme-setting-close-color: #{$primary-color};
+  --theme-setting-close-color-hover: #{color.adjust(
+      $primary-color,
+      $lightness: 20%
+    )};
+  --theme-setting-side-bg: #{$theme-setting-aside-bg};
+  --theme-setting-side-bg-active: #{color.adjust(
+      $theme-setting-aside-bg,
+      $lightness: 4%
+    )};
+  --theme-setting-side-bg-item: #{color.adjust(
+      $theme-setting-aside-bg,
+      $lightness: 8%
+    )};
+  --theme-setting-side-bg-item-hover: #{color.adjust(
+      $theme-setting-aside-bg,
+      $lightness: 10%
+    )};
+  --theme-setting-aside-color: $primary-color;
+  --theme-setting-side-color-active: #{$theme-setting-aside-hover-active-color};
+  --theme-setting-side-color-hover: #{$theme-setting-aside-hover-active-color};
   // 按钮primary
   --primary-btn-bg: #5892b8;
   --primary-btn-color: #eef8ff;
   --primary-btn-hover-bg: #6fa6cb;
   --primary-btn-hover-color: #e9f6ff;
+  // 切换按钮 primary
+  $primary-switch-bg: #548aad;
+  --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: 10%)};
+  --primary-switch-off: #{$primary-switch-bg};
   // 头部区域的颜色
   --header-color: #c6d6ed;
   --header-primary-bg: #3d5b6e;
@@ -47,9 +84,6 @@ html[themes="dark"] {
   // 头部导航设置
   --header-setting-bg: var(--header-primary-bg);
   --header-setting-label-color: var(var(--primary-color));
-  $header-switch-bg: #548aad;
-  --header-setting-switch-on: #{color.adjust($header-switch-bg, $lightness: 10%)};
-  --header-setting-switch-off: #{$header-switch-bg};
   // 头部小屏drawer导航的菜单颜色
   $header-mini-bg-hover: #396396;
   $header-mini-color-hover: #e9f6ff;

@@ -4,13 +4,20 @@
 export interface GetAnnounce {
   code: number
   data: Data
-  message: string
+  message: string[] | string
   [property: string]: any
 }
 
 export interface Data {
-  announce: null | string
+  announce: Announce
   region: null | Region
+  [property: string]: any
+}
+
+export interface Announce {
+  content?: string
+  id: number
+  name: string
   [property: string]: any
 }
 

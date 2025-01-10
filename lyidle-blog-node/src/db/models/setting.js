@@ -22,12 +22,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      content: {
-        type: DataTypes.STRING,
-        validate: {
-          len: { args: [0, 255], msg: "设置信息长度必须在1-255之间哦~" },
-        },
-      },
+      content: DataTypes.STRING,
     },
     {
       sequelize,

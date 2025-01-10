@@ -14,13 +14,13 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { announce } = req.body
-      const result = { content: announce }
-      // 更新通知
-      await Setting.update(result, {
-        where: { name: "announce" },
+      if (!announce) return res.result(void 0, "announce是必传项~", false)
+      const findAnnounce = await Setting.findOne({
+        where: { name: "公告" },
       })
+      const { dataValues } = await findAnnounce.update({ content: announce })
       // 更新缓存
-      await setKey("announce", announce)
+      await setKey("setting:公告", dataValues)
       return res.result(void 0, "设置通知成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

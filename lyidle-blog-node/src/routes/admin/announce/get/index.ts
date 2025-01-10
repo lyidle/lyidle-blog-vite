@@ -39,32 +39,28 @@ router.get("/", async (req, res, next) => {
     }
 
     // 有缓存直接返回
-    const cacheValue = await getKey(`announce`)
+    const cacheValue = await getKey(`setting:公告`)
     if (cacheValue) {
       return res.result(
         {
           announce: cacheValue,
-          region: ipRegion === null ? null : { ...ipRegion },
+          region: ipRegion ? { ...ipRegion } : null,
         },
         "获取公告成功~"
       )
     }
 
-    const findAnnounce = await Setting.findOne({
-      where: { name: "announce" },
-      attributes: ["content"],
-    })
-    const announce = findAnnounce?.dataValues?.content
-      ? findAnnounce?.dataValues?.content
-      : null
-
     // 没缓存设置
-    await setKey("announce", announce)
 
+    const { dataValues } = await Setting.findOne({
+      where: { name: "公告" },
+    })
+
+    await setKey(`setting:公告`, dataValues)
     return res.result(
       {
-        announce,
-        region: ipRegion === null ? null : { ...ipRegion },
+        announce: dataValues,
+        region: ipRegion ? { ...ipRegion } : null,
       },
       "获取公告成功~"
     )

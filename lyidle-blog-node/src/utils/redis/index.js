@@ -1,4 +1,9 @@
 const { createClient } = require("redis")
+// 导入环境变量
+require("dotenv").config()
+const is_production = JSON.parse(process.env.is_production)
+const redis_pwd = process.env.redis_pwd
+const redis_host = process.env.redis_host
 //创建全局的Redis客户端实例
 let client
 /*
@@ -6,8 +11,10 @@ let client
  */
 const redisClient = async () => {
   if (client) return //如果客户端已经初始化，则不再重复初始化
-  client = await createClient()
-    // await createClient({ password: "123456", name: "vite-blog" })
+  client = await createClient({
+    password: is_production ? redis_pwd || "" : "",
+    host: is_production ? redis_host : "127.0.0.1",
+  })
     .on("error", (err) => console.log("Redis 连接失败", err))
     .connect()
 }
@@ -20,11 +27,11 @@ const redisClient = async () => {
 const setKey = async (key, value, ttl = null) => {
   if (!client) await redisClient() //确保客户端已初始化
   value = JSON.stringify(value) //将对象转换为JSON字符串
-  await client.set(key, value)
+  await client.set(`vite-blog:${key}`, value)
   //如果提供了ttl，则设置过期时间
   if (ttl !== null) {
-    // await client.expire(key, ttl) //ttl 单位秒
-    await client.pExpire(key, ttl) //ttl 单位毫秒
+    // await client.expire(`vite-blog:${key}`, ttl) //ttl 单位秒
+    await client.pExpire(`vite-blog:${key}`, ttl) //ttl 单位毫秒
   }
   return value ? JSON.parse(value) : null //如果value为空，返回null而不是抛出错误
 }
@@ -36,7 +43,7 @@ const setKey = async (key, value, ttl = null) => {
  */
 const getKey = async (key) => {
   if (!client) await redisClient() //确保客户端已初始化
-  const value = await client.get(key) //将获取到的JSoN字符串转换回对象
+  const value = await client.get(`vite-blog:${key}`) //将获取到的JSoN字符串转换回对象
   return value ? JSON.parse(value) : null //如果value为空，返回null而不是抛出错误
 }
 
@@ -47,6 +54,6 @@ const getKey = async (key) => {
  */
 const delKey = async (key) => {
   if (!client) await redisClient() //确保客户端已初始化
-  await client.del(key)
+  await client.del(`vite-blog:${key}`)
 }
 module.exports = { redisClient, setKey, getKey, delKey }

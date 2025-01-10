@@ -51,7 +51,7 @@
             />
           </el-form-item>
           <el-form-item
-            :label="!clickEffect ? '开启鼠标移动特效' : '关闭鼠标移动特效'"
+            :label="!moveEffect ? '开启鼠标移动特效' : '关闭鼠标移动特效'"
             class="item"
           >
             <el-switch
@@ -134,7 +134,7 @@ a {
 .el-form-item {
   margin-bottom: 0;
 }
-// 暗夜模式
+// 设置的容器
 .header-setting {
   .item {
     --el-text-color-regular: var(--header-setting-label-color);
@@ -144,8 +144,8 @@ a {
       justify-content: flex-start;
     }
     .settingSwitch {
-      --el-switch-on-color: var(--header-setting-switch-on);
-      --el-switch-off-color: var(--header-setting-switch-off);
+      --el-switch-on-color: var(--primary-switch-on);
+      --el-switch-off-color: var(--primary-switch-off);
     }
   }
   .aside-switch {

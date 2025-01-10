@@ -20,6 +20,16 @@ export const useSettingStore = defineStore(
     // 内容区域和侧边信息是否交换
     const contentIsReverse = ref<boolean>(false)
 
+    // 个性化 设置
+    // 是否显示 弹窗
+    const iShowSet = ref<boolean>(false)
+    // 存储场景
+    const setScene = ref<string | number>("0")
+    // 是否存储初始位置
+    let savePosition = ref<boolean>(true)
+    // 存储初始位置
+    let initLeft = ref<null | string>(null)
+    let initTop = ref<null | string>(null)
     return {
       // 头部设置
       isDark,
@@ -30,6 +40,12 @@ export const useSettingStore = defineStore(
       // 右键菜单 信息
       isFullScreen,
       contentIsReverse,
+      // 个性化设置 右键的编辑项
+      setScene,
+      iShowSet,
+      savePosition,
+      initLeft,
+      initTop,
     }
   },
   {
@@ -44,8 +60,12 @@ export const useSettingStore = defineStore(
         "moveEffect",
         "isAside",
         // 右键菜单 信息
-        "isFullScreen",
         "contentIsReverse",
+        // 个性化设置 右键的编辑项
+        "setScene",
+        "savePosition",
+        "initLeft",
+        "initTop",
       ],
     },
   }
