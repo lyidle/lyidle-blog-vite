@@ -1,7 +1,7 @@
 <template>
   <my-card class="item-aside">
     <template #body>
-      <div class="title">
+      <div class="aside-title">
         <slot name="title"></slot>
       </div>
       <div class="mt-10px body"><slot name="body"></slot></div>
@@ -18,7 +18,7 @@
 .item-aside {
   @include setCardShadow;
 }
-.title {
+.aside-title {
   display: flex;
   align-items: center;
   gap: var(--aside-title-gap);

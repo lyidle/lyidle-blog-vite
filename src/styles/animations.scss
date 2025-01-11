@@ -29,7 +29,7 @@
 
 // 内容区域的侧边信息 的title头部相关
 @mixin content-aside-title($color) {
-  ::v-deep(.title) {
+  ::v-deep(.aside-title) {
     // 图标
     i {
       font-size: 1.4375rem;

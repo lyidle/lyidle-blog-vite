@@ -15,6 +15,12 @@ export const constantRoute = [
     ],
   },
   {
+    path: "/doc/:category/:id",
+    name: "Document",
+    meta: { title: "文章" },
+    component: () => import("@/views/doc/index.vue"),
+  },
+  {
     path: "/note",
     name: "Note",
     meta: { title: "笔记" },

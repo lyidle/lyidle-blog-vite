@@ -10,10 +10,12 @@
       </div>
       <div class="content-aside" v-if="isAside" :style="asideStyle">
         <slot name="aside-start"></slot>
-        <layout-content-introduce-self />
-        <layout-content-announce />
-        <layout-content-web-info />
-        <layout-content-recent-pages />
+        <template v-if="props.isAllAside">
+          <layout-content-introduce-self v-if="isAsideSelf" />
+          <layout-content-announce v-if="isAsideAnnounce" />
+          <layout-content-web-info v-if="isAsideWebInfo" />
+          <layout-content-recent-pages v-if="isAsideRecentPage" />
+        </template>
         <slot name="aside-end"></slot>
       </div>
     </div>
@@ -44,6 +46,22 @@ const asideStyle = computed(() => {
   }
   return result
 })
+const props = withDefaults(
+  defineProps<{
+    isAllAside?: boolean
+    isAsideSelf?: boolean
+    isAsideAnnounce?: boolean
+    isAsideWebInfo?: boolean
+    isAsideRecentPage?: boolean
+  }>(),
+  {
+    isAllAside: true,
+    isAsideSelf: true,
+    isAsideAnnounce: true,
+    isAsideWebInfo: true,
+    isAsideRecentPage: true,
+  }
+)
 </script>
 <style scoped lang="scss">
 // 左右间距
