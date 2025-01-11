@@ -44,6 +44,7 @@ $scr: (
   }
 }
 
+// 主题设置 scroll的 按钮 使用 svg 时 设置 scss 变量用 使用css变量不会生效
 // 当前主题（默认 light）
 $currentTheme: light;
 

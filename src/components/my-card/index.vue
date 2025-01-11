@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Card">
+<script setup lang="ts" name="MyCard">
 const props = withDefaults(defineProps<{ bg?: string }>(), {
   bg: "white",
 })

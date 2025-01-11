@@ -37,6 +37,7 @@
         >
         </context-menu-item>
         <context-menu-item
+          v-if="themes === 'switch'"
           :content="!isDark ? '暗夜模式' : '白天模式'"
           :icon="!isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
           @click="isDark = !isDark"
@@ -58,15 +59,14 @@
   </div>
 </template>
 
-<script setup lang="ts" name="context-menu">
+<script setup lang="ts" name="ContextMenu">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 引入 utils
 import useFullScreen from "@/hooks/fullscreen"
 // 提取需要的变量
-const { isDark, bannerIsFixed, isFullScreen, setScene, iShowSet } = storeToRefs(
-  useSettingStore()
-)
+const { isDark, themes, bannerIsFixed, isFullScreen, setScene, iShowSet } =
+  storeToRefs(useSettingStore())
 
 const props = defineProps<{ scene?: string | number }>()
 

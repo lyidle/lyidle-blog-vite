@@ -11,7 +11,7 @@
   </ul>
 </template>
 
-<script setup lang="ts" name="Menu">
+<script setup lang="ts" name="MyMenu">
 const props = withDefaults(
   defineProps<{
     top?: string

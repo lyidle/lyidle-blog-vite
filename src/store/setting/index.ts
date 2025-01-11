@@ -2,8 +2,23 @@ export const useSettingStore = defineStore(
   "Setting",
   () => {
     // #region 头部设置
-    // 是否暗夜模式
     const isDark = ref<boolean>(false)
+    // 主题选择
+    const themes = ref("light")
+    const themeOptions = [
+      { value: "light", label: "白天模式" },
+      { value: "dark", label: "暗夜模式" },
+      { value: "auto", label: "跟随系统" },
+      { value: "switch", label: "快捷切换" },
+    ]
+    // 白天的主题值
+    const lights = ref("normal")
+    // 暗夜的主题值
+    const darks = ref("normal")
+    // 鼠标点击效果的值
+    const clicks = ref("normal")
+    // 鼠标移动效果的值
+    const moves = ref("normal")
     // banner 是否 固定
     const bannerIsFixed = ref<boolean>(false)
     // 是否开启鼠标点击特效
@@ -33,6 +48,12 @@ export const useSettingStore = defineStore(
     return {
       // 头部设置
       isDark,
+      themes,
+      themeOptions,
+      lights,
+      darks,
+      clicks,
+      moves,
       bannerIsFixed,
       clickEffect,
       moveEffect,
@@ -55,6 +76,12 @@ export const useSettingStore = defineStore(
       pick: [
         // 头部设置信息
         "isDark",
+        "themes",
+        "themeOptions",
+        "lights",
+        "darks",
+        "clicks",
+        "moves",
         "bannerIsFixed",
         "clickEffect",
         "moveEffect",

@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Menu">
+<script setup lang="ts" name="MyPopover">
 const props = withDefaults(
   defineProps<{
     top?: string

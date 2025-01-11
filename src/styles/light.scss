@@ -27,11 +27,13 @@ html[themes="light"] {
   --context-menu-shadow: 0 0 3px rgb(210, 210, 210);
   --context-menu-title-hr: 1px solid #c9c9c9;
   // 右键 菜单 的编辑（个性化）项目
+  $theme-setting-bg: #fbfeff;
   $theme-setting-title-bg: #88b7d7;
-  $theme-setting-aside-bg: #92cae3;
-  $theme-setting-aside-hover-active-color: #e0eeff;
+  $theme-setting-aside-bg: #e7f7ff;
+  $theme-setting-aside-hover-active-color: #f4fbff;
+  $theme-setting-aside-hover-active-bg: #99c1dc;
   --theme-setting-mask: #0000005a;
-  --theme-setting-bg: #{color.adjust($theme-setting-title-bg, $lightness: 18%)};
+  --theme-setting-bg: #{$theme-setting-bg};
   --theme-setting-title-bg: #{$theme-setting-title-bg};
   --theme-setting-title-color: #e0eeff;
   --theme-setting-close-color: #{$primary-color};
@@ -39,20 +41,18 @@ html[themes="light"] {
       $primary-color,
       $lightness: 20%
     )};
+  --theme-setting-side-hr: #d9e9f5 1px solid;
   --theme-setting-side-bg: #{$theme-setting-aside-bg};
-  --theme-setting-side-bg-active: #{color.adjust(
-      $theme-setting-aside-bg,
-      $lightness: -10%
-    )};
   --theme-setting-side-bg-item: #{color.adjust(
       $theme-setting-aside-bg,
       $lightness: 8%
     )};
+  --theme-setting-side-bg-active: #{$theme-setting-aside-hover-active-bg};
   --theme-setting-side-bg-item-hover: #{color.adjust(
-      $theme-setting-aside-bg,
-      $lightness: -5%
+      $theme-setting-aside-hover-active-bg,
+      $lightness: 5%
     )};
-  --theme-setting-aside-color: #567aa5;
+  --theme-setting-aside-color: #{$primary-color};
   --theme-setting-side-color-active: #{$theme-setting-aside-hover-active-color};
   --theme-setting-side-color-hover: #{$theme-setting-aside-hover-active-color};
   // 按钮primary

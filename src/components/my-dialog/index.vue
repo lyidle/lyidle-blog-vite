@@ -1,6 +1,6 @@
 <template>
-  <div v-if="iShowSet" class="theme-settings">
-    <div class="container" ref="containter">
+  <div v-if="iShowSet" class="dialog-wrapper">
+    <div class="dialog-container" ref="containter">
       <div class="title cur-move" ref="title">
         <slot name="title"></slot>
         <!-- 关闭 按钮 -->
@@ -12,14 +12,12 @@
         </div>
       </div>
       <!-- 内容区 -->
-      <div class="contain">
-        <slot name="content"></slot>
-      </div>
+      <slot name="content"></slot>
     </div>
   </div>
 </template>
 
-<script setup lang="ts" name="my-dialog">
+<script setup lang="ts" name="MyDialog">
 const iShowSet = defineModel()
 // 初始化 props
 const props = withDefaults(
@@ -186,12 +184,12 @@ $bg: v-bind(bg);
 $title-bg: v-bind(titleBg);
 $color: v-bind(color);
 $title-color: v-bind(titleColor);
-.theme-settings {
+.dialog-wrapper {
   position: fixed;
   inset: 0;
   background-color: $mask;
   z-index: 50;
-  .container {
+  .dialog-container {
     width: 700px;
     max-width: 100%;
     height: 80%;

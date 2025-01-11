@@ -14,7 +14,11 @@
     >
       <template #body>
         <el-form label-width="130px" class="m-5px m-l-15px header-setting">
-          <el-form-item :label="!isDark ? '暗夜模式' : '白天模式'" class="item">
+          <el-form-item
+            v-if="themes === 'switch'"
+            :label="!isDark ? '暗夜模式' : '白天模式'"
+            class="item"
+          >
             <el-switch
               v-model="isDark"
               inline-prompt
@@ -76,6 +80,19 @@
               class="settingSwitch"
             />
           </el-form-item>
+          <el-form-item
+            :label="`侧栏位置(${contentIsReverse ? '左侧' : '右侧'})`"
+            class="item aside-switch"
+          >
+            <el-switch
+              v-model="contentIsReverse"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+              class="settingSwitch"
+            />
+          </el-form-item>
         </el-form>
       </template>
     </my-popover>
@@ -97,9 +114,15 @@ import unmove from "@/components/icon/switch/unmove.vue"
 import aside from "@/components/icon/switch/aside.vue"
 import unaside from "@/components/icon/switch/unaside.vue"
 // 初始化仓库中用到的值
-const { isDark, bannerIsFixed, clickEffect, moveEffect, isAside } = storeToRefs(
-  useSettingStore()
-)
+const {
+  isDark,
+  themes,
+  bannerIsFixed,
+  clickEffect,
+  moveEffect,
+  isAside,
+  contentIsReverse,
+} = storeToRefs(useSettingStore())
 // 定义与接收props
 withDefaults(
   defineProps<{

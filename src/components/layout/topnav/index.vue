@@ -1,5 +1,11 @@
 <template>
   <ul class="topnav">
+    <li>
+      <router-link to="/home">
+        <i class="i-ep:home-filled w-1em h-1em"> </i>
+        首页
+      </router-link>
+    </li>
     <template v-for="item in menuList" :key="item.id">
       <li class="custom-menu-trigger" v-if="item.id">
         <router-link

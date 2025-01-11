@@ -12,7 +12,7 @@ module.exports = {
       if (item.children) {
         menuList.push(
           ...item.children.map((item) => ({
-            menuId: id,
+            menuId: id + 1,
             name: item.name ?? `${id + 1}`,
             icon: item.icon ?? `${id + 1}`,
             to: item.to ?? `/test/${id + 1}`,

@@ -2,6 +2,12 @@
   <div class="header-menu-container">
     <ul class="topnav">
       <li>
+        <router-link to="/home">
+          <i class="i-ep:home-filled w-1em h-1em"> </i>
+          首页
+        </router-link>
+      </li>
+      <li>
         <a @click="isShow">
           <i class="i-ep:menu w-1em h-1em"> </i>
           菜单

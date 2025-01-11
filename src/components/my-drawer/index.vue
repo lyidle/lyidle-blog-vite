@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Drawer">
+<script setup lang="ts" name="MyDrawer">
 const drawer = defineModel()
 const emits = defineEmits<{
   close: []

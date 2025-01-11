@@ -4,7 +4,7 @@
   </li>
 </template>
 
-<script setup lang="ts" name="MenuItem">
+<script setup lang="ts" name="MyMenuItem">
 const props = withDefaults(
   defineProps<{
     style?: {

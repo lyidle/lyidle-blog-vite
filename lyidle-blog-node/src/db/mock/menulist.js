@@ -1,18 +1,6 @@
 // 模拟
 module.exports = [
   {
-    name: "首页",
-    icon: "i-ep:home-filled",
-    to: "/home",
-    bannerImg: {
-      light:
-        'url("https://haowallpaper.com/link/common/file/previewFileImg/15839280654553408")',
-      dark: 'url("https://haowallpaper.com/link/common/file/previewFileImg/15556743616106816")',
-      height: "100vh",
-    },
-    role: ["user"],
-  },
-  {
     name: "作品",
     icon: "i-mdi:collection",
     // 默认值

@@ -18,19 +18,50 @@ import { setTitleTip } from "@/utils/effect"
 
 // 提取数据
 const { reqUserMenuList } = useUserStore()
-const { isDark, clickEffect, moveEffect, bannerIsFixed } = storeToRefs(
+const { isDark, themes, clickEffect, moveEffect, bannerIsFixed } = storeToRefs(
   useSettingStore()
 )
 
 //初始化特效函数
 const effectClick = new clickEffectFn()
 const effectMove = new moveEffectFn()
-// 监听 isDark
+// 主题切换
+const prefers = matchMedia("(prefers-color-scheme: dark)")
+const follow = () => {
+  document.documentElement.setAttribute(
+    "themes",
+    prefers.matches ? "dark" : "light"
+  )
+  prefers.matches ? (isDark.value = true) : (isDark.value = false)
+}
+
+// 监听 isDark themes 为 switch时监听
 watch(
   () => isDark.value,
   (newV) => {
+    if (themes.value !== "switch") return
     // 根据 isDark 的值来设置主题
     document.documentElement.setAttribute("themes", newV ? "dark" : "light")
+  },
+  {
+    immediate: true,
+  }
+)
+// 监听 themes
+watch(
+  () => themes.value,
+  (newV) => {
+    if (newV === "switch") return
+    // 跟随系统切换
+    if (newV === "auto") {
+      follow()
+      prefers.addEventListener("change", follow)
+      return
+    }
+    // 根据 themes 的值来设置主题
+    document.documentElement.setAttribute("themes", newV)
+    prefers.removeEventListener("change", follow)
+    newV === "light" ? (isDark.value = false) : (isDark.value = true)
   },
   {
     immediate: true,
@@ -40,7 +71,7 @@ watch(
 watch(
   () => bannerIsFixed.value,
   (newV) => {
-    // 根据 isDark 的值来设置主题
+    // 根据 监听 的值来设置主题
     document.body.setAttribute("banner-fixed", newV ? "fixed" : "")
   },
   {

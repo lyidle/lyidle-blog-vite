@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="context-item">
+<script setup lang="ts" name="ContextItem">
 defineProps<{ icon: string; content: string }>()
 </script>
 
