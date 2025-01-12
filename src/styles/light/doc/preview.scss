@@ -1,0 +1,13 @@
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+html[themes="#{$theme}"] {
+  // doc 页面
+  --doc-header-color: #f6fbff;
+  --doc-header-link: #1b2a77;
+  // waves 动画
+  $doc-header-waves-color: rgb(255, 255, 255);
+  --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
+  --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
+  --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
+}

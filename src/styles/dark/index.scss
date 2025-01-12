@@ -1,0 +1,67 @@
+// 引入 函数
+@use "sass:color";
+
+// 引入 全局 变量
+@use "./global/index.scss" as *;
+
+// 引入 header 样式
+@use "./header/index.scss" as *;
+// 引入 banner 样式
+@use "./banner/index.scss" as *;
+// 引入 内容 区域 样式
+@use "./content/index.scss" as *;
+// 引入 内容 区域 的 侧边栏 样式
+@use "./content/aside.scss" as *;
+// 引入 登录 页面 的 样式
+@use "./login/index.scss" as *;
+// 引入 个性化 面板的样式
+@use "./theme-setting/index.scss" as *;
+// 引入 doc 样式
+@use "./doc/preview.scss" as *;
+
+$dark: (
+  // svg作为按钮的背景 需要把 十六进制的 # 符号换成 %23
+  scroll-button-bg: "%23a1c7ea",
+  scroll-button-bg-hover: "%236da3d5"
+);
+
+// 暗夜模式
+html[themes="#{$theme}"] {
+  --primary-color: #{$primary-color};
+  // 链接 悬浮样式
+  --primary-links-hover: rgb(197, 132, 57);
+  // 默认图片
+  --default-img: url("@/assets/images/base-bg-dark.png");
+  // 默认头像
+  --default-avater: url("@/assets/images/avatar.jpg");
+  // 内容区域背景颜色 没有背景固定时
+  --body-bg: #2a3943;
+  // 鼠标样式
+  --cursor-default: url("/assets/cursor/dark/pointer.png") 0 0, default;
+  --cursor-pointer: url("/assets/cursor/dark/link.png") 0 0, pointer;
+  --cursor-text: url("/assets/cursor/dark/text.png") 18 5, text;
+  --cursor-move: url("/assets/cursor/dark/move.png") 18 5, move;
+  // 右键菜单 阴影
+  --context-menu-shadow: 0 0 3px rgb(42, 42, 42);
+  --context-menu-title-hr: 1px solid #6887a8;
+  // 按钮primary
+  --primary-btn-bg: #5892b8;
+  --primary-btn-color: #eef8ff;
+  --primary-btn-hover-bg: #6fa6cb;
+  --primary-btn-hover-color: #e9f6ff;
+  // 切换按钮 primary
+  $primary-switch-bg: #548aad;
+  --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: 10%)};
+  --primary-switch-off: #{$primary-switch-bg};
+  // 内容 区域 共同的 变量
+  $pages-card-bg: #375366;
+  --pages-card-bg: #{$pages-card-bg};
+  --pages-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
+  --pages-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+  // 滚动条背景
+  --scroll-bg: #f3f3ff;
+  // 背景颜色分割 角度 一三的颜色 二四的颜色
+  --scroll-thumb-deg: -45deg;
+  --scroll-thumb-bg: rgb(141, 188, 220);
+  --scroll-thumb-bg-secend: rgb(80, 145, 189);
+}

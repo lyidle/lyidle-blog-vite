@@ -1,0 +1,21 @@
+// 引入 函数
+@use "sass:color";
+
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+html[themes="#{$theme}"] {
+  // 侧边栏
+  --aside-title-icon-bg: #5091bd;
+  // 侧边栏 用户信息链接颜色
+  --aside-userinfo-wechat-color: #00c800;
+  --aside-userinfo-qq-color: #329cff;
+  --aside-userinfo-bilibili-color: #20b0e3;
+  --aside-userinfo-mail-color: #000000;
+  // 侧边栏 通知区域 欢迎信息
+  --aside-announce-welcome-bg: #d7ebf8;
+  --aside-announce-welcome-color: #{color.adjust(
+      $primary-color,
+      $lightness: -0.3%
+    )};
+}

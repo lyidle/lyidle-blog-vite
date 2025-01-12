@@ -1,0 +1,37 @@
+// 引入 函数
+@use "sass:color";
+
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+html[themes="#{$theme}"] {
+  // 右键 菜单 的编辑（个性化）项目
+  $theme-setting-bg: #264050;
+  $theme-setting-title-bg: #122938;
+  $theme-setting-aside-bg: #223b4b;
+  $theme-setting-aside-hover-active-color: #{$primary-color};
+  $theme-setting-aside-hover-active-bg: #163145;
+  --theme-setting-mask: #0000005a;
+  --theme-setting-bg: #{$theme-setting-bg};
+  --theme-setting-title-bg: #{$theme-setting-title-bg};
+  --theme-setting-title-color: #e0eeff;
+  --theme-setting-close-color: #{$primary-color};
+  --theme-setting-close-color-hover: #{color.adjust(
+      $primary-color,
+      $lightness: 20%
+    )};
+  --theme-setting-side-hr: #062030 1px solid;
+  --theme-setting-side-bg: #{$theme-setting-aside-bg};
+  --theme-setting-side-bg-item: #{color.adjust(
+      $theme-setting-aside-bg,
+      $lightness: 3%
+    )};
+  --theme-setting-side-bg-active: #{$theme-setting-aside-hover-active-bg};
+  --theme-setting-side-bg-item-hover: #{color.adjust(
+      $theme-setting-aside-hover-active-bg,
+      $lightness: 3%
+    )};
+  --theme-setting-aside-color: #{$primary-color};
+  --theme-setting-side-color-active: #{$theme-setting-aside-hover-active-color};
+  --theme-setting-side-color-hover: #{$theme-setting-aside-hover-active-color};
+}

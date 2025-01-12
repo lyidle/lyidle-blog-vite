@@ -1,6 +1,6 @@
 // 引入暗夜变量
-@use "./dark.scss" as *;
-@use "./light.scss" as *;
+@use "./light/index.scss" as *;
+@use "./dark//index.scss" as *;
 $them: (
   light: $light,
   dark: $dark,
