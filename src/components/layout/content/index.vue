@@ -1,7 +1,10 @@
 <template>
   <context-menu>
     <div class="pages">
-      <div class="pages-content">
+      <div
+        class="pages-content"
+        :style="{ width: isAside ? undefined : '100%' }"
+      >
         <slot name="content-start"></slot>
         <div class="contain">
           <slot name="content-card"></slot>
@@ -68,6 +71,7 @@ const props = withDefaults(
 $item-gap: var(--content-gap);
 $translate-y: -5px;
 $aside-pd: 20px;
+$aside-width: 18.75rem;
 .pages {
   color: var(--primary-color);
   width: var(--content-width);
@@ -82,10 +86,13 @@ $aside-pd: 20px;
   z-index: 2;
   /* 左边内容区 */
   > .pages-content {
-    width: 100%;
+    width: calc(100% - $aside-width);
     display: flex;
     flex-direction: column;
     gap: $item-gap;
+    @include media(mi) {
+      width: 100%;
+    }
     // 内容区域卡片
     .contain {
       width: 100%;
@@ -137,16 +144,14 @@ $aside-pd: 20px;
   }
   /* 右边侧边栏 */
   .content-aside {
-    width: 350px;
+    width: $aside-width;
     transition: width var(--primary-during);
     display: flex;
     flex-direction: column;
     gap: $item-gap;
-    @include media(md) {
-      width: 300px;
-    }
     @include media(mi) {
-      display: none;
+      width: 0;
+      overflow: hidden;
     }
     ::v-deep(.item-aside) {
       position: relative;
