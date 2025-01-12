@@ -64,7 +64,7 @@ onUnmounted(() => {
   position: fixed;
   box-sizing: border-box;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   transition: background-color var(--header-bg-initial-during),
     padding var(--header-bg-initial-during);
   .logo {

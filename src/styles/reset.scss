@@ -24,8 +24,6 @@ html {
   font-family: $global-font;
   // 禁止勾选 ，只有文本能勾选
   user-select: none;
-}
-#app {
   cursor: var(--cursor-default);
 }
 body {

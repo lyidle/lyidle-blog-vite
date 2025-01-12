@@ -1,10 +1,10 @@
 <template>
   <layout-header />
   <layout-banner :context="false"></layout-banner>
-  <layout-content :isAllAside="false" class="pages">
+  <layout-content :isAllAside="false">
     <!-- 侧边栏 -->
     <template #aside-start v-if="article">
-      <layout-content-aside-card>
+      <layout-content-aside-card ref="sideMenu" class="sideMenu">
         <template #title>
           <i class="i-material-symbols:menu-rounded"></i>
           <span>目录</span>
@@ -13,8 +13,8 @@
       </layout-content-aside-card>
     </template>
     <!-- 内容区 -->
-    <template #content-start v-if="article">
-      <teleport to="body">
+    <template #content-start>
+      <teleport to="body" v-if="article">
         <context-menu>
           <div class="doc-pages-header">
             <div class="container">
@@ -84,7 +84,9 @@
                     <span class="label cur-text"
                       ><i class="i-oui:token-date"></i>字数总计:</span
                     >
-                    <span class="content cur-text">{{ article?.length }}</span>
+                    <span class="content cur-text">{{
+                      numberTransform(article?.length)
+                    }}</span>
                   </div>
                   <span class="item-hr">|</span>
                   <div class="item-data">
@@ -98,7 +100,9 @@
                     <span class="label cur-text"
                       ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
                     >
-                    <span class="content cur-text">23208</span>
+                    <span class="content cur-text">{{
+                      numberTransform(23208)
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -108,6 +112,7 @@
                 oneColor="var(--doc-header-waves-color-1)"
                 twoColor="var(--doc-header-waves-color-2)"
                 threeColor="var(--doc-header-waves-color-3)"
+                class="cursor-[var(--cursor-default)]"
               ></animations-waves>
             </div>
           </div>
@@ -117,111 +122,7 @@
       <div class="doc-content">
         <my-card>
           <template #body>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-            maxime, perspiciatis, perferendis optio sunt odit veniam natus qui
-            fugit itaque, ut esse ab! Voluptatum, vero fugit nesciunt ipsam
-            explicabo incidunt cupiditate rem odit dolorem vitae cum dignissimos
-            porro harum sed sit quasi minus repellat consequuntur, cumque
-            perspiciatis ipsa iure laborum quos? Eum natus, eaque quisquam,
-            inventore facilis explicabo architecto accusantium in modi quod
-            voluptatem ipsa qui? Exercitationem sapiente numquam consequuntur
-            officia, magnam odio dicta omnis est, eum perspiciatis corporis?
-            Quia possimus pariatur beatae reiciendis. Tempore laboriosam
-            voluptatibus est quia aut necessitatibus ratione dolorum libero
-            architecto ea ducimus adipisci voluptas deleniti reiciendis placeat
-            ad eligendi, quae voluptatem eum iure? Voluptas repellat porro id,
-            odit amet magnam ex dolor cupiditate molestias harum dignissimos
-            aliquid dicta rem cumque deserunt fugiat vel velit ipsum sed? A
-            reiciendis ab iure error at quod ad tenetur explicabo, dignissimos
-            corrupti earum laboriosam, voluptas dolor repellat ratione ipsum
-            consequatur nesciunt! Quo dicta aspernatur eaque nihil in amet!
-            Dicta impedit quaerat in molestiae quod debitis reprehenderit quos,
-            blanditiis ratione recusandae quisquam excepturi inventore placeat
-            facere porro et, veritatis esse nemo est! Quam nam, minima sunt
-            placeat dignissimos nulla quas, accusamus mollitia reprehenderit
-            veniam distinctio qui impedit dicta eos aperiam doloremque atque
-            aliquid voluptatibus id vitae assumenda delectus animi? Ad eligendi
-            beatae accusamus in aspernatur architecto tempora suscipit? Vel
-            distinctio illum, incidunt accusamus earum ratione, dolor, aliquam
-            saepe quaerat harum reiciendis non quis velit illo a nisi.
-            Voluptatum nobis eveniet maiores, inventore deleniti nesciunt
-            reiciendis eum atque? Dolorem hic exercitationem ab necessitatibus
-            laudantium id iste voluptatibus, similique fugiat ipsa, tempore
-            expedita accusantium perspiciatis eaque blanditiis? Vero rem dolore
-            quisquam voluptates fuga excepturi quod error odio eaque maiores,
-            numquam quo earum. Ipsa doloremque repellat quo modi debitis
-            nostrum, consectetur facilis dolores esse eum culpa optio eveniet
-            vel delectus, neque in. Consequuntur adipisci laborum accusamus
-            repudiandae dolores laboriosam ex distinctio alias eaque, quibusdam
-            delectus sint quaerat. Incidunt quisquam quia numquam nostrum nam
-            nemo impedit nihil, hic dolores quam corrupti dolor, deleniti
-            molestias! Dolore repudiandae vel perspiciatis, ab suscipit enim
-            quaerat dolorum sunt! Nemo hic, iste tempore mollitia numquam
-            quibusdam, architecto laborum, quis odio ducimus eos totam corrupti?
-            Autem ea error repellendus quos nostrum tempore maiores quisquam,
-            iste atque id voluptate perferendis cupiditate quia laborum officia
-            facilis veritatis accusamus sunt rem quod harum totam similique esse
-            dolorum! Veritatis similique excepturi at dolor ratione illo. Enim
-            consequuntur ipsum, non nostrum nisi deserunt nulla velit sunt
-            voluptate reprehenderit hic adipisci, ipsam excepturi quisquam unde
-            possimus facere ex qui libero. Velit repellendus magni odit,
-            distinctio accusantium dignissimos porro facilis deserunt soluta
-            incidunt cum quas nemo. Magnam numquam doloribus, sit veritatis at
-            inventore labore, provident nesciunt eligendi sint minima dolore
-            facere? Facere officia mollitia, laboriosam voluptates consequuntur
-            similique ipsam excepturi consectetur, suscipit, delectus nam
-            distinctio autem harum a. Ducimus ipsa sint amet fugiat voluptas
-            sapiente laudantium nostrum incidunt illo facere, voluptatum esse
-            provident cumque repellendus reprehenderit maiores dolore ratione
-            sit ex suscipit? Natus exercitationem beatae odit animi sit
-            accusamus consectetur aspernatur labore aliquam dolorem. Corrupti a
-            voluptatum placeat illo, ab quidem consequatur repudiandae, sint
-            dolores ducimus ut libero fuga vitae quisquam quo tenetur aut, vero
-            officiis dignissimos expedita. Officia maxime, modi explicabo illum
-            odio, earum nemo quo necessitatibus voluptas et rerum quidem. Quam
-            minima sunt fugiat quaerat molestias ea voluptatem aliquid, pariatur
-            ab sint animi natus ducimus nostrum, earum accusamus sit sed
-            aspernatur accusantium modi aperiam tenetur quibusdam repellat quo
-            iste? Consequatur nihil necessitatibus explicabo accusantium enim
-            nisi reiciendis quasi sint assumenda fugit, hic omnis debitis
-            laborum vel nulla dolorem sapiente ea accusamus cum nesciunt
-            voluptates repellendus nobis facilis laudantium! Necessitatibus,
-            ratione quisquam perspiciatis voluptatum, explicabo quae quo saepe
-            reprehenderit nulla tempora, cum illum cumque modi laborum incidunt
-            temporibus cupiditate dolor a voluptate possimus. Et harum adipisci
-            id iure voluptas, voluptatum repudiandae provident eum tempora
-            dolore. Quisquam earum ea nemo ex, a debitis quod nobis fugiat porro
-            voluptatibus adipisci perspiciatis ab quibusdam dolor asperiores
-            omnis? Ab molestias tempore quas praesentium beatae ipsa, placeat
-            officia vitae optio ipsum, a nam facere corporis consequuntur odit
-            at quisquam quos aliquam quae maxime labore eligendi? Labore
-            reprehenderit nobis quos autem. Repudiandae architecto, earum a at
-            dicta fuga veritatis quas voluptatem. Similique sit quia beatae
-            omnis fugit ullam minus ducimus excepturi obcaecati asperiores,
-            adipisci autem quibusdam voluptates exercitationem rem et ipsam
-            ipsum. Accusamus magni laudantium corporis commodi animi! Recusandae
-            enim asperiores tempora nemo numquam facilis hic reprehenderit
-            tempore exercitationem dolor aperiam, eaque, beatae et in velit.
-            Blanditiis vel aliquid sed quas? Assumenda provident repudiandae
-            architecto illum at, voluptatem quaerat error quam saepe veniam
-            deleniti consectetur libero sunt expedita aspernatur? Deserunt animi
-            corporis officiis reprehenderit amet et eius modi sequi! Rerum
-            voluptatum ea facilis reiciendis laudantium id a doloremque iusto.
-            Quidem, harum reiciendis at molestias eligendi fuga rerum, sapiente
-            impedit delectus magni quis exercitationem accusantium ipsa porro
-            odio recusandae corporis aspernatur libero id in? Velit ducimus
-            fugiat quisquam minus repellendus accusantium aliquid unde
-            blanditiis, incidunt vero molestiae qui nemo pariatur dolor
-            excepturi delectus quod suscipit itaque laboriosam? Neque obcaecati
-            sequi, possimus ea quibusdam earum nisi consequuntur blanditiis quis
-            tenetur, cum animi velit eos omnis voluptatem. Illo velit nam
-            facere, eaque assumenda, itaque a alias incidunt voluptatum veniam
-            cupiditate expedita adipisci, ex quis minus optio architecto saepe
-            unde impedit nemo sunt quisquam recusandae. Amet incidunt inventore
-            aut sit sunt veritatis repellat similique voluptate corrupti
-            repudiandae? Amet, odio quisquam. Sed, commodi. Nesciunt, autem
-            corporis aperiam reiciendis, sunt non numquam quisquam, quae
-            repellat similique earum commodi!
+            <div id="vditor-preview" class="cur-text"></div>
           </template>
         </my-card>
       </div>
@@ -236,12 +137,52 @@ import { getOneArticle } from "@/api/article"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 // 引入 moment
 import moment from "@/utils/moment"
+// 引入 Vditor
+import Vditor from "vditor"
+import "vditor/dist/index.css"
+// 引入 自定义工具 大数字转中文
+import numberTransform from "@/utils/numberTransform"
+// 引入 仓库
+import { useSettingStore } from "@/store/setting"
+// 引入 测试数据
+import test from "./test/test.md?raw"
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
 // 根据路由判断
 const route = useRoute()
+// 获取侧边栏
+const sideMenu = ref()
 
+// 提取数据
+const { isDark } = storeToRefs(useSettingStore())
+watch(
+  () => isDark.value,
+  () => {
+    nextTick(() => {
+      // Vditor 渲染markdown
+      const container = document.querySelector(
+        "#vditor-preview"
+      ) as HTMLDivElement
+      if (container) {
+        Vditor.preview(container, test, {
+          theme: { current: "light" },
+          //代码块
+          hljs: {
+            enable: true, // 启用代码高亮
+            style: isDark.value ? "github-dark" : "github", //主题
+            lineNumber: true, //行号
+          },
+          mode: "light", //模式
+          anchor: 2, //标题的链接锚点
+        })
+      }
+    })
+  },
+  {
+    immediate: true,
+  }
+)
 // 初始化
 onMounted(async () => {
   // 获取文章
@@ -263,10 +204,14 @@ $header-container-h: 200px;
 .doc-content {
   // 设置 卡片 阴影
   @include setCardShadow;
+  #vditor-preview {
+    padding: 50px;
+  }
 }
 // 页面区域
-.pages {
+::v-deep(.pages) {
   margin-top: $pages-m-t;
+  z-index: 10;
 }
 // 头部
 .doc-pages-header {
