@@ -187,7 +187,7 @@ const handlerReg = async () => {
 const handlerCode = async () => {
   await regForm.value.clearValidate("code")
   await regForm.value.validateField("email")
-  await reqRegEmail(regData.email)
+  await reqRegEmail({ email: regData.email })
   ElMessage.success("验证码发送成功，有效时间5分钟~")
   codeIsActive.value = false
   const tim = setInterval(() => {

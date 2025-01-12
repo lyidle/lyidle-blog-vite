@@ -191,4 +191,12 @@ html[themes="light"] {
   --scroll-thumb-deg: -45deg;
   --scroll-thumb-bg: rgb(141, 188, 220);
   --scroll-thumb-bg-secend: rgb(80, 145, 189);
+  // doc 页面
+  --doc-header-color: #f6fbff;
+  --doc-header-link: #1b2a77;
+  // waves 动画
+  $doc-header-waves-color: rgb(255, 255, 255);
+  --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
+  --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
+  --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
 }

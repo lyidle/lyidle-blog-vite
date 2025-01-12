@@ -3,7 +3,12 @@ import { Op, literal } from "sequelize"
 const router = express.Router()
 // 导入模型
 const { Article } = require("@/db/models")
-const search = async (req: any, res: any, exact?: boolean) => {
+const search = async (
+  req: any,
+  res: any,
+  exact?: boolean,
+  isBin: boolean = false
+) => {
   const { id, author, title, desc, category, tags } = req.query
   const commend: any = {
     attributes: ["id", "author", "title", "desc", "category", "tags"],
@@ -61,7 +66,7 @@ const search = async (req: any, res: any, exact?: boolean) => {
       id,
     }
   }
-  commend.where.isBin = 0
+  if (!isBin) commend.where.isBin = 0
   // 查询用户的所有文章
   const result = await Article.findAll(commend)
   if (JSON.stringify(result) === "[]")

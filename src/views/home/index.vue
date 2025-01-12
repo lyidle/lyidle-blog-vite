@@ -55,7 +55,7 @@ const reqCarousel = async () => {
 const pagination = ref<Pagination>()
 // 获取文章
 const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
-  const Article = await getArticle(currentPage, pageSize)
+  const Article = await getArticle({ currentPage, pageSize })
   article.value = Article?.article
   pagination.value = Article?.pagination
 }

@@ -1,6 +1,7 @@
 import request from "@/utils/request"
 // 引入类型
 import type { RegEmail } from "./types/regEmail"
+import type { RegEmailBody } from "./types/regEmailBody"
 import type { Login } from "./types/login"
 import type { LoginQuery } from "./types/loginQuery"
 import type { Reg } from "./types/reg"
@@ -23,8 +24,11 @@ const prefix = import.meta.env.VITE_API
 const server = import.meta.env.VITE_SERVE
 
 // 注册发送邮箱验证码
-export const reqRegEmail = (email: string) =>
-  request.post<any, RegEmail["data"]>(server + prefix + API.regEmail, email)
+export const reqRegEmail = (data?: RegEmailBody) =>
+  request.post<any, RegEmail["data"]>(
+    server + prefix + API.regEmail,
+    data?.email
+  )
 
 // 注册
 export const reqReg = (data: RegBody) =>

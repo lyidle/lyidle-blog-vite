@@ -279,7 +279,7 @@ $btns-bg: rgba(141, 188, 220, 0.7);
     width: calc(100% * (v-bind(len) + 1));
     height: 100%;
     position: relative;
-    .content {
+    > .content {
       width: calc(100% / (v-bind(len) + 1));
       height: 100%;
       position: relative;

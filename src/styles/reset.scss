@@ -34,6 +34,10 @@ body {
 a {
   cursor: var(--cursor-pointer);
 }
+// 页面中的跳转链接的悬浮函数
+.route-link {
+  @include pages-links-hover;
+}
 .cur-text {
   cursor: var(--cursor-text);
   user-select: text;

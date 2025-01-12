@@ -3,13 +3,13 @@
     <div
       class="banner"
       :style="{
-        height: banner?.bannerImg?.height,
+        height: height || banner?.bannerImg?.height,
         top: bannerIsFixed ? '0' : 'unset',
         zIndex: bannerIsFixed ? '1' : 'unset',
         position: bannerIsFixed ? 'fixed' : 'unset',
       }"
     >
-      <div class="detail">
+      <div class="detail" v-if="context">
         <div class="title cur-text">{{ welcome }}</div>
         <div class="subtitle cur-text">
           {{ poetry?.content }}--{{ poetry?.author }}
@@ -36,11 +36,15 @@ withDefaults(
     img?: string
     mask?: string
     color?: string
+    height?: string | null
+    context?: boolean
   }>(),
   {
     img: "var(--banner-img)",
     mask: "var(--banner-mask)",
     color: "var(--banner-detail-color)",
+    height: null,
+    context: true,
   }
 )
 // 初始化仓库 暗夜模式自动切换图片等信息

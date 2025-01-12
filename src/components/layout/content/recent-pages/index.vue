@@ -7,7 +7,7 @@
     <template #body>
       <div class="item" v-for="item in pages" :key="item.id">
         <template v-if="item.id">
-          <router-link :to="`/${item.category}/${item.id}`">
+          <router-link :to="`/doc/${item.id}`">
             <div class="poster">
               <img
                 :style="{
@@ -24,8 +24,8 @@
             </div>
           </router-link>
           <div class="content">
-            <router-link :to="`/${item.category}/${item.id}`">
-              <div class="title line-clamp-2">
+            <router-link :to="`/doc/${item.id}`">
+              <div class="title line-clamp-2 route-link">
                 {{ item.title }}
               </div>
             </router-link>
@@ -98,7 +98,7 @@ $container-gap: $content-gap;
       &:hover .poster img {
         transform: scale($pages-poster-scale);
       }
-      .content {
+      > .content {
         flex: 1 1 0;
         display: flex;
         flex-direction: column;
@@ -107,7 +107,6 @@ $container-gap: $content-gap;
         margin-left: $container-gap;
         .title {
           font-size: 0.875rem;
-          @include pages-links-hover;
         }
         .date {
           font-size: 0.8125rem;

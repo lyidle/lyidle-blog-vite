@@ -5,6 +5,7 @@ export const constantRoute = [
     name: "index",
     redirect: "/home",
     component: () => import("@/components/layout/index.vue"),
+    // 主页
     children: [
       {
         path: "/home",
@@ -14,12 +15,28 @@ export const constantRoute = [
       },
     ],
   },
+  // 文章
   {
-    path: "/doc/:category/:id",
+    path: "/doc/:id",
     name: "Document",
     meta: { title: "文章" },
     component: () => import("@/views/doc/index.vue"),
   },
+  // UserTags
+  {
+    path: "/user/tags",
+    name: "UserTags",
+    meta: { title: "用户标签" },
+    component: () => import("@/views/tags/user/index.vue"),
+  },
+  // UserCategory
+  {
+    path: "/user/categories",
+    name: "UserCategory",
+    meta: { title: "用户分类" },
+    component: () => import("@/views/category/user/index.vue"),
+  },
+  // 笔记
   {
     path: "/note",
     name: "Note",
@@ -40,6 +57,7 @@ export const constantRoute = [
       },
     ],
   },
+  // 个人
   {
     path: "/person",
     name: "Person",
@@ -54,12 +72,14 @@ export const constantRoute = [
       },
     ],
   },
+  // 登录
   {
     path: "/login",
     name: "Login",
     meta: { title: "登录" },
     component: () => import("@/views/login/index.vue"),
   },
+  // 404
   {
     path: "/404",
     name: "404",

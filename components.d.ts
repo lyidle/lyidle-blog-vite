@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AnimationsWaves: typeof import('./src/components/animations/waves/index.vue')['default']
     Carousel: typeof import('./src/components/carousel/index.vue')['default']
     ContextMenu: typeof import('./src/components/context-menu/index.vue')['default']
     ContextMenuItem: typeof import('./src/components/context-menu/item.vue')['default']

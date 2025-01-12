@@ -4,7 +4,7 @@
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
           <div class="poster">
-            <router-link :to="`/doc/${item.category}/${item.id}`">
+            <router-link :to="`/doc/${item.id}`">
               <img
                 :style="{
                   background: 'no-repeat center',
@@ -24,7 +24,7 @@
               {{ moment(item.updatedAt) }}
             </div>
             <div class="title line-clamp-1">
-              <router-link :to="`/doc/${item.category}/${item.id}`">
+              <router-link :to="`/doc/${item.id}`">
                 {{ item.title }}
               </router-link>
             </div>
@@ -110,7 +110,7 @@ $mini-dur: 0.5s;
         transform: scale($pages-poster-scale);
       }
     }
-    .content {
+    > .content {
       .title {
         a {
           @include pages-links-hover;
@@ -141,7 +141,7 @@ $mini-dur: 0.5s;
       }
     }
     // 内容
-    .content {
+    > .content {
       width: 100%;
       padding-right: var(--content-pd-r);
       padding-left: var(--content-pd-l);
@@ -236,7 +236,7 @@ $mini-dur: 0.5s;
         height: 200px;
         margin: 0;
       }
-      .content {
+      > .content {
         padding: unset;
       }
     }

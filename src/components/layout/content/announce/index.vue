@@ -96,7 +96,7 @@ $item-gap: 10px;
     margin-bottom: $item-gap;
     font-weight: bold;
   }
-  .content {
+  > .content {
     span {
       // 可在任意字符间断行
       word-break: break-all;

@@ -97,13 +97,8 @@ $aside-pd: 20px;
       @include media(sm) {
         justify-content: center;
       }
-      ::v-deep(.title) {
-        a {
-          @include pages-links-hover();
-        }
-      }
       // 内容区的卡片
-      ::v-deep(.content) {
+      ::v-deep(.layout-content) {
         flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
         transition: transform var(--primary-during),
           flex var(--content-card-flex-during);

@@ -1,8 +1,8 @@
 <template>
-  <my-card class="content">
+  <my-card class="layout-content">
     <template #body>
       <div class="content-header">
-        <router-link :to="`/doc/${article.category}/${article.id}`">
+        <router-link :to="`/doc/${article.id}`">
           <img
             class="poster scale-[1.01]"
             :style="{
@@ -27,10 +27,10 @@
       <div class="content-info">
         <div class="title">
           <router-link
-            :to="`/doc/${article.category}/${article.id}`"
+            :to="`/doc/${article.id}`"
             class="line-clamp-2 p-x-20px text-center"
           >
-            <span>
+            <span class="route-link">
               {{ article.title }}
             </span>
           </router-link>
@@ -50,9 +50,9 @@
             <div class="item">
               <i class="i-tabler:clover-filled font-size-14px mr-2px" />
               <router-link
-                :to="`/user/categories?user=${article.author}&category=${article.category}`"
+                :to="`/user/categories?author=${article.author}&category=${article.category}`"
               >
-                <div class="item">
+                <div class="item route-link">
                   <span class="max-w-110px truncate">
                     {{ article.category }}
                   </span>
@@ -68,7 +68,7 @@
                   <router-link
                     :to="`/user/tags?author=${article.author}&tags=${item}`"
                   >
-                    <span>{{ item }}</span>
+                    <span class="route-link">{{ item }}</span>
                     <span
                       v-if="index !== article.tags.length - 1"
                       class="m-x-2px"
@@ -105,7 +105,7 @@ $title-m-t: 35px;
 $title-m-b: 10px;
 // 底部源信息 距离
 $meta-gap: 5px;
-.content {
+.layout-content {
   // 设置 卡片 阴影
   @include setCardShadow;
   height: $content-height;
@@ -183,9 +183,6 @@ $meta-gap: 5px;
       .item {
         display: flex;
         align-items: center;
-        a {
-          @include pages-links-hover;
-        }
         // 除了最后的都有竖着的分割线
         &:not(:last-child) {
           border-right: 1px solid var(--primary-color);
