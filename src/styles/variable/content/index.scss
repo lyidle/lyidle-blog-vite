@@ -1,0 +1,11 @@
+$pages-poster-scale: 1.1;
+:root {
+  // 内容区域的间距
+  --content-gap: 15px;
+  // 内容卡片宽度
+  --content-width: calc(100% - var(--content-gap) * 2);
+  // 内容区域的媒体查询 flex个数的过渡动画
+  --content-card-flex-during: 0.5s;
+  // pages 相关
+  --pages-card-radius: 10px;
+}

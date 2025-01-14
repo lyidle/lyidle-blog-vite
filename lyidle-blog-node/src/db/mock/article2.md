@@ -1,3 +1,4 @@
+```vue
 <template>
   <layout-header />
   <layout-banner :context="false"></layout-banner>
@@ -549,52 +550,6 @@ $preview-callouts-title-gap: 8px;
       padding: var(--doc-highlight-pd);
       border-radius: var(--doc-highlight-radius);
     }
-
-    // 表格
-    table {
-      overflow: visible;
-      background: transparent;
-      // 表体
-      tbody {
-        background: transparent;
-        box-shadow: 1px 1px red;
-      }
-
-      // 设置 表格单元的 样式
-      // 简化了 thead 和 tbody
-      tr {
-        border: none;
-        $radius: 10px;
-        // 表头
-        > th {
-          background-color: var(--doc-table-th-bg);
-          border: none;
-          color: var(--doc-table-th-color);
-          &:first-child {
-            border-top-left-radius: $radius;
-          }
-          &:last-child {
-            border-top-right-radius: $radius;
-          }
-        }
-        // 表体
-        > td {
-          background-color: var(--doc-table-td-bg);
-          border: none;
-          color: var(--doc-table-td-color);
-        }
-        &:last-child {
-          > td {
-            &:first-child {
-              border-bottom-left-radius: $radius;
-            }
-            &:last-child {
-              border-bottom-right-radius: $radius;
-            }
-          }
-        }
-      }
-    }
   }
 }
 // 页面区域
@@ -662,3 +617,4 @@ $preview-callouts-title-gap: 8px;
   }
 }
 </style>
+```

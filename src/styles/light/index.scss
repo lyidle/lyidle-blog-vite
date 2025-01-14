@@ -12,6 +12,8 @@
 @use "./content/index.scss" as *;
 // 引入 内容 区域 的 侧边栏 样式
 @use "./content/aside.scss" as *;
+// 内容 区域 共有的 样式
+@use "./content/global/index.scss" as *;
 // 引入 登录 页面 的 样式
 @use "./login/index.scss" as *;
 // 引入 个性化 面板的样式
@@ -53,15 +55,13 @@ html[themes="#{$theme}"] {
   $primary-switch-bg: #8dbcdc;
   --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: -20%)};
   --primary-switch-off: #{$primary-switch-bg};
-  // 内容 区域 共同的 变量
-  $pages-card-bg: white;
-  --pages-card-bg: #{$pages-card-bg};
-  --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
-  --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
   // 滚动条背景
   --scroll-bg: #f3f3ff;
   // 背景颜色分割 角度 一三的颜色 二四的颜色
   --scroll-thumb-deg: -45deg;
   --scroll-thumb-bg: rgb(141, 188, 220);
   --scroll-thumb-bg-secend: rgb(80, 145, 189);
+  // svg作为按钮的背景 需要把 十六进制的 # 符号换成 %23
+  --scroll-button-bg: "%23a1c7ea";
+  --scroll-button-bg-hover: "%236da3d5";
 }

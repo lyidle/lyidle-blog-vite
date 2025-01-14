@@ -13,18 +13,22 @@ export const useSettingStore = defineStore(
     ]
     // 白天的主题值
     const lights = ref("normal")
+    const lightOptions = [{ value: "normal", label: "纯白" }]
     // 暗夜的主题值
     const darks = ref("normal")
+    const darkOptions = [{ value: "normal", label: "深蓝" }]
     // 鼠标点击效果的值
-    const clicks = ref("normal")
-    // 鼠标移动效果的值
-    const moves = ref("normal")
-    // banner 是否 固定
-    const bannerIsFixed = ref<boolean>(false)
     // 是否开启鼠标点击特效
     const clickEffect = ref<boolean>(false)
+    const clicks = ref("normal")
+    const clickOptions = [{ value: "normal", label: "绽放" }]
+    // 鼠标移动效果的值
     // 是否开启移动效果
     const moveEffect = ref<boolean>(false)
+    const moves = ref("normal")
+    const moveOptions = [{ value: "normal", label: "群星" }]
+    // banner 是否 固定
+    const bannerIsFixed = ref<boolean>(false)
     // 是否开启侧边栏
     const isAside = ref<boolean>(true)
     // #endregion 头部设置
@@ -45,15 +49,22 @@ export const useSettingStore = defineStore(
     // 存储初始位置
     let initLeft = ref<null | string>(null)
     let initTop = ref<null | string>(null)
+
+    // 存储 页面的滚动位置 刷新时滚动位置 不变
+    let scrollSave = ref<{ to: number; route: string; height: number }>()
     return {
       // 头部设置
       isDark,
       themes,
       themeOptions,
       lights,
+      lightOptions,
       darks,
+      darkOptions,
       clicks,
+      clickOptions,
       moves,
+      moveOptions,
       bannerIsFixed,
       clickEffect,
       moveEffect,
@@ -67,6 +78,8 @@ export const useSettingStore = defineStore(
       savePosition,
       initLeft,
       initTop,
+      // 存储 页面的滚动位置 刷新时滚动位置 不变
+      scrollSave,
     }
   },
   {
@@ -93,6 +106,8 @@ export const useSettingStore = defineStore(
         "savePosition",
         "initLeft",
         "initTop",
+        // 存储 页面的滚动位置 刷新时滚动位置 不变
+        "scrollSave",
       ],
     },
   }

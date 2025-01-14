@@ -1,0 +1,43 @@
+// 引入 函数
+@use "sass:map";
+
+// 引入暗夜变量
+@use "../light/index.scss" as *;
+@use "../dark/index.scss" as *;
+// 引入 header
+@use "./header.scss" as *;
+// 引入 过渡
+@use "./duration.scss" as *;
+// 引入 侧边栏
+@use "./content/aside.scss" as *;
+// 引入 doc
+@use "./doc/index.scss" as *;
+// 引入 callouts
+@use "./doc/callouts.scss" as *;
+
+// 主题 属性名要和 主题文件 中的 /global/index.scss 中的 $theme 相对应
+$them: (
+  normal-light: $light,
+  normal-dark: $dark,
+);
+
+// 项目的全局scss变量
+// 屏幕尺寸 参照 element-plus的layout
+$scr: (
+  mi: 610px,
+  xs: 768px,
+  sm: 992px,
+  md: 1300px,
+  lg: 1920px,
+);
+$global-font: "LXGWW", "微软雅黑", sans-serif;
+// 剪彩动画 的剪刀 大小
+$scissors-size: 30px;
+
+$scroll-thumb-radius: 20px;
+$scroll-thumb-border-width: 2px;
+
+html {
+  --scroll-vert-size: 10px;
+  --scroll-hor-size: 10px;
+}

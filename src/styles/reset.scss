@@ -57,7 +57,10 @@ i {
 // #region scrollbar
 // background
 ::-webkit-scrollbar {
-  width: 10px;
+  // 横向
+  width: var(--scroll-vert-size);
+  // 纵向
+  height: var(--scroll-hor-size);
   border: 5px solid var(--scroll-bg);
 }
 // thumb
@@ -71,10 +74,13 @@ i {
   );
   border: $scroll-thumb-border-width solid var(--scroll-bg);
   border-radius: $scroll-thumb-radius;
+  cursor: var(--cursor-default);
 }
+
 // track
 ::-webkit-scrollbar-track {
   background-color: var(--scroll-bg);
+  cursor: var(--cursor-default);
 }
 // Buttons
 ::-webkit-scrollbar-button:single-button {
@@ -82,43 +88,86 @@ i {
   display: block;
   background-size: 8px;
   background-repeat: no-repeat;
+  cursor: var(--cursor-default);
 }
+
+//  图标 是 Fluent Ul System Icons MIT 的 triangle 12-filled
 // Up
-::-webkit-scrollbar-button:single-button:vertical:decrement {
+::-webkit-scrollbar-button:single-button:decrement {
   background-position: center;
   @include useTheme {
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath fill="' + getvar(
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
         scroll-button-bg
-      ) + '" d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+      ) + "' d='M6.786 1.459a.903.903 0 0 0-1.572 0L1.122 8.628C.774 9.238 1.211 10 1.91 10h8.182c.698 0 1.135-.762.787-1.372z'/%3E%3C/svg%3E");
   }
 }
 
-::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+::-webkit-scrollbar-button:single-button:decrement:hover {
   background-position: center;
   @include useTheme {
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cpath fill="' + getvar(
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
         scroll-button-bg-hover
-      ) + '" d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fsvg%3E');
+      ) + "' d='M6.786 1.459a.903.903 0 0 0-1.572 0L1.122 8.628C.774 9.238 1.211 10 1.91 10h8.182c.698 0 1.135-.762.787-1.372z'/%3E%3C/svg%3E");
+  }
+}
+
+// Down
+::-webkit-scrollbar-button:single-button:increment {
+  background-position: center;
+  @include useTheme {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
+        scroll-button-bg
+      ) + "' d='M5.214 10.541a.903.903 0 0 0 1.572 0l4.092-7.169C11.226 2.762 10.789 2 10.09 2H1.91c-.698 0-1.135.762-.787 1.372z'/%3E%3C/svg%3E");
+  }
+}
+
+::-webkit-scrollbar-button:single-button:increment:hover {
+  background-position: center;
+  @include useTheme {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
+        scroll-button-bg-hover
+      ) + "' d='M5.214 10.541a.903.903 0 0 0 1.572 0l4.092-7.169C11.226 2.762 10.789 2 10.09 2H1.91c-.698 0-1.135.762-.787 1.372z'/%3E%3C/svg%3E");
+  }
+}
+
+// #region 修改纵向的滚动图标
+// Up
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-position: center;
+  @include useTheme {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
+        scroll-button-bg
+      ) + "' d='M1.459 5.214a.903.903 0 0 0 0 1.572l7.169 4.092c.61.348 1.372-.089 1.372-.787V1.91c0-.698-.762-1.135-1.372-.787z'/%3E%3C/svg%3E");
+  }
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
+  background-position: center;
+  @include useTheme {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
+        scroll-button-bg-hover
+      ) + "' d='M1.459 5.214a.903.903 0 0 0 0 1.572l7.169 4.092c.61.348 1.372-.089 1.372-.787V1.91c0-.698-.762-1.135-1.372-.787z'/%3E%3C/svg%3E");
   }
 }
 // Down
-::-webkit-scrollbar-button:single-button:vertical:increment {
+::-webkit-scrollbar-button:single-button:horizontal:increment {
   background-position: center;
   @include useTheme {
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath fill="' + getvar(
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
         scroll-button-bg
-      ) + '" d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+      ) + "' d='M10.541 6.786a.903.903 0 0 0 0-1.572L3.372 1.122C2.762.774 2 1.211 2 1.91v8.182c0 .698.762 1.135 1.372.787z'/%3E%3C/svg%3E");
   }
 }
 
-::-webkit-scrollbar-button:vertical:single-button:increment:hover {
+::-webkit-scrollbar-button:single-button:horizontal:increment:hover {
   background-position: center;
   @include useTheme {
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="48" height="48" viewBox="-2 -4 24 24"%3E%3Cg transform="rotate(180 10 8)"%3E%3Cpath fill="' + getvar(
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='" + getvar(
         scroll-button-bg-hover
-      ) + '" d="m12.547 1.621l6.095 9.794A3 3 0 0 1 16.095 16H3.905a3 3 0 0 1-2.547-4.585L7.453 1.62a3 3 0 0 1 5.094 0z"%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+      ) + "' d='M10.541 6.786a.903.903 0 0 0 0-1.572L3.372 1.122C2.762.774 2 1.211 2 1.91v8.182c0 .698.762 1.135 1.372.787z'/%3E%3C/svg%3E");
   }
 }
+// #endregion 修改纵向的滚动图标
 
 // #endregion
 

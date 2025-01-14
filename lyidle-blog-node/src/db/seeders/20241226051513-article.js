@@ -1,5 +1,11 @@
 "use strict"
 /** @type {import('sequelize-cli').Migration} */
+// 引入 文本
+const { readFileSync } = require("fs")
+const { resolve } = require("path")
+const article_md = readFileSync(resolve(__dirname, "../mock/article.md"))
+const article2_md = readFileSync(resolve(__dirname, "../mock/article2.md"))
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     // 文章数组
@@ -10,7 +16,12 @@ module.exports = {
 
     for (let i = 1; i <= counts; i++) {
       const curAuthor = `test${i}`
-      const content = `文章的内容${i}`
+      const content =
+        i === 1
+          ? article_md.toString()
+          : i === 2
+          ? article2_md
+          : `文章的内容${i}`
       const id = i
 
       const article = {

@@ -1,5 +1,5 @@
 @use "sass:map";
-@use "./variable.scss" as *;
+@use "./variable/index.scss" as *;
 // 屏幕尺寸 参照 element-plus的layout
 $scr: (
   mi: 610px,
@@ -33,20 +33,19 @@ $scr: (
 }
 
 // 快速 设置 card的shadow 分为 fixed 和 普通的
-@mixin setCardShadow {
+@mixin setCardShadow($var: --pages) {
   @each $key, $value in $them {
     html[themes="#{$key}"] body[banner-fixed="fixed"] & {
-      box-shadow: var(--pages-shadow-fixed);
+      box-shadow: var(#{$var}-shadow-fixed);
     }
     html[themes="#{$key}"] & {
-      box-shadow: var(--pages-shadow);
+      box-shadow: var(#{$var}-shadow);
     }
   }
 }
 
-// 主题设置 scroll的 按钮 使用 svg 时 设置 scss 变量用 使用css变量不会生效
-// 当前主题（默认 light）
-$currentTheme: light;
+// 当前主题
+$currentTheme: 0;
 
 // 快速 设置对应的 主题
 @mixin useTheme {

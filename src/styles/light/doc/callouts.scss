@@ -1,0 +1,107 @@
+// 引入函数
+@use "sass:color";
+@use "sass:map";
+
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+// #region 定义颜色映射表
+$callouts: (
+  default: (
+    bg: #efefff,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#efefff, $lightness: -20%), 0.5)},
+  ),
+  tip: (
+    bg: #d7f4e6,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#d7f4e6, $lightness: -40%), 0.5)},
+  ),
+  bug: (
+    bg: #ffefbb,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#ffefbb, $lightness: -50%), 0.5)},
+  ),
+  info: (
+    bg: #f3f3f4,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#f3f3f4, $lightness: -30%), 0.5)},
+  ),
+  note: (
+    bg: #fff6d7,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#fff6d7, $lightness: -50%), 0.5)},
+  ),
+  quote: (
+    bg: #f9f9f9,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#f9f9f9, $lightness: -30%), 0.5)},
+  ),
+  example: (
+    bg: #f1edfd,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#f1edfd, $lightness: -30%), 0.5)},
+  ),
+  caution: (
+    bg: #ffeded,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#ffeded, $lightness: -30%), 0.5)},
+  ),
+  failure: (
+    bg: #ffdfdf,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#ffdfdf, $lightness: -30%), 0.5)},
+  ),
+  warning: (
+    bg: #ffe1b4,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#ffe1b4, $lightness: -50%), 0.5)},
+  ),
+  success: (
+    bg: #d8f2e5,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#d8f2e5, $lightness: -50%), 0.5)},
+  ),
+  question: (
+    bg: #edcece,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#edcece, $lightness: -50%), 0.5)},
+  ),
+  abstract: (
+    bg: #d3f1f1,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#d3f1f1, $lightness: -50%), 0.5)},
+  ),
+  important: (
+    bg: #fbf8ff,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#fbf8ff, $lightness: -30%), 0.5)},
+  ),
+  value: (
+    bg: #cae7ff,
+    color: $primary-color,
+    shadow: #{rgba(color.adjust(#cae7ff, $lightness: -50%), 0.5)},
+  ),
+);
+// #endregion 定义颜色映射表
+
+html[themes="#{$theme}"] {
+  // callouts 样式
+  // 遍历颜色映射表生成样式
+  @each $types, $callouts-map in $callouts {
+    $bg: map.get($callouts-map, bg); // 获取 bg 属性的值
+    $color: map.get($callouts-map, color); //获取 color 属性的值
+    $shadow: map.get($callouts-map, shadow); //获取 box-shadow 属性的值
+    // 背景
+    --doc-callouts-#{$types}-bg-l: #{$bg};
+    --doc-callouts-#{$types}-bg-r: #{color.adjust($bg, $lightness: 0.01%)};
+    --doc-callouts-#{$types}-border-l-color: #{color.adjust(
+        $bg,
+        $lightness: -30%
+      )};
+    // color
+    --doc-callouts-#{$types}-color: #{$color};
+    // 设置 阴影
+    --doc-callouts-#{$types}-shadow: 1px 1px 3px #{$shadow};
+  }
+}

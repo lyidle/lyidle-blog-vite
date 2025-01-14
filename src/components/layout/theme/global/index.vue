@@ -195,19 +195,8 @@ const {
   moves,
   savePosition,
 } = storeToRefs(useSettingStore())
-const { themeOptions } = useSettingStore()
-// 白天主题设置
-
-const lightOptions = [{ value: "normal", label: "纯白" }]
-// 暗夜主题设置
-
-const darkOptions = [{ value: "normal", label: "深蓝" }]
-
-// 点击特效 选择
-const clickOptions = [{ value: "normal", label: "绽放" }]
-
-// 移动特效 选择
-const moveOptions = [{ value: "normal", label: "群星" }]
+const { themeOptions, lightOptions, darkOptions, clickOptions, moveOptions } =
+  useSettingStore()
 </script>
 
 <style scoped lang="scss">

@@ -20,6 +20,6 @@ const bg = props.bg
   border-radius: 10px;
   overflow: hidden;
   // color: #2a4f7c;
-  box-shadow: var(--primary-shadow);
+  box-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
 }
 </style>

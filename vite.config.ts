@@ -6,6 +6,8 @@ import { resolve } from "path"
 import build from "./config/vite.config/build"
 // 引入 插件相关配置
 import plugin from "./config/vite.config/plugin"
+// 引入 scss  全局 变量 配置函数
+import generateScssImports from "./config/vite.config/scss"
 export default defineConfig(({ mode }) => {
   // 获取到当前环境
   const env = loadEnv(mode, process.cwd())
@@ -26,13 +28,11 @@ export default defineConfig(({ mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          // scss全局变量的配置
           // javascriptEnabled: true,
-          additionalData: `
-            @use "@/styles/variable.scss" as *;
-            @use "@/styles/mixins.scss" as *;
-            @use "@/styles/animations.scss" as *;
-          `,
+          // scss全局变量的配置
+          additionalData: generateScssImports(
+            resolve(__dirname, "src/styles/variable")
+          ),
           sassOptions: { quietDeps: true },
           api: "modern-compiler",
         },

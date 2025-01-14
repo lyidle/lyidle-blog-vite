@@ -1,5 +1,10 @@
+// 引入函数
+@use "sass:color";
+
 // 引入 全局 变量
 @use "../global/index.scss" as *;
+// 引入 callouts 变量
+@use "./callouts.scss" as *;
 
 html[themes="#{$theme}"] {
   // doc 页面
@@ -10,4 +15,28 @@ html[themes="#{$theme}"] {
   --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
   --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
   --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
+  // 主要的文字颜色
+  --doc-content-color: $primary-color;
+  // code 的颜色 `code`
+  --doc-code-bg: rgb(255, 155, 155);
+  --doc-code-color: white;
+  // a 链接
+  --doc-link-color: rgb(255, 82, 82);
+  // 设置 多选框
+  --doc-checkbox-bg: #f5fbff;
+  --doc-checkbox-border-color: #5091bd;
+  --doc-checkbox-border: var(--doc-checkbox-border-size) solid
+    var(--doc-checkbox-border-color);
+  // 分割线
+  --doc-hr-color: #{$primary-color};
+  // 脚注分割线
+  --doc-footnotes-hr-color: #{$primary-color};
+  // 高亮
+  --doc-highlight-bg: #98baff;
+  --doc-highlight-color: white;
+  // 表格
+  --doc-table-th-bg: #5091bd;
+  --doc-table-th-color: white;
+  --doc-table-td-bg: white;
+  --doc-table-td-color: $primary-color;
 }
