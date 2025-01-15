@@ -3,7 +3,7 @@
   <layout-banner :context="false"></layout-banner>
   <layout-content>
     <!-- 侧边栏 -->
-    <template #aside-end>
+    <template #aside-end v-if="isAsideDocMenu">
       <layout-content-aside-card
         class="sideMenu"
         v-if="menuTree.length"
@@ -287,41 +287,39 @@ const preview = () => {
 }
 
 const sideMenu = ref()
-// 目录进入视口时监听 滚动事件
 // 挂载
 const enterScrollListener = () => {
-  initElements() // 初始化 el 和 sibling 变量
-  // 使用交叉传感器
-  if (docMenuIsFixedLazy.value) {
-    if (!penultimate) {
-      const container = document.querySelector(".content-aside")
-      penultimate = container?.children[
-        container?.children.length - 2
-      ] as HTMLDivElement | null
-    }
-    if (penultimate)
-      observer(
-        penultimate,
-        () => {
-          sibEnter = false
-          removeStickyClasses()
-        },
-        () => {
-          sibLeave = false
-          if (!sibEnter && !sibLeave) {
-            if (toggle) {
-              // 重置
-              sibEnter = true
-              sibLeave = true
-              // 固定
-              toggleMenuPosition()
+  if (!isAsideDocMenu.value) return
+  // 要等 组件渲染完毕后 在执行
+  // 因为异步 setinterval 需要先把元素 获取到
+  initElements(() => {
+    // 使用交叉传感器
+    if (docMenuIsFixedLazy.value) {
+      if (penultimate)
+        observer(
+          penultimate,
+          () => {
+            sibEnter = false
+            removeStickyClasses()
+          },
+          () => {
+            sibLeave = false
+            if (!sibEnter && !sibLeave) {
+              if (toggle) {
+                // 重置
+                sibEnter = true
+                sibLeave = true
+                // 固定
+                toggleMenuPosition()
+              }
             }
           }
-        }
-      )
-    return
-  }
-  window.addEventListener("scroll", enterScrollListenerCb)
+        )
+      return
+    }
+    // 不使用交叉传感器 使用滚动监听
+    window.addEventListener("scroll", enterScrollListenerCb)
+  })
 }
 // 卸载
 const unEnterScrollListener = () => {
@@ -356,18 +354,26 @@ let sibLeave = true
 */
 let toggle = true
 // 初始化元素
-const initElements = () => {
+const initElements = (fn: Function) => {
   if (!menuWrap) {
     menuWrap = document.querySelector(".sideMenu") as HTMLDivElement
   }
   if (!penultimate) {
+    let now = Date.now()
     // 组件没有挂载完 重新获取 500ms 一次
     const timer = setInterval(() => {
       const container = document.querySelector(".content-aside")
       penultimate = container?.children[
         container?.children.length - 2
       ] as HTMLDivElement | null
+      const cur = (Date.now() - now) / 1000
+      if (cur > 5) {
+        ElMessage.error("菜单组件固定失败，不能获取到对应的信息~")
+        clearInterval(timer)
+      }
+      console.log(container?.children.length, asideCounts.value)
       if (container?.children.length === asideCounts.value) {
+        fn && fn()
         clearInterval(timer)
       }
     }, 500)
@@ -416,51 +422,45 @@ const removeStickyClasses = () => {
 
 // 没有交叉传感器 目录进入视口时监听 滚动事件 回调
 let enterScrollListenerCb = () => {
+  if (!isAsideDocMenu.value) return
   updateMenuPosition()
 }
 
+// 监听菜单组件是否挂载
+watch(
+  () => sideMenu.value?.$el,
+  (newV) => {
+    if (newV && docMenuIsFixed.value) {
+      enterScrollListener()
+    } else if (docMenuIsFixed.value) unEnterScrollListener()
+  }
+)
+
+// 判断是否固定
+watch(
+  () => docMenuIsFixed.value,
+  (newV) => {
+    if (!newV && isAsideDocMenu.value) unEnterScrollListener()
+    else if (isAsideDocMenu.value) enterScrollListener()
+  }
+)
+
+// 监听 是否还存在 不存在 肯定不用固定
 watch(
   () => isAsideDocMenu.value,
   (newV) => {
-    let sideMenuWatch: watchType | null = null
-    let docMenuIsFixedWatch: watchType | null = null
-    if (newV) {
-      // 监听菜单组件是否挂载
-      sideMenuWatch = watch(
-        () => sideMenu.value?.$el,
-        (newV) => {
-          if (newV && docMenuIsFixed.value) {
-            enterScrollListener()
-          } else if (docMenuIsFixed.value) unEnterScrollListener()
-        }
-      )
-      // 判断是否固定
-      docMenuIsFixedWatch = watch(
-        () => docMenuIsFixed.value,
-        (newV) => {
-          if (!newV) unEnterScrollListener()
-          else enterScrollListener()
-        }
-      )
-      // 订阅 暗夜切换 事件
-      mitt.on("isDark", preview)
-      // 订阅 布局切换 事件
-      mitt.on("contentIsReverse", reloadEnterScrollListener)
-      mitt.on("isAside:true", reloadEnterScrollListener)
-    } else {
-      if (sideMenuWatch) (sideMenuWatch as watchType)()
-      if (docMenuIsFixedWatch) (docMenuIsFixedWatch as watchType)()
-      // 取消 暗夜切换 事件
-      mitt.off("isDark", preview)
-      // 取消 布局切换 事件
-      mitt.off("contentIsReverse", reloadEnterScrollListener)
-      mitt.off("isAside:true", reloadEnterScrollListener)
+    if (!newV) {
+      docMenuIsFixed.value = false
     }
-  },
-  {
-    immediate: true,
   }
 )
+
+// 订阅 暗夜切换 事件
+mitt.on("isDark", preview)
+// 订阅 布局切换 事件
+mitt.on("contentIsReverse", reloadEnterScrollListener)
+mitt.on("isAside:true", reloadEnterScrollListener)
+
 // 初始化
 onBeforeMount(async () => {
   // 获取文章

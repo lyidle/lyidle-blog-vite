@@ -114,19 +114,7 @@
       <h2 class="title text-center">布局信息设置</h2>
       <div class="theme-select">
         <div class="preview">
-          <div class="item" v-if="!docMenuIsFixedLazy">
-            <span class="label cur-pointer" @click="isAside = !isAside">
-              <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
-            </span>
-            <my-switch
-              v-model="isAside"
-              inline-prompt
-              :active-icon="aside"
-              :inactive-icon="unaside"
-              size="small"
-            />
-          </div>
-          <div class="item" v-if="!docMenuIsFixedLazy">
+          <div class="item">
             <span
               class="label cur-pointer"
               @click="contentIsReverse = !contentIsReverse"
@@ -216,6 +204,100 @@
         </div>
       </div>
     </div>
+
+    <div class="item">
+      <h2 class="title text-center">布局显示与隐藏设置</h2>
+      <div class="theme-select">
+        <div class="preview">
+          <div class="item" v-if="!docMenuIsFixedLazy">
+            <span class="label cur-pointer" @click="isAside = !isAside">
+              <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
+            </span>
+            <my-switch
+              v-model="isAside"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+          <div class="item">
+            <span class="label cur-pointer" @click="isAsideSelf = !isAsideSelf">
+              <span>{{ isAsideSelf ? "关闭" : "打开" }}个人信息</span>
+            </span>
+            <my-switch
+              v-model="isAsideSelf"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="isAsideAnnounce = !isAsideAnnounce"
+            >
+              <span>{{ isAsideAnnounce ? "关闭" : "打开" }}公告信息</span>
+            </span>
+            <my-switch
+              v-model="isAsideAnnounce"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+        </div>
+        <div class="preview">
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="isAsideWebInfo = !isAsideWebInfo"
+            >
+              <span>{{ isAsideWebInfo ? "关闭" : "打开" }}小站咨询</span>
+            </span>
+            <my-switch
+              v-model="isAsideWebInfo"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="isAsideRecentPage = !isAsideRecentPage"
+            >
+              <span>{{ isAsideRecentPage ? "关闭" : "打开" }}最新文章信息</span>
+            </span>
+            <my-switch
+              v-model="isAsideRecentPage"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="isAsideDocMenu = !isAsideDocMenu"
+            >
+              <span>{{ isAsideDocMenu ? "关闭" : "打开" }}目录</span>
+            </span>
+            <my-switch
+              v-model="isAsideDocMenu"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -251,6 +333,13 @@ const {
   savePosition,
   docMenuIsFixed,
   docMenuIsFixedLazy,
+  // #region 侧边栏的 显示与否
+  isAsideSelf,
+  isAsideAnnounce,
+  isAsideWebInfo,
+  isAsideRecentPage,
+  isAsideDocMenu,
+  // #endregion 侧边栏的 显示与否
 } = storeToRefs(useSettingStore())
 const { themeOptions, lightOptions, darkOptions, clickOptions, moveOptions } =
   useSettingStore()

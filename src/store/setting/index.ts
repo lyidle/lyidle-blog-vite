@@ -58,10 +58,11 @@ export const useSettingStore = defineStore(
     const asideCounts = computed(() => {
       let num: number = 0
       if (isAsideSelf.value) num++
-      if (isAsideAnnounce) num++
-      if (isAsideWebInfo) num++
-      if (isAsideRecentPage) num++
-      if (isAsideDocMenu) num++
+      if (isAsideAnnounce.value) num++
+      if (isAsideWebInfo.value) num++
+      if (isAsideRecentPage.value) num++
+      if (isAsideDocMenu.value) num++
+      return num
     })
     // #endregion 侧边栏的 显示与否
 
