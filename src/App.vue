@@ -15,7 +15,8 @@ import { useUserStore } from "@/store/user"
 import { useSettingStore } from "@/store/setting"
 // 引入utils 设置网页标签信息 离开和回来
 import { setTitleTip } from "@/utils/effect"
-
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
 // 提取数据
 const { reqUserMenuList } = useUserStore()
 const {
@@ -35,15 +36,21 @@ const effectMove = new moveEffectFn()
 // 主题切换
 const prefers = matchMedia("(prefers-color-scheme: dark)")
 
+// 使用 mitt 统一管理事件变更
+// 根据 isDark 的值来设置主题
+mitt.on("isDark", () => {
+  document.documentElement.setAttribute(
+    "themes",
+    isDark.value ? darks.value + "-dark" : lights.value + "-light"
+  )
+})
+
 // 监听 isDark themes 为 switch时监听
 watch(
   () => isDark.value,
-  (newV) => {
-    // 根据 isDark 的值来设置主题
-    document.documentElement.setAttribute(
-      "themes",
-      newV ? darks.value + "-dark" : lights.value + "-light"
-    )
+  () => {
+    // 统一触发
+    mitt.emit("isDark")
   },
   {
     immediate: true,
@@ -73,6 +80,7 @@ watch(
     immediate: true,
   }
 )
+
 // 监听 bannerIsFixed
 watch(
   () => bannerIsFixed.value,
@@ -84,6 +92,7 @@ watch(
     immediate: true,
   }
 )
+
 // 监听 clickEffect
 watch(
   () => clickEffect.value,
@@ -91,8 +100,9 @@ watch(
     watch(
       () => clicks.value,
       (newV) => {
-        if (newV === "normal")
+        if (newV === "normal") {
           newVal ? effectClick.onMounted() : effectClick.onUnMounted()
+        }
       },
       {
         immediate: true,
@@ -103,6 +113,7 @@ watch(
     immediate: true,
   }
 )
+
 // 监听 moveEffect
 watch(
   () => moveEffect.value,
@@ -110,8 +121,9 @@ watch(
     watch(
       () => moves.value,
       (newV) => {
-        if (newV === "normal")
+        if (newV === "normal") {
           newVal ? effectMove.onMounted() : effectMove.onUnMounted()
+        }
       },
       {
         immediate: true,

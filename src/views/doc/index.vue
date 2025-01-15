@@ -150,7 +150,8 @@ import "vditor/dist/index.css"
 import numberTransform from "@/utils/numberTransform"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
-
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
 // 提取数据
 const { isDark } = storeToRefs(useSettingStore())
 
@@ -274,16 +275,8 @@ const preview = () => {
     })
   }
 }
-// 监听 isDark 改变 主题样式
-watch(
-  () => isDark.value,
-  () => {
-    preview()
-  },
-  {
-    immediate: true,
-  }
-)
+// 订阅 isDark 事件
+mitt.on("isDark", preview)
 // 初始化
 onBeforeMount(async () => {
   // 获取文章
