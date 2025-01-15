@@ -71,7 +71,7 @@ const props = withDefaults(
 $item-gap: var(--content-gap);
 $translate-y: -5px;
 $aside-pd: 20px;
-$aside-width: 18.75rem;
+$aside-width: var(--aside-width);
 .pages {
   color: var(--primary-color);
   width: var(--content-width);

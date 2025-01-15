@@ -1,16 +1,21 @@
 <template>
   <layout-header />
   <layout-banner :context="false"></layout-banner>
-  <layout-content :isAllAside="false">
+  <layout-content :isAllAside="true">
     <!-- 侧边栏 -->
-    <template #aside-start v-if="article">
-      <layout-content-aside-card ref="sideMenu" class="sideMenu">
-        <template #title>
-          <i class="i-material-symbols:menu-rounded"></i>
-          <span>目录</span>
-        </template>
-        <template #body>fds </template>
-      </layout-content-aside-card>
+    <template #aside-end>
+      <div>
+        <layout-content-aside-card class="sideMenu" v-if="menuTree.length">
+          <template #title>
+            <i class="i-material-symbols:menu-rounded"></i>
+            <span>目录</span>
+          </template>
+          <template #body>
+            <layout-content-doc-menu-tree :menuData="menuTree">
+            </layout-content-doc-menu-tree>
+          </template>
+        </layout-content-aside-card>
+      </div>
     </template>
     <!-- 内容区 -->
     <template #content-start>
@@ -122,7 +127,7 @@
       <div class="doc-content">
         <my-card>
           <template #body>
-            <div id="vditor-preview" class="cur-text"></div>
+            <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
           </template>
         </my-card>
       </div>
@@ -135,6 +140,7 @@
 import { getOneArticle } from "@/api/article"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
+import type { TocNode } from "./types"
 // 引入 moment
 import moment from "@/utils/moment"
 // 引入 Vditor
@@ -152,8 +158,6 @@ const { isDark } = storeToRefs(useSettingStore())
 const article = ref<GetOneArticle["data"]>()
 // 根据路由判断
 const route = useRoute()
-// 获取侧边栏
-const sideMenu = ref()
 
 // 正则 svg 添加 属性 fill="currentColor"
 const addFillToSVG = (htmlString: string): string => {
@@ -195,49 +199,97 @@ const addHighlight = (htmlString: string): string => {
     "<span class='doc-highlight'>$1</span>"
   )
 }
+
+// 存储目录树
+const menuTree = ref<TocNode[]>([])
+
+// 生成目录树
+const addTree = (htmlString: string) => {
+  // 将 HTML 字符串转换为 DOM 对象
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(htmlString, "text/html")
+
+  // 查询所有 h1-h6 标签
+  const headings = doc.querySelectorAll("h1, h2, h3, h4, h5, h6")
+  // 构造目录树
+  const toc: TocNode[] = []
+  const stack: Array<TocNode & { children: TocNode[] }> = [
+    { level: 0, text: "", id: "", children: toc },
+  ]
+  // 初始化栈，包含一个虚拟根节点
+  // 第一项 的 children 即真正目录树 同一个地址
+
+  headings.forEach((heading) => {
+    const level = parseInt(heading.tagName.substring(1)) // 获取 h1-h6 的等级
+    const text = heading.textContent?.trim() || "" // 获取内容
+
+    const id = heading.id || text.toLowerCase().replace(/\s+/g, "-") // 自动生成 ID
+    heading.id = id // 设置 ID
+
+    // 确保有 一个 children 来创建 地址的关联性
+    const node: TocNode = { level, text, id, children: [] }
+
+    // 确定节点的父级 while 循环 确保 最后一项是父级节点
+    // 如 最后一个节点是 h2 当前节点是 h3 时
+    // h3 >= h2 即删除 确保节点是 父节点
+    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+      stack.pop()
+    }
+
+    // 添加到父级的 children 中 添加到目录中
+    stack[stack.length - 1].children.push(node)
+
+    // 将当前节点压入栈
+    // 需要确保 这一次的children 和 下一次 的 children 使用同一个地址
+    stack.push({ ...node, children: node.children })
+  })
+  menuTree.value = toc
+}
+const docPreview = ref()
+const preview = () => {
+  if (article?.value?.content) {
+    Vditor.preview(docPreview.value, article.value.content, {
+      theme: { current: "light" },
+      //代码块
+      hljs: {
+        enable: true, // 启用代码高亮
+        style: isDark.value ? "github-dark" : "github", //主题
+        lineNumber: true, //行号
+      },
+      mode: "light", //模式
+      anchor: 2, //编号的链接锚点
+      // 转换之前 处理
+      transform: (html: string) => {
+        // 初始化 锚点
+        // 用于 设置 颜色
+        let result = addFillToSVG(html)
+        // 给 blockquote 添加 type 以实现 callouts
+        result = addTypeToBlockquote(result)
+        // 给 markdown 添加 高亮显示 ==高亮文本==
+        result = addHighlight(result)
+        // 生成目录树
+        addTree(result)
+        return result
+      },
+    })
+  }
+}
+// 监听 isDark 改变 主题样式
+watch(
+  () => isDark.value,
+  () => {
+    preview()
+  },
+  {
+    immediate: true,
+  }
+)
 // 初始化
-onMounted(async () => {
+onBeforeMount(async () => {
   // 获取文章
   const articles = await getOneArticle(route.params.id as string)
   article.value = articles
-  // 监听 isDark 改变 主题样式
-  watch(
-    () => isDark.value,
-    async () => {
-      // Vditor 渲染markdown
-      const container = document.querySelector(
-        "#vditor-preview"
-      ) as HTMLDivElement
-      if (container && article?.value?.content) {
-        await Vditor.preview(container, article.value.content, {
-          theme: { current: "light" },
-          //代码块
-          hljs: {
-            enable: true, // 启用代码高亮
-            style: isDark.value ? "github-dark" : "github", //主题
-            lineNumber: true, //行号
-          },
-          mode: "light", //模式
-          anchor: 2, //标题的链接锚点
-          // 转换之前 处理
-          transform: (html: string) => {
-            // 初始化 锚点
-            // 用于 设置 颜色
-            let result = addFillToSVG(html)
-            // 给 blockquote 添加 type 以实现 callouts
-            result = addTypeToBlockquote(result)
-            // 给 markdown 添加 高亮显示 ==高亮文本==
-            result = addHighlight(result)
-            return result
-          },
-        })
-        // 设置 数字序号
-      }
-    },
-    {
-      immediate: true,
-    }
-  )
+  preview()
 })
 </script>
 
@@ -251,8 +303,8 @@ $desc-gap: 10px;
 $hr-m-hor: 10px;
 $author-m: 10px 0;
 $icon-m-r: 2px;
-$header-h: 300px;
-$header-container-h: 200px;
+$header-h: 18.75rem;
+$header-container-h: 12.5rem;
 $preview-pd: 50px;
 $doc-primary-color: var(--doc-content-color);
 $color: $doc-primary-color;
@@ -312,56 +364,49 @@ $preview-callouts-title-gap: 8px;
     }
 
     // #region h2-h6 编号
-    & {
-      counter-reset: h2 h3 h4 h5 h6; /* 初始化计数器 */
-    }
-
+    $dot: var(--doc-menu-seg);
+    $endDot: var(--doc-menu-seg-end);
+    counter-reset: level-2; /* 重置三级编号计数器 */
+    /* 二级编号 */
     h2 {
-      & {
-        counter-reset: h3; /* h2 级别重置 h3 计数器 */
-      }
+      counter-reset: level-3; /* 重置三级编号计数器 */
+      counter-increment: level-2; /* 增加二级编号计数器 */
       &::before {
-        counter-increment: h2; /* h2 计数器递增 */
-        content: counter(h2) ". "; /* 显示 h2 编号 */
+        content: counter(level-2) $endDot; /* 显示二级编号 */
       }
     }
-
+    /* 三级编号 */
     h3 {
-      & {
-        counter-reset: h4; /* h3 级别重置 h4 计数器 */
-      }
+      counter-reset: level-4; /* 重置四级编号计数器 */
+      counter-increment: level-3; /* 增加三级编号计数器 */
       &::before {
-        counter-increment: h3; /* h3 计数器递增 */
-        content: counter(h2) "." counter(h3) ". "; /* 显示 h3 编号 */
+        content: counter(level-2) $dot counter(level-3) $endDot; /* 显示三级编号 */
       }
     }
-
+    /* 四级编号 */
     h4 {
-      & {
-        counter-reset: h5; /* h4 级别重置 h5 计数器 */
-      }
+      counter-reset: level-5; /* 重置五级编号计数器 */
+      counter-increment: level-4; /* 增加四级编号计数器 */
       &::before {
-        counter-increment: h4; /* h4 计数器递增 */
-        content: counter(h2) "." counter(h3) "." counter(h4) ". "; /* 显示 h4 编号 */
+        content: counter(level-2) $dot counter(level-3) $dot counter(level-4)
+          $endDot; /* 显示四级编号 */
       }
     }
-
+    /* 五级编号 */
     h5 {
-      & {
-        counter-reset: h6; /* h5 级别重置 h6 计数器 */
-      }
+      counter-reset: level-6; /* 重置六级编号计数器 */
+      counter-increment: level-5; /* 增加五级编号计数器 */
       &::before {
-        counter-increment: h5; /* h5 计数器递增 */
-        content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5)
-          ". "; /* 显示 h5 编号 */
+        content: counter(level-2) $dot counter(level-3) $dot counter(level-4)
+          $dot counter(level-5) $endDot; /* 显示五级编号 */
       }
     }
-
+    /* 六级编号 */
     h6 {
+      counter-increment: level-6; /* 增加六级编号计数器 */
       &::before {
-        counter-increment: h6; /* h6 计数器递增 */
-        content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "."
-          counter(h6) ". "; /* 显示 h6 编号 */
+        content: counter(level-2) $dot counter(level-3) $dot counter(level-4)
+          $dot counter(level-5) $dot counter(level-6) $endDot; /* 显示六级编号 */
       }
     }
     // #endregion h2-h6 编号
@@ -552,19 +597,14 @@ $preview-callouts-title-gap: 8px;
 
     // 表格
     table {
-      overflow: visible;
-      background: transparent;
-      // 表体
-      tbody {
-        background: transparent;
-        box-shadow: 1px 1px red;
-      }
-
       // 设置 表格单元的 样式
-      // 简化了 thead 和 tbody
       tr {
         border: none;
         $radius: 10px;
+        $header-border: var(--doc-table-header-border);
+        $header-bottom-border: var(--doc-table-header-bottom-border);
+        $body-border: var(--doc-table-body-border);
+        $body-bottom-border: var(--doc-table-body-bottom-border);
         // 表头
         > th {
           background-color: var(--doc-table-th-bg);
@@ -576,12 +616,24 @@ $preview-callouts-title-gap: 8px;
           &:last-child {
             border-top-right-radius: $radius;
           }
+          // 设置 边框
+          border-bottom: $header-bottom-border;
+          &:not(:last-child) {
+            border-right: $header-border;
+          }
         }
         // 表体
         > td {
           background-color: var(--doc-table-td-bg);
           border: none;
           color: var(--doc-table-td-color);
+          // 设置 边框
+          &:not(:last-child) {
+            border-right: $body-border;
+          }
+        }
+        &:not(:last-child) {
+          border-bottom: $body-bottom-border;
         }
         &:last-child {
           > td {
@@ -601,6 +653,22 @@ $preview-callouts-title-gap: 8px;
 ::v-deep(.pages) {
   margin-top: $pages-m-t;
   z-index: 10;
+}
+// 侧边栏吸附效果
+::v-deep(.aside-menu-sticky-right) {
+  position: fixed !important;
+  top: calc(var(--header-height) + var(--content-gap));
+  z-index: 4;
+  right: var(--content-gap);
+  width: calc(var(--aside-width) - 0.1875rem);
+}
+// 侧边栏吸附效果 左侧
+::v-deep(.aside-menu-sticky-left) {
+  position: fixed !important;
+  top: calc(var(--header-height) + var(--content-gap));
+  z-index: 4;
+  left: var(--content-gap);
+  width: calc(var(--aside-width) - 0.1875rem);
 }
 // 头部
 .doc-pages-header {

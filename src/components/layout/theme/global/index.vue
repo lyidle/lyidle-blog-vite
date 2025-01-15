@@ -159,6 +159,26 @@
             />
           </div>
         </div>
+
+        <div class="preview">
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="docMenuIsFixed = !docMenuIsFixed"
+            >
+              <span
+                >文章页面的目录({{ docMenuIsFixed ? "固定" : "不固定" }})</span
+              >
+            </span>
+            <my-switch
+              v-model="docMenuIsFixed"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -194,6 +214,7 @@ const {
   clicks,
   moves,
   savePosition,
+  docMenuIsFixed,
 } = storeToRefs(useSettingStore())
 const { themeOptions, lightOptions, darkOptions, clickOptions, moveOptions } =
   useSettingStore()

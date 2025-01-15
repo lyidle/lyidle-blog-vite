@@ -31,6 +31,8 @@ export const useSettingStore = defineStore(
     const bannerIsFixed = ref<boolean>(false)
     // 是否开启侧边栏
     const isAside = ref<boolean>(true)
+    // 文章的目录是否固定
+    const docMenuIsFixed = ref<boolean>(true)
     // #endregion 头部设置
 
     // 菜单信息
@@ -50,8 +52,6 @@ export const useSettingStore = defineStore(
     let initLeft = ref<null | string>(null)
     let initTop = ref<null | string>(null)
 
-    // 存储 页面的滚动位置 刷新时滚动位置 不变
-    let scrollSave = ref<{ to: number; route: string; height: number }>()
     return {
       // 头部设置
       isDark,
@@ -69,6 +69,8 @@ export const useSettingStore = defineStore(
       clickEffect,
       moveEffect,
       isAside,
+      // 文章的目录是否固定
+      docMenuIsFixed,
       // 右键菜单 信息
       isFullScreen,
       contentIsReverse,
@@ -78,8 +80,6 @@ export const useSettingStore = defineStore(
       savePosition,
       initLeft,
       initTop,
-      // 存储 页面的滚动位置 刷新时滚动位置 不变
-      scrollSave,
     }
   },
   {
@@ -99,6 +99,7 @@ export const useSettingStore = defineStore(
         "clickEffect",
         "moveEffect",
         "isAside",
+        "docMenuIsFixed",
         // 右键菜单 信息
         "contentIsReverse",
         // 个性化设置 右键的编辑项
@@ -106,8 +107,6 @@ export const useSettingStore = defineStore(
         "savePosition",
         "initLeft",
         "initTop",
-        // 存储 页面的滚动位置 刷新时滚动位置 不变
-        "scrollSave",
       ],
     },
   }

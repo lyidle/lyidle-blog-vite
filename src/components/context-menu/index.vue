@@ -5,10 +5,10 @@
       <!-- 阻止冒泡 防止多个菜单干扰 -->
       <div class="menu-context" ref="menu" @contextmenu.capture.prevent.stop>
         <div class="title">
-          <div class="icon" onclick="history.back()">
+          <div class="icon" @click="$router.back()">
             <i class="i-lets-icons:arrow-left"></i>
           </div>
-          <div class="icon" onclick="history.forward()">
+          <div class="icon" @click="$router.go(1)">
             <i class="i-lets-icons:arrow-right"></i>
           </div>
           <div class="icon" @click="screen?.fullScreenCb">
@@ -20,7 +20,7 @@
               "
             ></i>
           </div>
-          <div class="icon" onclick="location.reload()">
+          <div class="icon" @click="$router.go(0)">
             <i class="i-tabler:refresh"></i>
           </div>
           <div class="icon" @click="scrollTop">
@@ -133,11 +133,11 @@ onMounted(() => {
   window.addEventListener("click", close, true)
   window.addEventListener("contextmenu", close, true)
 })
-// onUnmounted(() => {
-//   console.log(container.value) //null
-//   // 限制 vite好像自动移除了
-//   container.value.removeEventListener("contextmenu", open)
-// })
+onUnmounted(() => {
+  container?.value?.removeEventListener("contextmenu", open)
+  window.removeEventListener("click", close, true)
+  window.removeEventListener("contextmenu", close, true)
+})
 </script>
 
 <style scoped lang="scss">

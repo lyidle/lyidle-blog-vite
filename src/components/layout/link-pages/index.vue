@@ -1,5 +1,5 @@
 <template>
-  <div class="header-title">
+  <div class="side-header-title">
     <router-link
       class="contain"
       :to="`/user/doc/${userAccount || adminAccount}`"
@@ -52,7 +52,7 @@ const {
 </script>
 
 <style scoped lang="scss">
-.header-title {
+.side-header-title {
   $gap: 15px;
   $header-title-pd: 30px;
   display: flex;

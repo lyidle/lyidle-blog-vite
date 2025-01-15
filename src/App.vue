@@ -24,7 +24,6 @@ const {
   clickEffect,
   moveEffect,
   bannerIsFixed,
-  scrollSave,
   lights,
   darks,
   clicks,
@@ -124,15 +123,6 @@ watch(
   }
 )
 
-// 记录滚动 的位置
-const initScrollSave = () => {
-  scrollSave.value = {
-    to: document.documentElement.scrollTop,
-    route: window.location.pathname,
-    height: document.documentElement.offsetHeight,
-  }
-}
-
 // 发起请求
 onBeforeMount(async () => {
   await reqUserMenuList()
@@ -140,31 +130,6 @@ onBeforeMount(async () => {
 onMounted(() => {
   // 初始化标题
   setTitleTip()
-  // 监听 页面刷新 后 的事件 保留 一些位置信息
-  window.addEventListener("unload", initScrollSave)
-  // 初始化 位置 信息
-  if (scrollSave.value?.route === window.location.pathname) {
-    // 超时时间
-    const timeout = 5
-    // 得到的和保存的误差值
-    const gap = 50
-    const now = Date.now()
-    const timer = setInterval(() => {
-      // 超时也 清除定时器
-      if ((Date.now() - now) / 1000 > timeout) {
-        clearInterval(timer)
-      }
-      if (scrollSave.value?.height)
-        if (
-          Math.abs(
-            document.documentElement.offsetHeight - scrollSave.value?.height
-          ) <= gap
-        ) {
-          window.scrollTo({ top: scrollSave?.value?.to, behavior: "smooth" })
-          clearInterval(timer)
-        }
-    }, 500)
-  }
 })
 </script>
 

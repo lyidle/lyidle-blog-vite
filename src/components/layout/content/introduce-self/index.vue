@@ -29,7 +29,7 @@
               {{ userSigner || (userAccount ? "" : adminSigner) }}
             </div>
           </div>
-          <div class="pages">
+          <div class="side-counts-container">
             <layout-link-pages></layout-link-pages>
           </div>
           <my-primary-button type="primary" class="userinfo-btn">
@@ -163,9 +163,9 @@ $userinfo-btn-car-size: 25px;
       overflow: hidden;
     }
   }
-  .pages {
+  .side-counts-container {
     width: 100%;
-    ::v-deep(.header-title) {
+    ::v-deep(.side-header-title) {
       margin-top: unset;
       padding: unset;
       justify-content: center;
