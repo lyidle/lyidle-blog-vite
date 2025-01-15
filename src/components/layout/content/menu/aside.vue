@@ -5,6 +5,7 @@
       !isAside ? 'i-arcticons:goodwy-gallery' : 'i-arcticons:photoprism-gallery'
     "
     @click="isAside = !isAside"
+    v-if="!docMenuIsFixedLazy"
   ></context-menu-item>
 </template>
 
@@ -12,7 +13,7 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 初始化仓库中用到的值
-const { isAside } = storeToRefs(useSettingStore())
+const { isAside, docMenuIsFixedLazy } = storeToRefs(useSettingStore())
 </script>
 
 <style scoped></style>

@@ -13,12 +13,10 @@
       </div>
       <div class="content-aside" v-if="isAside" :style="asideStyle">
         <slot name="aside-start"></slot>
-        <template v-if="props.isAllAside">
-          <layout-content-introduce-self v-if="isAsideSelf" />
-          <layout-content-announce v-if="isAsideAnnounce" />
-          <layout-content-web-info v-if="isAsideWebInfo" />
-          <layout-content-recent-pages v-if="isAsideRecentPage" />
-        </template>
+        <layout-content-introduce-self v-if="isAsideSelf" />
+        <layout-content-announce v-if="isAsideAnnounce" />
+        <layout-content-web-info v-if="isAsideWebInfo" />
+        <layout-content-recent-pages v-if="isAsideRecentPage" />
         <slot name="aside-end"></slot>
       </div>
     </div>
@@ -33,7 +31,14 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 提取需要的变量
-const { isAside, contentIsReverse } = storeToRefs(useSettingStore())
+const {
+  isAside,
+  contentIsReverse,
+  isAsideSelf,
+  isAsideAnnounce,
+  isAsideWebInfo,
+  isAsideRecentPage,
+} = storeToRefs(useSettingStore())
 // 中间内容区域 卡片个数
 const contentNum = computed(() => {
   return isAside.value ? 3 : 4
@@ -49,22 +54,6 @@ const asideStyle = computed(() => {
   }
   return result
 })
-const props = withDefaults(
-  defineProps<{
-    isAllAside?: boolean
-    isAsideSelf?: boolean
-    isAsideAnnounce?: boolean
-    isAsideWebInfo?: boolean
-    isAsideRecentPage?: boolean
-  }>(),
-  {
-    isAllAside: true,
-    isAsideSelf: true,
-    isAsideAnnounce: true,
-    isAsideWebInfo: true,
-    isAsideRecentPage: true,
-  }
-)
 </script>
 <style scoped lang="scss">
 // 左右间距

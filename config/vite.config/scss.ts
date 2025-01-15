@@ -31,8 +31,7 @@ export default (
   }
   // 获取所有 .scss 文件
   const scssFiles = getAllScssFiles(dirPath)
-  // 生成 import 语句
-  return (
+  const result =
     scssFiles
       .map((file) => {
         // 将文件路径转换为 alias 格式
@@ -41,8 +40,9 @@ export default (
       })
       .join("\n") +
     `
-      @use "@/styles/mixins.scss" as *;
-      @use "@/styles/animations.scss" as *;
-    `
-  )
+  @use "@/styles/mixins.scss" as *;
+  @use "@/styles/animations.scss" as *;
+`
+  // 生成 import 语句
+  return result
 }

@@ -1,21 +1,23 @@
 <template>
   <layout-header />
   <layout-banner :context="false"></layout-banner>
-  <layout-content :isAllAside="true">
+  <layout-content>
     <!-- 侧边栏 -->
     <template #aside-end>
-      <div>
-        <layout-content-aside-card class="sideMenu" v-if="menuTree.length">
-          <template #title>
-            <i class="i-material-symbols:menu-rounded"></i>
-            <span>目录</span>
-          </template>
-          <template #body>
-            <layout-content-doc-menu-tree :menuData="menuTree">
-            </layout-content-doc-menu-tree>
-          </template>
-        </layout-content-aside-card>
-      </div>
+      <layout-content-aside-card
+        class="sideMenu"
+        v-if="menuTree.length"
+        ref="sideMenu"
+      >
+        <template #title>
+          <i class="i-material-symbols:menu-rounded"></i>
+          <span>目录</span>
+        </template>
+        <template #body>
+          <layout-content-doc-menu-tree :menuData="menuTree">
+          </layout-content-doc-menu-tree>
+        </template>
+      </layout-content-aside-card>
     </template>
     <!-- 内容区 -->
     <template #content-start>
@@ -152,8 +154,16 @@ import numberTransform from "@/utils/numberTransform"
 import { useSettingStore } from "@/store/setting"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入 交叉传感器
+import { observer } from "@/utils/observer"
 // 提取数据
-const { isDark } = storeToRefs(useSettingStore())
+const {
+  isDark,
+  docMenuIsFixedLazy,
+  docMenuIsFixed,
+  asideCounts,
+  isAsideDocMenu,
+} = storeToRefs(useSettingStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
@@ -275,13 +285,188 @@ const preview = () => {
     })
   }
 }
-// 订阅 isDark 事件
-mitt.on("isDark", preview)
+
+const sideMenu = ref()
+// 目录进入视口时监听 滚动事件
+// 挂载
+const enterScrollListener = () => {
+  initElements() // 初始化 el 和 sibling 变量
+  // 使用交叉传感器
+  if (docMenuIsFixedLazy.value) {
+    if (!penultimate) {
+      const container = document.querySelector(".content-aside")
+      penultimate = container?.children[
+        container?.children.length - 2
+      ] as HTMLDivElement | null
+    }
+    if (penultimate)
+      observer(
+        penultimate,
+        () => {
+          sibEnter = false
+          removeStickyClasses()
+        },
+        () => {
+          sibLeave = false
+          if (!sibEnter && !sibLeave) {
+            if (toggle) {
+              // 重置
+              sibEnter = true
+              sibLeave = true
+              // 固定
+              toggleMenuPosition()
+            }
+          }
+        }
+      )
+    return
+  }
+  window.addEventListener("scroll", enterScrollListenerCb)
+}
+// 卸载
+const unEnterScrollListener = () => {
+  // 移除类名
+  removeStickyClasses()
+  // 初始化存储的值
+  enterFlag = true
+  leaveFlag = true
+  menuWrap = null
+  penultimate = null
+  // 没有交叉传感器
+  !docMenuIsFixedLazy.value &&
+    window.removeEventListener("scroll", enterScrollListenerCb)
+}
+// 重载
+const reloadEnterScrollListener = () => {
+  // 重载
+  unEnterScrollListener()
+  enterScrollListener()
+}
+// 初始化需要的数据
+let enterFlag = true
+let leaveFlag = true
+let menuWrap: HTMLDivElement | null = null
+let penultimate: HTMLDivElement | null = null
+// 交叉传感器 需要用到的
+let sibEnter = true
+let sibLeave = true
+/* 
+  进入时 取消固定
+  进入离开 时 固定
+*/
+let toggle = true
+// 初始化元素
+const initElements = () => {
+  if (!menuWrap) {
+    menuWrap = document.querySelector(".sideMenu") as HTMLDivElement
+  }
+  if (!penultimate) {
+    // 组件没有挂载完 重新获取 500ms 一次
+    const timer = setInterval(() => {
+      const container = document.querySelector(".content-aside")
+      penultimate = container?.children[
+        container?.children.length - 2
+      ] as HTMLDivElement | null
+      if (container?.children.length === asideCounts.value) {
+        clearInterval(timer)
+      }
+    }, 500)
+  }
+}
+// 没有交叉传感器 更新菜单位置
+const updateMenuPosition = () => {
+  if (!menuWrap || !penultimate) return
+
+  const rect = penultimate.getBoundingClientRect()
+  const bottom = rect.bottom
+
+  // 进入视口
+  if (bottom <= 0 && enterFlag) {
+    enterFlag = false
+    leaveFlag = true
+    toggleMenuPosition()
+  }
+  // 离开视口
+  else if (bottom > 0 && leaveFlag) {
+    enterFlag = true
+    leaveFlag = false
+    removeStickyClasses()
+  }
+}
+// 添加类名
+const toggleMenuPosition = () => {
+  if (!menuWrap) return
+  if (menuWrap.offsetLeft < 100) {
+    // 菜单栏在左侧
+    menuWrap.classList.add("aside-menu-sticky-left")
+    menuWrap.classList.remove("aside-menu-sticky-right")
+  } else {
+    // 菜单栏在右侧
+    menuWrap.classList.add("aside-menu-sticky-right")
+    menuWrap.classList.remove("aside-menu-sticky-left")
+  }
+}
+// 移除类名
+const removeStickyClasses = () => {
+  if (menuWrap) {
+    menuWrap.classList.remove("aside-menu-sticky-right")
+    menuWrap.classList.remove("aside-menu-sticky-left")
+  }
+}
+
+// 没有交叉传感器 目录进入视口时监听 滚动事件 回调
+let enterScrollListenerCb = () => {
+  updateMenuPosition()
+}
+
+watch(
+  () => isAsideDocMenu.value,
+  (newV) => {
+    let sideMenuWatch: watchType | null = null
+    let docMenuIsFixedWatch: watchType | null = null
+    if (newV) {
+      // 监听菜单组件是否挂载
+      sideMenuWatch = watch(
+        () => sideMenu.value?.$el,
+        (newV) => {
+          if (newV && docMenuIsFixed.value) {
+            enterScrollListener()
+          } else if (docMenuIsFixed.value) unEnterScrollListener()
+        }
+      )
+      // 判断是否固定
+      docMenuIsFixedWatch = watch(
+        () => docMenuIsFixed.value,
+        (newV) => {
+          if (!newV) unEnterScrollListener()
+          else enterScrollListener()
+        }
+      )
+      // 订阅 暗夜切换 事件
+      mitt.on("isDark", preview)
+      // 订阅 布局切换 事件
+      mitt.on("contentIsReverse", reloadEnterScrollListener)
+      mitt.on("isAside:true", reloadEnterScrollListener)
+    } else {
+      if (sideMenuWatch) (sideMenuWatch as watchType)()
+      if (docMenuIsFixedWatch) (docMenuIsFixedWatch as watchType)()
+      // 取消 暗夜切换 事件
+      mitt.off("isDark", preview)
+      // 取消 布局切换 事件
+      mitt.off("contentIsReverse", reloadEnterScrollListener)
+      mitt.off("isAside:true", reloadEnterScrollListener)
+    }
+  },
+  {
+    immediate: true,
+  }
+)
 // 初始化
 onBeforeMount(async () => {
   // 获取文章
   const articles = await getOneArticle(route.params.id as string)
   article.value = articles
+  // 渲染 文章
   preview()
 })
 </script>

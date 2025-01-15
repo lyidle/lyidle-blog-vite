@@ -70,6 +70,7 @@
           <el-form-item
             :label="isAside ? '关闭侧边信息' : '打开侧边信息'"
             class="item aside-switch"
+            v-if="!docMenuIsFixedLazy"
           >
             <el-switch
               v-model="isAside"
@@ -83,6 +84,7 @@
           <el-form-item
             :label="`侧栏位置(${contentIsReverse ? '左侧' : '右侧'})`"
             class="item aside-switch"
+            v-if="!docMenuIsFixedLazy"
           >
             <el-switch
               v-model="contentIsReverse"
@@ -122,6 +124,7 @@ const {
   moveEffect,
   isAside,
   contentIsReverse,
+  docMenuIsFixedLazy,
 } = storeToRefs(useSettingStore())
 // 定义与接收props
 withDefaults(

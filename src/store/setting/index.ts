@@ -34,24 +34,46 @@ export const useSettingStore = defineStore(
     // 文章的目录是否固定
     const docMenuIsFixed = ref<boolean>(true)
     // #endregion 头部设置
-
     // 菜单信息
+    /*  
+       禁用布局切换 和 侧边栏 开关
+       使用交叉观察器 和 滚动来判断是否要固定
+       默认使用的 scroll 因为要 改变布局
+    */
+    const docMenuIsFixedLazy = ref<boolean>(false)
+
     // 是否全屏
     const isFullScreen = ref<boolean>(false)
-    // 内容区域和侧边信息是否交换
+    // 侧边栏位置 布局切换
     const contentIsReverse = ref<boolean>(false)
 
     // 个性化 设置
-    // 是否显示 弹窗
+    // #region 侧边栏的 显示与否
+    // 开启的侧边栏个数
+    const isAsideSelf = ref<boolean>(true)
+    const isAsideAnnounce = ref<boolean>(true)
+    const isAsideWebInfo = ref<boolean>(true)
+    const isAsideRecentPage = ref<boolean>(true)
+    const isAsideDocMenu = ref<boolean>(true)
+    const asideCounts = computed(() => {
+      let num: number = 0
+      if (isAsideSelf.value) num++
+      if (isAsideAnnounce) num++
+      if (isAsideWebInfo) num++
+      if (isAsideRecentPage) num++
+      if (isAsideDocMenu) num++
+    })
+    // #endregion 侧边栏的 显示与否
+
+    // 面板的切换
     const iShowSet = ref<boolean>(false)
     // 存储场景
     const setScene = ref<string | number>("0")
-    // 是否存储初始位置
-    let savePosition = ref<boolean>(true)
-    // 存储初始位置
-    let initLeft = ref<null | string>(null)
-    let initTop = ref<null | string>(null)
-
+    // 是否存储位置
+    const savePosition = ref<boolean>(true)
+    // 存储位置
+    const initLeft = ref<null | string>(null)
+    const initTop = ref<null | string>(null)
     return {
       // 头部设置
       isDark,
@@ -71,6 +93,7 @@ export const useSettingStore = defineStore(
       isAside,
       // 文章的目录是否固定
       docMenuIsFixed,
+      docMenuIsFixedLazy,
       // 右键菜单 信息
       isFullScreen,
       contentIsReverse,
@@ -80,6 +103,14 @@ export const useSettingStore = defineStore(
       savePosition,
       initLeft,
       initTop,
+      // #region 侧边栏的 显示与否
+      asideCounts,
+      isAsideSelf,
+      isAsideAnnounce,
+      isAsideWebInfo,
+      isAsideRecentPage,
+      isAsideDocMenu,
+      // #endregion 侧边栏的 显示与否
     }
   },
   {
@@ -100,6 +131,7 @@ export const useSettingStore = defineStore(
         "moveEffect",
         "isAside",
         "docMenuIsFixed",
+        "docMenuIsFixedLazy",
         // 右键菜单 信息
         "contentIsReverse",
         // 个性化设置 右键的编辑项
@@ -107,6 +139,14 @@ export const useSettingStore = defineStore(
         "savePosition",
         "initLeft",
         "initTop",
+        // #region 侧边栏的 显示与否
+        "asideCounts",
+        "isAsideSelf",
+        "isAsideAnnounce",
+        "isAsideWebInfo",
+        "isAsideRecentPage",
+        "isAsideDocMenu",
+        // #endregion 侧边栏的 显示与否
       ],
     },
   }

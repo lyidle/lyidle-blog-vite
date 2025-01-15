@@ -12,6 +12,7 @@
     titleBg="var(--theme-setting-title-bg)"
     color="var(--primary-color)"
     titleColor="var(--theme-setting-title-color)"
+    titleHeight="var(--theme-panel-title-height)"
   >
     <template #title>个性化设置</template>
     <template #content>
@@ -87,12 +88,13 @@ const asideData = [
 </script>
 
 <style scoped lang="scss">
-$gap: 10px;
+$gap: var(--theme-panel-content-gap);
 $side-p-t: 0;
 $side-pd: 10px 0;
 $content-btn-gap: 10px;
+$title-height: var(--theme-panel-title-height);
 .container {
-  height: 100%;
+  height: calc(100% - $title-height);
   // 内容 和 aside 左右分布
   display: flex;
   justify-content: space-between;
@@ -124,7 +126,14 @@ $content-btn-gap: 10px;
   // 内容
   > .content {
     width: 100%;
-    padding: $gap;
+    height: 100%;
+    overflow: hidden;
+    ::v-deep(> [class$="-container"]) {
+      width: 100%;
+      height: 100%;
+      padding: $gap;
+      overflow: auto;
+    }
   }
 }
 </style>

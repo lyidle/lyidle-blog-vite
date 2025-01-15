@@ -114,7 +114,7 @@
       <h2 class="title text-center">布局信息设置</h2>
       <div class="theme-select">
         <div class="preview">
-          <div class="item">
+          <div class="item" v-if="!docMenuIsFixedLazy">
             <span class="label cur-pointer" @click="isAside = !isAside">
               <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
             </span>
@@ -126,7 +126,7 @@
               size="small"
             />
           </div>
-          <div class="item">
+          <div class="item" v-if="!docMenuIsFixedLazy">
             <span
               class="label cur-pointer"
               @click="contentIsReverse = !contentIsReverse"
@@ -179,6 +179,41 @@
             />
           </div>
         </div>
+
+        <div class="preview">
+          <div class="item">
+            <span
+              class="label cur-pointer"
+              @click="docMenuIsFixedLazy = !docMenuIsFixedLazy"
+            >
+              <el-tooltip class="box-item" effect="dark" placement="top-start">
+                <template #content>
+                  <div class="w-25rem">
+                    默认使用的是监听页面的滚动事件,判断是否固定,
+                    会频繁的获取菜单和侧边栏倒数第二个元素的位置信息,
+                    会引起页面的回流和重绘,虽然使用了节流,
+                    相比禁用布局改变要差一些<br />
+                    使用交叉传感器是监听，元素菜单倒数第二个元素,
+                    它的进入和离开视口来进行判断是否固定
+                  </div>
+                </template>
+                <span
+                  >文章的目录是否使用交叉传感器({{
+                    docMenuIsFixedLazy ? "是" : "否"
+                  }})</span
+                >
+              </el-tooltip>
+            </span>
+
+            <my-switch
+              v-model="docMenuIsFixedLazy"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -215,6 +250,7 @@ const {
   moves,
   savePosition,
   docMenuIsFixed,
+  docMenuIsFixedLazy,
 } = storeToRefs(useSettingStore())
 const { themeOptions, lightOptions, darkOptions, clickOptions, moveOptions } =
   useSettingStore()

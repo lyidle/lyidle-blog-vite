@@ -11,6 +11,8 @@
 // 引入 类型
 import { TocNode } from "@/views/doc/types"
 defineProps<{ menuData: TocNode[] }>()
+
+onMounted(() => {})
 </script>
 
 <style lang="scss">

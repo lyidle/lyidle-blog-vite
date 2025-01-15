@@ -1,14 +1,22 @@
 <template>
   <div v-if="iShowSet" class="dialog-wrapper">
     <div class="dialog-container" ref="containter">
-      <div class="title cur-move" ref="title">
+      <div
+        class="title cur-move"
+        ref="title"
+        :style="{
+          height: titleHeight,
+        }"
+      >
         <slot name="title"></slot>
-        <!-- 关闭 按钮 -->
-        <div class="close cur-pointer">
-          <i
-            class="i-material-symbols:close-rounded"
-            @click="iShowSet = false"
-          ></i>
+        <div class="btns">
+          <!-- 关闭 按钮 -->
+          <div class="close cur-pointer btn-item">
+            <i
+              class="i-material-symbols:close-rounded"
+              @click="iShowSet = false"
+            ></i>
+          </div>
         </div>
       </div>
       <!-- 内容区 -->
@@ -30,6 +38,7 @@ const props = withDefaults(
     titleBg?: string
     color?: string
     titleColor?: string
+    titleHeight?: string
   }>(),
   {
     closeDur: ".3s",
@@ -176,7 +185,6 @@ $close-dur: v-bind(closeDur);
 $close-color: v-bind(closeColor);
 $close-color-hover: v-bind(closeColorHover);
 $title-gap: 10px;
-$title-: 8px;
 $title-hor: $title-gap;
 $title-vert: 8px;
 $mask: v-bind(mask);
@@ -205,20 +213,31 @@ $title-color: v-bind(titleColor);
       padding: $title-vert $title-hor;
       background-color: $title-bg;
       color: $title-color;
-      // 关闭按钮
-      .close {
+      position: relative;
+      .btns {
         position: absolute;
-        top: 0;
-        right: 0;
-        transition: color $close-dur;
-        color: $close-color;
-        &:hover {
-          color: $close-color-hover;
+        right: $title-gap/2;
+        top: calc(25%);
+        // 每个按钮项
+        .btn-item {
+          position: absolute;
+          top: 0;
+          right: 0;
+          i {
+            width: $close-size;
+            height: $close-size;
+            position: absolute;
+            top: inherit;
+            right: inherit;
+          }
         }
-        i {
-          width: $close-size;
-          height: $close-size;
-          margin: $title-vert $title-gap 0 0;
+        // 关闭按钮
+        .close {
+          transition: color $close-dur;
+          color: $close-color;
+          &:hover {
+            color: $close-color-hover;
+          }
         }
       }
     }

@@ -7,6 +7,7 @@
         : 'i-arcticons:goodwy-gallery'
     "
     @click="contentIsReverse = !contentIsReverse"
+    v-if="!docMenuIsFixedLazy"
   ></context-menu-item>
 </template>
 
@@ -14,7 +15,7 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 初始化仓库中用到的值
-const { contentIsReverse } = storeToRefs(useSettingStore())
+const { contentIsReverse, docMenuIsFixedLazy } = storeToRefs(useSettingStore())
 </script>
 
 <style scoped></style>

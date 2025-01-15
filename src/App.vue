@@ -19,6 +19,7 @@ import { setTitleTip } from "@/utils/effect"
 import { mitt } from "@/utils/emitter"
 // 提取数据
 const { reqUserMenuList } = useUserStore()
+
 const {
   isDark,
   themes,
@@ -29,14 +30,17 @@ const {
   darks,
   clicks,
   moves,
+  contentIsReverse,
+  docMenuIsFixedLazy,
+  isAside,
 } = storeToRefs(useSettingStore())
+
 //初始化特效函数
 const effectClick = new clickEffectFn()
 const effectMove = new moveEffectFn()
-// 主题切换
-const prefers = matchMedia("(prefers-color-scheme: dark)")
 
 // 使用 mitt 统一管理事件变更
+
 // 根据 isDark 的值来设置主题
 mitt.on("isDark", () => {
   document.documentElement.setAttribute(
@@ -45,19 +49,22 @@ mitt.on("isDark", () => {
   )
 })
 
-// 监听 isDark themes 为 switch时监听
+// 监听 布局切换事件
 watch(
-  () => isDark.value,
+  () => contentIsReverse.value,
   () => {
-    // 统一触发
-    mitt.emit("isDark")
-  },
-  {
-    immediate: true,
+    mitt.emit("contentIsReverse")
   }
 )
-
+// 监听 菜单关闭与隐藏
+watch(
+  () => isAside.value,
+  (newV) => {
+    newV && mitt.emit("isAside")
+  }
+)
 // 跟随系统 切换主题
+const prefers = matchMedia("(prefers-color-scheme: dark)")
 const follow = () => {
   prefers.matches ? (isDark.value = true) : (isDark.value = false)
 }
@@ -75,6 +82,18 @@ watch(
     }
     prefers.removeEventListener("change", follow)
     newV === "light" ? (isDark.value = false) : (isDark.value = true)
+  },
+  {
+    immediate: true,
+  }
+)
+
+// 监听 isDark
+watch(
+  () => isDark.value,
+  () => {
+    // 统一触发
+    mitt.emit("isDark")
   },
   {
     immediate: true,
@@ -135,6 +154,18 @@ watch(
   }
 )
 
+// 监听 docMenuIsFixedLazy
+/*  
+    禁用布局切换 和 侧边栏 开关
+    使用交叉观察器 和 滚动来判断是否要固定
+    默认使用的 scroll 因为要 改变布局
+*/
+watch(
+  () => docMenuIsFixedLazy.value,
+  () => {
+    window.location.reload()
+  }
+)
 // 发起请求
 onBeforeMount(async () => {
   await reqUserMenuList()
