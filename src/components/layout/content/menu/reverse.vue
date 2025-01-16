@@ -8,8 +8,8 @@
           : 'i-arcticons:goodwy-gallery'
       "
       @click="contentIsReverse = !contentIsReverse"
-      v-if="!docMenuIsFixedLazy"
     ></context-menu-item>
+    <!-- v-if="!docMenuIsFixedLazy" -->
   </template>
 </template>
 

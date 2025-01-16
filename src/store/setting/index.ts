@@ -54,7 +54,7 @@ export const useSettingStore = defineStore(
     // #region 布局信息设置
     // 侧边栏位置 默认右侧
     const contentIsReverse = ref<boolean>(false)
-    // 文章的目录是否固定 默认固定 使用交叉传感器 和 滚动监听
+    // 文章的目录是否固定 默认固定 使用交叉传感器
     const docMenuIsFixed = ref<boolean>(true)
     // 是否存储 个性化面板的 位置
     const savePosition = ref<boolean>(true)
@@ -66,7 +66,7 @@ export const useSettingStore = defineStore(
        使用交叉观察器 和 滚动来判断是否要固定
        默认使用的 scroll 因为要 改变布局
     */
-    const docMenuIsFixedLazy = ref<boolean>(false)
+    const docMenuIsFixedLazy = ref<boolean>(true)
     // #endregion 布局信息设置
 
     // 是否全屏
