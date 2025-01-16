@@ -488,6 +488,9 @@ mitt.on("isDark", preview)
 // 订阅 布局切换 事件
 mitt.on("contentIsReverse", reloadEnterScrollListener)
 mitt.on("isAside:true", reloadEnterScrollListener)
+// 订阅 交叉传感器关闭 事件
+mitt.on("docMenuIsFixedLazy:false", reloadEnterScrollListener)
+
 // 初始化
 onBeforeMount(async () => {
   // 获取文章
@@ -505,6 +508,8 @@ onBeforeUnmount(() => {
   // 取消订阅 布局切换 事件
   mitt.off("contentIsReverse", reloadEnterScrollListener)
   mitt.off("isAside:true", reloadEnterScrollListener)
+  // 取消订阅 交叉传感器关闭 事件
+  mitt.off("docMenuIsFixedLazy:false", reloadEnterScrollListener)
 })
 </script>
 

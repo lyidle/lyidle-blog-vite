@@ -69,7 +69,7 @@ let initLeft = defineModel("left")
 let initTop = defineModel("top")
 let savePosition = defineModel("isSave")
 
-// 监听 是否隐藏 面板
+// 监听 是否隐藏 面板 不需要卸载 因为全局都要用到
 // 订阅 面板显示与否 的事件
 mitt.on("isShowPanel:true", () => {
   document.documentElement.style.overflow = "hidden"
@@ -101,6 +101,7 @@ mitt.on("isShowPanel:false", () => {
   const tar = title.value as HTMLDivElement
   tar.removeEventListener("mousedown", handlerMousedown)
 })
+
 // 拖拽
 // 获取 容器
 // 获取 头部 容器

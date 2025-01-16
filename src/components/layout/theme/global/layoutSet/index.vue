@@ -3,7 +3,7 @@
     <h2 class="title text-center">布局信息设置</h2>
     <div class="theme-select">
       <div class="preview">
-        <div class="item" v-if="asideCounts">
+        <div class="item" v-if="!asideCounts || !docMenuIsFixedLazy">
           <span
             class="label cur-pointer"
             @click="contentIsReverse = !contentIsReverse"
@@ -38,9 +38,7 @@
             class="label cur-pointer"
             @click="docMenuIsFixed = !docMenuIsFixed"
           >
-            <span
-              >文章页面的目录({{ docMenuIsFixed ? "固定" : "不固定" }})</span
-            >
+            <span>文章的目录({{ docMenuIsFixed ? "固定" : "不固定" }})</span>
           </span>
           <my-switch
             v-model="docMenuIsFixed"
@@ -57,19 +55,43 @@
             class="label cur-pointer"
             @click="docMenuIsFixedLazy = !docMenuIsFixedLazy"
           >
-            <el-tooltip class="box-item" effect="dark" placement="top-start">
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+              @hide="num = 0"
+            >
               <template #content>
                 <div class="w-25rem">
-                  默认使用的是监听页面的滚动事件,判断是否固定,
-                  会频繁的获取菜单和侧边栏倒数第二个元素的位置信息,
-                  只有一个目录时监听的内容区域的为位置信息，
-                  会引起页面的回流和重绘 相比禁用布局改变要差一些<br />
-                  使用交叉传感器是监听，元素菜单倒数第二个元素,
-                  它的进入和离开视口来进行判断是否固定
+                  <div v-if="num === 0">开启后,改变布局的操作会使页面刷新</div>
+                  <div v-if="num === 1">
+                    默认使用的是监听页面的滚动事件,判断是否固定,
+                    会频繁的获取菜单和侧边栏倒数第二个元素的位置信息,
+                    只有一个目录时监听的内容区域的为位置信息，
+                    会引起页面的回流和重绘 相比禁用布局改变要差一些
+                  </div>
+                  <div v-if="num === 2">
+                    使用交叉传感器是监听，元素菜单倒数第二个元素,
+                    它的进入和离开视口来进行判断是否固定
+                  </div>
+                </div>
+                <div class="flex gap-5px m-y-0.3125rem">
+                  <div
+                    class="w-0.9375rem h-0.9375rem flex justify-center items-center cursor-[var(--cursor-pointer)]"
+                    @click="num > 0 ? num-- : undefined"
+                  >
+                    &lt;
+                  </div>
+                  <div
+                    class="w-0.9375rem h-0.9375rem flex justify-center items-center cursor-[var(--cursor-pointer)]"
+                    @click="num < 2 ? num++ : undefined"
+                  >
+                    &gt;
+                  </div>
                 </div>
               </template>
               <span
-                >文章的目录是否使用交叉传感器({{
+                >文章的目录使用交叉传感器({{
                   docMenuIsFixedLazy ? "是" : "否"
                 }})</span
               >
@@ -78,6 +100,22 @@
 
           <my-switch
             v-model="docMenuIsFixedLazy"
+            inline-prompt
+            :active-icon="aside"
+            :inactive-icon="unaside"
+            size="small"
+          />
+        </div>
+
+        <div class="item" v-if="docMenuIsFixedLazy">
+          <span
+            class="label cur-pointer"
+            @click="docMenuIsFixed = !docMenuIsFixed"
+          >
+            <span>布局变更({{ docMenuIsFixed ? "开启" : "不开启" }})</span>
+          </span>
+          <my-switch
+            v-model="docMenuIsFixed"
             inline-prompt
             :active-icon="aside"
             :inactive-icon="unaside"
@@ -95,6 +133,7 @@ import aside from "@/components/icon/switch/aside.vue"
 import unaside from "@/components/icon/switch/unaside.vue"
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
+const num = ref(0)
 // 提取需要的变量 全局设置
 const {
   contentIsReverse,

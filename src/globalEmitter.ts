@@ -6,19 +6,20 @@ import { mitt } from "@/utils/emitter"
 import type { effectReturnType } from "@/utils/effect"
 import type { EmitterEvents } from "@/utils/emitter"
 
-// 鼠标事件存储
+// 鼠标特效事件存储
 let clickEventStore: effectReturnType | null = null
 let moveEventStore: null | effectReturnType = null
 
-// 移动事件的回调
+// 移动特效事件的回调
 const moveCb: EmitterEvents["moveEffect:normal"] = ($moveEventStore) => {
   moveEventStore = $moveEventStore
 }
 
-// 点击事件的回调
+// 点击特效事件的回调
 const clickCb: EmitterEvents["clickEffect:normal"] = ($clickEventStore) => {
   clickEventStore = $clickEventStore
 }
+
 // 暴露 全局的 emitter
 export const useGlobalEmitter = () => {
   // 提取数据
@@ -96,6 +97,7 @@ export const useGlobalEmitter = () => {
         immediate: true,
       }
     )
+
     // 监听 clickEffect
     watch(
       () => clickEffect.value,
@@ -151,7 +153,8 @@ export const useGlobalEmitter = () => {
     watch(
       () => docMenuIsFixedLazy.value,
       (newV) => {
-        window.location.reload()
+        newV && window.location.reload()
+        !newV && mitt.emit("docMenuIsFixedLazy:false")
       }
     )
 

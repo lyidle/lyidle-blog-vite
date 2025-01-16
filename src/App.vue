@@ -58,6 +58,8 @@ const switchThemes = () => {
   themes.value === "light" ? (isDark.value = false) : (isDark.value = true)
 }
 
+// 全局 的 mitt 事件 不需要卸载
+
 // 订阅 主题切换 事件
 mitt.on("themes", switchThemes)
 
