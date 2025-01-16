@@ -3,7 +3,7 @@
     <div class="pages">
       <div
         class="pages-content"
-        :style="{ width: isAside ? undefined : '100%' }"
+        :style="{ width: isShowAside ? undefined : '100%' }"
       >
         <slot name="content-start"></slot>
         <div class="contain">
@@ -11,12 +11,13 @@
         </div>
         <slot name="content-end"></slot>
       </div>
-      <div class="content-aside" v-if="isAside" :style="asideStyle">
+      <div class="content-aside" v-if="isShowAside" :style="asideStyle">
         <slot name="aside-start"></slot>
         <layout-content-introduce-self v-if="isAsideSelf" />
         <layout-content-announce v-if="isAsideAnnounce" />
         <layout-content-web-info v-if="isAsideWebInfo" />
         <layout-content-recent-pages v-if="isAsideRecentPage" />
+        <slot name="aside-secend-end"></slot>
         <slot name="aside-end"></slot>
       </div>
     </div>
@@ -32,16 +33,17 @@
 import { useSettingStore } from "@/store/setting"
 // 提取需要的变量
 const {
-  isAside,
   contentIsReverse,
+  isAside,
   isAsideSelf,
   isAsideAnnounce,
   isAsideWebInfo,
   isAsideRecentPage,
+  asideCounts,
 } = storeToRefs(useSettingStore())
 // 中间内容区域 卡片个数
 const contentNum = computed(() => {
-  return isAside.value ? 3 : 4
+  return isShowAside.value ? 3 : 4
 })
 const asideStyle = computed(() => {
   const result: any = {}
@@ -52,6 +54,19 @@ const asideStyle = computed(() => {
     result.margin = "unset"
     result.order = "unset"
   }
+  return result
+})
+const route = useRoute()
+const isShowAside = computed(() => {
+  let result = 0
+  if (!isAside.value) return result
+  if (!route.path.includes("doc")) {
+    result = asideCounts.value - 1
+    if (result < 0) result = 0
+    // 减去菜单的 一个数量
+    return
+  }
+  result = asideCounts.value
   return result
 })
 </script>

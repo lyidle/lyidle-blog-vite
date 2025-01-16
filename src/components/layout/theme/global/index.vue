@@ -114,7 +114,7 @@
       <h2 class="title text-center">布局信息设置</h2>
       <div class="theme-select">
         <div class="preview">
-          <div class="item">
+          <div class="item" v-if="asideCounts">
             <span
               class="label cur-pointer"
               @click="contentIsReverse = !contentIsReverse"
@@ -148,7 +148,7 @@
           </div>
         </div>
 
-        <div class="preview">
+        <div class="preview" v-if="isAsideDocMenu">
           <div class="item">
             <span
               class="label cur-pointer"
@@ -167,8 +167,7 @@
             />
           </div>
         </div>
-
-        <div class="preview">
+        <div class="preview" v-if="isAsideDocMenu && asideCounts > 1">
           <div class="item">
             <span
               class="label cur-pointer"
@@ -179,6 +178,7 @@
                   <div class="w-25rem">
                     默认使用的是监听页面的滚动事件,判断是否固定,
                     会频繁的获取菜单和侧边栏倒数第二个元素的位置信息,
+                    只有一个目录时监听的内容区域的为位置信息，
                     会引起页面的回流和重绘,虽然使用了节流,
                     相比禁用布局改变要差一些<br />
                     使用交叉传感器是监听，元素菜单倒数第二个元素,
@@ -209,18 +209,20 @@
       <h2 class="title text-center">布局显示与隐藏设置</h2>
       <div class="theme-select">
         <div class="preview">
-          <div class="item" v-if="!docMenuIsFixedLazy">
-            <span class="label cur-pointer" @click="isAside = !isAside">
-              <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
-            </span>
-            <my-switch
-              v-model="isAside"
-              inline-prompt
-              :active-icon="aside"
-              :inactive-icon="unaside"
-              size="small"
-            />
-          </div>
+          <template v-if="asideCounts">
+            <div class="item" v-if="!docMenuIsFixedLazy">
+              <span class="label cur-pointer" @click="isAside = !isAside">
+                <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
+              </span>
+              <my-switch
+                v-model="isAside"
+                inline-prompt
+                :active-icon="aside"
+                :inactive-icon="unaside"
+                size="small"
+              />
+            </div>
+          </template>
           <div class="item">
             <span class="label cur-pointer" @click="isAsideSelf = !isAsideSelf">
               <span>{{ isAsideSelf ? "关闭" : "打开" }}个人信息</span>
@@ -339,6 +341,7 @@ const {
   isAsideWebInfo,
   isAsideRecentPage,
   isAsideDocMenu,
+  asideCounts,
   // #endregion 侧边栏的 显示与否
 } = storeToRefs(useSettingStore())
 const { themeOptions, lightOptions, darkOptions, clickOptions, moveOptions } =

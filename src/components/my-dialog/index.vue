@@ -1,5 +1,5 @@
 <template>
-  <div v-if="iShowSet" class="dialog-wrapper">
+  <div v-if="isShowPanel" class="dialog-wrapper">
     <div class="dialog-container" ref="containter">
       <div
         class="title cur-move"
@@ -14,7 +14,7 @@
           <div class="close cur-pointer btn-item">
             <i
               class="i-material-symbols:close-rounded"
-              @click="iShowSet = false"
+              @click="isShowPanel = false"
             ></i>
           </div>
         </div>
@@ -26,7 +26,10 @@
 </template>
 
 <script setup lang="ts" name="MyDialog">
-const iShowSet = defineModel()
+// 引入  mitt
+import { mitt } from "@/utils/emitter"
+
+const isShowPanel = defineModel()
 // 初始化 props
 const props = withDefaults(
   defineProps<{
@@ -66,42 +69,38 @@ let initLeft = defineModel("left")
 let initTop = defineModel("top")
 let savePosition = defineModel("isSave")
 
-// 监听 是否隐藏 body的滚动条
-watch(
-  () => iShowSet.value,
-  (newV) => {
-    if (newV) {
-      document.documentElement.style.overflow = "hidden"
-      // 需要页面渲染后 才能获取到元素 绑定移动事件
-      nextTick(() => {
-        const tar = title.value as HTMLDivElement
-        const wrap = containter.value as HTMLDivElement
-        // 绑定 鼠标 按下事件
-        tar.addEventListener("mousedown", handlerMousedown)
+// 监听 是否隐藏 面板
+// 订阅 面板显示与否 的事件
+mitt.on("isShowPanel:true", () => {
+  document.documentElement.style.overflow = "hidden"
+  // 需要页面渲染后 才能获取到元素 绑定移动事件
+  nextTick(() => {
+    const tar = title.value as HTMLDivElement
+    const wrap = containter.value as HTMLDivElement
+    // 绑定 鼠标 按下事件
+    tar.addEventListener("mousedown", handlerMousedown)
 
-        const left = `${
-          (savePosition.value && initLeft.value) ||
-          document.documentElement.clientWidth / 2 - wrap.offsetWidth / 2
-        }`
-        const top = `${
-          (savePosition.value && initTop.value) ||
-          document.documentElement.clientHeight / 2 - wrap.offsetHeight / 2
-        }`
-        nextTick(() => {
-          // 初始化位置
-          wrap.style.left = left + "px"
-          wrap.style.top = top + "px"
-        })
-      })
-    } else {
-      document.documentElement.style.overflow = "unset"
-      // 解绑事件
-      const tar = title.value as HTMLDivElement
-      tar.removeEventListener("mousedown", handlerMousedown)
-    }
-  }
-)
-
+    const left = `${
+      (savePosition.value && initLeft.value) ||
+      document.documentElement.clientWidth / 2 - wrap.offsetWidth / 2
+    }`
+    const top = `${
+      (savePosition.value && initTop.value) ||
+      document.documentElement.clientHeight / 2 - wrap.offsetHeight / 2
+    }`
+    nextTick(() => {
+      // 初始化位置
+      wrap.style.left = left + "px"
+      wrap.style.top = top + "px"
+    })
+  })
+})
+mitt.on("isShowPanel:false", () => {
+  document.documentElement.style.overflow = "unset"
+  // 解绑事件
+  const tar = title.value as HTMLDivElement
+  tar.removeEventListener("mousedown", handlerMousedown)
+})
 // 拖拽
 // 获取 容器
 // 获取 头部 容器

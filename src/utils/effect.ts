@@ -1,7 +1,11 @@
+export type effectReturnType = {
+  onUnMounted: () => void
+  onMounted: () => void
+}
 // 点击特效
 export class clickEffectFn {
-  onUnMounted: Function
-  onMounted: Function
+  onUnMounted: () => void
+  onMounted: () => void
   constructor() {
     interface BallType {
       x: number
@@ -190,8 +194,8 @@ export class clickEffectFn {
 }
 // 鼠标移动特效
 export class moveEffectFn {
-  onMounted: Function
-  onUnMounted: Function
+  onMounted: () => void
+  onUnMounted: () => void
   constructor() {
     // 挂载特效
     this.onMounted = () => {

@@ -62,12 +62,13 @@ export const useSettingStore = defineStore(
       if (isAsideWebInfo.value) num++
       if (isAsideRecentPage.value) num++
       if (isAsideDocMenu.value) num++
+      if (num === 0) isAside.value = false
       return num
     })
     // #endregion 侧边栏的 显示与否
 
     // 面板的切换
-    const iShowSet = ref<boolean>(false)
+    const isShowPanel = ref<boolean>(false)
     // 存储场景
     const setScene = ref<string | number>("0")
     // 是否存储位置
@@ -100,7 +101,7 @@ export const useSettingStore = defineStore(
       contentIsReverse,
       // 个性化设置 右键的编辑项
       setScene,
-      iShowSet,
+      isShowPanel,
       savePosition,
       initLeft,
       initTop,

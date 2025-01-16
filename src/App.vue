@@ -8,8 +8,6 @@
 </template>
 
 <script setup lang="ts" name="App">
-// 引入鼠标点击和移动特效
-import { clickEffectFn, moveEffectFn } from "@/utils/effect"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useSettingStore } from "@/store/setting"
@@ -17,6 +15,13 @@ import { useSettingStore } from "@/store/setting"
 import { setTitleTip } from "@/utils/effect"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入鼠标点击和移动特效
+import { clickEffectFn, moveEffectFn } from "@/utils/effect"
+// 引入 全局的事件 变更
+import { useGlobalEmitter } from "./globalEmitter"
+
+useGlobalEmitter()
+
 // 提取数据
 const { reqUserMenuList } = useUserStore()
 
@@ -33,13 +38,9 @@ const {
   contentIsReverse,
   docMenuIsFixedLazy,
   isAside,
+  asideCounts,
+  isShowPanel,
 } = storeToRefs(useSettingStore())
-
-//初始化特效函数
-const effectClick = new clickEffectFn()
-const effectMove = new moveEffectFn()
-
-// 使用 mitt 统一管理事件变更
 
 // 根据 isDark 的值来设置主题
 mitt.on("isDark", () => {
@@ -49,123 +50,58 @@ mitt.on("isDark", () => {
   )
 })
 
-// 监听 布局切换事件
-watch(
-  () => contentIsReverse.value,
-  () => {
-    mitt.emit("contentIsReverse")
-  }
-)
-// 监听 菜单关闭与隐藏
-watch(
-  () => isAside.value,
-  (newV) => {
-    newV && mitt.emit("isAside")
-  }
-)
 // 跟随系统 切换主题
 const prefers = matchMedia("(prefers-color-scheme: dark)")
 const follow = () => {
   prefers.matches ? (isDark.value = true) : (isDark.value = false)
 }
 
-// 监听 themes
-watch(
-  () => themes.value,
-  (newV) => {
-    if (newV === "switch") return
-    // 跟随系统切换
-    if (newV === "auto") {
-      follow()
-      prefers.addEventListener("change", follow)
-      return
-    }
-    prefers.removeEventListener("change", follow)
-    newV === "light" ? (isDark.value = false) : (isDark.value = true)
-  },
-  {
-    immediate: true,
+// 切换主题
+const switchThemes = () => {
+  // 使用按钮切换
+  if (themes.value === "switch") return
+  // 跟随系统切换
+  if (themes.value === "auto") {
+    follow()
+    prefers.addEventListener("change", follow)
+    return
   }
-)
+  // 判断是暗夜与否
+  prefers.removeEventListener("change", follow)
+  themes.value === "light" ? (isDark.value = false) : (isDark.value = true)
+}
 
-// 监听 isDark
-watch(
-  () => isDark.value,
-  () => {
-    // 统一触发
-    mitt.emit("isDark")
-  },
-  {
-    immediate: true,
-  }
-)
+// 订阅 主题切换 事件
+mitt.on("themes", switchThemes)
 
-// 监听 bannerIsFixed
-watch(
-  () => bannerIsFixed.value,
-  (newV) => {
-    // 根据 监听 的值来设置主题
-    document.body.setAttribute("banner-fixed", newV ? "fixed" : "")
-  },
-  {
-    immediate: true,
-  }
-)
+// 订阅 焦点图是否 固定事件
+mitt.on("bannerIsFixed:true", () => {
+  // 根据 监听 的值来设置主题
+  document.body.setAttribute("banner-fixed", "fixed")
+})
+mitt.on("bannerIsFixed:false", () => {
+  // 根据 监听 的值来设置主题
+  document.body.setAttribute("banner-fixed", "")
+})
 
-// 监听 clickEffect
-watch(
-  () => clickEffect.value,
-  (newVal) => {
-    watch(
-      () => clicks.value,
-      (newV) => {
-        if (newV === "normal") {
-          newVal ? effectClick.onMounted() : effectClick.onUnMounted()
-        }
-      },
-      {
-        immediate: true,
-      }
-    )
-  },
-  {
-    immediate: true,
-  }
-)
+// 订阅 鼠标点击效果事件
+mitt.on("clickEffect:normal", (cb) => {
+  //初始化特效函数
+  const store = new clickEffectFn()
+  cb(store)
+  // 挂载 对应点击特效
+  clickEffect.value ? store.onMounted() : store.onUnMounted()
+})
 
-// 监听 moveEffect
-watch(
-  () => moveEffect.value,
-  (newVal) => {
-    watch(
-      () => moves.value,
-      (newV) => {
-        if (newV === "normal") {
-          newVal ? effectMove.onMounted() : effectMove.onUnMounted()
-        }
-      },
-      {
-        immediate: true,
-      }
-    )
-  },
-  {
-    immediate: true,
-  }
-)
+// 订阅 鼠标 移动事件
+mitt.on("moveEffect:normal", (cb: any) => {
+  //初始化特效函数
+  const store = new moveEffectFn()
+  cb(store)
+  // 挂载 对应点击特效
+  moveEffect.value ? store.onMounted() : store.onUnMounted()
+})
 
-// 监听 docMenuIsFixedLazy
-/*  
-    禁用布局切换 和 侧边栏 开关
-    使用交叉观察器 和 滚动来判断是否要固定
-    默认使用的 scroll 因为要 改变布局
-*/
-watch(
-  () => docMenuIsFixedLazy.value,
-  () => {
-    window.location.reload()
-  }
-)
 // 发起请求
 onBeforeMount(async () => {
   await reqUserMenuList()

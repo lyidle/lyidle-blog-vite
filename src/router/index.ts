@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { constantRoute, anyRoute } from "@/router/routes"
-export default createRouter({
+import { usePermission } from "./permission"
+const router = createRouter({
   history: createWebHistory(),
   routes: [...constantRoute, ...anyRoute],
   scrollBehavior(to, from, savedPosition) {
@@ -11,3 +12,4 @@ export default createRouter({
     }
   },
 })
+export default usePermission(router)

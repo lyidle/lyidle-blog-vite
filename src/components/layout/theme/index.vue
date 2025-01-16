@@ -1,6 +1,6 @@
 <template>
   <my-dialog
-    v-model="iShowSet"
+    v-model="isShowPanel"
     v-model:top="initTop"
     v-model:left="initLeft"
     v-model:isSave="savePosition"
@@ -49,7 +49,7 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 初始化仓库中用到的值
-const { setScene, iShowSet, savePosition, initLeft, initTop } = storeToRefs(
+const { setScene, isShowPanel, savePosition, initLeft, initTop } = storeToRefs(
   useSettingStore()
 )
 // 侧边栏数据

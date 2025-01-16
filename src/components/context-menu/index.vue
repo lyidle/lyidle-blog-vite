@@ -64,8 +64,11 @@
 import { useSettingStore } from "@/store/setting"
 // 引入 utils
 import useFullScreen from "@/hooks/fullscreen"
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
+
 // 提取需要的变量
-const { isDark, themes, bannerIsFixed, isFullScreen, setScene, iShowSet } =
+const { isDark, themes, bannerIsFixed, isFullScreen, setScene, isShowPanel } =
   storeToRefs(useSettingStore())
 
 const props = defineProps<{ scene?: string | number }>()
@@ -119,24 +122,50 @@ const screen = useFullScreen()
 
 // 打开 个性化设置
 const openSettings = () => {
-  iShowSet.value = true
+  isShowPanel.value = true
   if (props.scene) setScene.value = props.scene
 }
 
-onMounted(() => {
-  // 记录高度
-  menuHeigh.value = menu.value.offsetHeight + "px"
-  menuWidth.value = menu.value.offsetWidth + "px"
-  menu.value.style.height = "0"
-  container.value.addEventListener("contextmenu", open)
-  //使用捕获 先关闭 再打开菜单 防止多个菜单出现
-  window.addEventListener("click", close, true)
-  window.addEventListener("contextmenu", close, true)
+const geometricinfo = () => {
+  nextTick(() => {
+    if (!menu.value) return
+    menu.value.style.height = "auto"
+    // 记录高度
+    menuHeigh.value = menu.value.offsetHeight + "px"
+    menuWidth.value = menu.value.offsetWidth + "px"
+    menu.value.style.height = "0"
+  })
+}
+// 订阅 数量变化 事件
+mitt.on("asideCounts", () => {
+  // 重载
+  onUnMount()
+  onMount()
 })
-onUnmounted(() => {
+
+const onMount = () => {
+  nextTick(() => {
+    if (!container.value) return
+    geometricinfo()
+    container.value.addEventListener("contextmenu", open)
+    //使用捕获 先关闭 再打开菜单 防止多个菜单出现
+    window.addEventListener("click", close, true)
+    window.addEventListener("contextmenu", close, true)
+  })
+}
+const onUnMount = () => {
   container?.value?.removeEventListener("contextmenu", open)
   window.removeEventListener("click", close, true)
   window.removeEventListener("contextmenu", close, true)
+}
+
+// 初始化组件
+onMounted(() => {
+  onMount()
+})
+// 卸载组件
+onBeforeUnmount(() => {
+  onUnMount()
 })
 </script>
 
