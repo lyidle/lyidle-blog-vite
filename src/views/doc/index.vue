@@ -287,9 +287,11 @@ const preview = () => {
 }
 
 const sideMenu = ref()
+
 // 挂载
 const enterScrollListener = () => {
-  if (!docMenuIsFixed.value || !isAsideDocMenu.value) return
+  if (!docMenuIsFixed.value || !isAsideDocMenu.value || !asideCounts.value)
+    return
   // 要等 组件渲染完毕后 在执行
   // 因为异步 setinterval 需要先把元素 获取到
   initElements(() => {
@@ -300,25 +302,17 @@ const enterScrollListener = () => {
           penultimate,
           () => {
             sibEnter = false
+            // 清除
             removeStickyClasses()
           },
           () => {
             sibLeave = false
             if (!sibEnter && !sibLeave) {
-              if (toggle) {
-                // 重置
-                sibEnter = true
-                sibLeave = true
-                toggle = false
-                // 固定
-                toggleMenuPosition()
-              } else {
-                // 重置
-                sibEnter = true
-                sibLeave = true
-                toggle = true
-                removeStickyClasses()
-              }
+              // 重置
+              sibEnter = true
+              sibLeave = true
+              // 固定
+              toggleMenuPosition()
             }
           }
         )
@@ -328,6 +322,7 @@ const enterScrollListener = () => {
     window.addEventListener("scroll", enterScrollListenerCb)
   })
 }
+
 // 卸载
 const unEnterScrollListener = () => {
   timer && clearInterval(timer)
@@ -342,12 +337,14 @@ const unEnterScrollListener = () => {
   !docMenuIsFixedLazy.value &&
     window.removeEventListener("scroll", enterScrollListenerCb)
 }
+
 // 重载
 const reloadEnterScrollListener = () => {
   // 重载
   unEnterScrollListener()
   enterScrollListener()
 }
+
 // 初始化需要的数据
 let enterFlag = true
 let leaveFlag = true
@@ -362,7 +359,6 @@ let ob: ReturnType<typeof observer> | null = null
   进入时 取消固定
   进入离开 时 固定
 */
-let toggle = true
 type interval = ReturnType<typeof setInterval>
 let timer: interval | null
 // 初始化元素
@@ -373,6 +369,7 @@ const initElements = (fn: Function) => {
     menuWrap = document.querySelector(".sideMenu") as HTMLDivElement
   }
   if (!penultimate) {
+    // 只初始化一次
     if (timer) clearInterval(timer)
     let now = Date.now()
     // 组件没有挂载完 重新获取 500ms 一次
@@ -454,20 +451,23 @@ const removeStickyClasses = () => {
 
 // 没有交叉传感器 目录进入视口时监听 滚动事件 回调
 let enterScrollListenerCb = () => {
-  if (!isAsideDocMenu.value) return
   updateMenuPosition()
 }
 
 watchEffect(() => {
-  // 判断是否固定
-  if (!docMenuIsFixed.value) {
+  // 判断是否需要固定
+  if (!docMenuIsFixed.value || !isAsideDocMenu.value || !asideCounts.value) {
     unEnterScrollListener()
     return
-  } else enterScrollListener()
-  // 监听菜单组件是否挂载
-  if (sideMenu.value?.$el) {
+  }
+  // 判断是否固定
+  else if (docMenuIsFixed.value && isAsideDocMenu.value) {
+    // 监听菜单组件是否挂载
+    if (sideMenu.value?.$el) {
+      enterScrollListener()
+    } else unEnterScrollListener()
     enterScrollListener()
-  } else unEnterScrollListener()
+  }
 })
 // 侧边栏数量变化
 const countsVariable = () => {

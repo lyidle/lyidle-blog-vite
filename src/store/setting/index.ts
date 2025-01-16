@@ -1,3 +1,6 @@
+// 定义滚动方向的类型
+type ScrollDirection = "up" | "down" | ""
+
 export const useSettingStore = defineStore(
   "Setting",
   () => {
@@ -76,6 +79,22 @@ export const useSettingStore = defineStore(
     // 存储位置
     const initLeft = ref<null | string>(null)
     const initTop = ref<null | string>(null)
+
+    // 存储滚动距离 和 方向
+    const scrollTop = ref<number>(0) // 滚动位置
+
+    const direction = ref<ScrollDirection>("") // 滚动方向
+
+    // 更新滚动方向和位置的方法
+    const updateScrollDirection = (currentScrollTop: number): void => {
+      if (currentScrollTop > scrollTop.value) {
+        direction.value = "down"
+      } else if (currentScrollTop < scrollTop.value) {
+        direction.value = "up"
+      }
+      scrollTop.value = currentScrollTop
+    }
+
     return {
       // 头部设置
       isDark,
@@ -113,6 +132,10 @@ export const useSettingStore = defineStore(
       isAsideRecentPage,
       isAsideDocMenu,
       // #endregion 侧边栏的 显示与否
+      // 存储滚动距离 和 方向
+      scrollTop,
+      direction,
+      updateScrollDirection,
     }
   },
   {

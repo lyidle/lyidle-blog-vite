@@ -19,29 +19,16 @@ import { mitt } from "@/utils/emitter"
 import { clickEffectFn, moveEffectFn } from "@/utils/effect"
 // 引入 全局的事件 变更
 import { useGlobalEmitter } from "./globalEmitter"
-
+// 全局的 监听事件 使用 mitt 管理
 useGlobalEmitter()
 
 // 提取数据
 const { reqUserMenuList } = useUserStore()
 
-const {
-  isDark,
-  themes,
-  clickEffect,
-  moveEffect,
-  bannerIsFixed,
-  lights,
-  darks,
-  clicks,
-  moves,
-  contentIsReverse,
-  docMenuIsFixedLazy,
-  isAside,
-  asideCounts,
-  isShowPanel,
-} = storeToRefs(useSettingStore())
-
+const { isDark, themes, clickEffect, moveEffect, lights, darks } = storeToRefs(
+  useSettingStore()
+)
+const { updateScrollDirection } = useSettingStore()
 // 根据 isDark 的值来设置主题
 mitt.on("isDark", () => {
   document.documentElement.setAttribute(
@@ -100,6 +87,13 @@ mitt.on("moveEffect:normal", (cb: any) => {
   cb(store)
   // 挂载 对应点击特效
   moveEffect.value ? store.onMounted() : store.onUnMounted()
+})
+
+// 监听滚动事件
+window.addEventListener("scroll", () => {
+  const currentScrollTop =
+    window.pageYOffset || document.documentElement.scrollTop
+  updateScrollDirection(currentScrollTop) // 更新滚动状态
 })
 
 // 发起请求

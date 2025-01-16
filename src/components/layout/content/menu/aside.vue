@@ -8,8 +8,8 @@
           : 'i-arcticons:photoprism-gallery'
       "
       @click="isAside = !isAside"
+      v-if="!docMenuIsFixedLazy"
     ></context-menu-item>
-    <!-- v-if="!docMenuIsFixedLazy" -->
   </template>
 </template>
 
