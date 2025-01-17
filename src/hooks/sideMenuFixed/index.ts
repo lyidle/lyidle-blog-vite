@@ -6,8 +6,6 @@ import { mitt } from "@/utils/emitter"
 import { observer } from "@/utils/observer"
 import type { ObserverCallback } from "@/utils/observer"
 import { TocNode } from "@/views/doc/types"
-// 引入类型
-import type { Ref } from "vue"
 // 提取数据
 const { docMenuIsFixed, asideCounts, isAsideDocMenu } = storeToRefs(
   useSettingStore()
@@ -25,21 +23,24 @@ let thirdlastOb = ref<ObserverCallback | null>(null)
 let menuOb = ref<ObserverCallback | null>(null)
 let thirdlastDiv: HTMLDivElement | null = null
 // 使用 settimout轮询的方式获取 侧边栏 因为一开始并没有加载出来 使用了 v-if
-let timer: interval | null
-
+let timer: ReturnType<typeof setInterval> | null
+let timoutNum = 0 //初始化的次数 初始0 使用 setinterval 轮询获取节点信息
+let timoutMax = 5
+let timeoutDur = 2000 // 500ms 一次轮询
 export const useSideMenuFixed = (
-  sideMenu: Ref,
-  menuTree: Ref<TocNode[]>,
-  observerMenu: Ref<HTMLDivElement | undefined>
+  menuTree: TocNode[] | undefined,
+  observerMenu: HTMLDivElement | undefined,
+  menuCom: Ref<HTMLDivElement | undefined>
 ) => {
   // 判断是否有菜单要固定
   const isBad = (): boolean => {
     // 判断 是否有菜单数据 是否固定 和 菜单是否存在 还有 侧边栏个数一起判断
     if (
-      !menuTree.value ||
+      !menuTree ||
       !docMenuIsFixed.value ||
       !isAsideDocMenu.value ||
-      !asideCounts.value
+      !asideCounts.value ||
+      !menuCom.value
     )
       return true
     return false
@@ -59,7 +60,7 @@ export const useSideMenuFixed = (
 
   // 共有的卸载方法
   const globalUnMount = () => {
-    timer && clearInterval(timer)
+    timer && clearTimeout(timer)
     threelastOb.value?.stop?.()
     thirdlastOb.value?.stop?.()
     menuOb.value?.stop?.()
@@ -74,6 +75,7 @@ export const useSideMenuFixed = (
     menuWrap = null
     threelastDiv = null
     docRef.value = undefined
+    timoutNum = 0
     // 交叉传感器 需要用到的
     sibEnter = true
     sibLeave = true
@@ -98,33 +100,37 @@ export const useSideMenuFixed = (
     if (isBad()) return
 
     if (!menuWrap) {
-      menuWrap = document.querySelector(".sideMenu") as HTMLDivElement
+      menuWrap = menuCom.value?.parentElement
+        ?.parentElement as HTMLDivElement | null
     }
+
     if (!threelastDiv) {
-      // 只初始化一次
-      if (timer) clearInterval(timer)
-      let now = Date.now()
-      // 组件没有挂载完 重新获取 500ms 一次 轮询
-      timer = setInterval(() => {
-        const container = document.querySelector(".content-aside")
-        const cur = (Date.now() - now) / 1000
-        if (cur > 5) {
-          ElMessage.error("菜单组件固定失败，不能获取到对应的信息~")
-          clearInterval(timer as interval)
+      const container = menuWrap?.parentElement
+      if (container?.children.length === asideCounts.value) {
+        if (asideCounts.value !== 1)
+          threelastDiv = container?.children[
+            container?.children.length - 2
+          ] as HTMLDivElement | null
+        if (asideCounts.value > 2)
+          thirdlastDiv = container?.children[
+            container?.children.length - 3
+          ] as HTMLDivElement | null
+        timer && clearTimeout(timer)
+        // 得到节点信息后 执行函数
+        fn && fn()
+      } else {
+        // 判断 轮询次数是否超出
+        if (++timoutNum > timoutMax) {
+          ElMessage.error("固定目录失败，不能获取到节点信息~")
+          return
         }
-        if (container?.children.length === asideCounts.value) {
-          if (asideCounts.value !== 1)
-            threelastDiv = container?.children[
-              container?.children.length - 2
-            ] as HTMLDivElement | null
-          if (asideCounts.value > 2)
-            thirdlastDiv = container?.children[
-              container?.children.length - 3
-            ] as HTMLDivElement | null
-          fn && fn()
-          clearInterval(timer as interval)
-        }
-      }, 500)
+        // 获取节点 有时候组件没有加载 会出现问题 所以确保的却的获得了 节点信息
+        timer = setTimeout(() => {
+          // 清除之前的
+          timer && clearTimeout(timer)
+          initElements(fn)
+        }, timeoutDur)
+      }
     }
   }
 
@@ -147,6 +153,7 @@ export const useSideMenuFixed = (
     }
   }
 
+  // 只有 一个目录时
   const handlerOnlyOneSideMenu = () => {
     menuOb.value = {
       enter: () => {
@@ -156,7 +163,7 @@ export const useSideMenuFixed = (
         toggleMenuPosition()
       },
     }
-    if (observerMenu.value) observer(observerMenu.value, menuOb.value)
+    if (observerMenu) observer(observerMenu, menuOb.value)
   }
 
   // 交叉传感器 两个侧边栏的处理方法
@@ -219,15 +226,23 @@ export const useSideMenuFixed = (
   // 添加类名
   const toggleMenuPosition = () => {
     if (!menuWrap) return
-    if (menuWrap.offsetLeft < 100) {
-      // 菜单栏在左侧
-      menuWrap.classList.add("aside-menu-sticky-left")
-      menuWrap.classList.remove("aside-menu-sticky-right")
-    } else {
-      // 菜单栏在右侧
-      menuWrap.classList.add("aside-menu-sticky-right")
-      menuWrap.classList.remove("aside-menu-sticky-left")
-    }
+    nextTick(() => {
+      if (!menuWrap || !observerMenu) return
+      // 读取相邻的 内容区域 的 observerMenu 节点信息
+
+      // 因为有可能元素本身是固定的
+      const _left = observerMenu.getBoundingClientRect().left
+
+      if (_left > 100) {
+        // 菜单栏在左侧
+        menuWrap.classList.add("aside-menu-sticky-left")
+        menuWrap.classList.remove("aside-menu-sticky-right")
+      } else {
+        // 菜单栏在右侧
+        menuWrap.classList.add("aside-menu-sticky-right")
+        menuWrap.classList.remove("aside-menu-sticky-left")
+      }
+    })
   }
 
   // 移除类名
@@ -244,8 +259,8 @@ export const useSideMenuFixed = (
       unEnterScrollListener()
       return
     }
-    // 监听菜单组件是否挂载
-    if (sideMenu.value?.$el) {
+    // 判断是否 有数据
+    if (menuTree?.length) {
       enterScrollListener()
     } else unEnterScrollListener()
   })

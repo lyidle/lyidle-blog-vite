@@ -14,7 +14,7 @@
           <span>目录</span>
         </template>
         <template #body>
-          <layout-content-doc-menu-tree :menuData="menuTree">
+          <layout-content-doc-menu-tree :menuData="menuTree" :observerMenu>
           </layout-content-doc-menu-tree>
         </template>
       </layout-content-aside-card>
@@ -155,7 +155,7 @@ import numberTransform from "@/utils/numberTransform"
 import { useSettingStore } from "@/store/setting"
 
 // 引入 侧边栏固定的 hook
-import { useSideMenuFixed } from "@/hooks/sideMenuFixed"
+// import { useSideMenuFixed } from "@/hooks/sideMenuFixed"
 import { mitt } from "@/utils/emitter"
 
 // 提取数据
@@ -289,7 +289,7 @@ const preview = () => {
 const sideMenu = ref<HTMLDivElement>()
 const observerMenu = ref<HTMLDivElement>()
 
-useSideMenuFixed(sideMenu, menuTree, observerMenu)
+// useSideMenuFixed(sideMenu, menuTree, observerMenu)
 
 // 订阅 暗夜切换 事件
 mitt.on("isDark", preview)
