@@ -31,6 +31,8 @@
 <script setup lang="ts" name="Content">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
+// 引入mitt
+import { mitt } from "@/utils/emitter"
 // 提取需要的变量
 const {
   contentIsReverse,
@@ -40,11 +42,14 @@ const {
   isAsideWebInfo,
   isAsideRecentPage,
   asideCounts,
+  isAsideDocMenu,
 } = storeToRefs(useSettingStore())
+
 // 中间内容区域 卡片个数
 const contentNum = computed(() => {
   return isShowAside.value ? 3 : 4
 })
+
 const asideStyle = computed(() => {
   const result: any = {}
   if (contentIsReverse.value) {
@@ -56,19 +61,66 @@ const asideStyle = computed(() => {
   }
   return result
 })
-const route = useRoute()
-const isShowAside = computed(() => {
+
+const isShowAside = ref()
+// 存储是否有 目录的数据
+let isToc = ref(false)
+
+watchEffect(() => {
+  // 订阅 接受目录
+  mitt.on("articleMenu", (toc) => {
+    if (toc.length) {
+      isToc.value = true
+    }
+    // 只需要触发一次 防止泄露
+    mitt.off("articleMenu")
+  })
+  // 订阅 有目录的组件销毁时 触发
+  mitt.on("articleMenu:destroy", () => {
+    isToc.value = false
+    // 只需要触发一次 防止泄露
+    mitt.off("articleMenu:destroy")
+  })
   let result = 0
-  if (!isAside.value) return result
-  if (!route.path.includes("doc")) {
-    result = asideCounts.value - 1
-    if (result < 0) result = 0
-    // 减去菜单的 一个数量
-    return
+  // 是否关闭侧边栏
+  if (!isAside.value) {
+    result = 0
+  } else {
+    // 有目录的组件 中 目录存在
+    if (isAsideDocMenu.value && isToc.value) {
+      result = asideCounts.value
+    }
+    // 普通界面没有目录
+    else {
+      result = asideCounts.value - 1
+    }
   }
-  result = asideCounts.value
-  return result
+  isShowAside.value = result
 })
+
+// 监听 布局切换事件
+watch(
+  () => contentIsReverse.value,
+  () => {
+    mitt.emit("contentIsReverse")
+  }
+)
+
+// 监听侧边栏的个数变化
+watch(
+  () => asideCounts.value,
+  () => {
+    mitt.emit("asideCounts")
+  }
+)
+
+// 监听 菜单关闭与隐藏
+watch(
+  () => isAside.value,
+  (newV) => {
+    newV && mitt.emit("isAside")
+  }
+)
 </script>
 <style scoped lang="scss">
 // 左右间距

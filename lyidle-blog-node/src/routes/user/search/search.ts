@@ -33,8 +33,7 @@ export default async (
     return res.result(
       void 0,
       "请至少传入id、account、email、role、nickName中的一个参数~",
-      false,
-      400
+      false
     )
 
   // 按照nickName查询

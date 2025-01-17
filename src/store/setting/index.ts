@@ -57,16 +57,10 @@ export const useSettingStore = defineStore(
     // 文章的目录是否固定 默认固定 使用交叉传感器
     const docMenuIsFixed = ref<boolean>(true)
     // 是否存储 个性化面板的 位置
-    const savePosition = ref<boolean>(true)
+    const isPanelPositionSaved = ref<boolean>(true)
     // 存储位置信息
-    const initLeft = ref<null | string>(null)
-    const initTop = ref<null | string>(null)
-    /*  
-       禁用布局切换 和 侧边栏 开关
-       使用交叉观察器 和 滚动来判断是否要固定
-       默认使用的 scroll 因为要 改变布局
-    */
-    const docMenuIsFixedLazy = ref<boolean>(true)
+    const savedPanelLeft = ref<null | string>(null)
+    const savedPanelTop = ref<null | string>(null)
     // #endregion 布局信息设置
 
     // 是否全屏
@@ -129,16 +123,15 @@ export const useSettingStore = defineStore(
       isAside,
       // 文章的目录是否固定
       docMenuIsFixed,
-      docMenuIsFixedLazy,
       // 右键菜单 信息
       isFullScreen,
       contentIsReverse,
       // 个性化设置 右键的编辑项
       setScene,
       isShowPanel,
-      savePosition,
-      initLeft,
-      initTop,
+      isPanelPositionSaved,
+      savedPanelLeft,
+      savedPanelTop,
       // #region 侧边栏的 显示与否
       asideCounts,
       isAsideSelf,
@@ -171,14 +164,13 @@ export const useSettingStore = defineStore(
         "moveEffect",
         "isAside",
         "docMenuIsFixed",
-        "docMenuIsFixedLazy",
         // 右键菜单 信息
         "contentIsReverse",
         // 个性化设置 右键的编辑项
         "setScene",
-        "savePosition",
-        "initLeft",
-        "initTop",
+        "isPanelPositionSaved",
+        "savedPanelLeft",
+        "savedPanelTop",
         // #region 侧边栏的 显示与否
         "asideCounts",
         "isAsideSelf",

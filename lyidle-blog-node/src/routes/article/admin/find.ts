@@ -3,7 +3,7 @@ const { Article } = require("@/db/models")
 export default async (req: Request, res: Response, cb?: Function) => {
   const { id } = req.body
   const commend: any = {}
-  if (!id) return res.result(void 0, "没有找到文章哦~", false)
+  if (!id) return res.result(void 0, "没有找到文章哦~", false, 404)
   // 按照id删除
   commend.where = {
     id: id,

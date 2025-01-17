@@ -10,9 +10,18 @@
 <script setup lang="ts" name="DocMenuTree">
 // 引入 类型
 import { TocNode } from "@/views/doc/types"
-defineProps<{ menuData: TocNode[] }>()
+// 引入 仓库
+// import { useSettingStore } from "@/store/setting"
 
-onMounted(() => {})
+// // 提取数据
+// const { isMenuData } = storeToRefs(useSettingStore())
+// const { isMenuDataAction } = useSettingStore()
+
+const props = defineProps<{ menuData: TocNode[] }>()
+
+onMounted(() => {
+  // console.log(props.menuData[0].text)
+})
 </script>
 
 <style lang="scss">

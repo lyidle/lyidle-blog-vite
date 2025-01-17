@@ -5,6 +5,7 @@ const data = require("../mock/menulist")
 require("dotenv").config()
 // 引入普通用户 权限组
 const default_user = JSON.parse(process.env.default_user)
+const { clear } = require("../../utils/redis")
 module.exports = {
   async up(queryInterface, Sequelize) {
     const menuList = []
@@ -31,6 +32,7 @@ module.exports = {
     })
     await queryInterface.bulkInsert("Menus", menu, {})
     await queryInterface.bulkInsert("MenuLists", menuList, {})
+    await clear()
   },
 
   async down(queryInterface, Sequelize) {

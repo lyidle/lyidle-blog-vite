@@ -1,9 +1,9 @@
 <template>
   <my-dialog
     v-model="isShowPanel"
-    v-model:top="initTop"
-    v-model:left="initLeft"
-    v-model:isSave="savePosition"
+    v-model:top="savedPanelTop"
+    v-model:left="savedPanelLeft"
+    v-model:isSave="isPanelPositionSaved"
     closeDur="var(--primary-during)"
     closeColor="var(--theme-setting-close-color)"
     closeColorHover="var(--theme-setting-close-color-hover)"
@@ -48,10 +48,16 @@
 <script setup lang="ts" name="LayoutSetting">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
+// 引入mitt
+import { mitt } from "@/utils/emitter"
 // 初始化仓库中用到的值
-const { setScene, isShowPanel, savePosition, initLeft, initTop } = storeToRefs(
-  useSettingStore()
-)
+const {
+  setScene,
+  isShowPanel,
+  isPanelPositionSaved,
+  savedPanelLeft,
+  savedPanelTop,
+} = storeToRefs(useSettingStore())
 // 侧边栏数据
 const asideData = [
   {
@@ -85,6 +91,19 @@ const asideData = [
     name: "test9",
   },
 ]
+
+// 监听 面板 显示与隐藏
+watch(
+  () => isShowPanel.value,
+  (newV) => {
+    mitt.emit("isShowPanel")
+    if (newV) {
+      mitt.emit("isShowPanel:true")
+    } else {
+      mitt.emit("isShowPanel:false")
+    }
+  }
+)
 </script>
 
 <style scoped lang="scss">

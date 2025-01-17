@@ -56,4 +56,20 @@ const delKey = async (key) => {
   if (!client) await redisClient() //确保客户端已初始化
   await client.del(`vite-blog:${key}`)
 }
-module.exports = { redisClient, setKey, getKey, delKey }
+
+/**
+ * 清空当前 Redis 数据库
+ * @returns {Promise<void>}
+ */
+const clear = async () => {
+  try {
+    if (!client) await redisClient() // 确保客户端已初始化
+
+    const response = await client.sendCommand(["FLUSHDB"])
+    console.log(`当前数据库已清空: ${response}`) // response 应为 "OK"
+  } catch (error) {
+    console.error(`清空数据库失败: ${error.message}`)
+  }
+}
+
+module.exports = { redisClient, setKey, getKey, delKey, clear }

@@ -2,9 +2,11 @@
 import { useSettingStore } from "@/store/setting"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入鼠标点击和移动特效
+import { clickEffectFn, moveEffectFn } from "@/utils/effect"
 // 引入 类型
 import type { effectReturnType } from "@/utils/effect"
-import type { EmitterEvents } from "@/utils/emitter"
+import type { EmitterEvents, callbackType } from "@/utils/emitter"
 
 // 鼠标特效事件存储
 let clickEventStore: effectReturnType | null = null
@@ -28,40 +30,80 @@ export const useGlobalEmitter = () => {
     themes,
     clickEffect,
     moveEffect,
-    bannerIsFixed,
     clicks,
     moves,
-    contentIsReverse,
-    docMenuIsFixedLazy,
-    isAside,
-    asideCounts,
-    isShowPanel,
+    lights,
+    darks,
   } = storeToRefs(useSettingStore())
 
+  // 根据 isDark 的值来设置主题
+  const setTheme = () => {
+    document.documentElement.setAttribute(
+      "themes",
+      isDark.value ? darks.value + "-dark" : lights.value + "-light"
+    )
+  }
+  // 跟随系统 切换主题
+  const prefers = matchMedia("(prefers-color-scheme: dark)")
+  const follow = () => {
+    prefers.matches ? (isDark.value = true) : (isDark.value = false)
+  }
+  // 切换主题
+  const switchThemes = () => {
+    // 使用按钮切换
+    if (themes.value === "switch") return
+    // 跟随系统切换
+    if (themes.value === "auto") {
+      follow()
+      prefers.addEventListener("change", follow)
+      return
+    }
+    // 判断是暗夜与否
+    prefers.removeEventListener("change", follow)
+    themes.value === "light" ? (isDark.value = false) : (isDark.value = true)
+  }
+
+  // 焦点图 固定
+  const bannerFIxed = () => {
+    // 根据 监听 的值来设置主题
+    document.body.setAttribute("banner-fixed", "fixed")
+  }
+  // 焦点图 没有固定
+  const bannerNormal = () => {
+    // 根据 监听 的值来设置主题
+    document.body.setAttribute("banner-fixed", "")
+  }
+
+  // 默认的点击特效
+  const clickNormal = (cb: callbackType) => {
+    //初始化特效函数
+    const store = new clickEffectFn()
+    cb(store)
+    // 挂载 对应点击特效
+    clickEffect.value ? store.onMounted() : store.onUnMounted()
+  }
+
+  // 默认的移动特效
+  const moveNormal = (cb: callbackType) => {
+    //初始化特效函数
+    const store = new moveEffectFn()
+    cb(store)
+    // 挂载 对应点击特效
+    moveEffect.value ? store.onMounted() : store.onUnMounted()
+  }
+
   onMounted(() => {
-    // 监听 布局切换事件
-    watch(
-      () => contentIsReverse.value,
-      () => {
-        mitt.emit("contentIsReverse")
-      }
-    )
-
-    // 监听侧边栏的个数变化
-    watch(
-      () => asideCounts.value,
-      () => {
-        mitt.emit("asideCounts")
-      }
-    )
-
-    // 监听 菜单关闭与隐藏
-    watch(
-      () => isAside.value,
-      (newV) => {
-        newV && mitt.emit("isAside")
-      }
-    )
+    // 订阅暗夜切换
+    mitt.on("isDark", setTheme)
+    // 订阅 主题切换 事件
+    mitt.on("themes", switchThemes)
+    // 订阅 焦点图是否 固定事件
+    mitt.on("bannerIsFixed:true", bannerFIxed)
+    mitt.on("bannerIsFixed:false", bannerNormal)
+    // 订阅 鼠标点击效果事件
+    mitt.on("clickEffect:normal", clickNormal)
+    // 订阅 鼠标 移动事件
+    mitt.on("moveEffect:normal", moveNormal)
 
     // 监听 themes
     watch(
@@ -80,18 +122,6 @@ export const useGlobalEmitter = () => {
       () => {
         // 统一触发
         mitt.emit("isDark")
-      },
-      {
-        immediate: true,
-      }
-    )
-
-    // 监听 bannerIsFixed
-    watch(
-      () => bannerIsFixed.value,
-      (newV) => {
-        newV && mitt.emit("bannerIsFixed:true")
-        !newV && mitt.emit("bannerIsFixed:false")
       },
       {
         immediate: true,
@@ -143,32 +173,19 @@ export const useGlobalEmitter = () => {
         immediate: true,
       }
     )
+  })
 
-    // 监听 docMenuIsFixedLazy
-    /*  
-    禁用布局切换 和 侧边栏 开关
-    使用交叉观察器 和 滚动来判断是否要固定
-    默认使用的 scroll 因为要 改变布局
-*/
-    watch(
-      () => docMenuIsFixedLazy.value,
-      (newV) => {
-        newV && window.location.reload()
-        !newV && mitt.emit("docMenuIsFixedLazy:false")
-      }
-    )
-
-    // 监听 面板 显示与隐藏
-    watch(
-      () => isShowPanel.value,
-      (newV) => {
-        mitt.emit("isShowPanel")
-        if (newV) {
-          mitt.emit("isShowPanel:true")
-        } else {
-          mitt.emit("isShowPanel:false")
-        }
-      }
-    )
+  onBeforeUnmount(() => {
+    // 取消订阅 暗夜切换
+    mitt.off("isDark", setTheme)
+    // 取消订阅 主题切换 事件
+    mitt.off("themes", switchThemes)
+    // 取消订阅 焦点图是否 固定事件
+    mitt.off("bannerIsFixed:true", bannerFIxed)
+    mitt.off("bannerIsFixed:false", bannerNormal)
+    // 取消订阅 鼠标点击效果事件
+    mitt.off("clickEffect:normal", clickNormal)
+    // 取消订阅 鼠标 移动事件
+    mitt.off("moveEffect:normal", moveNormal)
   })
 }

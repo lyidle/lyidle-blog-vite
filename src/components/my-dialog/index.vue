@@ -65,13 +65,13 @@ const {
   titleColor,
 } = props
 // 初始化时显示的位置信息
-let initLeft = defineModel("left")
-let initTop = defineModel("top")
-let savePosition = defineModel("isSave")
+let savedPanelLeft = defineModel("left")
+let savedPanelTop = defineModel("top")
+let isPanelPositionSaved = defineModel("isSave")
 
-// 监听 是否隐藏 面板 不需要卸载 因为全局都要用到
-// 订阅 面板显示与否 的事件
-mitt.on("isShowPanel:true", () => {
+// 监听 是否隐藏 面板
+//  面板显示
+const open = () => {
   document.documentElement.style.overflow = "hidden"
   // 需要页面渲染后 才能获取到元素 绑定移动事件
   nextTick(() => {
@@ -81,11 +81,11 @@ mitt.on("isShowPanel:true", () => {
     tar.addEventListener("mousedown", handlerMousedown)
 
     const left = `${
-      (savePosition.value && initLeft.value) ||
+      (isPanelPositionSaved.value && savedPanelLeft.value) ||
       document.documentElement.clientWidth / 2 - wrap.offsetWidth / 2
     }`
     const top = `${
-      (savePosition.value && initTop.value) ||
+      (isPanelPositionSaved.value && savedPanelTop.value) ||
       document.documentElement.clientHeight / 2 - wrap.offsetHeight / 2
     }`
     nextTick(() => {
@@ -94,13 +94,19 @@ mitt.on("isShowPanel:true", () => {
       wrap.style.top = top + "px"
     })
   })
-})
-mitt.on("isShowPanel:false", () => {
+}
+
+//  面板隐藏
+const close = () => {
   document.documentElement.style.overflow = "unset"
   // 解绑事件
   const tar = title.value as HTMLDivElement
   tar.removeEventListener("mousedown", handlerMousedown)
-})
+}
+
+// 订阅 面板显示与否 的事件
+mitt.on("isShowPanel:true", open)
+mitt.on("isShowPanel:false", close)
 
 // 拖拽
 // 获取 容器
@@ -170,16 +176,22 @@ const move = ($e: Event) => {
     changeX = Math.max(0, Math.min(changeX, rangeX))
   }
   // 更具变量判断是否保存
-  if (savePosition.value) {
-    initLeft.value = `${changeX}`
-    initTop.value = `${changeY}`
+  if (isPanelPositionSaved.value) {
+    savedPanelLeft.value = `${changeX}`
+    savedPanelTop.value = `${changeY}`
   }
   tar.style.left = changeX + "px"
   tar.style.top = changeY + "px"
 }
+onBeforeUnmount(() => {
+  // 取消订阅 面板显示与否 的事件
+  mitt.off("isShowPanel:true", open)
+  mitt.off("isShowPanel:false", close)
+})
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
 $close-size: 20px;
 $close-dur: v-bind(closeDur);
 $close-color: v-bind(closeColor);
@@ -216,7 +228,7 @@ $title-color: v-bind(titleColor);
       position: relative;
       .btns {
         position: absolute;
-        right: $title-gap/2;
+        right: math.div($title-gap, 2);
         top: calc(25%);
         // 每个按钮项
         .btn-item {

@@ -9,7 +9,6 @@
       "
       @click="isAside = !isAside"
     ></context-menu-item>
-    <!-- v-if="!docMenuIsFixedLazy" -->
   </template>
 </template>
 
@@ -17,9 +16,7 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 初始化仓库中用到的值
-const { isAside, docMenuIsFixedLazy, asideCounts } = storeToRefs(
-  useSettingStore()
-)
+const { isAside, asideCounts } = storeToRefs(useSettingStore())
 </script>
 
 <style scoped></style>

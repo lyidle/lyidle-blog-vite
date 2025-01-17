@@ -14,22 +14,22 @@ router.post("/", async (req, res, next) => {
   const { account, nickName, email, code, password, confirmPassword } = req.body
   // 密码与确认密码不一致
   if (password !== confirmPassword)
-    return res.result(void 0, "账号与密码不一致~", false, 400)
+    return res.result(void 0, "账号与密码不一致~", false)
   const { reg: codeRef, msg: codeMsg } = codeReg
   // 验证码不合格
   if (!codeRef.test(code)) {
-    return res.result(void 0, codeMsg, false, 400)
+    return res.result(void 0, codeMsg, false)
   }
   try {
     const findRegEmail = await getKey(`regCode:${email}`)
     // 判断有无找到
     if (findRegEmail === null) {
-      return res.result(void 0, "请重新发送验证码~", false, 400)
+      return res.result(void 0, "请重新发送验证码~", false)
     }
     const { regCode: findCode } = findRegEmail
     // 判断验证码是否符合
     if (findCode != code) {
-      return res.result(void 0, "验证码不正确~", false, 400)
+      return res.result(void 0, "验证码不正确~", false)
     }
     const user = {
       account,
@@ -48,7 +48,7 @@ router.post("/", async (req, res, next) => {
     return res.result(void 0, "注册成功~")
   } catch (err: any) {
     return res.validateAuth(err, next, () =>
-      res.result(void 0, "注册失败~", false, 400)
+      res.result(void 0, "注册失败~", false)
     )
   }
 })

@@ -38,7 +38,8 @@ router.put(
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body
-    if (!(data instanceof Array)) return res.result(void 0, "设置菜单失败~")
+    if (!(data instanceof Array))
+      return res.result(void 0, "设置菜单失败~", false)
     try {
       for (let i = 0; i < data.length; i++) {
         const menu = data[i]

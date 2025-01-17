@@ -17,8 +17,7 @@ const search = async (
     return res.result(
       void 0,
       "请至少传入author、title、desc、category、tags中的一个参数~",
-      false,
-      400
+      false
     )
   // 按照标签查询
   if (tags) {

@@ -28,6 +28,7 @@ import { useUserStore } from "@/store/user"
 import { getPoetry } from "@/api/admin"
 // 引入类型
 import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
+import { mitt } from "@/utils/emitter"
 // 欢迎词
 const welcome = import.meta.env.VITE_INITIAL_WELCOME
 // props
@@ -53,8 +54,10 @@ const { isDark, bannerIsFixed } = storeToRefs(useSettingStore())
 // 路由菜单
 const { userMenuList } = storeToRefs(useUserStore())
 const route = useRoute()
+
 // 缓存当前路径
 let path: string | null = null
+
 const banner = computed(() => {
   // 包含当前路径退出
   if (path && (path as string).includes(route.path)) return
@@ -88,6 +91,18 @@ const bannerImg = computed(() => {
 
 // 短诗
 const poetry = ref()
+
+// 监听 bannerIsFixed
+watch(
+  () => bannerIsFixed.value,
+  (newV) => {
+    newV && mitt.emit("bannerIsFixed:true")
+    !newV && mitt.emit("bannerIsFixed:false")
+  },
+  {
+    immediate: true,
+  }
+)
 
 // 发起请求
 onMounted(async () => {

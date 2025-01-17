@@ -128,8 +128,7 @@ const openSettings = () => {
 
 const geometricinfo = () => {
   nextTick(() => {
-    if (!menu.value) return
-    menu.value.style.height = "auto"
+    if (menu.value) menu.value.style.height = "auto"
     // 记录高度
     menuHeigh.value = menu.value.offsetHeight + "px"
     menuWidth.value = menu.value.offsetWidth + "px"
@@ -137,18 +136,16 @@ const geometricinfo = () => {
   })
 }
 
-// 订阅 数量变化 事件
-mitt.on("asideCounts", () => {
-  // 重载
+// 重载
+const reload = () => {
   onUnMount()
   onMount()
-})
+}
 
 const onMount = () => {
   nextTick(() => {
-    if (!container.value) return
     geometricinfo()
-    container.value.addEventListener("contextmenu", open)
+    container?.value?.addEventListener("contextmenu", open)
     //使用捕获 先关闭 再打开菜单 防止多个菜单出现
     window.addEventListener("click", close, true)
     window.addEventListener("contextmenu", close, true)

@@ -127,6 +127,7 @@
       </teleport>
       <!-- 卡片 -->
       <div class="doc-content" ref="docRef">
+        <div class="observer-menu" v-if="asideCounts" ref="observerMenu"></div>
         <my-card>
           <template #body>
             <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
@@ -152,19 +153,13 @@ import "vditor/dist/index.css"
 import numberTransform from "@/utils/numberTransform"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
-// 引入 mitt
+
+// 引入 侧边栏固定的 hook
+import { useSideMenuFixed } from "@/hooks/sideMenuFixed"
 import { mitt } from "@/utils/emitter"
-// 引入 交叉传感器
-import { observer } from "@/utils/observer"
-import type { ObserverCallback } from "@/utils/observer"
+
 // 提取数据
-const {
-  isDark,
-  docMenuIsFixedLazy,
-  docMenuIsFixed,
-  asideCounts,
-  isAsideDocMenu,
-} = storeToRefs(useSettingStore())
+const { isDark, isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
@@ -256,10 +251,14 @@ const addTree = (htmlString: string) => {
     stack.push({ ...node, children: node.children })
   })
   menuTree.value = toc
+  // 把生成的目录 通知给 Content 来判断是否要显示目录 和 侧边栏
+  mitt.emit("articleMenu", toc)
 }
+
 const docPreview = ref()
+
 const preview = () => {
-  if (article?.value?.content) {
+  if (article.value?.content) {
     Vditor.preview(docPreview.value, article.value.content, {
       theme: { current: "light" },
       //代码块
@@ -287,275 +286,13 @@ const preview = () => {
   }
 }
 
-const sideMenu = ref()
+const sideMenu = ref<HTMLDivElement>()
+const observerMenu = ref<HTMLDivElement>()
 
-// 挂载
-const enterScrollListener = () => {
-  if (!docMenuIsFixed.value || !isAsideDocMenu.value || !asideCounts.value)
-    return
-  // 要等 组件渲染完毕后 在执行
-  // 因为异步 setinterval 需要先把元素 获取到
-  initElements(() => {
-    // 使用交叉传感器
-    if (docMenuIsFixedLazy.value) {
-      intersectListener()
-      return
-    }
-    // 不使用交叉传感器 使用滚动监听
-    window.addEventListener("scroll", enterScrollListenerCb)
-  })
-}
-
-// 卸载
-const unEnterScrollListener = () => {
-  threelastOb.value?.stop?.()
-  thirdlastOb.value?.stop?.()
-  // 移除类名
-  removeStickyClasses()
-  // 初始化存储的值
-  enterFlag = true
-  leaveFlag = true
-  menuWrap = null
-  threelastDiv = null
-  docRef.value = undefined
-  // 交叉传感器 需要用到的
-  sibEnter = true
-  sibLeave = true
-  threelastOb.value = null
-  thirdlastOb.value = null
-  thirdlastDiv = null
-  // 没有交叉传感器
-  !docMenuIsFixedLazy.value &&
-    window.removeEventListener("scroll", enterScrollListenerCb)
-}
-
-// 重载
-const reloadEnterScrollListener = () => {
-  // 重载
-  unEnterScrollListener()
-  enterScrollListener()
-}
-
-// 初始化需要的数据
-let enterFlag = true
-let leaveFlag = true
-let menuWrap: HTMLDivElement | null = null
-let threelastDiv: HTMLDivElement | null = null
-let docRef = ref<HTMLDivElement | undefined>()
-// 交叉传感器 需要用到的
-let sibEnter = true
-let sibLeave = true
-let threelastOb = ref<ObserverCallback | null>(null)
-let thirdlastOb = ref<ObserverCallback | null>(null)
-let thirdlastDiv: HTMLDivElement | null = null
-// 使用 settimout轮询的方式获取 侧边栏 因为一开始并没有加载出来 使用了 v-if
-type interval = ReturnType<typeof setInterval>
-let timer: interval | null
-
-// 初始化元素
-const initElements = (fn: Function) => {
-  if (!docMenuIsFixed.value || !isAsideDocMenu.value || !asideCounts.value)
-    return
-  if (!menuWrap) {
-    menuWrap = document.querySelector(".sideMenu") as HTMLDivElement
-  }
-  if (!threelastDiv) {
-    // 只初始化一次
-    if (timer) clearInterval(timer)
-    let now = Date.now()
-    // 组件没有挂载完 重新获取 500ms 一次 轮询
-    timer = setInterval(() => {
-      const container = document.querySelector(".content-aside")
-      const cur = (Date.now() - now) / 1000
-      if (cur > 5) {
-        ElMessage.error("菜单组件固定失败，不能获取到对应的信息~")
-        clearInterval(timer as interval)
-      }
-      if (container?.children.length === asideCounts.value) {
-        if (asideCounts.value !== 1)
-          threelastDiv = container?.children[
-            container?.children.length - 2
-          ] as HTMLDivElement | null
-        if (asideCounts.value > 2)
-          thirdlastDiv = container?.children[
-            container?.children.length - 3
-          ] as HTMLDivElement | null
-        fn && fn()
-        clearInterval(timer as interval)
-      }
-    }, 500)
-  }
-}
-
-// 使用 交叉传感器监听
-const intersectListener = () => {
-  // 交叉传感器 两个侧边栏的处理方法
-  if (asideCounts.value <= 2) {
-    sideOnlyOneIntersect()
-    return
-  }
-  // 交叉传感器 两个以上侧边栏的处理方法
-  sideManyIntersect()
-}
-
-// 交叉传感器 两个侧边栏的处理方法
-const sideOnlyOneIntersect = () => {
-  if (!menuWrap) return
-  // 交叉传感器改变布局后 需要固定
-  if (menuWrap?.getBoundingClientRect().top < 0) {
-    // 重置
-    sibEnter = true
-    sibLeave = true
-    // 固定
-    toggleMenuPosition()
-  }
-
-  if (threelastDiv) {
-    threelastOb.value = {
-      enter: () => {
-        sibEnter = false
-        // 清除
-        removeStickyClasses()
-      },
-      leave: () => {
-        sibLeave = false
-        if (!sibEnter && !sibLeave) {
-          // 重置
-          sibEnter = true
-          sibLeave = true
-          // 固定
-          toggleMenuPosition()
-        }
-      },
-    }
-    observer(threelastDiv, threelastOb.value)
-  }
-}
-
-// 交叉传感器 两个以上侧边栏的处理方法
-// 不需要 处理改变布局的事情 因为 两个以上的离开后就是 固定的方法
-const sideManyIntersect = () => {
-  if (thirdlastDiv && threelastDiv) {
-    threelastOb.value = {
-      leave: (entry) => {
-        if (entry.boundingClientRect.bottom < 0) toggleMenuPosition()
-      },
-      enter: (entry) => {
-        if (entry.boundingClientRect.top < 0) removeStickyClasses()
-      },
-    }
-    thirdlastOb.value = {
-      leave: () => {
-        if (threelastDiv && threelastOb.value)
-          observer(threelastDiv, threelastOb.value)
-      },
-    }
-    observer(thirdlastDiv, thirdlastOb.value)
-  }
-}
-
-// 没有交叉传感器 更新菜单位置
-const updateMenuPosition = () => {
-  if (!menuWrap) return
-  // 判断菜单个数
-  if (asideCounts.value === 1) {
-    const rect = docRef.value?.getBoundingClientRect()
-    const top = rect?.top
-    if (top && top < 0) {
-      enterFlag = false
-      leaveFlag = true
-      toggleMenuPosition()
-    } else {
-      enterFlag = true
-      leaveFlag = false
-      removeStickyClasses()
-    }
-    return
-  }
-
-  // 监听 倒数第二个子元素
-  if (threelastDiv) {
-    const rect = threelastDiv.getBoundingClientRect()
-    const bottom = rect.bottom
-    // 进入视口
-    if (bottom <= 0 && enterFlag) {
-      enterFlag = false
-      leaveFlag = true
-      toggleMenuPosition()
-    }
-    // 离开视口
-    else if (bottom > 0 && leaveFlag) {
-      enterFlag = true
-      leaveFlag = false
-      removeStickyClasses()
-    }
-  }
-}
-
-// 添加类名
-const toggleMenuPosition = () => {
-  if (!menuWrap) return
-  if (menuWrap.offsetLeft < 100) {
-    // 菜单栏在左侧
-    menuWrap.classList.add("aside-menu-sticky-left")
-    menuWrap.classList.remove("aside-menu-sticky-right")
-  } else {
-    // 菜单栏在右侧
-    menuWrap.classList.add("aside-menu-sticky-right")
-    menuWrap.classList.remove("aside-menu-sticky-left")
-  }
-}
-
-// 移除类名
-const removeStickyClasses = () => {
-  if (menuWrap) {
-    menuWrap.classList.remove("aside-menu-sticky-right")
-    menuWrap.classList.remove("aside-menu-sticky-left")
-  }
-}
-
-// 没有交叉传感器 目录进入视口时监听 滚动事件 回调
-let enterScrollListenerCb = () => {
-  updateMenuPosition()
-}
-
-watchEffect(() => {
-  // 判断是否需要固定
-  if (!docMenuIsFixed.value || !isAsideDocMenu.value || !asideCounts.value) {
-    unEnterScrollListener()
-    return
-  }
-  // 判断是否固定
-  else if (docMenuIsFixed.value && isAsideDocMenu.value) {
-    // 监听菜单组件是否挂载
-    if (sideMenu.value?.$el) {
-      enterScrollListener()
-    } else unEnterScrollListener()
-    enterScrollListener()
-  }
-})
-
-// 侧边栏数量变化
-const countsVariable = () => {
-  if (asideCounts.value === 1) {
-    // 切换到 交叉监听
-    docMenuIsFixedLazy.value = false
-    return
-  }
-  if (asideCounts.value > 1) {
-    reloadEnterScrollListener()
-  }
-}
+useSideMenuFixed(sideMenu, menuTree, observerMenu)
 
 // 订阅 暗夜切换 事件
 mitt.on("isDark", preview)
-// 订阅 布局切换 事件
-mitt.on("contentIsReverse", reloadEnterScrollListener)
-mitt.on("isAside:true", reloadEnterScrollListener)
-// 订阅 交叉传感器关闭 事件
-mitt.on("docMenuIsFixedLazy:false", reloadEnterScrollListener)
-// 订阅 数量变化 事件
-mitt.on("asideCounts", countsVariable)
 
 // 初始化
 onBeforeMount(async () => {
@@ -567,17 +304,10 @@ onBeforeMount(async () => {
 })
 
 onBeforeUnmount(() => {
-  threelastOb.value?.stop?.()
-  thirdlastOb.value?.stop?.()
-  // 取消订阅 数量变化 事件
-  mitt.off("asideCounts", countsVariable)
   // 取消订阅 暗夜切换 事件
   mitt.off("isDark", preview)
-  // 取消订阅 布局切换 事件
-  mitt.off("contentIsReverse", reloadEnterScrollListener)
-  mitt.off("isAside:true", reloadEnterScrollListener)
-  // 取消订阅 交叉传感器关闭 事件
-  mitt.off("docMenuIsFixedLazy:false", reloadEnterScrollListener)
+  // 组件销毁时 通知 content 组件 把 isToc 复原 并销毁 监听
+  mitt.emit("articleMenu:destroy", preview)
 })
 </script>
 
@@ -602,8 +332,19 @@ $preview-h2-p-l: 10px;
 $preview-calouts-pd: 10px;
 $preview-callouts-title-gap: 8px;
 @include content-aside-title(var(--aside-title-icon-bg));
+.observer-menu {
+  $height: 12.5rem;
+  position: absolute;
+  top: -$height - 1.875rem;
+  left: 0;
+  height: $height;
+  width: $height;
+  cursor: pointer;
+  pointer-events: none;
+}
 // 文档 内容 区域
 .doc-content {
+  position: relative;
   // 设置 卡片 阴影
   .myCard {
     @include setCardShadow;

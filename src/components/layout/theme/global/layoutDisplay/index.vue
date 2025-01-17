@@ -4,7 +4,7 @@
     <div class="theme-select">
       <div class="preview">
         <template v-if="asideCounts">
-          <div class="item" v-if="!docMenuIsFixedLazy">
+          <div class="item">
             <span class="label cur-pointer" @click="isAside = !isAside">
               <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
             </span>
@@ -105,7 +105,6 @@ import unaside from "@/components/icon/switch/unaside.vue"
 // 提取需要的变量 全局设置
 const {
   isAside,
-  docMenuIsFixedLazy,
   // #region 侧边栏的 显示与否
   isAsideSelf,
   isAsideAnnounce,
