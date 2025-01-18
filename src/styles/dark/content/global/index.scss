@@ -2,9 +2,11 @@
 @use "../../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
-  // 内容 区域 共同的 变量
-  $pages-card-bg: #375366;
-  --pages-card-bg: #{$pages-card-bg};
-  --pages-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
-  --pages-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+  .global-content {
+    // 内容 区域 共同的 变量
+    $pages-card-bg: #375366;
+    --pages-card-bg: #{$pages-card-bg};
+    --pages-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
+    --pages-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+  }
 }

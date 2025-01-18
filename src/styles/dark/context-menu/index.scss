@@ -1,0 +1,9 @@
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+html[themes="#{$theme}"] {
+  --context-menu-bg: #3d5b6e;
+  --context-menu-bg-hover: #5c8096;
+  --context-menu-color: #c6d6ed;
+  --context-menu-color-hover: #ffffff;
+}

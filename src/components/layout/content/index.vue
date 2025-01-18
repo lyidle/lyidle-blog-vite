@@ -1,5 +1,5 @@
 <template>
-  <context-menu>
+  <context-menu class="global-content">
     <div class="pages">
       <div
         class="pages-content"
@@ -128,96 +128,98 @@ $item-gap: var(--content-gap);
 $translate-y: -5px;
 $aside-pd: 20px;
 $aside-width: var(--aside-width);
-.pages {
-  color: var(--primary-color);
-  width: var(--content-width);
-  inset: 0;
-  margin: auto;
-  padding-top: $item-gap;
-  transition: width var(--header-bg-initial-during);
-  display: flex;
-  justify-content: space-between;
-  gap: $item-gap;
-  position: relative;
-  z-index: 2;
-  /* 左边内容区 */
-  > .pages-content {
-    width: calc(100% - $aside-width);
+.global-content {
+  .pages {
+    color: var(--primary-color);
+    width: var(--content-width);
+    inset: 0;
+    margin: auto;
+    padding-top: $item-gap;
+    transition: width var(--header-bg-initial-during);
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     gap: $item-gap;
-    @include media(mi) {
-      width: 100%;
-    }
-    // 内容区域卡片
-    .contain {
-      width: 100%;
+    position: relative;
+    z-index: $global-content-index;
+    /* 左边内容区 */
+    > .pages-content {
+      width: calc(100% - $aside-width);
       display: flex;
-      // 内容区域卡片的间距
+      flex-direction: column;
       gap: $item-gap;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      @include media(sm) {
-        justify-content: center;
+      @include media(mi) {
+        width: 100%;
       }
-      // 内容区的卡片
-      ::v-deep(.layout-content) {
-        flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
-        transition: transform var(--primary-during),
-          flex var(--content-card-flex-during);
-        @include media(md) {
-          flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
-        }
+      // 内容区域卡片
+      .contain {
+        width: 100%;
+        display: flex;
+        // 内容区域卡片的间距
+        gap: $item-gap;
+        flex-wrap: wrap;
+        justify-content: space-between;
         @include media(sm) {
-          flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+          justify-content: center;
         }
-        @include media(xs) {
-          flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
-        }
-        @include media(mi) {
-          flex: unset;
-          width: 100%;
-        }
-        // 悬浮效果
-        &:hover {
-          transform: translateY($translate-y);
+        // 内容区的卡片
+        ::v-deep(.layout-content) {
+          flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
+          transition: transform var(--primary-during),
+            flex var(--content-card-flex-during);
+          @include media(md) {
+            flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
+          }
+          @include media(sm) {
+            flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+          }
+          @include media(xs) {
+            flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+          }
+          @include media(mi) {
+            flex: unset;
+            width: 100%;
+          }
+          // 悬浮效果
+          &:hover {
+            transform: translateY($translate-y);
+            .poster {
+              transform: scale($pages-poster-scale);
+            }
+          }
+          &:last-child {
+            margin-right: auto;
+          }
+          // 海报
           .poster {
-            transform: scale($pages-poster-scale);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--primary-during) transform;
           }
         }
-        &:last-child {
-          margin-right: auto;
-        }
-        // 海报
-        .poster {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: var(--primary-during) transform;
-        }
       }
     }
-  }
-  /* 右边侧边栏 */
-  .content-aside {
-    width: $aside-width;
-    transition: width var(--primary-during);
-    display: flex;
-    flex-direction: column;
-    gap: $item-gap;
-    @include media(mi) {
-      width: 0;
-      overflow: hidden;
+    /* 右边侧边栏 */
+    .content-aside {
+      width: $aside-width;
+      transition: width var(--primary-during);
+      display: flex;
+      flex-direction: column;
+      gap: $item-gap;
+      @include media(mi) {
+        width: 0;
+        overflow: hidden;
+      }
+      ::v-deep(.item-aside) {
+        position: relative;
+        padding: $aside-pd;
+        border-radius: var(--pages-card-radius);
+      }
     }
-    ::v-deep(.item-aside) {
-      position: relative;
-      padding: $aside-pd;
-      border-radius: var(--pages-card-radius);
+    // 卡片颜色
+    ::v-deep(.myCard) {
+      background-color: var(--pages-card-bg);
     }
-  }
-  // 卡片颜色
-  ::v-deep(.myCard) {
-    background-color: var(--pages-card-bg);
   }
 }
 </style>

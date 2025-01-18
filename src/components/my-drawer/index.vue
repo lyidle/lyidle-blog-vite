@@ -44,7 +44,7 @@ $drawer-during: 0.3s;
   position: fixed;
   inset: 0;
   background-color: v-bind(mask);
-  z-index: 10;
+  z-index: $my-drawer-mask-index;
 }
 .drawer-content {
   position: fixed;
@@ -53,7 +53,7 @@ $drawer-during: 0.3s;
   height: 100vh;
   width: v-bind(width);
   background-color: v-bind(bg);
-  z-index: 11;
+  z-index: $my-drawer-mask-index + 1;
   overflow-y: scroll;
 }
 </style>

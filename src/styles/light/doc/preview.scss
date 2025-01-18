@@ -15,46 +15,55 @@ html[themes="#{$theme}"] {
   --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
   --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
   --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
-  // 主要的文字颜色
-  --doc-content-color: $primary-color;
-  // code 的颜色 `code`
-  --doc-code-bg: rgb(255, 155, 155);
-  --doc-code-color: white;
-  // a 链接
-  --doc-link-color: rgb(255, 82, 82);
-  // 设置 多选框
-  --doc-checkbox-bg: #f5fbff;
-  --doc-checkbox-border-color: #5091bd;
-  --doc-checkbox-border: var(--doc-checkbox-border-size) solid
-    var(--doc-checkbox-border-color);
-  // 分割线
-  --doc-hr-color: #{$primary-color};
-  // 脚注分割线
-  --doc-footnotes-hr-color: #{$primary-color};
-  // 高亮
-  --doc-highlight-bg: #98baff;
-  --doc-highlight-color: white;
-  // 表格
-  --doc-table-th-bg: #5091bd;
-  --doc-table-th-color: white;
-  --doc-table-td-bg: #cee1ed;
-  --doc-table-td-color: $primary-color;
-  // 表格 设置 边框
-  $table-head-border-size: 2px;
-  $table-head-border-bottom-size: 4px;
-  $table-border-color: white;
-  $table-head-border-bg: $table-border-color;
-  $table-head-border-bottom-bg: $table-border-color;
-  $table-head-border-style: solid;
-  $table-body-border-size: 2px;
-  $table-body-border-bg: $table-border-color;
-  $table-body-border-style: solid;
-  --doc-table-header-border: #{$table-head-border-style $table-head-border-size
-    $table-head-border-bg};
-  --doc-table-header-bottom-border: #{$table-head-border-style
-    $table-head-border-bottom-size $table-head-border-bottom-bg};
-  --doc-table-body-border: #{$table-body-border-style $table-body-border-size
-    $table-body-border-bg};
-  --doc-table-body-bottom-border: #{$table-body-border-style
-    $table-body-border-size $table-body-border-bg};
+  .doc-pages-pr {
+    // 主要的文字颜色
+    --doc-content-color: $primary-color;
+    // code 的颜色 `code`
+    --doc-code-bg: rgb(255, 155, 155);
+    --doc-code-color: white;
+    // a 链接
+    --doc-link-color: rgb(255, 82, 82);
+    // 侧边栏的a链接高亮效果
+    --doc-link-hightlight: #992f2f;
+    // 高亮
+    --doc-highlight-bg: #98baff;
+    --doc-highlight-color: white;
+    // 设置 多选框
+    --doc-checkbox-bg: #f5fbff;
+    --doc-checkbox-border-color: #5091bd;
+    --doc-checkbox-border: var(--doc-checkbox-border-size) solid
+      var(--doc-checkbox-border-color);
+    // 分割线
+    --doc-hr-color: #{$primary-color};
+    // 脚注分割线
+    --doc-footnotes-hr-color: #{$primary-color};
+    // 高亮
+    --doc-highlight-bg: #98baff;
+    --doc-highlight-color: white;
+    // 代码块 样式
+    --doc-pre-code-shadow: 0 0 5px 2px #9dbbd060;
+    // 表格
+    --doc-table-th-bg: #5091bd;
+    --doc-table-th-color: white;
+    --doc-table-td-bg: #cee1ed;
+    --doc-table-td-color: $primary-color;
+    // 表格 设置 边框
+    $table-head-border-size: 2px;
+    $table-head-border-bottom-size: 4px;
+    $table-border-color: white;
+    $table-head-border-bg: $table-border-color;
+    $table-head-border-bottom-bg: $table-border-color;
+    $table-head-border-style: solid;
+    $table-body-border-size: 2px;
+    $table-body-border-bg: $table-border-color;
+    $table-body-border-style: solid;
+    --doc-table-header-border: #{$table-head-border-style
+      $table-head-border-size $table-head-border-bg};
+    --doc-table-header-bottom-border: #{$table-head-border-style
+      $table-head-border-bottom-size $table-head-border-bottom-bg};
+    --doc-table-body-border: #{$table-body-border-style $table-body-border-size
+      $table-body-border-bg};
+    --doc-table-body-bottom-border: #{$table-body-border-style
+      $table-body-border-size $table-body-border-bg};
+  }
 }

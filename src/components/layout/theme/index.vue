@@ -13,6 +13,7 @@
     color="var(--primary-color)"
     titleColor="var(--theme-setting-title-color)"
     titleHeight="var(--theme-panel-title-height)"
+    class="theme-panel"
   >
     <template #title>个性化设置</template>
     <template #content>
@@ -112,46 +113,49 @@ $side-p-t: 0;
 $side-pd: 10px 0;
 $content-btn-gap: 10px;
 $title-height: var(--theme-panel-title-height);
-.container {
-  height: calc(100% - $title-height);
-  // 内容 和 aside 左右分布
-  display: flex;
-  justify-content: space-between;
-  // 侧边栏
-  > .side {
-    width: 100px;
-    height: 100%;
-    background-color: var(--theme-setting-side-bg);
-    padding-top: $side-p-t;
-    color: var(--theme-setting-aside-color);
-    > li {
-      background-color: var(--theme-setting-side-bg-item);
-      text-align: center;
-      padding: $side-pd;
-      // 分割线
-      &:not(:last-child) {
-        border-bottom: var(--theme-setting-side-hr);
-      }
-      &.active {
-        background-color: var(--theme-setting-side-bg-active);
-        color: var(--theme-setting-side-color-active);
-      }
-      &:hover {
-        background-color: var(--theme-setting-side-bg-item-hover);
-        color: var(--theme-setting-side-color-hover);
+.theme-panel {
+  z-index: $theme-panel-index;
+  .container {
+    height: calc(100% - $title-height);
+    // 内容 和 aside 左右分布
+    display: flex;
+    justify-content: space-between;
+    // 侧边栏
+    > .side {
+      width: 100px;
+      height: 100%;
+      background-color: var(--theme-setting-side-bg);
+      padding-top: $side-p-t;
+      color: var(--theme-setting-aside-color);
+      > li {
+        background-color: var(--theme-setting-side-bg-item);
+        text-align: center;
+        padding: $side-pd;
+        // 分割线
+        &:not(:last-child) {
+          border-bottom: var(--theme-setting-side-hr);
+        }
+        &.active {
+          background-color: var(--theme-setting-side-bg-active);
+          color: var(--theme-setting-side-color-active);
+        }
+        &:hover {
+          background-color: var(--theme-setting-side-bg-item-hover);
+          color: var(--theme-setting-side-color-hover);
+        }
       }
     }
-  }
-  // 内容
-  > .content {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    ::v-deep(> [class$="-container"]) {
+    // 内容
+    > .content {
       width: 100%;
       height: 100%;
-      padding: $gap;
-      overflow: auto;
+      overflow: hidden;
+      ::v-deep(> [class$="-container"]) {
+        width: 100%;
+        height: 100%;
+        padding: $gap;
+        overflow: auto;
+      }
     }
   }
 }

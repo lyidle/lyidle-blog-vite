@@ -2,13 +2,15 @@
 @use "../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
-  // banner
-  --banner-detail-color: #cfd3dc;
-  --banner-img: url("@/assets/images/base-bg-dark.png");
-  // banner 遮罩
-  --banner-mask: linear-gradient(
-    to right,
-    rgba(52, 52, 52, 0.852),
-    rgba(52, 52, 52, 0.232)
-  );
+  .global-banner {
+    // banner
+    --banner-detail-color: #cfd3dc;
+    --banner-img: url("@/assets/images/base-bg-dark.png");
+    // banner 遮罩
+    --banner-mask: linear-gradient(
+      to right,
+      rgba(52, 52, 52, 0.852),
+      rgba(52, 52, 52, 0.232)
+    );
+  }
 }

@@ -28,7 +28,7 @@ $link-color: var(--login-link-color);
 .login-container {
   position: absolute;
   width: 50%;
-  z-index: 2;
+  z-index: $global-content-index;
   // 水平居中
   inset: 0;
   margin: auto;

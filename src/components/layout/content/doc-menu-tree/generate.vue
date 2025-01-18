@@ -1,7 +1,12 @@
 <template>
   <ul class="doc-menu-tree">
     <li v-for="item in menuData" :key="item.id" :class="'item-' + item.level">
-      <a :href="`#${item.id}`">{{ item.text }}</a>
+      <a
+        :href="`#${item.id}`"
+        :class="{ active: item.active }"
+        @click.prevent="scrollTo(`#${item.id}`)"
+        >{{ item.text }}</a
+      >
       <GenerateMenuTree v-if="item.children.length" :menuData="item.children" />
     </li>
   </ul>
@@ -11,6 +16,51 @@
 // 引入 类型
 import { TocNode } from "@/views/doc/types"
 defineProps<{ menuData?: TocNode[] }>()
+
+// 缓存
+let headerHeight: null | number = null
+let heightMap = new Map()
+
+const scrollTo = (id: string) => {
+  const tar = document.querySelector(id) as HTMLHeadingElement
+  if (!tar) return
+
+  // 缓存不存在获取高度
+  if (!headerHeight)
+    headerHeight = (document.querySelector(".global-header") as HTMLDivElement)
+      ?.offsetHeight
+
+  // 有缓存 直接滚动
+  const height = heightMap.get(id)
+  if (height) {
+    window.scrollTo({
+      top: height,
+      behavior: "smooth",
+    })
+    return
+  }
+
+  const toScroll =
+    tar.getBoundingClientRect().top +
+    (document.documentElement.scrollTop ||
+      window.pageYOffset ||
+      document.body.scrollTop) -
+    headerHeight -
+    3
+
+  // 无缓存则保存后滚动
+  heightMap.set(id, height)
+
+  window.scrollTo({
+    top: toScroll,
+    behavior: "smooth",
+  })
+}
+
+onBeforeUnmount(() => {
+  // 清除Map
+  heightMap.clear()
+})
 </script>
 
 <style lang="scss">

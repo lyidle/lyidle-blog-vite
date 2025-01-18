@@ -98,7 +98,7 @@ export class clickEffectFn {
       document.body.appendChild(canvas)
       canvas.setAttribute(
         "style",
-        "width: 100%; height: 100%; top: 0; left: 0; z-index: 99999; position: fixed; pointer-events: none;"
+        "width: 100%; height: 100%; top: 0; left: 0; z-index: var(--click-effect-index); position: fixed; pointer-events: none;"
       )
       pointer.classList.add("pointer")
       document.body.appendChild(pointer)
@@ -240,7 +240,7 @@ export class moveEffectFn {
     // 给画布css样式，固定定位，且阻止用户的鼠标事件
     canvas.style.cssText = `
     position: fixed;
-    z-index: 1000;
+    z-index: var(--move-effect-index);
     top: 0;
     left: 0;
     pointer-events: none;

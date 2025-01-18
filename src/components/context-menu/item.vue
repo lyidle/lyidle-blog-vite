@@ -28,8 +28,8 @@ $item-icon-size: 20px;
     font-size: $item-icon-size;
   }
   &:hover {
-    background-color: var(--header-menu-bg-hover);
-    color: var(--header-menu-color-hover);
+    background-color: var(--context-menu-bg-hover);
+    color: var(--context-menu-color-hover);
   }
 }
 </style>

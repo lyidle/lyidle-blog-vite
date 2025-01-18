@@ -119,9 +119,9 @@ export const useGlobalEmitter = () => {
     // 监听 isDark
     watch(
       () => isDark.value,
-      () => {
+      (newV) => {
         // 统一触发
-        mitt.emit("isDark")
+        mitt.emit("isDark", newV)
       },
       {
         immediate: true,
@@ -173,6 +173,11 @@ export const useGlobalEmitter = () => {
         immediate: true,
       }
     )
+
+    // 监听滚动事件 右侧挂饰的动画 和 按钮的 百分比滚动显示
+    window.addEventListener("scroll", () => {
+      mitt.emit("scroll")
+    })
   })
 
   onBeforeUnmount(() => {

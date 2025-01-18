@@ -36,11 +36,13 @@ $callouts-icons: (
 );
 
 html {
-  --doc-callouts-title-m-b: 10px;
-  // callouts 的图标
-  @each $callouts-types, $base-icon in $callouts-icons {
-    @if $callouts-types {
-      --doc-callouts-#{$callouts-types}-icon-url: #{$base-icon};
+  .doc-pages-pr {
+    --doc-callouts-title-m-b: 10px;
+    // callouts 的图标
+    @each $callouts-types, $base-icon in $callouts-icons {
+      @if $callouts-types {
+        --doc-callouts-#{$callouts-types}-icon-url: #{$base-icon};
+      }
     }
   }
 }

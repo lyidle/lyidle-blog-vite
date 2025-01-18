@@ -208,7 +208,7 @@ $title-color: v-bind(titleColor);
   position: fixed;
   inset: 0;
   background-color: $mask;
-  z-index: 50;
+  z-index: $my-dialog-index;
   .dialog-container {
     width: 700px;
     max-width: 100%;

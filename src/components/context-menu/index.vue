@@ -64,8 +64,6 @@
 import { useSettingStore } from "@/store/setting"
 // 引入 utils
 import useFullScreen from "@/hooks/fullscreen"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 
 // 提取需要的变量
 const { isDark, themes, bannerIsFixed, isFullScreen, setScene, isShowPanel } =
@@ -179,9 +177,9 @@ $item-radius: 5px;
 $item-gap: 5px;
 .menu-context {
   position: fixed;
-  z-index: 50;
-  background-color: var(--header-menu-bg);
-  color: var(--header-menu-color);
+  z-index: $menu-context-index;
+  background-color: var(--context-menu-bg);
+  color: var(--context-menu-color);
   border-radius: $wrap-radius;
   overflow: hidden;
   box-shadow: var(--context-menu-shadow);
@@ -204,8 +202,8 @@ $item-gap: 5px;
         font-size: $item-icon-size;
       }
       &:hover {
-        background-color: var(--header-menu-bg-hover);
-        color: var(--header-menu-color-hover);
+        background-color: var(--context-menu-bg-hover);
+        color: var(--context-menu-color-hover);
       }
     }
   }

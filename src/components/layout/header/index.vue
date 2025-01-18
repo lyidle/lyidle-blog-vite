@@ -1,5 +1,5 @@
 <template>
-  <div class="header" ref="header">
+  <div class="global-header" ref="header">
     <div class="logo">
       <router-link to="/">{{ LOGO }}</router-link>
     </div>
@@ -54,7 +54,7 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 // 引入头部变量
-.header {
+.global-header {
   color: v-bind(headerColor);
   width: 100%;
   height: var(--header-height);
@@ -64,7 +64,7 @@ onUnmounted(() => {
   position: fixed;
   box-sizing: border-box;
   top: 0;
-  z-index: 20;
+  z-index: $global-header-index;
   transition: background-color var(--header-bg-initial-during),
     padding var(--header-bg-initial-during);
   .logo {

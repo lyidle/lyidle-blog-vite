@@ -2,19 +2,21 @@
 @use "../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
-  // login
-  --login-card-bg: rgba(92, 92, 92, 0.685);
-  --login-color: var(--primary-color);
-  // login-input
-  --login-input-placeholder: var(--primary-color);
-  --login-input-color: var(--primary-color);
-  --login-input-underline-bg: var(--primary-color);
-  // login-btn
-  --login-btn-bg: #4d9acc79;
-  --login-disabled-bg: #92bfde79;
-  --login-btn-color: #eef8ff;
-  --login-btn-hover-bg: #3882b379;
-  --login-btn-hover-color: #e9f6ff;
-  // 底部提示信息的 切换链接颜色
-  --login-link-color: #cb2d47;
+  .login-container {
+    // login
+    --login-card-bg: rgba(92, 92, 92, 0.685);
+    --login-color: var(--primary-color);
+    // login-input
+    --login-input-placeholder: var(--primary-color);
+    --login-input-color: var(--primary-color);
+    --login-input-underline-bg: var(--primary-color);
+    // login-btn
+    --login-btn-bg: #4d9acc79;
+    --login-disabled-bg: #92bfde79;
+    --login-btn-color: #eef8ff;
+    --login-btn-hover-bg: #3882b379;
+    --login-btn-hover-color: #e9f6ff;
+    // 底部提示信息的 切换链接颜色
+    --login-link-color: #cb2d47;
+  }
 }

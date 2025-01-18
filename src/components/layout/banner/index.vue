@@ -1,5 +1,5 @@
 <template>
-  <context-menu>
+  <context-menu class="global-banner">
     <div
       class="banner"
       :style="{
@@ -112,52 +112,54 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.fixed-replace {
-  width: 100%;
-  height: 100vh;
-}
-.banner {
-  width: 100%;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // 加一层遮罩 使文字更清晰
-  background-image: v-bind(mask),
-    // 背景
-    v-bind(bannerImg);
-  .detail {
+.global-banner {
+  .fixed-replace {
+    width: 100%;
+    height: 100vh;
+  }
+  .banner {
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    // 禁止超出屏幕
-    width: 80%;
-    overflow: hidden;
-    .title {
-      font-size: 1.875rem;
-      font-weight: 500;
-      text-align: center;
-      color: v-bind(color);
-    }
-    .subtitle {
-      max-width: 100%;
-      margin-top: 10px;
-      text-align: center;
-      font-size: 1.25rem;
-      color: v-bind(color);
+    // 加一层遮罩 使文字更清晰
+    background-image: v-bind(mask),
+      // 背景
+      v-bind(bannerImg);
+    .detail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      // 禁止超出屏幕
+      width: 80%;
       overflow: hidden;
-      // 省略号
-      text-overflow: ellipsis;
-      text-wrap: nowrap;
-    }
-    @include media(xs) {
       .title {
-        font-size: 1.5625rem;
+        font-size: 1.875rem;
+        font-weight: 500;
+        text-align: center;
+        color: v-bind(color);
       }
       .subtitle {
-        font-size: 0.9375rem;
+        max-width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 1.25rem;
+        color: v-bind(color);
+        overflow: hidden;
+        // 省略号
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+      }
+      @include media(xs) {
+        .title {
+          font-size: 1.5625rem;
+        }
+        .subtitle {
+          font-size: 0.9375rem;
+        }
       }
     }
   }
