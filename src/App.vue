@@ -1,6 +1,6 @@
 <template>
   <context-menu>
-    <animations-scrollTop></animations-scrollTop>
+    <animations-ornaments></animations-ornaments>
     <Tools></Tools>
     <layout-theme></layout-theme>
     <router-view v-slot="{ Component, route }">

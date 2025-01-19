@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AnimationsOrnaments: typeof import('./src/components/animations/ornaments/index.vue')['default']
     AnimationsScrollTop: typeof import('./src/components/animations/scrollTop/index.vue')['default']
     AnimationsWaves: typeof import('./src/components/animations/waves/index.vue')['default']
     Carousel: typeof import('./src/components/carousel/index.vue')['default']

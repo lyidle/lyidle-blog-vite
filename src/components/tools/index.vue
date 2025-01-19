@@ -101,6 +101,7 @@ $color: #e4f4ff;
   right: $right;
   bottom: $bottom;
   z-index: $global-tools-index;
+  pointer-events: none;
   // 设置栏
   .settings {
     transform: translateX(150%);
@@ -120,6 +121,8 @@ $color: #e4f4ff;
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: initial;
+
     &:not(:last-child) {
       margin-bottom: $m-b;
     }

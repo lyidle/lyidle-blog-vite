@@ -6,14 +6,17 @@
     }"
     v-if="isScrollOrnaments"
   >
-    <div class="ornaments"></div>
+    <div class="ornaments cur-pointer" @click="scrollTopCallback"></div>
   </div>
 </template>
 
-<script setup lang="ts" name="ScrollTop">
+<script setup lang="ts" name="ScrollOrnaments">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 import { mitt } from "@/utils/emitter"
+// 引入 回到顶部
+import { scrollTop as scrollTopCallback } from "@/utils/toTopOrBottom"
+
 const { scrollPercentage, isScrollOrnaments } = storeToRefs(useSettingStore())
 const scrollTop = ref<number>(0) //滚动距离
 
