@@ -1,25 +1,17 @@
 <template>
   <div class="header-menu-container">
     <ul class="topnav">
-      <li>
-        <router-link to="/home">
-          <i class="i-ep:home-filled w-1em h-1em"> </i>
-          首页
-        </router-link>
-      </li>
-      <li>
-        <a @click="isShow">
-          <i class="i-ep:menu w-1em h-1em"> </i>
-          菜单
-        </a>
-      </li>
-      <li>
-        <layout-setting
-          right="-10px"
-          top="50px"
-          :triangle="{ right: '15px' }"
-        ></layout-setting>
-      </li>
+      <layout-header-normal :menuStyle>
+        <template #last>
+          <!-- 菜单项 -->
+          <li>
+            <a @click="isShow" class="item-a">
+              <i class="i-ep:menu w-1em h-1em"> </i>
+              菜单
+            </a>
+          </li>
+        </template>
+      </layout-header-normal>
     </ul>
     <my-drawer
       v-model="drawer"
@@ -60,7 +52,9 @@
           </div>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
-          <layout-header-menu-mini :style></layout-header-menu-mini>
+          <layout-header-topnav-mini-generate
+            :style
+          ></layout-header-topnav-mini-generate>
         </div>
       </template>
     </my-drawer>
@@ -70,6 +64,12 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+// 引入类型
+import { menuStyleType } from "@/components/my-menu/types"
+
+// 接收props
+defineProps<{ menuStyle?: menuStyleType }>()
+
 // 提取需要的信息
 const {
   // 用户信息
@@ -108,6 +108,24 @@ const style = {
   subtitleColorHover: "var(--header-mini-subtitle-color-hover)",
 }
 </script>
+
+<style scoped lang="scss">
+.header-menu-container {
+  position: relative;
+  height: 100%;
+  display: none;
+  @include media(sm) {
+    display: block;
+  }
+  .topnav {
+    height: 100%;
+    display: none;
+    @include media(sm) {
+      display: flex;
+    }
+  }
+}
+</style>
 
 <!-- drawer  -->
 <style lang="scss">
@@ -165,43 +183,6 @@ $header-content-pd: 20px;
     }
     .contain.menu {
       padding: 0 $header-content-pd;
-    }
-  }
-}
-</style>
-<style scoped lang="scss">
-.header-menu-container {
-  position: relative;
-  height: 100%;
-  display: none;
-  @include media(sm) {
-    display: flex;
-  }
-  .topnav {
-    display: flex;
-    height: 100%;
-    &::v-deep(a) {
-      @include flex(space-between);
-      position: relative;
-      height: 100%;
-      margin-left: calc(var(--header-topnav-margin) - 7px);
-      > i {
-        margin-right: 3px;
-      }
-      // 导航下划线
-      &::before {
-        content: "";
-        display: block;
-        width: 0;
-        height: var(--header-topnav-mask-height);
-        background-color: var(--header-topnav-mask-color);
-        position: absolute;
-        bottom: 5px;
-        transition: 0.3s;
-      }
-      &:hover:before {
-        width: 100%;
-      }
     }
   }
 }

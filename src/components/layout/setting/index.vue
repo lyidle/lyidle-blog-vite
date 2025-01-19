@@ -1,5 +1,5 @@
 <template>
-  <a class="custom-popover-trigger custom-setting">
+  <a class="custom-popover-trigger custom-setting item-a">
     <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
     {{ label }}
     <my-popover

@@ -1,8 +1,8 @@
 <template>
-  <ul class="custom-menu" v-if="props.data" :style="{ left }">
-    <li class="title" ref="title" v-if="props.data.length"><span></span></li>
-    <template v-for="item in props.data" :key="item.id">
-      <my-menu-item :style="props.style">
+  <ul class="custom-menu" v-if="data" :style="{ left }">
+    <li class="title" ref="title" v-if="data.length"><span></span></li>
+    <template v-for="item in data" :key="item.id">
+      <my-menu-item :style="menuStyle">
         <slot name="body" :item="item">
           {{ item.name }}
         </slot>
@@ -12,24 +12,21 @@
 </template>
 
 <script setup lang="ts" name="MyMenu">
+// 引入类型
+import { menuStyleType } from "@/components/my-menu/types"
 const props = withDefaults(
   defineProps<{
     top?: string
     left?: string
     triangle?: boolean
-    style?: {
-      bg?: string
-      bgHover?: string
-      color?: string
-      colorHover?: string
-    }
+    menuStyle?: menuStyleType
     data: any
   }>(),
   {
     top: "20px",
     left: "-15px",
     triangle: false,
-    style: () => ({
+    menuStyle: () => ({
       bg: "white",
       bgHover: "#e5baee",
       color: "#203b5b",
@@ -39,7 +36,7 @@ const props = withDefaults(
 )
 const initialTop = `${parseFloat(props.top) + 10}px`
 const hoverTop = props.top
-const { bg, color } = props.style
+const { bg, color } = props.menuStyle
 
 const title = ref()
 nextTick(() => {
