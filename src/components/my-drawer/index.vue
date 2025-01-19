@@ -1,12 +1,16 @@
 <template>
-  <div>
-    <div class="drawer-mask" @click="close" v-if="drawer"></div>
-    <transition name="drawer">
-      <div class="drawer-content" v-if="drawer">
-        <slot name="body"></slot>
+  <teleport to="body">
+    <context-menu>
+      <div :class="name">
+        <div class="drawer-mask" @click="close" v-if="drawer"></div>
+        <transition name="drawer">
+          <div class="drawer-content" v-if="drawer">
+            <slot name="body"></slot>
+          </div>
+        </transition>
       </div>
-    </transition>
-  </div>
+    </context-menu>
+  </teleport>
 </template>
 
 <script setup lang="ts" name="MyDrawer">
@@ -19,11 +23,20 @@ const close = (e: MouseEvent) => {
   drawer.value = false
   emits("close")
 }
-withDefaults(defineProps<{ width?: string; bg?: string; mask?: string }>(), {
-  width: "250px",
-  bg: "white",
-  mask: "#0000005a",
-})
+withDefaults(
+  defineProps<{
+    name?: string
+    width?: string
+    bg?: string
+    mask?: string
+  }>(),
+  {
+    width: "250px",
+    bg: "white",
+    mask: "#0000005a",
+    name: "my-drawer",
+  }
+)
 </script>
 
 <style scoped lang="scss">

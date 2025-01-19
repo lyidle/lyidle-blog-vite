@@ -45,9 +45,6 @@ html[themes="#{$theme}"] {
   --cursor-pointer: url("/assets/cursor/light/link.png") 0 0, pointer;
   --cursor-text: url("/assets/cursor/light/text.png") 18 5, text;
   --cursor-move: url("/assets/cursor/light/move.png") 18 5, move;
-  // 右键菜单 阴影
-  --context-menu-shadow: 0 0 3px rgb(210, 210, 210);
-  --context-menu-title-hr: 1px solid #c9c9c9;
   // 按钮primary
   --primary-btn-bg: #8dbcdc;
   --primary-btn-color: #eef8ff;

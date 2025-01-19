@@ -567,10 +567,14 @@ $preview-callouts-title-gap: 8px;
 
       // 表格
       table {
+        $radius: 10px;
+        width: fit-content;
+        border-radius: $radius;
+        overflow: hidden;
+        box-shadow: var(--doc-table-td-shadow);
         // 设置 表格单元的 样式
         tr {
           border: none;
-          $radius: 10px;
           $header-border: var(--doc-table-header-border);
           $header-bottom-border: var(--doc-table-header-bottom-border);
           $body-border: var(--doc-table-body-border);
@@ -580,12 +584,6 @@ $preview-callouts-title-gap: 8px;
             background-color: var(--doc-table-th-bg);
             border: none;
             color: var(--doc-table-th-color);
-            &:first-child {
-              border-top-left-radius: $radius;
-            }
-            &:last-child {
-              border-top-right-radius: $radius;
-            }
             // 设置 边框
             border-bottom: $header-bottom-border;
             &:not(:last-child) {
@@ -604,16 +602,6 @@ $preview-callouts-title-gap: 8px;
           }
           &:not(:last-child) {
             border-bottom: $body-bottom-border;
-          }
-          &:last-child {
-            > td {
-              &:first-child {
-                border-bottom-left-radius: $radius;
-              }
-              &:last-child {
-                border-bottom-right-radius: $radius;
-              }
-            }
           }
         }
       }

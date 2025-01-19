@@ -180,6 +180,25 @@ export const useGlobalEmitter = () => {
     })
   })
 
+  // 订阅 context-menu 变化事件 组件本身重复使用了多次 导致提示时会提示多次信息
+  let onlyOne: string | null = null
+  mitt.on("ContextMenuChange", (newV: boolean) => {
+    if (newV) {
+      const message = "鼠标美化中~"
+      if (onlyOne !== message) {
+        onlyOne = message
+        ElMessage.success(message)
+      }
+      return
+    }
+
+    const message = "鼠标恢复默认中~"
+    if (onlyOne !== message) {
+      onlyOne = message
+      ElMessage.success(message)
+    }
+  })
+
   onBeforeUnmount(() => {
     // 取消订阅 暗夜切换
     mitt.off("isDark", setTheme)

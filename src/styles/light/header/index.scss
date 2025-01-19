@@ -5,10 +5,37 @@
 @use "../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
+  // 头部区域的颜色
+  $header-color: #203b5b;
+  $header-primary-bg: white;
+  .mini-header-drawer {
+    // 头部区域的颜色
+    --scissors-color: #4b74a4;
+    // 头部小屏drawer
+    --header-drawer-bg: #{$header-primary-bg};
+    --header-drawer-mask: #0000005a;
+    --header-drawer-title-color: #{$header-color};
+    --mini-drawer-pin-bg: #619ec7;
+    --mini-drawer-pin-color: #ecf8ff;
+    // 头部小屏drawer导航的菜单颜色
+    $header-mini-bg-hover: #57aae1;
+    $header-mini-color-hover: #e9f6ff;
+    --header-mini-title-bg: transparent;
+    --header-mini-title-bg-hover: #{$header-mini-bg-hover};
+    --header-mini-title-color: var(--header-color);
+    --header-mini-title-color-hover: #{$header-mini-color-hover};
+    --header-mini-subtitle-bg: transparent;
+    --header-mini-subtitle-bg-hover: #{color.adjust(
+        $header-mini-bg-hover,
+        $lightness: 10%
+      )};
+    --header-mini-subtitle-color: var(--header-color);
+    --header-mini-subtitle-color-hover: #{$header-mini-color-hover};
+  }
   .global-header {
     // 头部区域的颜色
-    --header-color: #203b5b;
-    --header-primary-bg: white;
+    --header-color: #{$header-color};
+    --header-primary-bg: #{$header-primary-bg};
     // 头部没有吸附的颜色
     --header-bg-initial: transparent;
     --header-color-initial: white;
@@ -26,23 +53,5 @@ html[themes="#{$theme}"] {
     // 头部导航设置
     --header-setting-bg: var(--header-primary-bg);
     --header-setting-label-color: var(--header-color);
-    // 头部小屏drawer导航的菜单颜色
-    $header-mini-bg-hover: #57aae1;
-    $header-mini-color-hover: #e9f6ff;
-    --header-mini-title-bg: transparent;
-    --header-mini-title-bg-hover: #{$header-mini-bg-hover};
-    --header-mini-title-color: var(--header-color);
-    --header-mini-title-color-hover: #{$header-mini-color-hover};
-    --header-mini-subtitle-bg: transparent;
-    --header-mini-subtitle-bg-hover: #{color.adjust(
-        $header-mini-bg-hover,
-        $lightness: 10%
-      )};
-    --header-mini-subtitle-color: var(--header-color);
-    --header-mini-subtitle-color-hover: #{$header-mini-color-hover};
-    // 头部小屏drawer
-    --header-drawer-bg: var(--header-primary-bg);
-    --header-drawer-mask: #0000005a;
-    --header-drawer-title-color: var(--header-color);
   }
 }

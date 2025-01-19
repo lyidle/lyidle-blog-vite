@@ -82,5 +82,6 @@ declare module 'vue' {
     Ribbon: typeof import('./src/components/Ribbon/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Tools: typeof import('./src/components/tools/index.vue')['default']
   }
 }

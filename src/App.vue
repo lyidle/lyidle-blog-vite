@@ -1,6 +1,7 @@
 <template>
-  <animations-scrollTop></animations-scrollTop>
   <context-menu>
+    <animations-scrollTop></animations-scrollTop>
+    <Tools></Tools>
     <layout-theme></layout-theme>
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="route.path" />

@@ -58,25 +58,6 @@
         <div class="item">
           <span
             class="label cur-pointer"
-            @click="isDebouncedMenuHighlight = !isDebouncedMenuHighlight"
-          >
-            <span
-              >文章的目录的高亮({{
-                isDebouncedMenuHighlight ? "防抖" : "不防抖"
-              }})</span
-            >
-          </span>
-          <my-switch
-            v-model="isDebouncedMenuHighlight"
-            inline-prompt
-            :active-icon="aside"
-            :inactive-icon="unaside"
-            size="small"
-          />
-        </div>
-        <div class="item">
-          <span
-            class="label cur-pointer"
             @click="isScrollOrnaments = !isScrollOrnaments"
           >
             <span>滚动挂饰({{ isScrollOrnaments ? "开启" : "不开启" }})</span>
@@ -105,7 +86,6 @@ const {
   contentIsReverse,
   isPanelPositionSaved,
   docMenuIsFixed,
-  isDebouncedMenuHighlight,
   isScrollOrnaments,
   // #region 侧边栏的 显示与否
   asideCounts,

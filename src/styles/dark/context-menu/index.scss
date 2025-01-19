@@ -2,8 +2,12 @@
 @use "../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
-  --context-menu-bg: #3d5b6e;
-  --context-menu-bg-hover: #5c8096;
-  --context-menu-color: #c6d6ed;
-  --context-menu-color-hover: #ffffff;
+  .menu-context {
+    --context-menu-bg: #3d5b6e;
+    --context-menu-bg-hover: #5c8096;
+    --context-menu-color: #c6d6ed;
+    --context-menu-color-hover: #ffffff;
+    --context-menu-shadow: 0 0 3px rgb(42, 42, 42);
+    --context-menu-title-hr: 1px solid #6887a8;
+  }
 }

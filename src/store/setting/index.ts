@@ -83,14 +83,19 @@ export const useSettingStore = defineStore(
       if (num === 0) isAside.value = false
       return num
     })
-    // 目录的高亮滚动 是否防抖
-    const isDebouncedMenuHighlight = ref(true)
     // 页面的百分比记录
     const scrollPercentage = ref<number>(0)
     // 是否开启右侧的 滚动挂饰 下降动画
     const isScrollOrnaments = ref<boolean>(true)
     // #endregion 布局显示与隐藏设置
 
+    // #region 功能的开启与否
+    const isContextMenu = ref<boolean>(true)
+    const isMusic = ref<boolean>(true)
+    // #endregion 功能的开启与否
+
+    /* 右键菜单复制功能 */
+    const isCopyText = ref<boolean>(false)
     return {
       // 头部设置
       isDark,
@@ -129,7 +134,9 @@ export const useSettingStore = defineStore(
       scrollPercentage,
       isScrollOrnaments,
       // #endregion 侧边栏的 显示与否
-      isDebouncedMenuHighlight,
+      isContextMenu,
+      isMusic,
+      isCopyText,
     }
   },
   {
@@ -166,7 +173,7 @@ export const useSettingStore = defineStore(
         "isAsideDocMenu",
         "isScrollOrnaments",
         // #endregion 侧边栏的 显示与否
-        "isDebouncedMenuHighlight",
+        "isContextMenu",
       ],
     },
   }

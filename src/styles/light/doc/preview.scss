@@ -47,6 +47,7 @@ html[themes="#{$theme}"] {
     --doc-table-th-color: white;
     --doc-table-td-bg: #cee1ed;
     --doc-table-td-color: $primary-color;
+    --doc-table-td-shadow: 1px 1px 5px #cee1ed;
     // 表格 设置 边框
     $table-head-border-size: 2px;
     $table-head-border-bottom-size: 4px;

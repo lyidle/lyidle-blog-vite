@@ -1,9 +1,7 @@
 // 引入类型
+import { observer, ObserverCallback } from "@/utils/observer"
 import type { TocNode } from "../vditorPreview/types"
-// 引入防抖函数
-import debounce from "@/utils/debounce"
-// 引入仓库
-import { useSettingStore } from "@/store/setting"
+import { mitt } from "@/utils/emitter"
 
 // 导航条的高度
 let headerHeight = 0
@@ -21,91 +19,95 @@ export const useSideMenuHighlight = (
 
   // 存储标题
   const headings: HTMLHeadingElement[] = []
-  const header = document.querySelector(".global-header") as HTMLDivElement
+  // 存储目录 建立映射关系
+  const menus = new Map<string, HTMLAnchorElement>()
 
   // 获取header 的 高度
+  const header = document.querySelector(".global-header") as HTMLDivElement
   if (header) headerHeight = header.offsetHeight - 3
 
   // 遍历添加标题
   sideMenuTree.forEach((item) => {
     const hash = decodeURIComponent(new URL(item.href).hash)
     const dom = document.querySelector(hash) as HTMLHeadingElement
-    if (dom) headings.push(dom)
+    // 添加 目录
+    if (hash) menus.set(hash.substring(1), item)
+    // 添加 标题
+    if (dom) {
+      headings.push(dom)
+    }
   })
 
-  // 高亮函数
-  const highlight = (id: string) => {
-    sideMenuTree.forEach((item) => {
-      item.classList.remove("active")
-    })
-    const tar = document.querySelector(`.doc-menu-tree li a[href='#${id}']`)
-    tar && tar.classList.add("active")
+  // 存储监听器，用于组件销毁时结束监听
+  const observerItems: ObserverCallback[] = []
+
+  // 当前高亮的元素 ID
+  let activeId: string | null = null
+
+  // 用于 控制 点击时不执行监听
+  let flag = true
+  // 用于 控制 点击时不执行监听 回调函数
+  const isObserver = (is: boolean = true) => {
+    flag = is
   }
 
-  // 滚动函数
-  let scrollCallback: (() => void) | null = null
+  // 监听器
+  const headinsObserver = () => {
+    // 默认第一个高亮
+    sideMenuTree[0].classList.add("active")
+    // 监听 是否取消observer 点击时不需要代理
+    mitt.on("headinsObserver", isObserver)
+    headings.forEach((item) => {
+      if (!item) return // 如果 item 不存在，直接跳过
+      const options: ObserverCallback = {
+        enter: (entry) => {
+          if (!flag) return
+          const tar = menus.get(item.id)
+          // 进入视口的元素高亮
+          if (activeId !== item.id) {
+            // 移除之前的高亮
+            if (activeId) {
+              const prev = menus.get(activeId)
+              prev?.classList.remove("active")
+            }
 
-  const normalScroll = () => {
-    // 最后一个元素
-    const lastHeading = headings[headings.length - 1]
-    // 如果最后一个元素的顶部为负数 则 高亮
-    if (lastHeading.getBoundingClientRect().top < 0) {
-      highlight(lastHeading.id)
-      return
-    }
+            // 处理点击后 移动 会有两个高亮的情况
+            const active = document.querySelector<HTMLAnchorElement>(
+              ".doc-menu-tree li a[href^='#'].active"
+            )
+            active?.classList.remove("active")
 
-    // 获取几何信息集合
-    const rects = headings.map((item) => item.getBoundingClientRect())
-
-    // 遍历 首个出现的高亮
-    for (let i = 0; i < rects.length; i++) {
-      const heading = headings[i]
-      const rect = rects[i]
-      const top = rect.top
-      // 首个出现的高亮
-      if (top >= headerHeight) {
-        highlight(heading.id)
-        break
+            // 设置当前高亮
+            tar?.classList.add("active")
+            activeId = item.id
+          }
+        },
       }
-    }
+      // 存储监听器配置
+      observerItems.push(options)
+      observer(item, options, {
+        options: {
+          // 顶部需要在 header 之下
+          rootMargin: `${headerHeight}px 0px -80% 0px`, // 检测顶部交叉
+        },
+      })
+    })
   }
 
-  const debouncedScroll = debounce(() => {
-    normalScroll()
-  }, 300)
-
-  // 提取需要的函数
-  const { isDebouncedMenuHighlight } = storeToRefs(useSettingStore())
-
-  let isDestroy = false
+  // 调用 交叉传感器监听
+  headinsObserver()
 
   // 销毁的回调
   const destroy = () => {
-    if (isDestroy) {
-      scrollCallback && window.removeEventListener("scroll", scrollCallback)
-      isDestroy = false
-    }
+    // 销毁监听
+    observerItems.forEach((item) => {
+      item.stop?.()
+    })
+    // 清除map
+    menus.clear()
+    // 清除监听
+    mitt.off("headinsObserver", isObserver)
   }
-
-  watch(
-    () => isDebouncedMenuHighlight.value,
-    (newV) => {
-      // 销毁之前的 监听
-      destroy()
-      if (newV) {
-        scrollCallback = debouncedScroll
-        isDestroy = true
-        window.addEventListener("scroll", scrollCallback)
-      } else {
-        scrollCallback = normalScroll
-        isDestroy = true
-        window.addEventListener("scroll", scrollCallback)
-      }
-    },
-    {
-      immediate: true,
-    }
-  )
 
   return destroy
 }

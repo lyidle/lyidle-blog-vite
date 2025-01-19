@@ -23,7 +23,7 @@
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.271",
+    "@iconify/json": "^2.2.297",
     "@types/node": "^22.7.4",
     "@unocss/preset-icons": "^0.64.0",
     "@unocss/preset-rem-to-px": "^0.64.1",

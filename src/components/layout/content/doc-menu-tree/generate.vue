@@ -3,8 +3,8 @@
     <li v-for="item in menuData" :key="item.id" :class="'item-' + item.level">
       <a
         :href="`#${item.id}`"
-        :class="{ active: item.active }"
-        @click.prevent="scrollTo(`#${item.id}`)"
+        @click.prevent="scrollTo($event, `#${item.id}`)"
+        ref="anchor"
         >{{ item.text }}</a
       >
       <GenerateMenuTree v-if="item.children.length" :menuData="item.children" />
@@ -14,16 +14,42 @@
 
 <script setup lang="ts" name="GenerateMenuTree">
 // 引入 类型
+import { mitt } from "@/utils/emitter"
 import { TocNode } from "@/views/doc/types"
 defineProps<{ menuData?: TocNode[] }>()
 
 // 缓存
 let headerHeight: null | number = null
-let heightMap = new Map()
+let scrollToHeight: Map<string, number> | null = null
+const anchor = ref()
+let menus: HTMLAnchorElement[] | null = null
 
-const scrollTo = (id: string) => {
+// 点击高亮
+const clickHighlight = (tar: HTMLAnchorElement) => {
+  // 停止监听
+  mitt.emit("headinsObserver", false)
+  if (!menus)
+    menus = document.querySelectorAll<HTMLAnchorElement>(
+      ".doc-menu-tree li a[href^='#']"
+    ) as unknown as HTMLAnchorElement[]
+  // 排他
+  menus.forEach((item) => {
+    item.classList.remove("active")
+  })
+  tar.classList.add("active")
+}
+
+// 点击 滚动
+const scrollTo = (e: MouseEvent, id: string) => {
   const tar = document.querySelector(id) as HTMLHeadingElement
   if (!tar) return
+
+  // 传入 对应需要高亮的信息
+  const target = e.target as HTMLAnchorElement
+  clickHighlight(target)
+
+  // 初始化 Map
+  if (!scrollToHeight) scrollToHeight = new Map()
 
   // 缓存不存在获取高度
   if (!headerHeight)
@@ -31,7 +57,7 @@ const scrollTo = (id: string) => {
       ?.offsetHeight
 
   // 有缓存 直接滚动
-  const height = heightMap.get(id)
+  const height = scrollToHeight.get(id)
   if (height) {
     window.scrollTo({
       top: height,
@@ -49,17 +75,30 @@ const scrollTo = (id: string) => {
     3
 
   // 无缓存则保存后滚动
-  heightMap.set(id, height)
-
+  scrollToHeight.set(id, toScroll)
+  window.addEventListener("animationend", () => {})
   window.scrollTo({
     top: toScroll,
     behavior: "smooth",
   })
+
+  let timeoutId: NodeJS.Timeout | null = null
+  const onScroll = () => {
+    if (timeoutId) clearTimeout(timeoutId)
+    // 设置一个延迟，当滚动停止后触发回调
+    timeoutId = setTimeout(() => {
+      window.removeEventListener("scroll", onScroll) // 移除监听
+      // 高亮完毕 继续监听
+      mitt.emit("headinsObserver", true)
+    }, 100) // 等待 100ms 后确认滚动完成
+  }
+
+  window.addEventListener("scroll", onScroll)
 }
 
 onBeforeUnmount(() => {
   // 清除Map
-  heightMap.clear()
+  scrollToHeight?.clear()
 })
 </script>
 
