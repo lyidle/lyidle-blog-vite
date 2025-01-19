@@ -12,21 +12,21 @@
       <el-form-item label="账号" prop="account">
         <el-input
           placeholder="Account"
-          v-model="regData.account"
+          v-model.trim="regData.account"
           :prefix-icon="userIcon"
         ></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="nickName">
         <el-input
           placeholder="NickName"
-          v-model="regData.nickName"
+          v-model.trim="regData.nickName"
           :prefix-icon="userIcon"
         ></el-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input
           placeholder="E-Mail"
-          v-model="regData.email"
+          v-model.trim="regData.email"
           :prefix-icon="emailIcon"
         ></el-input>
       </el-form-item>
@@ -178,26 +178,30 @@ const regRules = reactive({
 })
 // 处理注册
 const handlerReg = async () => {
-  await regForm.value.validate()
-  await reqReg(regData)
-  ElMessage.success("注册成功~")
-  toLogin()
+  try {
+    await regForm.value.validate()
+    await reqReg(regData)
+    ElMessage.success("注册成功~")
+    toLogin()
+  } catch (error) {}
 }
 // 发送验证码按钮
 const handlerCode = async () => {
-  await regForm.value.clearValidate("code")
-  await regForm.value.validateField("email")
-  await reqRegEmail({ email: regData.email })
-  ElMessage.success("验证码发送成功，有效时间5分钟~")
-  codeIsActive.value = false
-  const tim = setInterval(() => {
-    --code.value
-    if (code.value < 0) {
-      code.value = initCode
-      codeIsActive.value = true
-      clearInterval(tim)
-    }
-  }, 1000)
+  try {
+    await regForm.value.clearValidate("code")
+    await regForm.value.validateField("email")
+    await reqRegEmail({ email: regData.email })
+    ElMessage.success("验证码发送成功，有效时间5分钟~")
+    codeIsActive.value = false
+    const tim = setInterval(() => {
+      --code.value
+      if (code.value < 0) {
+        code.value = initCode
+        codeIsActive.value = true
+        clearInterval(tim)
+      }
+    }, 1000)
+  } catch (error) {}
 }
 defineExpose({ reg })
 </script>

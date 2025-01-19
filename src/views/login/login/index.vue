@@ -12,7 +12,7 @@
       <el-form-item label="账号" prop="account">
         <el-input
           placeholder="Account or Email"
-          v-model="loginData.account"
+          v-model.trim="loginData.account"
           :prefix-icon="userIcon"
         ></el-input>
       </el-form-item>
@@ -93,10 +93,12 @@ const login = ref()
 
 // 处理登录
 const handlerLogin = async () => {
-  await loginForm.value.validateField()
-  const result = await reqLogin(loginData)
-  userToken.value = result?.token
-  ElMessage.success("登录成功~")
+  try {
+    await loginForm.value.validateField()
+    const result = await reqLogin(loginData)
+    userToken.value = result?.token
+    ElMessage.success("登录成功~")
+  } catch (error) {}
 }
 // 前往注册的切换动画
 const toReg = () => {

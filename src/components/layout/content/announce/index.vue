@@ -55,14 +55,15 @@ const region_userIp = ref<string | null>()
 
 // 发起请求
 const reqAnnounce = async () => {
-  const result = await getAnnounce()
-  console.log
-  announce.value = result.announce
-  // 设置 region 的值
-  region_city.value = result.region?.city
-  region_country.value = result.region?.country
-  region_province.value = result.region?.province
-  region_userIp.value = result.region?.userIp
+  try {
+    const result = await getAnnounce()
+    announce.value = result.announce
+    // 设置 region 的值
+    region_city.value = result.region?.city
+    region_country.value = result.region?.country
+    region_province.value = result.region?.province
+    region_userIp.value = result.region?.userIp
+  } catch (error) {}
 }
 
 // 初始化 发起请求

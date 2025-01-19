@@ -25,11 +25,11 @@ request.interceptors.response.use(
   (response) => {
     // 简化数据 直接得到data
     if (response.data.code === 200) return response.data?.data
-    handlerSuccessErrorMessage(response)
+    return handlerSuccessErrorMessage(response)
   },
   (error) => {
     // 处理错误信息
-    handleErrorMessage(error)
+    return handleErrorMessage(error)
   }
 )
 // 对外暴露

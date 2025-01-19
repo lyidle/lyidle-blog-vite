@@ -3,19 +3,23 @@
     <layout-content-aside-card>
       <template #body>
         <div class="aside-container aside-userinfo">
-          <div class="pin" content="admin" v-if="!userAccount"></div>
+          <div
+            class="pin"
+            :content="adminAccount ? `admin` : 'null'"
+            :style="{
+              '--pin-left': adminAccount ? '-0.5rem' : '0rem',
+              '--pin-top': adminAccount ? '0.9375rem' : '0.9375rem',
+            }"
+            v-if="!userToken"
+          ></div>
           <div class="userInfo">
-            <div class="avater">
-              <router-link :to="`/space/${userAccount || adminAccount}`">
+            <div class="avatar">
+              <router-link :to="`/space/${showAccount}`">
                 <img
                   :style="{
                     background: 'no-repeat center',
                     backgroundSize: 'cover',
-                    backgroundImage:
-                      userAvatar ||
-                      (userAccount
-                        ? 'var(--default-avater)'
-                        : adminAvatar || 'var(--default-avater)'),
+                    backgroundImage: showAvatar,
                   }"
                   alt=""
                   class="w-100% h-100% object-cover"
@@ -23,10 +27,10 @@
               </router-link>
             </div>
             <div class="username font-size-1.5625rem text-center cur-text">
-              {{ userNickName || (userAccount ? "" : adminNickName) }}
+              {{ showNickName }}
             </div>
             <div class="signer text-center cur-text">
-              {{ userSigner || (userAccount ? "" : adminSigner) }}
+              {{ showSigner }}
             </div>
           </div>
           <div class="side-counts-container">
@@ -83,32 +87,27 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
-// 提取需要的数据
+// 引入 处理后的数据
+import { useShowUserinfo } from "@/hooks/showUserinfo"
 const {
-  // 用户信息
-  userAccount,
-  userNickName,
-  userAvatar,
-  userSigner,
-} = storeToRefs(useUserStore())
-const {
-  // 管理员信息 用于展示没登陆的默认信息
-  adminAccount,
-  adminNickName,
-  adminAvatar,
-  adminSigner,
   // 网站 所有者信息
+  adminAccount,
   ownerWeChat,
   ownerQQ,
   ownerBiliBili,
   ownerEmail,
 } = storeToRefs(useOwnerStore())
+// 提取需要展示的信息
+const { userToken, showAccount, showNickName, showAvatar, showSigner } =
+  useShowUserinfo()
 // 提取请求
 const { reqUserInfo } = useUserStore()
+
 // 发起请求
 onMounted(async () => {
   await reqUserInfo()
 })
+
 const copyToClipboard = async (type: string, text: string) => {
   try {
     await navigator.clipboard.writeText(text)
@@ -144,8 +143,8 @@ $userinfo-btn-car-size: 25px;
       display: block;
       position: absolute;
       transform: rotate(295deg);
-      left: -0.5rem;
-      top: 0.9375rem;
+      top: var(--pin-top, 0);
+      left: var(--pin-left, 0);
     }
   }
   .userInfo {
@@ -153,7 +152,7 @@ $userinfo-btn-car-size: 25px;
     display: flex;
     flex-direction: column;
     gap: $userinfo-gap;
-    .avater {
+    .avatar {
       width: $avater-size;
       height: $avater-size;
       border-radius: 50%;

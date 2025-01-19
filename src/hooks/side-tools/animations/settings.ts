@@ -10,7 +10,7 @@ export const useSettingsAnimation = (
   settings: Ref<HTMLDivElement | undefined>,
   timeout = 500
 ) => {
-  let timer: ReturnType<typeof setTimeout> | null = null // 定时器引用
+  let timer: setTimout | null = null // 定时器引用
 
   /**
    * 工具栏进入动画

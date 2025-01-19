@@ -116,13 +116,13 @@ const toggle = (id: number | string) => {
   ) as subStroreType
   if (flag) {
     element.style.height = height + "px"
-    toggle.classList.remove(props.style.icon?.plus as string)
-    toggle.classList.add(props.style.icon?.minus as string)
+    toggle.classList.remove(icon?.plus as string)
+    toggle.classList.add(icon?.minus as string)
     subStore.set(`${id}`, { height, flag: false, element, toggle })
   } else {
     element.style.height = "0"
-    toggle.classList.remove(props.style.icon?.minus as string)
-    toggle.classList.add(props.style.icon?.plus as string)
+    toggle.classList.remove(icon?.minus as string)
+    toggle.classList.add(icon?.plus as string)
     subStore.set(`${id}`, { height, flag: true, element, toggle })
   }
 }

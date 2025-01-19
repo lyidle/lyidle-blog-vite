@@ -82,7 +82,8 @@ const scrollTo = (e: MouseEvent, id: string) => {
     behavior: "smooth",
   })
 
-  let timeoutId: NodeJS.Timeout | null = null
+  // 用于 监听 滚动是否完成
+  let timeoutId: setTimout | null = null
   const onScroll = () => {
     if (timeoutId) clearTimeout(timeoutId)
     // 设置一个延迟，当滚动停止后触发回调

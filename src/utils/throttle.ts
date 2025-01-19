@@ -2,7 +2,7 @@ export default function throttle<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
 ): ((...args: Parameters<T>) => void) & { cancel: () => void } {
-  let timer: ReturnType<typeof setTimeout> | null = null
+  let timer: setTimout | null = null
 
   // 节流函数
   const throttled = function (this: any, ...args: Parameters<T>) {

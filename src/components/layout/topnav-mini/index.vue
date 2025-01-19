@@ -29,23 +29,35 @@
     >
       <template #body>
         <div class="top-avater-container">
-          <div class="pin" content="admin" v-if="!userAccount"></div>
-          <!-- 头像 -->
-          <router-link :to="`/space/${userAccount || adminAccount}`">
-            <img
+          <div>
+            <div
+              class="pin"
+              :content="adminAccount ? `admin` : 'null'"
               :style="{
-                background: 'no-repeat center',
-                backgroundSize: 'cover',
-                backgroundImage:
-                  userAvatar ||
-                  (userAccount
-                    ? 'var(--default-avater)'
-                    : adminAvatar || 'var(--default-avater)'),
+                '--pin-left': adminAccount ? '-0.5rem' : '0rem',
+                '--pin-top': adminAccount ? '0.9375rem' : '0.9375rem',
               }"
-              alt=""
-              class="avater"
-            />
-          </router-link>
+              v-if="!userToken"
+            ></div>
+            <!-- 头像 -->
+            <router-link
+              :to="`/space/${(userToken && userAccount) || adminAccount}`"
+            >
+              <img
+                :style="{
+                  background: 'no-repeat center',
+                  backgroundSize: 'cover',
+                  backgroundImage:
+                    (userToken && userAvatar) ||
+                    (userToken && userAccount
+                      ? 'var(--default-avatar)'
+                      : adminAvatar || 'var(--default-avatar)'),
+                }"
+                alt=""
+                class="avatar"
+              />
+            </router-link>
+          </div>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
           <layout-header-menu-mini :style></layout-header-menu-mini>
@@ -61,6 +73,7 @@ import { useOwnerStore } from "@/store/owner"
 // 提取需要的信息
 const {
   // 用户信息
+  userToken,
   userAccount,
   userAvatar,
 } = storeToRefs(useUserStore())
@@ -129,12 +142,12 @@ $header-content-pd: 20px;
         display: block;
         position: absolute;
         transform: rotate(295deg);
-        left: -0.5rem;
-        top: 0.9375rem;
+        top: var(--pin-top, 0);
+        left: var(--pin-left, 0);
       }
     }
 
-    .avater {
+    .avatar {
       width: 100px;
       height: 100px;
       clip-path: ellipse();

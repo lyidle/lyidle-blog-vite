@@ -47,8 +47,10 @@ import type { GetRecentPages } from "@/api/article/types/getRecentPages"
 const pages = ref<GetRecentPages["data"] | null>()
 // 发起请求
 const reqRecentPages = async () => {
-  const result = await getRecentPages()
-  result ? (pages.value = result) : undefined
+  try {
+    const result = await getRecentPages()
+    result ? (pages.value = result) : undefined
+  } catch (error) {}
 }
 
 // 初始化 发起请求

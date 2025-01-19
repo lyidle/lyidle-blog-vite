@@ -17,8 +17,10 @@ export const useUserStore = defineStore(
 
     // 获取 公开的菜单数据
     const reqUserMenuList = async () => {
-      const result = await getMenuList()
-      userMenuList.value = result
+      try {
+        const result = await getMenuList()
+        userMenuList.value = result
+      } catch (error) {}
     }
 
     // 用户信息
@@ -33,25 +35,41 @@ export const useUserStore = defineStore(
     const userTags = ref<number>()
     const userCategories = ref<number>()
     const reqUserInfo = async () => {
-      const result = await getUserInfo()
-      // 有用户信息 赋值
-      if (result) {
-        userRole.value = result?.[0]?.role || []
-        userAccount.value = result?.[0]?.account
-        userNickName.value = result?.[0]?.nickName
-        userEmail.value = result?.[0]?.email
-        userAvatar.value = result?.[0]?.avatar || null
-        userSigner.value = result?.[0]?.signer || null
-        const { pages, tags, categories } = tinyCounts(result?.[0]?.Articles)
-        userPages.value = pages
-        userTags.value = tags
-        userCategories.value = categories
-        return
-      }
-      // 如果没有登录
-      // 获取admin的信息
-      const { getAdminUserInfo } = useOwnerStore()
-      await getAdminUserInfo()
+      try {
+        const result = await getUserInfo()
+        // 有用户信息 赋值
+        if (result) {
+          userRole.value = result?.[0]?.role || []
+          userAccount.value = result?.[0]?.account
+          userNickName.value = result?.[0]?.nickName
+          userEmail.value = result?.[0]?.email
+          userAvatar.value = result?.[0]?.avatar || null
+          userSigner.value = result?.[0]?.signer || null
+          const { pages, tags, categories } = tinyCounts(result?.[0]?.Articles)
+          userPages.value = pages
+          userTags.value = tags
+          userCategories.value = categories
+          return
+        }
+        // 如果没有登录
+        // 获取admin的信息
+        const { getAdminUserInfo } = useOwnerStore()
+        await getAdminUserInfo()
+      } catch (error) {}
+    }
+
+    // 重置数据
+    const userStoreReset = () => {
+      userAccount.value = ""
+      userNickName.value = ""
+      userEmail.value = ""
+      userAvatar.value = ""
+      userSigner.value = ""
+      userRole.value = []
+      userToken.value = ""
+      userPages.value = 0
+      userTags.value = 0
+      userCategories.value = 0
     }
 
     return {
@@ -69,6 +87,7 @@ export const useUserStore = defineStore(
       userTags,
       userCategories,
       userToken,
+      userStoreReset,
     }
   },
   // 对用户信息加密 有token

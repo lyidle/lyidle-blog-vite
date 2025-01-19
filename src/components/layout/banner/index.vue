@@ -1,5 +1,9 @@
 <template>
   <context-menu class="global-banner">
+    <!-- 用于判断是否离开视口 固定header -->
+    <div
+      class="banner-observer absolute top-0 left-0 z-3 h-10px w-100% pointer-events-none"
+    ></div>
     <div
       class="banner"
       :style="{
@@ -12,7 +16,11 @@
       <div class="detail" v-if="context">
         <div class="title cur-text">{{ welcome }}</div>
         <div class="subtitle cur-text">
-          {{ poetry?.content }}--{{ poetry?.author }}
+          <div v-if="poetry?.author">
+            {{ poetry?.content }}--{{ poetry?.author }}
+          </div>
+          <!-- 默认的展示诗词 -->
+          <div v-else>夜来疏雨鸣金井，一叶舞空红浅。--王月山</div>
         </div>
       </div>
     </div>
@@ -106,8 +114,10 @@ watch(
 
 // 发起请求
 onMounted(async () => {
-  const data = await getPoetry()
-  poetry.value = data
+  try {
+    const data = await getPoetry()
+    poetry.value = data
+  } catch (error) {}
 })
 </script>
 

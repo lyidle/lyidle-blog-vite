@@ -6,7 +6,7 @@
         :style="{ width: isShowAside ? undefined : '100%' }"
       >
         <slot name="content-start"></slot>
-        <div class="contain">
+        <div class="contain" :style="{ '--pages-card-contentNum': contentNum }">
           <slot name="content-card"></slot>
         </div>
         <slot name="content-end"></slot>
@@ -163,17 +163,20 @@ $aside-width: var(--aside-width);
         }
         // 内容区的卡片
         ::v-deep(.layout-content) {
-          flex: 0 0 calc(100% / v-bind(contentNum) - $item-gap);
+          flex: 0 0 calc(100% / var(--pages-card-contentNum) - $item-gap);
           transition: transform var(--primary-during),
             flex var(--content-card-flex-during);
           @include media(md) {
-            flex: 0 0 calc(100% / v-bind(contentNum-1) - $item-gap);
+            flex: 0 0
+              calc(100% / (var(--pages-card-contentNum) - 1) - $item-gap);
           }
           @include media(sm) {
-            flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+            flex: 0 0
+              calc(100% / (var(--pages-card-contentNum) - 2) - $item-gap);
           }
           @include media(xs) {
-            flex: 0 0 calc(100% / v-bind(contentNum-2) - $item-gap);
+            flex: 0 0
+              calc(100% / (var(--pages-card-contentNum) - 2) - $item-gap);
           }
           @include media(mi) {
             flex: unset;

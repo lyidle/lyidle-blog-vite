@@ -50,7 +50,7 @@
 <script setup lang="ts" name="MyCarousel">
 import moment from "@/utils/moment"
 // 引入类型
-import { Datum } from "@/api/article/types/getCarousel"
+import type { Datum } from "@/api/article/types/getCarousel"
 </script>
 <style scoped lang="scss">
 $carousel-height: 260px;

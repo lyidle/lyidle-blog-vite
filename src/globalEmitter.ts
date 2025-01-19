@@ -199,6 +199,7 @@ export const useGlobalEmitter = () => {
     }
   })
 
+  // 监听 路由的跳转
   onBeforeUnmount(() => {
     // 取消订阅 暗夜切换
     mitt.off("isDark", setTheme)

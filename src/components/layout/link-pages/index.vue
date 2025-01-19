@@ -1,54 +1,31 @@
 <template>
   <div class="side-header-title">
-    <router-link
-      class="contain"
-      :to="`/user/doc/${userAccount || adminAccount}`"
-    >
+    <router-link class="contain" :to="`/user/doc/${showAccount}`">
       <div class="title">文章</div>
       <div class="content text-14px">
-        {{ userAccount ? userPages : adminPages }}
+        {{ showPages || 0 }}
       </div>
     </router-link>
-    <router-link
-      class="contain"
-      :to="`/user/tags/${userAccount || adminAccount}`"
-    >
+    <router-link class="contain" :to="`/user/tags/${showTags}`">
       <div class="title">标签</div>
       <div class="content text-14px">
-        {{ userAccount ? userTags : adminTags }}
+        {{ showCategories || 0 }}
       </div>
     </router-link>
-    <router-link
-      class="contain"
-      :to="`/user/categories/${userAccount || adminAccount}`"
-    >
+    <router-link class="contain" :to="`/user/categories/${showAccount}`">
       <div class="title">分类</div>
       <div class="content text-14px">
-        {{ userAccount ? userCategories : adminCategories }}
+        {{ showCategories || 0 }}
       </div>
     </router-link>
   </div>
 </template>
 
 <script setup lang="ts" name="LinkPages">
-// 引入仓库
-import { useUserStore } from "@/store/user"
-import { useOwnerStore } from "@/store/owner"
-// 提取需要的数据
-const {
-  // 用户信息
-  userAccount,
-  userPages,
-  userTags,
-  userCategories,
-} = storeToRefs(useUserStore())
-const {
-  // 管理员信息 用于展示没登陆的默认信息
-  adminAccount,
-  adminPages,
-  adminTags,
-  adminCategories,
-} = storeToRefs(useOwnerStore())
+// 引入 处理后的数据
+import { useShowUserinfo } from "@/hooks/showUserinfo"
+// 提取需要展示的信息
+const { showAccount, showPages, showTags, showCategories } = useShowUserinfo()
 </script>
 
 <style scoped lang="scss">

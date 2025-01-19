@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 // 引入类型
-import { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
+import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
 const style = {
   bg: "var(--header-menu-bg)",
   bgHover: "var(--header-menu-bg-hover)",

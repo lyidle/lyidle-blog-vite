@@ -13,7 +13,8 @@ const { User } = require("@/db/models")
 const { delKey } = require("@/utils/redis")
 router.get("/", async (req, res, next) => {
   try {
-    const { account, password } = req.query
+    const { account: userAccount, password } = req.query
+    const account = (userAccount as string).trim()
     if (!accountReg.reg.test(account)) {
       return res.result(void 0, accountReg.msg, false)
     }

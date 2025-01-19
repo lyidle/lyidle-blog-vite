@@ -5,6 +5,10 @@
       ref="carousel"
       @mouseenter="enterCb"
       @mouseleave="leaveCb"
+      :style="{
+        '--carousel-len': len,
+        '--carousel-dur': transit,
+      }"
     >
       <div class="content" ref="content">
         <!--key 有id就使用id 没有就使用index -->
@@ -82,7 +86,7 @@ const props = withDefaults(
 )
 const index = ref(0) //轮播的索引
 const dur = props.dur //过渡时间
-const transit = dur / 1000 + "s" //过渡事件
+const transit = dur / 1000 + "s" //过渡 动画的时间
 const arrowDur = 0.5 //切换按钮 显示与隐藏的过渡时间
 const gap = props.gap //自动轮播的间隔时间
 const carousel = ref() //获取到轮播的容器
@@ -118,7 +122,7 @@ const rollPlay = throttle((add: -1 | 1 = 1) => {
     // 重置索引
     index.value = 0
     // 等到达最后一张的动画播放完毕后
-    let tim: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+    let tim: setTimout | null = setTimeout(() => {
       // 没有动画的 到达到第一张
       move(index.value, false)
       if (tim) clearTimeout(tim)
@@ -132,7 +136,7 @@ const rollPlay = throttle((add: -1 | 1 = 1) => {
     // 无动画的到达最后一张克隆元素
     move(len, false)
     // 到达应该要去的元素位置
-    let tim: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+    let tim: setTimout | null = setTimeout(() => {
       move(--index.value)
       if (tim) clearTimeout(tim)
       tim = null
@@ -276,11 +280,11 @@ $btns-bg: rgba(141, 188, 220, 0.7);
   overflow: hidden;
   position: relative;
   .carousel {
-    width: calc(100% * (v-bind(len) + 1));
+    width: calc(100% * var(--carousel-len) + 1);
     height: 100%;
     position: relative;
     > .content {
-      width: calc(100% / (v-bind(len) + 1));
+      width: calc(100% / var(--carousel-len) + 1);
       height: 100%;
       position: relative;
       display: flex;
@@ -352,7 +356,7 @@ $btns-bg: rgba(141, 188, 220, 0.7);
       /* 内容居中显示 */
       justify-content: center;
       align-items: center;
-      transition: width v-bind(transit), height v-bind(transit);
+      transition: width var(--carousel-dur), height var(--carousel-dur);
       cursor: pointer;
       pointer-events: all;
       &.active {

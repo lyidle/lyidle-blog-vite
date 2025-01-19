@@ -36,6 +36,11 @@ export const handlerSuccessErrorMessage = (response: {
 
   // 如果没有 token 且状态码为 401，不进行错误提示
   if (!token && response.data.code === 401) return
+  // 有 token  且 为 401 则需要清除 信息等操作
+  if (token && response.data.code === 401) {
+    mitt.emit("token expired")
+    return
+  }
 
   // 如果是已知错误码且服务器返回了错误信息，显示错误信息
   if (errorCode.includes(response.data.code)) {
@@ -47,9 +52,10 @@ export const handlerSuccessErrorMessage = (response: {
     messages.forEach((item: string) => {
       ElMessage.error(item)
     })
-    return
+    return Promise.reject(messages)
   }
 
   // 处理其他未知错误
   ElMessage.error("发生未知错误，请稍后再试~")
+  return Promise.reject("发生未知错误，请稍后再试~")
 }

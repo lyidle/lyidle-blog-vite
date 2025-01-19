@@ -165,13 +165,15 @@ const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
-// 根据路由判断
+// 根据路由的params判断
 const route = useRoute()
 // 初始化
 onBeforeMount(async () => {
-  // 获取文章
-  const articles = await getOneArticle(route.params.id as string)
-  article.value = articles
+  try {
+    // 获取文章
+    const articles = await getOneArticle(route.params.id as string)
+    article.value = articles
+  } catch (error) {}
 })
 
 // 存储目录树

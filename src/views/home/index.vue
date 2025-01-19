@@ -49,20 +49,26 @@ const article = ref<Article[]>()
 
 // 获取轮播
 const reqCarousel = async () => {
-  const Carousel = await getCarousel()
-  carousel.value = Carousel
+  try {
+    const Carousel = await getCarousel()
+    carousel.value = Carousel
+  } catch (error) {}
 }
 const pagination = ref<Pagination>()
 // 获取文章
 const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
-  const Article = await getArticle({ currentPage, pageSize })
-  article.value = Article?.article
-  pagination.value = Article?.pagination
+  try {
+    const Article = await getArticle({ currentPage, pageSize })
+    article.value = Article?.article
+    pagination.value = Article?.pagination
+  } catch (error) {}
 }
 // 初始化数据
 onMounted(async () => {
-  await reqCarousel()
-  await reqArticles()
+  try {
+    await reqCarousel()
+    await reqArticles()
+  } catch (error) {}
 })
 </script>
 <style scoped lang="scss"></style>

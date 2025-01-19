@@ -11,7 +11,18 @@ const { codeReg } = require("@/routes/user/reg/RegExp")
 const { User } = require("@/db/models")
 // 注册接口
 router.post("/", async (req, res, next) => {
-  const { account, nickName, email, code, password, confirmPassword } = req.body
+  const {
+    account: userAccount,
+    nickName: userNickName,
+    email: userEmail,
+    code,
+    password,
+    confirmPassword,
+  } = req.body
+  // 去除左右空格
+  const account = userAccount.trim()
+  const nickName = userNickName.trim()
+  const email = userEmail.trim()
   // 密码与确认密码不一致
   if (password !== confirmPassword)
     return res.result(void 0, "账号与密码不一致~", false)
@@ -36,7 +47,7 @@ router.post("/", async (req, res, next) => {
       nickName,
       pwd: password,
       email,
-      role: ["user"],
+      role: [],
     }
     // 通过校验插入用户 插入用户组 sequelize模型设置了验证器
     await User.create(user)

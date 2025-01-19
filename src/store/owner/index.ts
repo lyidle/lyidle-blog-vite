@@ -18,15 +18,17 @@ export const useOwnerStore = defineStore("Owner", () => {
   const ownerEmail = ref<string>()
   // 发起请求
   const getAdminUserInfo = async () => {
-    const adminResult = await searchUser({ role: "admin" })
-    adminAccount.value = adminResult?.[0]?.account
-    adminNickName.value = adminResult?.[0]?.nickName
-    adminAvatar.value = adminResult?.[0]?.avatar || null
-    adminSigner.value = adminResult?.[0]?.signer || null
-    const { pages, tags, categories } = tinyCounts(adminResult?.[0]?.Articles)
-    adminPages.value = pages
-    adminTags.value = tags
-    adminCategories.value = categories
+    try {
+      const adminResult = await searchUser({ role: "admin" })
+      adminAccount.value = adminResult?.[0]?.account
+      adminNickName.value = adminResult?.[0]?.nickName
+      adminAvatar.value = adminResult?.[0]?.avatar || null
+      adminSigner.value = adminResult?.[0]?.signer || null
+      const { pages, tags, categories } = tinyCounts(adminResult?.[0]?.Articles)
+      adminPages.value = pages
+      adminTags.value = tags
+      adminCategories.value = categories
+    } catch (error) {}
   }
   return {
     getAdminUserInfo,

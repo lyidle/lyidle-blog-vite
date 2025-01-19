@@ -30,9 +30,9 @@ export const useUpOrDown = (timeout: number = 500) => {
   )
 
   const upValue = ref()
-  let upTimer: ReturnType<typeof setTimeout> | null = null
+  let upTimer: setTimout | null = null
   const downValue = ref()
-  let downTimer: ReturnType<typeof setTimeout> | null = null
+  let downTimer: setTimout | null = null
 
   watchEffect(() => {
     // 向上滚动

@@ -2,7 +2,7 @@ export default function debounce<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
 ): ((...args: Parameters<T>) => void) & { cancel: () => void } {
-  let timer: ReturnType<typeof setTimeout> | null = null
+  let timer: setTimout | null = null
 
   // 防抖函数
   const debounced = function (this: any, ...args: Parameters<T>) {

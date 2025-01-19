@@ -11,6 +11,7 @@
 <script setup lang="ts" name="LayoutHeader">
 // 引入store
 import { useUserStore } from "@/store/user"
+import { observer, ObserverCallback } from "@/utils/observer"
 
 const { userMenuList } = storeToRefs(useUserStore())
 
@@ -21,34 +22,24 @@ const LOGO = import.meta.env.VITE_INITIAL_LOGO
 const headerColor = ref<string>("white")
 // 头部背景颜色
 const headerBg = ref<string>("transparent")
-// 导航吸附函数
-const _sticky = () => {
-  if (document.documentElement.scrollTop > 0) {
-    // 有缓存退出
-    if (
-      headerBg.value === "var(--header-bg-sticky)" &&
-      headerColor.value === "var(--header-color-sticky)"
-    )
-      return
-    headerBg.value = "var(--header-bg-sticky)"
-    headerColor.value = "var(--header-color-sticky)"
-  } else {
-    // 有缓存退出
-    if (
-      headerBg.value === "var(--header-bg-initial)" &&
-      headerColor.value === "var(--header-color-initial)"
-    )
-      return
+// 导航吸附 配置项
+const options: ObserverCallback = {
+  enter: () => {
     headerBg.value = "var(--header-bg-initial)"
     headerColor.value = "var(--header-color-initial)"
-  }
+  },
+  leave: () => {
+    headerBg.value = "var(--header-bg-sticky)"
+    headerColor.value = "var(--header-color-sticky)"
+  },
 }
+
 onMounted(() => {
-  _sticky()
-  window.addEventListener("scroll", _sticky)
+  const el = document.querySelector(".banner-observer")
+  el && observer(el, options)
 })
 onUnmounted(() => {
-  window.removeEventListener("scroll", _sticky)
+  options.stop?.()
 })
 </script>
 
