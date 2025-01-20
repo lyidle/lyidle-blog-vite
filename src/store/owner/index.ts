@@ -1,5 +1,8 @@
 // 引入 api
 import { searchUser } from "@/api/user"
+import { findOneSetting } from "@/api/admin"
+// 引入 类型
+import { Content as InfoContent } from "@/api/admin/types/Contact Info"
 // 引入 整理 函数
 import tinyCounts from "@/utils/tinyCounts"
 export const useOwnerStore = defineStore("Owner", () => {
@@ -30,6 +33,20 @@ export const useOwnerStore = defineStore("Owner", () => {
       adminCategories.value = categories
     } catch (error) {}
   }
+  // 获取设置里的联系方式
+  const getOwnerInfo = async () => {
+    try {
+      const result = await findOneSetting("联系方式")
+      const content: InfoContent = result?.content as InfoContent
+      if (content) {
+        const { BiliBili, QQ, email, weChat } = content
+        ownerWeChat.value = weChat
+        ownerQQ.value = QQ
+        ownerEmail.value = email
+        ownerBiliBili.value = BiliBili
+      }
+    } catch (error) {}
+  }
   return {
     getAdminUserInfo,
     // 管理员的信息
@@ -45,5 +62,6 @@ export const useOwnerStore = defineStore("Owner", () => {
     ownerQQ,
     ownerBiliBili,
     ownerEmail,
+    getOwnerInfo,
   }
 })

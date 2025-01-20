@@ -4,7 +4,10 @@ import { getUserInfo } from "@/api/user"
 // 引入 owner 仓库
 import { useOwnerStore } from "@/store/owner"
 // 引入类型
-import type { GetMenuList } from "@/api/admin/types/getMenuList"
+import type {
+  GetMenuList,
+  PurpleBannerImg,
+} from "@/api/admin/types/getMenuList"
 
 // 引入 整理 函数
 import tinyCounts from "@/utils/tinyCounts"
@@ -14,12 +17,42 @@ export const useUserStore = defineStore(
   () => {
     // 公开的菜单数据
     const userMenuList = ref<GetMenuList["data"]>([])
+    // 用户的 焦点图信息
+    const userBannerImg = ref<{ [key in string]: PurpleBannerImg }>({})
+    // 用户的路由信息
+    const userRoute = ref<string[]>([])
 
     // 获取 公开的菜单数据
     const reqUserMenuList = async () => {
       try {
         const result = await getMenuList()
+        // 用户的焦点图信息 map
+        let bannerImgMap = new Map<string, PurpleBannerImg>()
+        // 用户的路由路径 set
+        let routeSet = new Set<string>()
+        // 过滤出路径
+        result?.forEach((item) => {
+          if (item.to) {
+            routeSet.add(item.to)
+            if (item.bannerImg) bannerImgMap.set(item.to, item.bannerImg)
+          }
+          if (item.children)
+            item.children.forEach((item) => {
+              if (item.to) {
+                routeSet.add(item.to)
+                if (item.bannerImg) bannerImgMap.set(item.to, item.bannerImg)
+              }
+            })
+        })
+        // 赋值 路由信息
+        userRoute.value = Array.from(routeSet)
+        // 赋值 焦点图信息
+        userBannerImg.value = Object.fromEntries(bannerImgMap)
+        // 赋值 得到的所有路由信息
         userMenuList.value = result
+        // 清除 临时数据
+        routeSet.clear()
+        bannerImgMap.clear()
       } catch (error) {}
     }
 
@@ -60,6 +93,8 @@ export const useUserStore = defineStore(
 
     // 重置数据
     const userStoreReset = () => {
+      userBannerImg.value = {}
+      userRoute.value = []
       userAccount.value = ""
       userNickName.value = ""
       userEmail.value = ""
@@ -74,6 +109,8 @@ export const useUserStore = defineStore(
 
     return {
       reqUserMenuList,
+      userBannerImg,
+      userRoute,
       userMenuList,
       reqUserInfo,
       // 用户信息
@@ -96,6 +133,8 @@ export const useUserStore = defineStore(
       key: "User",
       storage: localStorage,
       pick: [
+        "userBannerImg",
+        "userRoute",
         "userAccount",
         "userNickName",
         "userEmail",

@@ -15,7 +15,7 @@ module.exports = {
         unique: true,
       },
       content: {
-        type: Sequelize.STRING,
+        type: Sequelize.JSON,
       },
     })
   },

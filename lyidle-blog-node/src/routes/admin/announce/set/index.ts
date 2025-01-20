@@ -18,7 +18,10 @@ router.put(
       const findAnnounce = await Setting.findOne({
         where: { name: "公告" },
       })
-      const { dataValues } = await findAnnounce.update({ content: announce })
+      // 设置 announce
+      await findAnnounce.set("content", announce)
+      // 保存
+      const { dataValues } = await findAnnounce.save()
       // 更新缓存
       await setKey("setting:公告", dataValues)
       return res.result(void 0, "设置通知成功~")

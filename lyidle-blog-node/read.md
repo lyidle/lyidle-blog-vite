@@ -1,3 +1,5 @@
+## 设置信息的 content 一律需要 json 化存储
+
 # token 字段
 
 ```

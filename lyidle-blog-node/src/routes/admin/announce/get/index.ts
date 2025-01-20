@@ -51,7 +51,6 @@ router.get("/", async (req, res, next) => {
     }
 
     // 没缓存设置
-
     const { dataValues } = await Setting.findOne({
       where: { name: "公告" },
     })

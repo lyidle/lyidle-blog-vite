@@ -74,12 +74,12 @@ export default async () => {
       name: "联系方式",
       content: is_production
         ? ""
-        : JSON.stringify({
+        : {
             weChat: "LIDSGOA",
             QQ: "912512766",
             BiliBili: "BiliBili",
             email: "912512766@qq.com",
-          }),
+          },
     })
     await setKey("setting:联系方式", dataValues)
   }

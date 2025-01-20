@@ -1,15 +1,15 @@
 <template>
   <div class="side-header-title">
-    <router-link class="contain" :to="`/user/doc/${showAccount}`">
+    <router-link class="contain" :to="`/user/docs/${showAccount}`">
       <div class="title">文章</div>
       <div class="content text-14px">
         {{ showPages || 0 }}
       </div>
     </router-link>
-    <router-link class="contain" :to="`/user/tags/${showTags}`">
+    <router-link class="contain" :to="`/user/tags/${showAccount}`">
       <div class="title">标签</div>
       <div class="content text-14px">
-        {{ showCategories || 0 }}
+        {{ showTags || 0 }}
       </div>
     </router-link>
     <router-link class="contain" :to="`/user/categories/${showAccount}`">

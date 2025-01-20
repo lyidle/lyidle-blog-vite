@@ -22,38 +22,54 @@ export const constantRoute = [
     meta: { title: "文章" },
     component: () => import("@/views/doc/index.vue"),
   },
-  // UserTags
+  // 用户相关
   {
-    path: "/user/tags",
-    name: "UserTags",
-    meta: { title: "用户标签" },
-    component: () => import("@/views/tags/user/index.vue"),
-  },
-  // UserCategory
-  {
-    path: "/user/categories",
-    name: "UserCategory",
-    meta: { title: "用户分类" },
-    component: () => import("@/views/category/user/index.vue"),
-  },
-  // 笔记
-  {
-    path: "/note",
-    name: "Note",
-    meta: { title: "笔记" },
+    path: "/user",
+    name: "User",
+    meta: { title: "用户" },
     component: () => import("@/components/layout/index.vue"),
     children: [
+      // 空间
       {
-        path: "test",
-        name: "Test",
-        meta: { title: "Test" },
-        component: () => import("@/views/test/index.vue"),
+        path: "/user/space/:author",
+        name: "UserSpace",
+        meta: { title: "用户空间" },
+        component: () => import("@/views/user/space/index.vue"),
       },
+      // 用户查询 所有文章
       {
-        path: "test2",
-        name: "Test2",
-        meta: { title: "笔记" },
-        component: () => import("@/views/test2/index.vue"),
+        path: "/user/docs/:author",
+        name: "FindAllUserDocs",
+        meta: { title: "用户所有文章" },
+        component: () => import("@/views/user/docs/findAll/index.vue"),
+      },
+      // 用户查询 所有标签
+      {
+        path: "/user/tags/:author",
+        name: "FindAllUserTags",
+        meta: { title: "用户所有标签" },
+        component: () => import("@/views/user/tags/findAll/index.vue"),
+      },
+      // 用户查询 一个标签
+      {
+        path: "/user/tags",
+        name: "UserTags",
+        meta: { title: "用户标签" },
+        component: () => import("@/views/user/tags/onlyOne/index.vue"),
+      },
+      // 用户查询 所有分类
+      {
+        path: "/user/categories/:author",
+        name: "FindAllUserCategories",
+        meta: { title: "用户所有分类" },
+        component: () => import("@/views/user/categories/findAll/index.vue"),
+      },
+      // 用户查询 一个分类
+      {
+        path: "/user/categories",
+        name: "UserCategory",
+        meta: { title: "用户分类" },
+        component: () => import("@/views/user/categories/onlyOne/index.vue"),
       },
     ],
   },
@@ -72,7 +88,7 @@ export const constantRoute = [
       },
     ],
   },
-  // 登录
+  // 登录 与 注册
   {
     path: "/login",
     name: "Login",
@@ -96,4 +112,47 @@ export const anyRoute = [
   },
 ]
 // 异步路由 需要权限判断的
-export const asyncRoute = []
+export const asyncRoute = [
+  // 作品
+  {
+    path: "/piece",
+    name: "Piece",
+    meta: { title: "作品" },
+    component: () => import("@/components/layout/index.vue"),
+    children: [
+      {
+        path: "piece1",
+        name: "Piece1",
+        meta: { title: "Piece1" },
+        component: () => import("@/views/test/index.vue"),
+      },
+      {
+        path: "piece2",
+        name: "Piece2",
+        meta: { title: "Piece2" },
+        component: () => import("@/views/test/index.vue"),
+      },
+    ],
+  },
+  // 笔记
+  {
+    path: "/note",
+    name: "Note",
+    meta: { title: "笔记" },
+    component: () => import("@/components/layout/index.vue"),
+    children: [
+      {
+        path: "test",
+        name: "Test",
+        meta: { title: "Test" },
+        component: () => import("@/views/test/index.vue"),
+      },
+      {
+        path: "test2",
+        name: "Test2",
+        meta: { title: "笔记" },
+        component: () => import("@/views/test2/index.vue"),
+      },
+    ],
+  },
+]

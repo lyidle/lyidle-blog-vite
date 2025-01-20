@@ -1,12 +1,14 @@
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
+// 引入dayjs
+import dayjs from "dayjs"
 // 引入 redis
 const { setKey, getKey } = require("@/utils/redis")
 const nodemailer = require("nodemailer")
 // 引入时间转换
 const ms = require("ms")
-// 引入dayjs
-import dayjs from "dayjs"
+// 引入验证
+const { emailReg } = require("@/routes/user/reg/RegExp")
 // 邮箱的配置
 const transporter = nodemailer.createTransport({
   host: process.env.email_host,
@@ -50,6 +52,10 @@ export default (
     route as string,
     async (req: Request, res: Response, next: NextFunction) => {
       const { email } = req.body
+      // 判断格式
+      if (!emailReg.reg.test(email))
+        return res.result(void 0, emailReg.msg, false)
+
       // redis 插入的键值
       const cacheKey = `${setData}:${email}`
       // 获取redis的数据
@@ -87,7 +93,12 @@ export default (
           res.result(void 0, "发送邮件失败~", false)
         )
       }
-      return res.result((!is_production && result) || void 0, "发送邮件成功~")
+      return res.result(
+        (!is_production && { ...result, expire: codeExpire }) || {
+          expire: codeExpire,
+        },
+        "发送邮件成功~"
+      )
     }
   )
 }

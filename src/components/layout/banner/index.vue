@@ -7,7 +7,7 @@
     <div
       class="banner"
       :style="{
-        height: height || banner?.bannerImg?.height,
+        height: height || bannerHeight,
         top: bannerIsFixed ? '0' : 'unset',
         zIndex: bannerIsFixed ? '1' : 'unset',
         position: bannerIsFixed ? 'fixed' : 'unset',
@@ -34,67 +34,47 @@ import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"
 // 引入短诗接口
 import { getPoetry } from "@/api/admin"
-// 引入类型
-import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
-import { mitt } from "@/utils/emitter"
+
 // 欢迎词
 const welcome = import.meta.env.VITE_INITIAL_WELCOME
+
 // props
 withDefaults(
   defineProps<{
-    img?: string
     mask?: string
     color?: string
     height?: string | null
     context?: boolean
   }>(),
   {
-    img: "var(--banner-img)",
     mask: "var(--banner-mask)",
     color: "var(--banner-detail-color)",
     height: null,
     context: true,
   }
 )
+
 // 初始化仓库 暗夜模式自动切换图片等信息
 const { isDark, bannerIsFixed } = storeToRefs(useSettingStore())
 
 // 路由菜单
-const { userMenuList } = storeToRefs(useUserStore())
+const { userBannerImg } = storeToRefs(useUserStore())
 const route = useRoute()
 
-// 缓存当前路径
-let path: string | null = null
-
-const banner = computed(() => {
-  // 包含当前路径退出
-  if (path && (path as string).includes(route.path)) return
-  let result: MenuListDatum | null = null
-  const recursive = (item: MenuListDatum[]) => {
-    const multi = (item: MenuListDatum[]) => {
-      for (let i = 0; i < item?.length; i++) {
-        const obj = item[i]
-        if (obj.to?.includes(route.path)) {
-          result = obj
-          return
-        }
-        if (obj.children) {
-          return multi(obj.children)
-        }
-      }
-    }
-    multi(item)
-  }
-  if (userMenuList.value) recursive(userMenuList.value)
-  return result as MenuListDatum | null
-})
-
 // banner 图片
-const bannerImg = computed(() => {
-  const img = isDark.value
-    ? banner.value?.bannerImg?.dark
-    : banner.value?.bannerImg?.light
-  return img || "var(--default-img)"
+const bannerImg = ref()
+const bannerHeight = ref()
+
+// 监听 路径变化 和 暗夜切换 处理banner
+watchEffect(() => {
+  const banner = userBannerImg.value[route.path]
+  if (isDark.value) {
+    bannerImg.value = banner?.dark || "var(--default-img)"
+    bannerHeight.value = banner?.height || "100vh"
+    return
+  }
+  bannerImg.value = banner?.light || "var(--default-img)"
+  bannerHeight.value = banner?.height || "100vh"
 })
 
 // 短诗
@@ -104,17 +84,23 @@ const poetry = ref()
 watch(
   () => bannerIsFixed.value,
   (newV) => {
-    newV && mitt.emit("bannerIsFixed:true")
-    !newV && mitt.emit("bannerIsFixed:false")
+    if (newV) {
+      // 固定
+      document.body.setAttribute("banner-fixed", "fixed")
+      return
+    }
+    // 没有固定
+    document.body.setAttribute("banner-fixed", "")
   },
   {
     immediate: true,
   }
 )
 
-// 发起请求
+// 挂载
 onMounted(async () => {
   try {
+    // 发起请求 获取短诗
     const data = await getPoetry()
     poetry.value = data
   } catch (error) {}

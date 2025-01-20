@@ -3,8 +3,7 @@ const data = require("../mock/menulist")
 /** @type {import('sequelize-cli').Migration} */
 // 导入环境变量
 require("dotenv").config()
-// 引入普通用户 权限组
-const default_user = JSON.parse(process.env.default_user)
+// 引入 redis 清理函数
 const { clear } = require("../../utils/redis")
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -15,6 +14,7 @@ module.exports = {
           ...item.children.map((item) => ({
             menuId: id + 1,
             name: item.name ?? `${id + 1}`,
+            routeName: item.routeName,
             icon: item.icon ?? `${id + 1}`,
             to: item.to ?? `/test/${id + 1}`,
             bannerImg: JSON.stringify(item.bannerImg),
@@ -27,7 +27,8 @@ module.exports = {
         to: item?.to,
         bannerImg: JSON.stringify(item.bannerImg),
         layout: JSON.stringify(item.layout),
-        role: JSON.stringify([...new Set(default_user)]),
+        role: JSON.stringify([...new Set([item.role].flat(Infinity))]),
+        routeName: item.routeName,
       }
     })
     await queryInterface.bulkInsert("Menus", menu, {})

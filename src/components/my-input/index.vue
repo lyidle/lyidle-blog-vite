@@ -5,7 +5,13 @@
 <script setup lang="ts" name="MyInput"></script>
 
 <style scoped lang="scss">
-::v-deep(.el-input__wrapper) {
+.el-input__wrapper {
+  &.is-focus {
+    box-shadow: unset;
+  }
+  &:hover {
+    box-shadow: unset;
+  }
   background-color: unset;
   box-shadow: unset;
   border-radius: unset;

@@ -25,10 +25,7 @@ const server = import.meta.env.VITE_SERVE
 
 // 注册发送邮箱验证码
 export const reqRegEmail = (data?: RegEmailBody) =>
-  request.post<any, RegEmail["data"]>(
-    server + prefix + API.regEmail,
-    data?.email
-  )
+  request.post<any, RegEmail>(server + prefix + API.regEmail, data)
 
 // 注册
 export const reqReg = (data: RegBody) =>

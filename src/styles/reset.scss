@@ -29,8 +29,9 @@ html {
 body {
   background-color: var(--body-bg);
 }
-a {
-  cursor: var(--cursor-pointer);
+a,
+button {
+  cursor: var(--cursor-pointer) !important;
 }
 // 页面中的跳转链接的悬浮函数
 .route-link {

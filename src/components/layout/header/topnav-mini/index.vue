@@ -20,36 +20,18 @@
       name="mini-header-drawer"
     >
       <template #body>
-        <div class="top-avater-container">
-          <div>
-            <div
-              class="pin"
-              :content="adminAccount ? `admin` : 'null'"
-              :style="{
-                '--pin-left': adminAccount ? '-0.5rem' : '0rem',
-                '--pin-top': adminAccount ? '0.9375rem' : '0.9375rem',
-              }"
-              v-if="!userToken"
-            ></div>
-            <!-- 头像 -->
-            <router-link
-              :to="`/space/${(userToken && userAccount) || adminAccount}`"
-            >
-              <img
-                :style="{
-                  background: 'no-repeat center',
-                  backgroundSize: 'cover',
-                  backgroundImage:
-                    (userToken && userAvatar) ||
-                    (userToken && userAccount
-                      ? 'var(--default-avatar)'
-                      : adminAvatar || 'var(--default-avatar)'),
-                }"
-                alt=""
-                class="avatar"
-              />
-            </router-link>
-          </div>
+        <div class="mini-nav-avater-container">
+          <div
+            class="pin"
+            :content="adminAccount ? `admin` : 'null'"
+            :style="{
+              '--pin-left': adminAccount ? '-0.5rem' : '0rem',
+              '--pin-top': adminAccount ? '0.9375rem' : '0.9375rem',
+            }"
+            v-if="!userToken"
+          ></div>
+          <!-- 头像 -->
+          <layout-avatar></layout-avatar>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
           <layout-header-topnav-mini-generate
@@ -61,26 +43,21 @@
   </div>
 </template>
 <script setup lang="ts">
-// 引入仓库
-import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
+// 引入 处理后的数据
+import { useShowUserinfo } from "@/hooks/showUserinfo"
+
+// 提取需要展示的信息
+const { userToken } = useShowUserinfo()
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()
 
-// 提取需要的信息
-const {
-  // 用户信息
-  userToken,
-  userAccount,
-  userAvatar,
-} = storeToRefs(useUserStore())
 const {
   // 管理员信息 用于展示没登陆的默认信息
   adminAccount,
-  adminAvatar,
 } = storeToRefs(useOwnerStore())
 const drawer = ref(false)
 // 展示drawer
@@ -141,7 +118,7 @@ $header-content-pd: 20px;
     z-index: $header-mini-drawer-mask-index + 1;
     background-color: var(--header-drawer-bg);
   }
-  .top-avater-container {
+  .mini-nav-avater-container {
     $gap: 15px;
     color: var(--header-drawer-title-color);
     box-sizing: border-box;
@@ -155,6 +132,9 @@ $header-content-pd: 20px;
       background-color: var(--mini-drawer-pin-bg);
       clip-path: polygon(0 0, 0% 100%, 100% 0);
       color: var(--mini-drawer-pin-color);
+
+      //底部距离
+      margin-bottom: $gap;
       &::before {
         content: attr(content);
         display: block;
@@ -173,8 +153,6 @@ $header-content-pd: 20px;
       position: relative;
       left: 50%;
       transform: translateX(-50%);
-      //顶部距离
-      margin-top: $gap;
     }
 
     // 虚线

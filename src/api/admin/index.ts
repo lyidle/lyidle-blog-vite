@@ -10,6 +10,8 @@ import type { SetAnnounceBody } from "@/api/admin/types/setAnnounceBody"
 import type { SetMenuList } from "@/api/admin/types/setMenuList"
 import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"
+import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
+import type { FindOneSettingQuery } from "@/api/admin/types/findOneSettingQuery"
 
 // 统一管理 api
 enum API {
@@ -17,6 +19,7 @@ enum API {
   announce = "/admin/announce",
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
+  findOneSetting = "/admin/settings",
 }
 
 // 引入前缀
@@ -41,3 +44,9 @@ export const setAnnounce = (data: SetAnnounceBody) =>
 // 获取短诗
 export const getPoetry = () =>
   request.get<any, GetPoetry["data"]>(server + prefix + API.poetry)
+
+// 获取设置信息
+export const findOneSetting = (name: string) =>
+  request.get<any, FindOneSetting["data"]>(
+    server + prefix + API.findOneSetting + `?name=${name}`
+  )

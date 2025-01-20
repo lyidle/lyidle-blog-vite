@@ -13,21 +13,24 @@ router.put(
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     // 提取需要的信息
-    const { name, content } = req.query
+    const { name, content } = req.body
     try {
       // 汇总 错误信息
       const errorArray = []
       if (!name) errorArray.push("name是必传项哦~")
-      if (!content) errorArray.push("content是必传项哦~")
+      if (!content) errorArray.push("content或者jsonContent是必传项哦~")
       if (errorArray.length) return res.result(void 0, errorArray, false)
 
       const findSetting = await Setting.findOne({ where: { name } })
       if (!findSetting)
         return res.result(void 0, `没有找到${name}设置项~`, false)
-      await findSetting.set("content", content)
-      const result = await findSetting.save()
+
+      if (content) await findSetting.set("content", content)
+
+      const { dataValues } = await findSetting.save()
+
       // 设置缓存
-      await setKey(`setting:${name}`, result.dataValues)
+      await setKey(`setting:${name}`, dataValues)
       res.result(void 0, `修改${name}成功~`)
     } catch (error) {
       res.validateAuth(error, next, () =>

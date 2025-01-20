@@ -63,17 +63,6 @@ export const useGlobalEmitter = () => {
     themes.value === "light" ? (isDark.value = false) : (isDark.value = true)
   }
 
-  // 焦点图 固定
-  const bannerFIxed = () => {
-    // 根据 监听 的值来设置主题
-    document.body.setAttribute("banner-fixed", "fixed")
-  }
-  // 焦点图 没有固定
-  const bannerNormal = () => {
-    // 根据 监听 的值来设置主题
-    document.body.setAttribute("banner-fixed", "")
-  }
-
   // 默认的点击特效
   const clickNormal = (cb: callbackType) => {
     //初始化特效函数
@@ -97,9 +86,6 @@ export const useGlobalEmitter = () => {
     mitt.on("isDark", setTheme)
     // 订阅 主题切换 事件
     mitt.on("themes", switchThemes)
-    // 订阅 焦点图是否 固定事件
-    mitt.on("bannerIsFixed:true", bannerFIxed)
-    mitt.on("bannerIsFixed:false", bannerNormal)
     // 订阅 鼠标点击效果事件
     mitt.on("clickEffect:normal", clickNormal)
     // 订阅 鼠标 移动事件
@@ -205,9 +191,6 @@ export const useGlobalEmitter = () => {
     mitt.off("isDark", setTheme)
     // 取消订阅 主题切换 事件
     mitt.off("themes", switchThemes)
-    // 取消订阅 焦点图是否 固定事件
-    mitt.off("bannerIsFixed:true", bannerFIxed)
-    mitt.off("bannerIsFixed:false", bannerNormal)
     // 取消订阅 鼠标点击效果事件
     mitt.off("clickEffect:normal", clickNormal)
     // 取消订阅 鼠标 移动事件

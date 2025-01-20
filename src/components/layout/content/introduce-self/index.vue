@@ -13,22 +13,11 @@
             v-if="!userToken"
           ></div>
           <div class="userInfo">
-            <div class="avatar">
-              <router-link :to="`/space/${showAccount}`">
-                <img
-                  :style="{
-                    background: 'no-repeat center',
-                    backgroundSize: 'cover',
-                    backgroundImage: showAvatar,
-                  }"
-                  alt=""
-                  class="w-100% h-100% object-cover"
-                />
-              </router-link>
-            </div>
-            <div class="username font-size-1.5625rem text-center cur-text">
-              {{ showNickName }}
-            </div>
+            <!-- 头像 -->
+            <layout-avatar></layout-avatar>
+          </div>
+          <div class="username font-size-1.5625rem text-center cur-text">
+            {{ showNickName }}
             <div class="signer text-center cur-text">
               {{ showSigner }}
             </div>
@@ -36,7 +25,11 @@
           <div class="side-counts-container">
             <layout-link-pages></layout-link-pages>
           </div>
-          <my-primary-button type="primary" class="userinfo-btn">
+          <my-primary-button
+            type="primary"
+            class="userinfo-btn"
+            @click="$router.push(`/user/space/${adminAccount}`)"
+          >
             <div class="tip">前往小窝</div>
             <div class="car">
               <icon-car></icon-car>
@@ -97,15 +90,16 @@ const {
   ownerBiliBili,
   ownerEmail,
 } = storeToRefs(useOwnerStore())
+const { getOwnerInfo } = useOwnerStore()
 // 提取需要展示的信息
-const { userToken, showAccount, showNickName, showAvatar, showSigner } =
-  useShowUserinfo()
+const { userToken, showNickName, showSigner } = useShowUserinfo()
 // 提取请求
 const { reqUserInfo } = useUserStore()
 
 // 发起请求
 onMounted(async () => {
   await reqUserInfo()
+  await getOwnerInfo()
 })
 
 const copyToClipboard = async (type: string, text: string) => {
@@ -113,14 +107,13 @@ const copyToClipboard = async (type: string, text: string) => {
     await navigator.clipboard.writeText(text)
     ElMessage.success(`复制${type}成功~`)
   } catch (error) {
-    console.log(`复制${type}失败,请重试！`)
+    ElMessage.warning(`复制${type}成功~`)
   }
 }
 </script>
 
 <style scoped lang="scss">
 $gap: 20px;
-$avater-size: 110px;
 $userinfo-gap: 10px;
 $links-gap: 10px;
 $userinfo-btn-car-size: 25px;
@@ -152,15 +145,6 @@ $userinfo-btn-car-size: 25px;
     display: flex;
     flex-direction: column;
     gap: $userinfo-gap;
-    .avatar {
-      width: $avater-size;
-      height: $avater-size;
-      border-radius: 50%;
-      position: relative;
-      left: 50%;
-      transform: translateX(-50%);
-      overflow: hidden;
-    }
   }
   .side-counts-container {
     width: 100%;

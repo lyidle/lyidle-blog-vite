@@ -4,8 +4,6 @@ const { Model } = require("sequelize")
 require("dotenv").config()
 // 引入错误函数
 const setError = require("../utils/setError")
-// 引入普通用户 权限组
-const default_user = JSON.parse(process.env.default_user)
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     /**
@@ -27,6 +25,21 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "菜单title不能为空哦~" },
           notEmpty: { msg: "菜单title不能为空哦~" },
           len: { arg: [1, 32], msg: "菜单长度必须在1-32之间哦~" },
+        },
+      },
+      routeName: {
+        type: DataTypes.STRING(32),
+        allowNull: false,
+        validate: {
+          notNull: { msg: "路由名字不能为空哦~" },
+          notEmpty: { msg: "路由名字不能为空哦~" },
+          async isUnique(value) {
+            const commend = { where: { routeName: value } }
+            const menu = sequelize.mo.Menu.findOne(commend)
+            if (menu) throw new Error("路由名字不能重复哦~")
+            const menulist = sequelize.mo.menulist.findOne(commend)
+            if (menulist) throw new Error("路由名字不能重复哦~")
+          },
         },
       },
       icon: {
@@ -52,8 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         set(value) {
           if (!Array.isArray(value)) throw new setError("角色必须是一个数组哦~")
-          // 保证至少有个 普通用户组的权限
-          const result = [...new Set([value, default_user].flat(Infinity))]
+          const result = [...new Set([value].flat(Infinity))]
           this.setDataValue("role", result)
         },
       },

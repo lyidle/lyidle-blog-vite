@@ -5,8 +5,8 @@
       label-width="70px"
       @keyup.enter="handlerReg"
       label-position="left"
-      :rules="regRules"
       :model="regData"
+      :rules="regRules"
       ref="regForm"
     >
       <el-form-item label="账号" prop="account">
@@ -89,6 +89,8 @@ import emailIcon from "@/components/icon/login/email.vue"
 import codeIcon from "@/components/icon/login/code.vue"
 // 引入正则
 import { accountReg, pwdReg, emailReg, codeReg, nickNameReg } from "../reg"
+// 引入 时间转换 转换 code 过期时间提示
+import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 引入api
 import { reqRegEmail, reqReg } from "@/api/user"
 const props = defineProps(["login"])
@@ -190,8 +192,11 @@ const handlerCode = async () => {
   try {
     await regForm.value.clearValidate("code")
     await regForm.value.validateField("email")
-    await reqRegEmail({ email: regData.email })
-    ElMessage.success("验证码发送成功，有效时间5分钟~")
+    const result = await reqRegEmail({ email: regData.email })
+    const expire = formatMilliseconds(result.expire)
+    console.log(result.regCode)
+
+    ElMessage.success(`验证码发送成功，有效时间${expire}~`)
     codeIsActive.value = false
     const tim = setInterval(() => {
       --code.value

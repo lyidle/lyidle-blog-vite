@@ -2,6 +2,7 @@
 module.exports = [
   {
     name: "作品",
+    routeName: "piece",
     icon: "i-mdi:collection",
     // 默认值
     layout: {
@@ -12,18 +13,20 @@ module.exports = [
     role: ["user"],
     children: [
       {
-        name: "test",
+        name: "piece1",
+        routeName: "piece1",
         to: "/note/test",
         icon: "i-mdi:collection",
         bannerImg: {
           dark: 'url("https://haowallpaper.com/link/common/file/previewFileImg/15839280654553408")',
           light:
             'url("https://haowallpaper.com/link/common/file/previewFileImg/15556743616106816")',
-          height: "100vh",
+          height: "50vh",
         },
       },
       {
-        name: "test2",
+        name: "piece2",
+        routeName: "piece2",
         to: "/note/test2",
         icon: "i-mdi:collection",
       },
@@ -31,16 +34,19 @@ module.exports = [
   },
   {
     name: "笔记",
+    routeName: "note",
     icon: "i-lucide:notebook-pen",
     role: ["user"],
     children: [
       {
-        name: "test",
+        name: "note1",
+        routeName: "note1",
         to: "/note/test",
         icon: "i-mdi:collection",
       },
       {
-        name: "test2",
+        name: "note2",
+        routeName: "note2",
         to: "/note/test2",
         icon: "i-mdi:collection",
       },
@@ -48,38 +54,39 @@ module.exports = [
   },
   {
     name: "筛选",
+    routeName: "filter",
     icon: "i-tdesign:filter-3-filled",
     role: ["user"],
     children: [
       {
-        name: "test",
+        name: "filter1",
+        routeName: "filter1",
         to: "/note/test",
         icon: "i-mdi:collection",
       },
       {
-        name: "test2",
+        name: "filter2",
+        routeName: "filter2",
         to: "/note/test2",
         icon: "i-mdi:collection",
       },
     ],
   },
   {
-    name: "音乐",
-    icon: "i-flowbite:list-music-outline",
-    role: ["user"],
-  },
-  {
     name: "图库",
+    routeName: "gallery",
     icon: "i-jam:picture-f",
     role: ["user"],
   },
   {
     name: "留言板",
+    routeName: "message board",
     icon: "i-uil:message",
     role: ["user"],
   },
   {
     name: "友链",
+    routeName: "friendly link",
     icon: "i-heroicons-solid:link",
     role: ["user"],
   },
