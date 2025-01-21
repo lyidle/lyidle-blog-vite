@@ -187,6 +187,9 @@ onBeforeUnmount(() => {
   // 取消订阅 面板显示与否 的事件
   mitt.off("isShowPanel:true", open)
   mitt.off("isShowPanel:false", close)
+  // 移除移动的事件监听
+  window.removeEventListener("mousemove", move)
+  window.removeEventListener("mouseup", handlerMouseup)
 })
 </script>
 

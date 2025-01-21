@@ -14,7 +14,6 @@ module.exports = {
           ...item.children.map((item) => ({
             menuId: id + 1,
             name: item.name ?? `${id + 1}`,
-            routeName: item.routeName,
             icon: item.icon ?? `${id + 1}`,
             to: item.to ?? `/test/${id + 1}`,
             bannerImg: JSON.stringify(item.bannerImg),
@@ -24,11 +23,10 @@ module.exports = {
       return {
         name: item.name ?? `${id + 1}`,
         icon: item.icon ?? `${id + 1}`,
-        to: item?.to,
+        titleTo: item?.titleTo,
         bannerImg: JSON.stringify(item.bannerImg),
         layout: JSON.stringify(item.layout),
         role: JSON.stringify([...new Set([item.role].flat(Infinity))]),
-        routeName: item.routeName,
       }
     })
     await queryInterface.bulkInsert("Menus", menu, {})

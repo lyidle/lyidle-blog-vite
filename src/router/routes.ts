@@ -1,5 +1,7 @@
+// 引入类型
+import { RouteRecordRaw } from "vue-router"
 // 常量路由
-export const constantRoute = [
+export const constantRoute: RouteRecordRaw[] = [
   {
     path: "/",
     name: "index",
@@ -104,7 +106,7 @@ export const constantRoute = [
   },
 ]
 // 任意路由
-export const anyRoute = [
+export const anyRoute: RouteRecordRaw[] = [
   {
     path: "/:pathMatch(.*)*",
     meta: { hidden: true },
@@ -112,22 +114,23 @@ export const anyRoute = [
   },
 ]
 // 异步路由 需要权限判断的
-export const asyncRoute = [
+export const asyncRoute: RouteRecordRaw[] = [
   // 作品
   {
     path: "/piece",
     name: "Piece",
     meta: { title: "作品" },
     component: () => import("@/components/layout/index.vue"),
+    redirect: "/piece/piece1",
     children: [
       {
-        path: "piece1",
+        path: "/piece/piece1",
         name: "Piece1",
         meta: { title: "Piece1" },
         component: () => import("@/views/test/index.vue"),
       },
       {
-        path: "piece2",
+        path: "/piece/piece2",
         name: "Piece2",
         meta: { title: "Piece2" },
         component: () => import("@/views/test/index.vue"),
@@ -142,17 +145,24 @@ export const asyncRoute = [
     component: () => import("@/components/layout/index.vue"),
     children: [
       {
-        path: "test",
-        name: "Test",
+        path: "/note/note1",
+        name: "Note1",
         meta: { title: "Test" },
         component: () => import("@/views/test/index.vue"),
       },
       {
-        path: "test2",
-        name: "Test2",
+        path: "/note/note2",
+        name: "Note2",
         meta: { title: "笔记" },
         component: () => import("@/views/test2/index.vue"),
       },
     ],
+  },
+  // 留言板
+  {
+    path: "/comments",
+    name: "Comments",
+    meta: { title: "留言板" },
+    component: () => import("@/views/test/index.vue"),
   },
 ]

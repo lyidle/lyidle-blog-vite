@@ -14,7 +14,7 @@ export interface Datum {
   id: number
   layout?: null | Layout
   name: string
-  to: string
+  titleTo: null | string
   [property: string]: any
 }
 
@@ -29,7 +29,7 @@ export interface Child {
   bannerImg?: null | FluffyBannerImg
   icon: string
   id: number
-  menuId: number
+  menuId?: number
   name: string
   to: string
   [property: string]: any

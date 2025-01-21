@@ -1,13 +1,12 @@
 <template>
   <template v-for="item in menuList" :key="item.id">
     <li class="custom-menu-trigger" v-if="item.id">
-      <router-link
-        :to="item.to || item.children?.[0]?.to || ''"
-        v-if="item.to || item.children?.[0]?.to"
-      >
+      <!-- 标题有 titleTo 的 则 重定向 -->
+      <router-link :to="item.titleTo || ''" v-if="item.titleTo">
         <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.name }}
       </router-link>
+      <!-- 没有的则提示 -->
       <a v-else v-dev-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
         <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.name }}

@@ -26,5 +26,8 @@ export default () => {
   onMounted(() => {
     window.addEventListener("keydown", F11Proxy)
   })
+  onUnmounted(() => {
+    window.removeEventListener("keydown", F11Proxy)
+  })
   return { fullScreenCb }
 }

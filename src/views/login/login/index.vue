@@ -90,7 +90,7 @@ const loginRules = reactive({
 const loginForm = ref()
 // 获取组件实例
 const login = ref()
-
+const router = useRouter()
 // 处理登录
 const handlerLogin = async () => {
   try {
@@ -98,6 +98,7 @@ const handlerLogin = async () => {
     const result = await reqLogin(loginData)
     userToken.value = result?.token
     ElMessage.success("登录成功~")
+    router.push("/")
   } catch (error) {}
 }
 // 前往注册的切换动画

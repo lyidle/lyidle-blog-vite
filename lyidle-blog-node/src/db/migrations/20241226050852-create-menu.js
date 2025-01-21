@@ -13,14 +13,10 @@ module.exports = {
         type: Sequelize.STRING(32),
         allowNull: false,
       },
-      routeName: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-      },
       icon: {
         type: Sequelize.TEXT,
       },
-      to: {
+      titleTo: {
         type: Sequelize.STRING,
       },
       layout: {

@@ -31,21 +31,6 @@ module.exports = (sequelize, DataTypes) => {
           len: { arg: [1, 32], msg: "菜单长度必须在1-32之间哦~" },
         },
       },
-      routeName: {
-        type: DataTypes.STRING(32),
-        allowNull: false,
-        validate: {
-          notNull: { msg: "路由名字不能为空哦~" },
-          notEmpty: { msg: "路由名字不能为空哦~" },
-          async isUnique(value) {
-            const commend = { where: { routeName: value } }
-            const menu = sequelize.mo.Menu.findOne(commend)
-            if (menu) throw new Error("路由名字不能重复哦~")
-            const menulist = sequelize.mo.menulist.findOne(commend)
-            if (menulist) throw new Error("路由名字不能重复哦~")
-          },
-        },
-      },
       icon: {
         type: DataTypes.TEXT,
       },

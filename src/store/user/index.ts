@@ -11,48 +11,30 @@ import type {
 
 // 引入 整理 函数
 import tinyCounts from "@/utils/tinyCounts"
+// 引入 路由过滤函数
+import { userStoreRoutesFilter } from "@/utils/routerFilter"
 
 export const useUserStore = defineStore(
   "User",
   () => {
-    // 公开的菜单数据
+    // 用户的菜单数据
     const userMenuList = ref<GetMenuList["data"]>([])
     // 用户的 焦点图信息
     const userBannerImg = ref<{ [key in string]: PurpleBannerImg }>({})
-    // 用户的路由信息
-    const userRoute = ref<string[]>([])
+    // 用户的 白名单路径
+    const whitelist = ref<string[]>([])
 
     // 获取 公开的菜单数据
     const reqUserMenuList = async () => {
       try {
         const result = await getMenuList()
-        // 用户的焦点图信息 map
-        let bannerImgMap = new Map<string, PurpleBannerImg>()
-        // 用户的路由路径 set
-        let routeSet = new Set<string>()
-        // 过滤出路径
-        result?.forEach((item) => {
-          if (item.to) {
-            routeSet.add(item.to)
-            if (item.bannerImg) bannerImgMap.set(item.to, item.bannerImg)
-          }
-          if (item.children)
-            item.children.forEach((item) => {
-              if (item.to) {
-                routeSet.add(item.to)
-                if (item.bannerImg) bannerImgMap.set(item.to, item.bannerImg)
-              }
-            })
-        })
-        // 赋值 路由信息
-        userRoute.value = Array.from(routeSet)
-        // 赋值 焦点图信息
-        userBannerImg.value = Object.fromEntries(bannerImgMap)
-        // 赋值 得到的所有路由信息
-        userMenuList.value = result
-        // 清除 临时数据
-        routeSet.clear()
-        bannerImgMap.clear()
+        // 调用函数 过滤出 仓库需要的信息
+        const { _userBannerImg, _whitelist, _userMenuList } =
+          userStoreRoutesFilter(result)
+        // 赋值处理的结果
+        userMenuList.value = _userMenuList
+        userBannerImg.value = _userBannerImg
+        whitelist.value = _whitelist
       } catch (error) {}
     }
 
@@ -94,7 +76,7 @@ export const useUserStore = defineStore(
     // 重置数据
     const userStoreReset = () => {
       userBannerImg.value = {}
-      userRoute.value = []
+      whitelist.value = []
       userAccount.value = ""
       userNickName.value = ""
       userEmail.value = ""
@@ -110,7 +92,7 @@ export const useUserStore = defineStore(
     return {
       reqUserMenuList,
       userBannerImg,
-      userRoute,
+      whitelist,
       userMenuList,
       reqUserInfo,
       // 用户信息
@@ -134,7 +116,7 @@ export const useUserStore = defineStore(
       storage: localStorage,
       pick: [
         "userBannerImg",
-        "userRoute",
+        "whitelist",
         "userAccount",
         "userNickName",
         "userEmail",

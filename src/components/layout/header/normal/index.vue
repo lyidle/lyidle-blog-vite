@@ -14,20 +14,7 @@
       个人
     </a>
     <my-menu
-      :data="[
-        {
-          id: 1,
-          name: '关于',
-          icon: 'i-akar-icons:paper-airplane',
-          to: '/person/about',
-        },
-        {
-          id: 2,
-          name: '登录',
-          icon: 'i-material-symbols:login',
-          to: '/login',
-        },
-      ]"
+      :data="PersonData"
       :triangle="true"
       :menuStyle
       top="30px"
@@ -57,7 +44,11 @@
 <script setup lang="ts" name="NormalTopnav">
 // 引入类型
 import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
-import { menuStyleType } from "@/components/my-menu/types"
+import type { menuStyleType } from "@/components/my-menu/types"
+// 引入 用于展示 个人导航项 的信息hooks
+import { useShowPersonItems } from "@/hooks/header/showPersonItems"
+const PersonData = useShowPersonItems()
+
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()
 </script>

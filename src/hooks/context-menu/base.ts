@@ -1,8 +1,7 @@
-import { mitt } from "@/utils/emitter"
-
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-
+// 引入 鼠标 是否美化 的逻辑
+import { useIsContextMenu } from "./isContextMenu"
 // 引入 复制到剪贴板的方法
 import { getSelectedText } from "@/hooks/context-menu/copyToClipboard"
 export const useContextMenu = (
@@ -10,7 +9,7 @@ export const useContextMenu = (
   container: Ref<HTMLDivElement>
 ) => {
   // 提取需要的变量
-  const { isContextMenu, isCopyText } = storeToRefs(useSettingStore())
+  const { isCopyText } = storeToRefs(useSettingStore())
   // 菜单的高宽
   const menuHeigh = ref()
   const menuWidth = ref()
@@ -85,26 +84,8 @@ export const useContextMenu = (
     window.removeEventListener("contextmenu", close, true)
   }
 
-  // 使一开始的不用提示
-  let flag = false
-
-  // 监听 与 提示
-  watch(
-    () => isContextMenu.value,
-    (newV) => {
-      if (flag) mitt.emit("ContextMenuChange", newV)
-      if (newV) {
-        reload()
-        flag = true
-        return
-      }
-      flag = true
-      onUnMount()
-    },
-    {
-      immediate: true,
-    }
-  )
+  // 监听 鼠标是否开启
+  useIsContextMenu(reload, onUnMount)
 
   // 卸载组件
   onBeforeUnmount(() => {
