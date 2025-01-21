@@ -6,7 +6,7 @@
       首页
     </router-link>
   </li>
-  <slot name="second"></slot>
+  <slot name="scend"></slot>
   <!-- 个人项 -->
   <li class="custom-menu-trigger">
     <a>
@@ -14,25 +14,26 @@
       个人
     </a>
     <my-menu
-      :data="PersonData"
+      :data="PersonData?.data"
       :triangle="true"
       :menuStyle
-      top="30px"
-      left="-15px"
+      :top="PersonData?.style.top"
+      :left="PersonData?.style.left"
     >
-      <template #body="{ item: sub }: { item: MenuListDatum }">
+      <template #body="{ item: sub }: { item: PersonMenuList }">
         <router-link
           :to="sub.to"
           class="topnav-menu-item"
-          :style="{
-            width: '70px',
-          }"
+          :style="{ width: PersonData?.style.width }"
+          @click="sub.click && sub.click()"
         >
-          <i :class="sub.icon"></i> <span>{{ sub.name }}</span>
+          <i :class="sub.icon.icon" :style="sub.icon.style"></i>
+          <span>{{ sub.name }}</span>
         </router-link>
       </template>
     </my-menu>
   </li>
+  <slot name="last-scend"></slot>
   <!-- 设置项 -->
   <li>
     <layout-setting right="-40px" top="50px" :triangle="{ right: '50px' }">
@@ -41,13 +42,14 @@
   <slot name="last"></slot>
 </template>
 
-<script setup lang="ts" name="NormalTopnav">
+<script setup lang="ts" name="TopNavNormal">
 // 引入类型
-import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
-import type { menuStyleType } from "@/components/my-menu/types"
-// 引入 用于展示 个人导航项 的信息hooks
-import { useShowPersonItems } from "@/hooks/header/showPersonItems"
-const PersonData = useShowPersonItems()
+import type { PersonMenuList } from "@/components/layout/header/types"
+import { menuStyleType } from "@/components/my-menu/types"
+// 使用 hoooks 处理 个人选项卡的显示
+import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
+
+const PersonData = useShowPersonHeaderMenu()
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()

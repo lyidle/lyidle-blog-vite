@@ -7,10 +7,10 @@ import { useUserStore } from "@/store/user"
  */
 export const routerEventHandlered = (router: any) => {
   // 处理 token 过期
-  mitt.on("token expired", () => {
+  mitt.on("token expired", async () => {
     // 清除数据
     const { userStoreReset } = useUserStore()
-    userStoreReset()
+    await userStoreReset()
     ElMessage.warning("token 过期,请重新登录~")
   })
 

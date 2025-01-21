@@ -25,6 +25,7 @@ export const jwtMiddleware = async (
       const { id } = req.auth // 从 auth 中获取用户 ID
       // 检查 Redis 中是否存在 token
       const findUser = await getKey(`token:${id}`)
+      console.log(findUser)
       if (!findUser) {
         return next(new myError("UnauthorizedError"))
       }

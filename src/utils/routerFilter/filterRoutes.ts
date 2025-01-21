@@ -3,13 +3,13 @@ import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import { RouteRecordRaw } from "vue-router"
 // 引入 使用的异步路由
 import { asyncRoute } from "@/router/routes"
-// 引入 路由
-import router from "@/router"
 // 引入 lodash
 import { cloneDeep } from "lodash-es"
 
 // 过滤出 需要的路由信息
-export const filterRoutes = (menuList: GetMenuList["data"]): string[] => {
+export const filterRoutes = (
+  menuList: GetMenuList["data"]
+): { _whitelist: string[]; _routes: RouteRecordRaw[] } => {
   let result = new Map<number, RouteRecordRaw>()
   // 当没有加载路由时 会出现 跳转404的情况
   // 保存过滤出的路径信息 制作白名单
@@ -61,14 +61,15 @@ export const filterRoutes = (menuList: GetMenuList["data"]): string[] => {
 
   const routes = Object.fromEntries(result)
 
+  const resultRoutes: RouteRecordRaw[] = []
   // 添加路由
   for (const i in routes) {
     const item = routes[i]
-    router.addRoute(item)
+    resultRoutes.push(item)
   }
 
   // 释放 route 和 result
   route.clear()
   result.clear()
-  return whitelist
+  return { _whitelist: whitelist, _routes: resultRoutes }
 }

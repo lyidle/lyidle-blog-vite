@@ -2,7 +2,7 @@
   <div class="header-menu-container">
     <ul class="topnav">
       <layout-header-normal :menuStyle>
-        <template #last>
+        <template #last-scend>
           <!-- 菜单项 -->
           <li>
             <a @click="isShow" class="item-a">
@@ -42,15 +42,17 @@
     </my-drawer>
   </div>
 </template>
-<script setup lang="ts">
-import { useOwnerStore } from "@/store/owner"
+<script setup lang="ts" name="TopNavMini">
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
-// 引入 处理后的数据
-import { useShowUserinfo } from "@/hooks/showUserinfo"
-
-// 提取需要展示的信息
-const { userToken } = useShowUserinfo()
+// 引入仓库
+import { useUserStore } from "@/store/user"
+import { useOwnerStore } from "@/store/owner"
+// 提取需要的数据
+const {
+  // 用户信息
+  userToken,
+} = storeToRefs(useUserStore())
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()
@@ -72,7 +74,7 @@ const handlerClose = () => {
   // 打开 html 的滚动条
   document.documentElement.style.overflow = "unset"
 }
-
+// 菜单的样式
 const style = {
   icon: { plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" },
   titleBg: "var(--header-mini-title-bg)",

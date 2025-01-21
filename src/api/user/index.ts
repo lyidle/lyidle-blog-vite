@@ -9,11 +9,13 @@ import type { RegBody } from "./types/regBody"
 import type { GetUserInfo } from "./types/getUserInfo"
 import { SearchUser } from "./types/searchUser"
 import { SearchUserQuery } from "./types/searchUserQuery"
+import { Logout } from "./types/logout"
 // 统一管理 api
 enum API {
   regEmail = "/user/reg/email",
   reg = "/user/reg",
   login = "/user/login",
+  logout = "/user/logout",
   userInfo = "/user/userinfo",
   search = "/user/search",
 }
@@ -36,6 +38,10 @@ export const reqLogin = (data: LoginQuery) =>
   request.get<any, Login["data"]>(
     server + prefix + API.login + `?${new URLSearchParams(data)}`
   )
+
+// 退出登录
+export const reqLogout = () =>
+  request.get<any, Logout>(server + prefix + API.logout)
 
 // 获取用户信息
 export const getUserInfo = () =>

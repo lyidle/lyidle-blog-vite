@@ -3,22 +3,15 @@
     <div class="logo">
       <router-link to="/">{{ LOGO }}</router-link>
     </div>
-    <layout-header-topnav
-      :menuList="userMenuList"
-      :menuStyle
-    ></layout-header-topnav>
+    <layout-header-topnav :menuStyle></layout-header-topnav>
     <layout-header-topnav-mini :menuStyle></layout-header-topnav-mini>
   </div>
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
-// 引入store
-import { useUserStore } from "@/store/user"
 import { observer, ObserverCallback } from "@/utils/observer"
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
-
-const { userMenuList } = storeToRefs(useUserStore())
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 // 悬浮菜单的样式

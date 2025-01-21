@@ -14,7 +14,7 @@ export const handlerAsyncRoutes = (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): boolean | void => {
-  const { whitelist } = storeToRefs(useUserStore())
+  const { whitelist, routes } = storeToRefs(useUserStore())
   // 处理 异步路由重定向到404的问题
   if (to.name === "404") {
     if (!to.redirectedFrom) return
@@ -24,7 +24,7 @@ export const handlerAsyncRoutes = (
     const query = to.redirectedFrom.query
     if (!redirect) return
     // 再白名单则放行到对应的路由中
-    if (whitelist.value.includes(redirect)) {
+    if (routes.value?.length && whitelist.value.includes(redirect)) {
       next({ path, query, replace: true })
       return true
     }

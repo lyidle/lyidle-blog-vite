@@ -1,5 +1,5 @@
 <template>
-  <template v-for="item in menuList" :key="item.id">
+  <template v-for="item in userMenuList" :key="item.id">
     <li class="custom-menu-trigger" v-if="item.id">
       <!-- 标题有 titleTo 的 则 重定向 -->
       <router-link :to="item.titleTo || ''" v-if="item.titleTo">
@@ -35,12 +35,17 @@
   </template>
 </template>
 
-<script setup lang="ts" name="TopnavGenerate">
+<script setup lang="ts" name="TopNavMenuList">
 // 引入类型
 import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
 import { menuStyleType } from "@/components/my-menu/types"
+// 引入store
+import { useUserStore } from "@/store/user"
+
+const { userMenuList } = storeToRefs(useUserStore())
+
 // 接收props
-defineProps<{ menuList?: MenuListDatum[]; menuStyle?: menuStyleType }>()
+defineProps<{ menuStyle?: menuStyleType }>()
 </script>
 
 <style scoped></style>

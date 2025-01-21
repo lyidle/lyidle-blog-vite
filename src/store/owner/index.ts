@@ -23,14 +23,18 @@ export const useOwnerStore = defineStore("Owner", () => {
   const getAdminUserInfo = async () => {
     try {
       const adminResult = await searchUser({ role: "admin" })
-      adminAccount.value = adminResult?.[0]?.account
-      adminNickName.value = adminResult?.[0]?.nickName
-      adminAvatar.value = adminResult?.[0]?.avatar || null
-      adminSigner.value = adminResult?.[0]?.signer || null
-      const { pages, tags, categories } = tinyCounts(adminResult?.[0]?.Articles)
-      adminPages.value = pages
-      adminTags.value = tags
-      adminCategories.value = categories
+      if (Array.isArray(adminResult)) {
+        adminAccount.value = adminResult?.[0]?.account
+        adminNickName.value = adminResult?.[0]?.nickName
+        adminAvatar.value = adminResult?.[0]?.avatar || null
+        adminSigner.value = adminResult?.[0]?.signer || null
+        const { pages, tags, categories } = tinyCounts(
+          adminResult?.[0]?.Articles
+        )
+        adminPages.value = pages
+        adminTags.value = tags
+        adminCategories.value = categories
+      }
     } catch (error) {}
   }
   // 获取设置里的联系方式

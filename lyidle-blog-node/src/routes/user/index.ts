@@ -3,6 +3,8 @@ import express from "express"
 import reg from "@/routes/user/reg"
 // 引入 api/user/login
 import login from "@/routes/user/login"
+// 引入 api/user/login
+import logout from "@/routes/user/logout"
 // 引入 api/user/userinfo
 import userinfo from "@/routes/user/userinfo"
 // 引入 api/user/search
@@ -13,6 +15,7 @@ const router = express.Router()
 // 挂载路由
 router.use("/reg", reg)
 router.use("/login", login)
+router.use("/logout", logout)
 router.use("/userinfo", userinfo)
 router.use("/search", search)
 router.use("/admin", admin)

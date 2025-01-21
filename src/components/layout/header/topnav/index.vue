@@ -1,23 +1,21 @@
 <template>
   <ul class="topnav">
     <layout-header-normal :menuStyle>
-      <template #second>
+      <template #scend>
         <layout-header-topnav-generate
           :menuStyle
-          :menuList="menuList"
         ></layout-header-topnav-generate>
       </template>
     </layout-header-normal>
   </ul>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="TopNav">
 // 引入类型
-import type { Datum as MenuListDatum } from "@/api/admin/types/getMenuList"
 import { menuStyleType } from "@/components/my-menu/types"
 
 // 接收props
-defineProps<{ menuList?: MenuListDatum[]; menuStyle?: menuStyleType }>()
+defineProps<{ menuStyle?: menuStyleType }>()
 </script>
 
 <style scoped lang="scss">

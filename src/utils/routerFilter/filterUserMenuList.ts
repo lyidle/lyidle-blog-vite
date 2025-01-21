@@ -16,7 +16,9 @@ export const filterUserMenuList = (
     }
   })
 
-  const result = Array.from(new Set([result1, result2].flat(Infinity)))
+  const result = Array.from(
+    new Set([result1, result2].flat(Infinity))
+  ) as GetMenuList["data"]
 
   return result
 }

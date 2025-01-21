@@ -59,7 +59,6 @@ export const useShowUserinfo = () => {
 
   // 返回展示用的 computed 数据
   return {
-    userToken,
     showAccount,
     showNickName,
     showAvatar,

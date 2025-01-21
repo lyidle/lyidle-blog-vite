@@ -1,7 +1,9 @@
 <template>
-  <ul class="custom-menu" v-if="data" :style="{ left }">
-    <li class="title" ref="title" v-if="data.length"><span></span></li>
-    <template v-for="item in data" :key="item.id">
+  <ul class="custom-menu" v-if="data.length" :style="{ left }">
+    <li class="title" ref="title" v-if="triangle"><span></span></li>
+    <!-- 优先 id 然后 name 最后 item本身 作为 key -->
+
+    <template v-for="item in data" :key="item.id || item.name || item">
       <my-menu-item :style="menuStyle">
         <slot name="body" :item="item">
           {{ item.name }}
@@ -20,9 +22,10 @@ const props = withDefaults(
     left?: string
     triangle?: boolean
     menuStyle?: menuStyleType
-    data: any
+    data?: any[]
   }>(),
   {
+    data: () => [],
     top: "20px",
     left: "-15px",
     triangle: false,
@@ -37,16 +40,6 @@ const props = withDefaults(
 const initialTop = `${parseFloat(props.top) + 10}px`
 const hoverTop = props.top
 const { bg, color } = props.menuStyle
-
-const title = ref()
-nextTick(() => {
-  // 顶部小三角
-  if (props.triangle && title.value) {
-    title.value.style.display = "flex"
-  } else if (title.value) {
-    title.value.style.display = "none"
-  }
-})
 </script>
 <style scoped lang="scss">
 // 需要悬浮的父级列表
@@ -76,6 +69,7 @@ $menu-triangle-width: 10px;
   .title {
     height: 20px;
     position: relative;
+    display: flex;
     z-index: -1;
     // 三角形
     span {

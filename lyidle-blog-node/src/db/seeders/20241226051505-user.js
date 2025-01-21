@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs")
 require("dotenv").config()
 // 引入普通用户 权限组
 const default_user = JSON.parse(process.env.default_user)
+const Admin = JSON.parse(process.env.Admin)
 // 引入普通用户 权限组
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -12,7 +13,7 @@ module.exports = {
     const counts = 50
     const roles = [...new Set(...[default_user, "test", "other"])]
     const setRole = (i) => {
-      if (i === 1) return JSON.stringify(["admin"])
+      if (i === 1) return JSON.stringify([...new Set([Admin].flat(Infinity))])
       return JSON.stringify([
         ...new Set([roles[Math.floor(Math.random() * roles.length)]]),
       ])

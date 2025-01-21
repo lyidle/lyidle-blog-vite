@@ -41,7 +41,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="HeaderMenuMini">
+<script setup lang="ts" name="TopNavMiniMenuList">
 // 引入仓库
 import { useUserStore } from "@/store/user"
 

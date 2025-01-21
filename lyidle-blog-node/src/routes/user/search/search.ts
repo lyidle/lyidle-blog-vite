@@ -79,7 +79,7 @@ export default async (
   // 查询用户的所有文章
   const findUser = await User.findAll(commend)
   if (JSON.stringify(findUser) === "[]")
-    return res.result(void 0, "查询用户信息失败~", false)
+    return res.result({ msg: data }, "查询用户信息失败~", false)
   res.result(findUser, "查询用户信息成功~")
   return findUser
 }

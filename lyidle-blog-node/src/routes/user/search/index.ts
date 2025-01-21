@@ -9,7 +9,7 @@ router.get("/", async (req, res, next) => {
     await search(req.query, req, res)
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "查询用户信息失败~", false)
+      res.result({ msg: req.query }, "查询用户信息失败~", false)
     )
   }
 })
@@ -23,7 +23,7 @@ router.get("/exact", async (req, res, next) => {
     await search(req.query, req, res, true)
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "查询用户信息失败~", false)
+      res.result({ msg: req.query }, "查询用户信息失败~", false)
     )
   }
 })

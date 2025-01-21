@@ -90,16 +90,19 @@ const {
   ownerBiliBili,
   ownerEmail,
 } = storeToRefs(useOwnerStore())
-const { getOwnerInfo } = useOwnerStore()
+// 提取需要的数据
+const {
+  // 用户信息
+  userToken,
+} = storeToRefs(useUserStore())
 // 提取需要展示的信息
-const { userToken, showNickName, showSigner } = useShowUserinfo()
+const { showNickName, showSigner } = useShowUserinfo()
 // 提取请求
 const { reqUserInfo } = useUserStore()
 
 // 发起请求
 onMounted(async () => {
   await reqUserInfo()
-  await getOwnerInfo()
 })
 
 const copyToClipboard = async (type: string, text: string) => {

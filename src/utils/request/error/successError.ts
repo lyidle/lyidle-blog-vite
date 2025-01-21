@@ -1,12 +1,14 @@
 // 引入用户仓库
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
-
+// 引入 类型
+import type { DataObject as SearchErrorMsg } from "@/api/user/types/searchUser"
 // 定义响应数据接口
 interface ApiResponse {
   code: number // 状态码
+  data: SearchErrorMsg
   message?: string[] | string // 错误消息数组或单个错误消息
-  [key: string]: any // 其他可能的字段
+  [property: string]: any
 }
 
 /**
@@ -35,7 +37,7 @@ export const handlerSuccessErrorMessage = (response: {
   */
 
   // 如果没有 token 且状态码为 401，不进行错误提示
-  if (!token && response.data.code === 401) return
+  if (!token && response.data.code === 401) return response.data
   // 有 token  且 为 401 则需要清除 信息等操作
   if (token && response.data.code === 401) {
     mitt.emit("token expired")
@@ -48,6 +50,14 @@ export const handlerSuccessErrorMessage = (response: {
     const messages = Array.isArray(response.data?.message)
       ? response.data.message
       : [response.data?.message || "发生未知错误，请稍后再试~"]
+
+    if (
+      response.data?.data?.msg?.role === "admin" &&
+      response.data?.message?.[0] === "查询用户信息失败~"
+    ) {
+      ElMessage.warning("网站管理员信息未初始化~")
+      return
+    }
 
     messages.forEach((item: string) => {
       ElMessage.error(item)
