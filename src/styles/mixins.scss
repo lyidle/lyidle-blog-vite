@@ -62,3 +62,12 @@ $currentTheme: 0;
   $themeMap: map.get($them, $currentTheme);
   @return map.get($themeMap, $key);
 }
+
+// 设置 el-form-item 的 label 颜色
+@mixin set-el-label($color) {
+  ::v-deep(.el-form-item) {
+    label {
+      color: $color;
+    }
+  }
+}

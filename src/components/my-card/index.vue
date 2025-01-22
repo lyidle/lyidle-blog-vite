@@ -1,6 +1,6 @@
 <template>
   <div class="myCard body">
-    <slot name="body"></slot>
+    <slot></slot>
   </div>
 </template>
 

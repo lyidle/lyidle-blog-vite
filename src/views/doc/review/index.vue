@@ -1,7 +1,5 @@
 <template>
   <div class="doc-pages-pr">
-    <layout-header />
-    <layout-banner :context="false"></layout-banner>
     <layout-content>
       <!-- 侧边栏 -->
       <template #aside-end v-if="isAsideDocMenu">
@@ -133,9 +131,7 @@
             ref="observerMenu"
           ></div>
           <my-card>
-            <template #body>
-              <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
-            </template>
+            <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
           </my-card>
         </div>
       </template>

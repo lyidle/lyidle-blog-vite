@@ -33,6 +33,9 @@ a,
 button {
   cursor: var(--cursor-pointer) !important;
 }
+input {
+  cursor: var(--cursor-text) !important;
+}
 // 页面中的跳转链接的悬浮函数
 .route-link {
   @include pages-links-hover;

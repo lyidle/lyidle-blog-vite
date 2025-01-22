@@ -25,16 +25,16 @@
           <div class="side-counts-container">
             <layout-link-pages></layout-link-pages>
           </div>
-          <my-primary-button
-            type="primary"
-            class="userinfo-btn"
-            @click="$router.push(`/user/space/${adminAccount}`)"
+          <router-link
+            class="block w-100% h-100%"
+            :to="`/user/space/${adminAccount}`"
           >
-            <div class="tip">前往小窝</div>
-            <div class="car">
-              <icon-car></icon-car>
-            </div>
-          </my-primary-button>
+            <my-primary-button type="primary" class="userinfo-btn">
+              <div class="tip">前往小窝</div>
+              <div class="car">
+                <icon-car></icon-car>
+              </div> </my-primary-button
+          ></router-link>
           <div class="links">
             <a
               class="color-[var(--aside-userinfo-wechat-color)]"

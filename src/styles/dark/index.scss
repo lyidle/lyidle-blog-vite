@@ -45,11 +45,15 @@ html[themes="#{$theme}"] {
   --cursor-pointer: url("/assets/cursor/dark/link.png") 0 0, pointer;
   --cursor-text: url("/assets/cursor/dark/text.png") 18 5, text;
   --cursor-move: url("/assets/cursor/dark/move.png") 18 5, move;
-  // 按钮primary
+  // 按钮 primary
   --primary-btn-bg: #5892b8;
   --primary-btn-color: #eef8ff;
   --primary-btn-hover-bg: #6fa6cb;
   --primary-btn-hover-color: #e9f6ff;
+  // 按钮 input
+  --primary-input-placeholder: var(--primary-color);
+  --primary-input-color: var(--primary-color);
+  --primary-input-underline-bg: var(--primary-color);
   // 切换按钮 primary
   $primary-switch-bg: #548aad;
   --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: 10%)};

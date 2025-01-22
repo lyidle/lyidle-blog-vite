@@ -127,7 +127,6 @@ export const useUserStore = defineStore(
       userStoreReset,
     }
   },
-  // 对用户信息加密 有token
   {
     persist: {
       key: "User",

@@ -62,40 +62,50 @@ const asideStyle = computed(() => {
   return result
 })
 
-const isShowAside = ref()
 // 存储是否有 目录的数据
 let isToc = ref(false)
 
-watchEffect(() => {
-  // 订阅 接受目录
-  mitt.on("articleMenu", (toc) => {
-    if (toc.length) {
-      isToc.value = true
-    }
-    // 只需要触发一次 防止泄露
-    mitt.off("articleMenu")
-  })
-  // 订阅 有目录的组件销毁时 触发
-  mitt.on("articleMenu:destroy", () => {
-    isToc.value = false
-    // 只需要触发一次 防止泄露
-    mitt.off("articleMenu:destroy")
-  })
+const isShowAside = computed(() => {
   let result = 0
   // 是否关闭侧边栏
   if (!isAside.value) {
     result = 0
-  } else {
-    // 有目录的组件 中 目录存在
-    if (isAsideDocMenu.value && isToc.value) {
-      result = asideCounts.value
-    }
-    // 普通界面没有目录
-    else {
-      result = asideCounts.value - 1
-    }
+    return result
   }
-  isShowAside.value = result
+  // 在没有目录的组件 且目录开启
+  if (!isToc.value && isAsideDocMenu.value) {
+    result = asideCounts.value - 1
+    return result
+  }
+  // 在没有目录的组件 且目录关闭
+  if (!isToc.value && !isAsideDocMenu.value) {
+    result = asideCounts.value
+    return result
+  }
+
+  // 有目录的组件 中 目录存在数据
+  if (isAsideDocMenu.value && isToc.value) {
+    result = asideCounts.value
+    return result
+  }
+
+  // 有目录的组件 中 目录不存在数据
+  if (isAsideDocMenu.value) {
+    result = asideCounts.value - 1
+    return result
+  }
+})
+
+// 订阅 接受目录
+mitt.on("articleMenu", (toc) => {
+  if (toc.length) {
+    isToc.value = true
+  }
+})
+
+// 订阅 有目录的组件销毁时 触发
+mitt.on("articleMenu:destroy", () => {
+  isToc.value = false
 })
 
 // 监听 布局切换事件
@@ -121,6 +131,11 @@ watch(
     newV && mitt.emit("isAside")
   }
 )
+
+onBeforeUnmount(() => {
+  mitt.off("articleMenu")
+  mitt.off("articleMenu:destroy")
+})
 </script>
 <style scoped lang="scss">
 // 左右间距

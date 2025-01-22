@@ -1,11 +1,9 @@
 <template>
   <my-card class="item-aside">
-    <template #body>
-      <div class="aside-title">
-        <slot name="title"></slot>
-      </div>
-      <div class="mt-10px body"><slot name="body"></slot></div>
-    </template>
+    <div class="aside-title">
+      <slot name="title"></slot>
+    </div>
+    <div class="mt-10px body"><slot name="body"></slot></div>
   </my-card>
 </template>
 

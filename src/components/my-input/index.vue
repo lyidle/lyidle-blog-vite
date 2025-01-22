@@ -5,7 +5,7 @@
 <script setup lang="ts" name="MyInput"></script>
 
 <style scoped lang="scss">
-.el-input__wrapper {
+::v-deep(.el-input__wrapper) {
   &.is-focus {
     box-shadow: unset;
   }
@@ -15,23 +15,23 @@
   background-color: unset;
   box-shadow: unset;
   border-radius: unset;
-  border-bottom: 1px solid var(--login-input-underline-bg);
-  margin: 1px 11px;
+  border-bottom: 1px solid var(--primary-input-underline-bg);
+  margin: 0.0625rem 0.6875rem;
   padding: unset;
   --el-color-danger: transparent;
   input {
-    height: 24px;
+    height: 1.5rem;
     border: none;
     outline: none;
     width: 100%;
-    font-size: 13px;
+    font-size: 0.8125rem;
     transition: font-size var(--primary-during);
-    color: var(--login-input-color);
+    color: var(--primary-input-color);
     &:focus {
-      font-size: 15px;
+      font-size: 0.9375rem;
     }
     &::placeholder {
-      color: var(--login-input-placeholder);
+      color: var(--primary-input-placeholder);
     }
   }
 }

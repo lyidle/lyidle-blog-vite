@@ -19,10 +19,25 @@ export const constantRoute: RouteRecordRaw[] = [
   },
   // 文章
   {
-    path: "/doc/:id",
+    path: "/doc",
     name: "Document",
     meta: { title: "文章" },
-    component: () => import("@/views/doc/index.vue"),
+    component: () => import("@/components/layout/index.vue"),
+    children: [
+      // 文章
+      {
+        path: "/doc/:id",
+        name: "Document",
+        meta: { title: "文章", bannerContext: true },
+        component: () => import("@/views/doc/review/index.vue"),
+      },
+      {
+        path: "/doc/publish",
+        name: "DocumentPublish",
+        meta: { title: "发表文章" },
+        component: () => import("@/views/doc/publish/index.vue"),
+      },
+    ],
   },
   // 用户相关
   {
@@ -154,7 +169,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         path: "/note/note2",
         name: "Note2",
         meta: { title: "笔记" },
-        component: () => import("@/views/test2/index.vue"),
+        component: () => import("@/views/test/index.vue"),
       },
     ],
   },

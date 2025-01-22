@@ -1,79 +1,75 @@
 <template>
   <div ref="menucontainer">
     <slot></slot>
-    <teleport to="body">
-      <!-- 阻止冒泡 防止多个菜单干扰 -->
-      <div
-        class="menu-context"
-        ref="menuInstance"
-        @contextmenu.capture.prevent.stop
-      >
-        <div class="title">
-          <div class="icon" @click="$router.back()">
-            <i class="i-lets-icons:arrow-left"></i>
-          </div>
-          <div class="icon" @click="$router.go(1)">
-            <i class="i-lets-icons:arrow-right"></i>
-          </div>
-          <div class="icon" @click="screen?.fullScreenCb">
-            <i
-              :class="
-                isFullScreen
-                  ? 'i-tdesign:fullscreen-exit'
-                  : 'i-tdesign:fullscreen-1'
-              "
-            ></i>
-          </div>
-          <div class="icon" @click="$router.go(0)">
-            <i class="i-tabler:refresh"></i>
-          </div>
-          <div class="icon" @click="scrollTop">
-            <i class="i-lets-icons:arrow-top"></i>
-          </div>
-          <div class="icon" @click="scrollBottom">
-            <i class="i-lets-icons:arrow-down"></i>
-          </div>
+    <!-- 阻止冒泡 防止多个菜单干扰 -->
+    <div
+      class="menu-context"
+      ref="menuInstance"
+      @contextmenu.capture.prevent.stop
+    >
+      <div class="title">
+        <div class="icon" @click="$router.back()">
+          <i class="i-lets-icons:arrow-left"></i>
         </div>
-        <context-menu-item
-          :content="bannerIsFixed ? '背景固定' : '背景悬浮'"
-          :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
-          @click="bannerIsFixed = !bannerIsFixed"
-        >
-        </context-menu-item>
-        <context-menu-item
-          v-if="themes === 'switch'"
-          :content="!isDark ? '暗夜模式' : '白天模式'"
-          :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
-          @click="isDark = !isDark"
-        >
-        </context-menu-item>
-        <context-menu-item
-          :content="'个性化设置'"
-          :icon="'i-basil:edit-outline'"
-          @click="openSettings"
-        ></context-menu-item>
-        <context-menu-item
-          :content="'复制文本'"
-          :icon="'i-material-symbols-light:print'"
-          @click="handleContextMenu"
-          v-if="isCopyText"
-        ></context-menu-item>
-        <context-menu-item
-          :content="'打印页面'"
-          :icon="'i-material-symbols-light:print'"
-          onclick="window.print()"
-        ></context-menu-item>
-        <slot name="body"></slot>
+        <div class="icon" @click="$router.go(1)">
+          <i class="i-lets-icons:arrow-right"></i>
+        </div>
+        <div class="icon" @click="fullScreenEmit">
+          <i
+            :class="
+              isFullscreen
+                ? 'i-tdesign:fullscreen-exit'
+                : 'i-tdesign:fullscreen-1'
+            "
+          ></i>
+        </div>
+        <div class="icon" @click="$router.go(0)">
+          <i class="i-tabler:refresh"></i>
+        </div>
+        <div class="icon" @click="scrollTop">
+          <i class="i-lets-icons:arrow-top"></i>
+        </div>
+        <div class="icon" @click="scrollBottom">
+          <i class="i-lets-icons:arrow-down"></i>
+        </div>
       </div>
-    </teleport>
+      <context-menu-item
+        :content="bannerIsFixed ? '背景固定' : '背景悬浮'"
+        :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
+        @click="bannerIsFixed = !bannerIsFixed"
+      >
+      </context-menu-item>
+      <context-menu-item
+        v-if="themes === 'switch'"
+        :content="!isDark ? '暗夜模式' : '白天模式'"
+        :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
+        @click="isDark = !isDark"
+      >
+      </context-menu-item>
+      <context-menu-item
+        :content="'个性化设置'"
+        :icon="'i-basil:edit-outline'"
+        @click="openSettings"
+      ></context-menu-item>
+      <context-menu-item
+        :content="'复制文本'"
+        :icon="'i-material-symbols-light:print'"
+        @click="handleContextMenu"
+        v-if="isCopyText"
+      ></context-menu-item>
+      <context-menu-item
+        :content="'打印页面'"
+        :icon="'i-material-symbols-light:print'"
+        onclick="window.print()"
+      ></context-menu-item>
+      <slot name="body"></slot>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" name="ContextMenu">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-// 引入 utils
-import useFullScreen from "@/hooks/fullscreen"
 // 引入 到顶部和底部的函数
 import { scrollTop, scrollBottom } from "@/utils/toTopOrBottom"
 // 引入 菜单 核心
@@ -81,13 +77,14 @@ import { useContextMenu } from "@/hooks/context-menu/base"
 
 // 引入 复制到剪贴板的方法
 import { handleContextMenu } from "@/hooks/context-menu/copyToClipboard"
+import { mitt } from "@/utils/emitter"
 
 // 提取需要的变量
 const {
   isDark,
   themes,
   bannerIsFixed,
-  isFullScreen,
+  isFullscreen,
   setScene,
   isShowPanel,
   isCopyText,
@@ -100,15 +97,17 @@ const menucontainer = ref()
 // 初始化 菜单
 useContextMenu(menuInstance, menucontainer)
 
-// 全屏
-const screen = useFullScreen()
-
 // 判断 是打开那个个性化面板
 const props = defineProps<{ scene?: string | number }>()
+
 // 打开 个性化设置
 const openSettings = () => {
   isShowPanel.value = true
   if (props.scene) setScene.value = props.scene
+}
+
+const fullScreenEmit = () => {
+  mitt.emit("fullScreenChange", document.documentElement)
 }
 </script>
 

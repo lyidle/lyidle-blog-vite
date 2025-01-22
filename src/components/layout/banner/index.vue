@@ -13,7 +13,7 @@
         position: bannerIsFixed ? 'fixed' : 'unset',
       }"
     >
-      <div class="detail" v-if="context">
+      <div class="detail" v-if="!$route.meta.bannerContext">
         <div class="title cur-text">{{ welcome }}</div>
         <div class="subtitle cur-text">
           <div v-if="poetry?.author">
@@ -44,13 +44,11 @@ withDefaults(
     mask?: string
     color?: string
     height?: string | null
-    context?: boolean
   }>(),
   {
     mask: "var(--banner-mask)",
     color: "var(--banner-detail-color)",
     height: null,
-    context: true,
   }
 )
 

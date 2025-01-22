@@ -64,7 +64,7 @@ export const useShowPersonHeaderMenu = () => {
       id: `${Math.random()}`,
       name: "发布文章",
       icon: { icon: "i-simple-line-icons:doc" },
-      to: "/publish/docs",
+      to: "/doc/publish",
     },
   ]
 

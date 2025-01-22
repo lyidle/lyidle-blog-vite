@@ -15,7 +15,7 @@
 <script setup lang="ts" name="GenerateMenuTree">
 // 引入 类型
 import { mitt } from "@/utils/emitter"
-import { TocNode } from "@/views/doc/types"
+import { TocNode } from "@/views/doc/review/types"
 defineProps<{ menuData?: TocNode[] }>()
 
 // 缓存

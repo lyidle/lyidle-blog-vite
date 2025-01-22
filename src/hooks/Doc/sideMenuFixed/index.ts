@@ -5,7 +5,7 @@ import { mitt } from "@/utils/emitter"
 // 引入 交叉传感器
 import { observer } from "@/utils/observer"
 import type { ObserverCallback } from "@/utils/observer"
-import { TocNode } from "@/views/doc/types"
+import { TocNode } from "@/views/doc/review/types"
 // 提取数据
 const { docMenuIsFixed, asideCounts, isAsideDocMenu } = storeToRefs(
   useSettingStore()

@@ -18,7 +18,6 @@ import { useGlobalEmitter } from "@/hooks/globalEmitter"
 import { useOwnerStore } from "@/store/owner"
 // 获取admin的信息 用于展示 网页拥有者的一些信息
 const { getAdminUserInfo, getOwnerInfo } = useOwnerStore()
-
 // 全局的 监听事件 使用 mitt 管理
 useGlobalEmitter()
 

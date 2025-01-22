@@ -54,7 +54,7 @@ export const useSideMenuHighlight = (
   // 监听器
   const headinsObserver = () => {
     // 默认第一个高亮
-    sideMenuTree[0].classList.add("active")
+    sideMenuTree[0]?.classList.add("active")
     // 监听 是否取消observer 点击时不需要代理
     mitt.on("headinsObserver", isObserver)
     headings.forEach((item) => {

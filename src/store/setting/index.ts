@@ -61,7 +61,7 @@ export const useSettingStore = defineStore(
     // #endregion 布局信息设置
 
     // 是否全屏
-    const isFullScreen = ref<boolean>(false)
+    const isFullscreen = ref<boolean>(false)
 
     // #region 布局显示与隐藏设置
     // 是否开启侧边栏
@@ -116,7 +116,7 @@ export const useSettingStore = defineStore(
       // 文章的目录是否固定
       docMenuIsFixed,
       // 右键菜单 信息
-      isFullScreen,
+      isFullscreen,
       contentIsReverse,
       // 个性化设置 右键的编辑项
       setScene,

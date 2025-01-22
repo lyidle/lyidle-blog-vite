@@ -1,9 +1,7 @@
 <template>
   <layout-content>
     <template #content-start>
-      <my-card>
-        <template #body>124</template>
-      </my-card>
+      <my-card> 124 </my-card>
     </template>
   </layout-content>
 </template>
