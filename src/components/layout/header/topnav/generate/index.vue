@@ -7,7 +7,7 @@
         {{ item.name }}
       </router-link>
       <!-- 没有的则提示 -->
-      <a v-else v-dev-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
+      <a v-else v-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
         <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.name }}
       </a>

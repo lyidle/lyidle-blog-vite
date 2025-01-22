@@ -42,8 +42,8 @@
           <el-button
             type="primary"
             class="w-50px ml-10px"
-            @click="handlerCode"
             :disabled="!codeIsActive"
+            v-debounce="{ fn: handlerCode }"
           >
             {{ code }}
           </el-button>
@@ -67,7 +67,10 @@
           :prefix-icon="confirmPassIcon"
         ></el-input>
       </el-form-item>
-      <el-button type="primary" class="w-100% mt-5px" @click="handlerReg"
+      <el-button
+        type="primary"
+        class="w-100% mt-5px"
+        v-debounce="{ fn: handlerReg }"
         >注册</el-button
       >
     </el-form>

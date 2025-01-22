@@ -3,7 +3,6 @@ import Vditor from "vditor"
 import "vditor/dist/index.css"
 // 引入 配置信息
 import { useDocEditorOpt } from "@/store/doc"
-import { mitt } from "@/utils/emitter"
 const { docHeight } = storeToRefs(useDocEditorOpt())
 
 export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {

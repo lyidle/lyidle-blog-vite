@@ -31,10 +31,11 @@ export const constantRoute: RouteRecordRaw[] = [
         meta: { title: "文章", bannerContext: true },
         component: () => import("@/views/doc/review/index.vue"),
       },
+      // 发布文章 需要有对应的权限
       {
         path: "/doc/publish",
         name: "DocumentPublish",
-        meta: { title: "发表文章" },
+        meta: { title: "发表文章", role: ["doc:publish"] },
         component: () => import("@/views/doc/publish/index.vue"),
       },
     ],
@@ -89,6 +90,12 @@ export const constantRoute: RouteRecordRaw[] = [
         component: () => import("@/views/user/categories/onlyOne/index.vue"),
       },
     ],
+  },
+  {
+    path: "/manager",
+    name: "Manager",
+    meta: { title: "管理页面", role: ["admin"] },
+    component: () => import("@/components/layout/index.vue"),
   },
   // 个人
   {

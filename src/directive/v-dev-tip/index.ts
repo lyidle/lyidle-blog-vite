@@ -6,10 +6,10 @@ interface DevTipOptions {
 interface customDivELement extends HTMLDivElement {
   cloneClick: () => void
 }
-const vDevTip: Directive<customDivELement, DevTipOptions> = {
+export const vTip: Directive<customDivELement, DevTipOptions> = {
   mounted(el, options) {
+    const { type, msg } = options.value
     el.cloneClick = () => {
-      const { type, msg } = options.value
       ElMessage({ type, message: msg, grouping: true, offset: 50 })
     }
     el.addEventListener("click", el.cloneClick)
@@ -18,4 +18,3 @@ const vDevTip: Directive<customDivELement, DevTipOptions> = {
     el.removeEventListener("click", el.cloneClick)
   },
 }
-export default vDevTip

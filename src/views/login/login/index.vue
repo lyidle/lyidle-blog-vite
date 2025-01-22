@@ -25,7 +25,11 @@
           :prefix-icon="passIcon"
         ></el-input>
       </el-form-item>
-      <el-button type="primary" class="w-100% mt-5px" @click="handlerLogin">
+      <el-button
+        type="primary"
+        class="w-100% mt-5px"
+        v-debounce="{ fn: handlerLogin }"
+      >
         登录
       </el-button>
     </el-form>

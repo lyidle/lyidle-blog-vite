@@ -8,7 +8,8 @@ import { routerEventHandlered } from "./eventHandlers"
 import { initMenuList } from "./initMenuList"
 // 引入 处理异步路由 问题 的函数
 import { handlerAsyncRoutes } from "./handlerAsyncRoutes"
-
+// 引入 处理 常量路由的 权限
+import { handlerConstRoutes } from "./handlerConstRoutes"
 /**
  * 配置权限控制逻辑
  * @param router - Vue Router 实例
@@ -22,12 +23,15 @@ export const usePermission = (router: Router) => {
     await initMenuList()
     // 如果路由发生变化 则触发 router changed 事件
     if (to !== from) mitt.emit("router changed")
+    // 处理常量路由的 权限问题
+    const isConstHandler = handlerConstRoutes(to, from, next)
+    // 拦截了 权限的 不需要 next
+    if (isConstHandler) return
+
     // 处理 异步路由 没加载时 404 问题
     const isHandler = handlerAsyncRoutes(to, from, next)
-    // 处理过了 不需要再次 next
-    if (isHandler) {
-      return
-    }
+    // 处理过了 404 问题 不需要再次 next
+    if (isHandler) return
 
     next()
   })
