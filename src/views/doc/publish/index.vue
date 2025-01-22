@@ -26,10 +26,13 @@
 <script setup lang="ts" name="DocumentPublish">
 // 引入 编辑器的 hooks
 import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
+// 引入 编辑器 全屏事件的 处理 hooks
+import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 const test = ref()
 const vditorEditor = ref()
 // 使用 hooks
 useVditorEditor(vditorEditor)
+useIsFullscreen(vditorEditor)
 </script>
 
 <style scoped lang="scss">
