@@ -34,14 +34,14 @@
         </div>
       </div>
       <context-menu-item
-        :content="bannerIsFixed ? '背景固定' : '背景悬浮'"
+        :content="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
         :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
         @click="bannerIsFixed = !bannerIsFixed"
       >
       </context-menu-item>
       <context-menu-item
         v-if="themes === 'switch'"
-        :content="!isDark ? '暗夜模式' : '白天模式'"
+        :content="`${isDark ? '暗夜' : '白天'}模式`"
         :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
         @click="isDark = !isDark"
       >

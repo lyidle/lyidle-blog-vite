@@ -3,12 +3,12 @@
     <h2 class="title text-center">布局信息设置</h2>
     <div class="theme-select">
       <div class="preview">
-        <div class="item" v-if="!asideCounts">
+        <div class="item">
           <span
             class="label cur-pointer"
             @click="contentIsReverse = !contentIsReverse"
           >
-            <span>侧栏位置({{ contentIsReverse ? "左侧" : "右侧" }})</span>
+            <span>侧边信息({{ contentIsReverse ? "左侧" : "右侧" }})</span>
           </span>
           <my-switch
             v-model="contentIsReverse"
@@ -24,9 +24,7 @@
             @click="isPanelPositionSaved = !isPanelPositionSaved"
           >
             <span
-              >个性化面板位置({{
-                isPanelPositionSaved ? "存储" : "不存储"
-              }})</span
+              >化面板位置({{ isPanelPositionSaved ? "存储" : "不存储" }})</span
             >
           </span>
           <my-switch
@@ -43,7 +41,7 @@
             class="label cur-pointer"
             @click="docMenuIsFixed = !docMenuIsFixed"
           >
-            <span>文章的目录({{ docMenuIsFixed ? "固定" : "不固定" }})</span>
+            <span>文章目录({{ docMenuIsFixed ? "固定" : "不固定" }})</span>
           </span>
           <my-switch
             v-model="docMenuIsFixed"
@@ -60,7 +58,7 @@
             class="label cur-pointer"
             @click="isScrollOrnaments = !isScrollOrnaments"
           >
-            <span>滚动挂饰({{ isScrollOrnaments ? "开启" : "不开启" }})</span>
+            <span>滚动挂饰({{ isScrollOrnaments ? "开启" : "关闭" }})</span>
           </span>
           <my-switch
             v-model="isScrollOrnaments"

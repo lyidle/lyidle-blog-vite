@@ -6,7 +6,7 @@
         <div class="item">
           <span class="label cur-pointer" @click="moveEffect = !moveEffect">
             <span>预览：</span>
-            <span>移动特效</span>
+            <span>移动特效({{ moveEffect ? "开启" : "关闭" }})</span>
           </span>
           <my-switch
             v-model="moveEffect"

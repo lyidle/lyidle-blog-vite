@@ -1,7 +1,7 @@
 <template>
   <template v-if="asideCounts">
     <context-menu-item
-      :content="contentIsReverse ? '恢复布局' : '交换布局'"
+      :content="`${contentIsReverse ? '右侧' : '左侧'}侧边信息`"
       :icon="
         !contentIsReverse
           ? 'i-arcticons:photoprism-gallery'

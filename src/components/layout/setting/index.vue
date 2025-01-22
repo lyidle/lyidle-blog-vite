@@ -16,7 +16,7 @@
         <el-form label-width="130px" class="m-5px m-l-15px header-setting">
           <el-form-item
             v-if="themes === 'switch'"
-            :label="!isDark ? '暗夜模式' : '白天模式'"
+            :label="`${isDark ? '暗夜' : '白天'}模式`"
             class="item"
           >
             <el-switch
@@ -29,7 +29,7 @@
             />
           </el-form-item>
           <el-form-item
-            :label="bannerIsFixed ? '背景固定' : '背景悬浮'"
+            :label="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
             class="item"
           >
             <el-switch
@@ -42,7 +42,7 @@
             />
           </el-form-item>
           <el-form-item
-            :label="!clickEffect ? '开启鼠标点击特效' : '关闭鼠标点击特效'"
+            :label="`${clickEffect ? '开启' : '关闭'}鼠标点击特效`"
             class="item"
           >
             <el-switch
@@ -55,7 +55,7 @@
             />
           </el-form-item>
           <el-form-item
-            :label="!moveEffect ? '开启鼠标移动特效' : '关闭鼠标移动特效'"
+            :label="`${moveEffect ? '开启' : '关闭'}鼠标移动特效`"
             class="item"
           >
             <el-switch
@@ -69,7 +69,7 @@
           </el-form-item>
           <template v-if="asideCounts">
             <el-form-item
-              :label="isAside ? '关闭侧边信息' : '打开侧边信息'"
+              :label="`${isAside ? '打开' : '关闭'}侧边信息`"
               class="item aside-switch"
             >
               <el-switch
@@ -82,7 +82,7 @@
               />
             </el-form-item>
             <el-form-item
-              :label="`侧栏位置(${contentIsReverse ? '左侧' : '右侧'})`"
+              :label="`${contentIsReverse ? '左侧' : '右侧'}侧边信息`"
               class="item aside-switch"
             >
               <el-switch

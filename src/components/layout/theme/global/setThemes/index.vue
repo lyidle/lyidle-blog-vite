@@ -12,7 +12,7 @@
             class="label cur-pointer"
             @click="bannerIsFixed = !bannerIsFixed"
           >
-            <span>{{ !isDark ? "暗夜模式" : "白天模式" }}</span>
+            <span>{{ isDark ? "暗夜" : "白天" }}模式</span>
           </span>
           <my-switch
             v-model="isDark"
@@ -27,7 +27,7 @@
             class="label cur-pointer"
             @click="bannerIsFixed = !bannerIsFixed"
           >
-            <span>{{ bannerIsFixed ? "背景固定" : "背景悬浮" }}</span>
+            <span>{{ bannerIsFixed ? "固定" : "不固定" }}背景</span>
           </span>
           <my-switch
             v-model="bannerIsFixed"

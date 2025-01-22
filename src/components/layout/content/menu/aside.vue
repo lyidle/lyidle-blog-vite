@@ -1,7 +1,7 @@
 <template>
   <template v-if="asideCounts">
     <context-menu-item
-      :content="isAside ? '关闭侧边信息' : '打开侧边信息'"
+      :content="`${isAside ? '打开' : '关闭'}侧边信息`"
       :icon="
         !isAside
           ? 'i-arcticons:goodwy-gallery'

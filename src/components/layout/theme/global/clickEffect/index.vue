@@ -6,7 +6,7 @@
         <div class="item">
           <span class="label cur-pointer" @click="clickEffect = !clickEffect">
             <span>预览：</span>
-            <span>点击特效</span>
+            <span>点击特效({{ clickEffect ? "开启" : "关闭" }})</span>
           </span>
           <my-switch
             v-model="clickEffect"

@@ -6,7 +6,7 @@
         <template v-if="asideCounts">
           <div class="item">
             <span class="label cur-pointer" @click="isAside = !isAside">
-              <span>{{ isAside ? "关闭" : "打开" }}侧边信息</span>
+              <span>{{ isAside ? "打开" : "关闭" }}侧边信息</span>
             </span>
             <my-switch
               v-model="isAside"
@@ -19,7 +19,7 @@
         </template>
         <div class="item">
           <span class="label cur-pointer" @click="isAsideSelf = !isAsideSelf">
-            <span>{{ isAsideSelf ? "关闭" : "打开" }}个人信息</span>
+            <span>{{ isAsideSelf ? "打开" : "关闭" }}个人信息</span>
           </span>
           <my-switch
             v-model="isAsideSelf"
@@ -34,7 +34,7 @@
             class="label cur-pointer"
             @click="isAsideAnnounce = !isAsideAnnounce"
           >
-            <span>{{ isAsideAnnounce ? "关闭" : "打开" }}公告信息</span>
+            <span>{{ isAsideAnnounce ? "打开" : "关闭" }}公告信息</span>
           </span>
           <my-switch
             v-model="isAsideAnnounce"
@@ -51,7 +51,7 @@
             class="label cur-pointer"
             @click="isAsideWebInfo = !isAsideWebInfo"
           >
-            <span>{{ isAsideWebInfo ? "关闭" : "打开" }}小站咨询</span>
+            <span>{{ isAsideWebInfo ? "打开" : "关闭" }}小站咨询</span>
           </span>
           <my-switch
             v-model="isAsideWebInfo"
@@ -66,7 +66,7 @@
             class="label cur-pointer"
             @click="isAsideRecentPage = !isAsideRecentPage"
           >
-            <span>{{ isAsideRecentPage ? "关闭" : "打开" }}最新文章信息</span>
+            <span>{{ isAsideRecentPage ? "打开" : "关闭" }}最新文章信息</span>
           </span>
           <my-switch
             v-model="isAsideRecentPage"
@@ -81,7 +81,7 @@
             class="label cur-pointer"
             @click="isAsideDocMenu = !isAsideDocMenu"
           >
-            <span>{{ isAsideDocMenu ? "关闭" : "打开" }}目录</span>
+            <span>{{ isAsideDocMenu ? "打开" : "关闭" }}目录</span>
           </span>
           <my-switch
             v-model="isAsideDocMenu"
