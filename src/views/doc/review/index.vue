@@ -196,14 +196,7 @@ $author-m: 10px 0;
 $icon-m-r: 2px;
 $header-h: 18.75rem;
 $header-container-h: 12.5rem;
-$preview-pd: 50px;
-$doc-primary-color: var(--doc-content-color);
-$color: $doc-primary-color;
-$preview-h1-border-l: 10px solid $color;
-$preview-h1-border-b: 2px solid $color;
-$preview-h2-p-l: 10px;
-$preview-calouts-pd: 10px;
-$preview-callouts-title-gap: 8px;
+
 @include content-aside-title(var(--aside-title-icon-bg));
 
 // 头部 teleport body了
@@ -286,9 +279,20 @@ $preview-callouts-title-gap: 8px;
     }
     // markdown 预览
     ::v-deep(#vditor-preview) {
-      padding: $preview-pd;
+      $preview-pd: 50px;
+      $doc-primary-color: var(--doc-content-color);
+      $color: #{$doc-primary-color};
+      // 书写区域
+      $preview-h1-border-l: 10px solid #{$color};
+      $preview-h1-border-b: 2px solid #{$color};
+      $preview-h2-p-l: 10px;
+      // callouts
+      $preview-calouts-pd: 10px;
+      $preview-callouts-title-gap: 8px;
       color: $doc-primary-color;
+      padding: $preview-pd;
       overflow: hidden;
+
       h1 {
         border-bottom: 0 !important;
         text-align: center;
@@ -328,8 +332,8 @@ $preview-callouts-title-gap: 8px;
       }
 
       // #region h2-h6 编号
-      $dot: var(--doc-menu-seg);
-      $endDot: var(--doc-menu-seg-end);
+      $dot: var(--doc-content-seg);
+      $endDot: var(--doc-content-seg-end);
       & {
         counter-reset: level-2; /* 重置三级编号计数器 */
       }
@@ -600,6 +604,65 @@ $preview-callouts-title-gap: 8px;
           }
           &:not(:last-child) {
             border-bottom: $body-bottom-border;
+          }
+        }
+      }
+
+      // 有序列表
+      ol {
+        // 定义符号变量
+        $ol-seg: var(--preview-ol-seg);
+        counter-reset: list;
+        list-style: none; // 移除默认的列表样式
+        padding: 0;
+        margin: 0;
+        li {
+          counter-increment: list;
+          list-style: none;
+          position: relative;
+          padding-left: 1.25rem;
+
+          &::before {
+            content: counter(list) $ol-seg;
+            position: absolute;
+            left: 0;
+            color: $doc-primary-color;
+          }
+        }
+      }
+
+      // 无序列表
+      ul {
+        // 定义符号变量
+        $ul-symbol-1: var(--preview-ul-symbol-1); // 一级列表标记
+        $ul-symbol-2: var(--preview-ul-symbol-2); // 二级列表标记
+        $ul-symbol-3: var(--preview-ul-symbol-3); // 三级列表标记
+        list-style: none; // 移除默认的列表样式
+        padding: 0;
+        margin: 0;
+
+        li:not(.vditor-task) {
+          position: relative;
+          padding-left: 1rem;
+
+          &::before {
+            content: $ul-symbol-1; // 默认使用实心点
+            position: absolute;
+            left: 3px;
+            font-weight: bold;
+            color: $doc-primary-color;
+          }
+        }
+
+        ul li:not(.vditor-task) {
+          &::before {
+            content: $ul-symbol-2; // 二级列表使用空心点作为标记
+          }
+
+          ul li:not(.vditor-task) {
+            &::before {
+              content: $ul-symbol-3; // 三级列表使用方块作为标记
+            }
           }
         }
       }

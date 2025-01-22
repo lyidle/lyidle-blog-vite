@@ -28,6 +28,6 @@ useSideMenuFixed(props.menuData, props.observerMenu, menuCom)
 </script>
 <style lang="scss">
 .active {
-  color: var(--doc-link-hightlight);
+  color: var(--doc-menu-highlight);
 }
 </style>

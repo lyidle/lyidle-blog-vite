@@ -114,8 +114,8 @@ onBeforeUnmount(() => {
   counter-reset: level-2;
 
   li {
-    $dot: var(--doc-content-seg);
-    $endDot: var(--doc-content-seg-end);
+    $dot: var(--doc-menu-seg);
+    $endDot: var(--doc-menu-seg-end);
     margin-left: var(--doc-menu-index);
 
     // 一级标题

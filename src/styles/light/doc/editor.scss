@@ -1,0 +1,46 @@
+// 引入 函数
+@use "sass:color";
+
+// 引入 全局 变量
+@use "../global/index.scss" as *;
+
+html[themes="#{$theme}"] {
+  #vditor-preview {
+    /* 书写区域 */
+    --editor-bg: transparent;
+    --editor-h1-border-l: 10px solid #{$primary-color};
+    --editor-h1-border-b: 2px solid #{$primary-color};
+    --editor-h2-p-l: 10px;
+
+    /* callouts */
+    --editor-calouts-pd: 10px;
+    --editor-callouts-title-gap: 8px;
+
+    /* 提示信息 */
+    --editor-h1-h6-tip-color: #c0cbd8;
+    --editor-h1-h6-tip-size: 20px;
+    --editor-shadow: 0px 0px 2px #a9c9de;
+    --editor-radius: 10px;
+
+    /* 工具栏 */
+    --editor-toolbar-bg: #82aac5;
+    $editor-tollbar-icon-color: #e5f4ff;
+    --editor-toolbar-icon-color: #{$editor-tollbar-icon-color};
+    --editor-toolbar-icon-color-hover: #{color.adjust(
+        $editor-tollbar-icon-color,
+        $lightness: 20%
+      )};
+
+    --editor-toolbar-icon-color-disabled: #d7dbe0;
+    --editor-toolbar-divide-color: #dff2ff;
+
+    /* 下拉面板 */
+    --editor-panel-bg: #f6fbff;
+    --editor-panel-bg-hover: #8dbcdc;
+    --editor-panel-bg-active: #8cb5d1;
+    --editor-panel-color: $doc-primary-color;
+    --editor-panel-color-hover: #f3fbff;
+    --editor-panel-color-active: #f3fbff;
+    --editor-panel-filter: drop-shadow(0 0 2px rgba(180, 196, 202, 0.605));
+  }
+}

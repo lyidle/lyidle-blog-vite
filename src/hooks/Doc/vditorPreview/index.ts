@@ -9,6 +9,9 @@ import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
 
+// 引入 添加 高亮 和 callotus 的函数
+import { addCalloutsAndHighlightAndFillToSvg } from "@/utils/doc/addCalloutsAndHighlightAndFillToSvg"
+
 export const useVditorPreview = (
   article: Ref<GetOneArticle["data"]>,
   menuTree: Ref<TocNode[]>,
@@ -17,48 +20,6 @@ export const useVditorPreview = (
 ) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
-
-  // 正则 svg 添加 属性 fill="currentColor"
-  const addFillToSVG = (htmlString: string): string => {
-    return htmlString.replace(/<svg([^>]*)>/g, (match, attributes) => {
-      // 如果已经存在 fill 属性，跳过添加
-      if (/fill=/.test(attributes)) {
-        return match
-      }
-      // 添加 fill="currentColor"
-      return `<svg${attributes} fill="currentColor">`
-    })
-  }
-
-  // 给 blockquote 添加 type 以实现 callouts
-  const addTypeToBlockquote = (htmlString: string): string => {
-    return htmlString
-      .replace(
-        /<blockquote([^>]*)>\s*<p>\[!([^\]]+)\]/g,
-        (match, attributes, tipType) => {
-          // 包裹 [!type] 的部分为 <span> 元素
-          const wrappedTip = `<span class="callouts">[!${tipType}]</span><p>`
-          // 检查是否已存在 type 属性
-          if (/type=/.test(attributes)) {
-            return match.replace(/<p>\[!([^\]]+)\]/, wrappedTip) // 替换 [!type]
-          }
-          // 添加 type 属性并替换 [!type]
-          return `<blockquote${attributes} type="${tipType}">${wrappedTip}`
-        }
-      )
-      .replace(
-        /<blockquote>\s*<p>/g,
-        '<blockquote type="default"><p><span class="callouts">[!default]</span>'
-      )
-  }
-
-  // 给 markdown 添加 高亮显示 ==高亮文本==
-  const addHighlight = (htmlString: string): string => {
-    return htmlString.replace(
-      /==(.+?)==/g,
-      "<span class='doc-highlight'>$1</span>"
-    )
-  }
 
   // 生成目录树
   const addTree = (htmlString: string) => {
@@ -104,6 +65,7 @@ export const useVditorPreview = (
     // 把生成的目录 通知给 Content 来判断是否要显示目录 和 侧边栏
     mitt.emit("articleMenu", toc)
   }
+
   let destroyHighlight: undefined | (() => void)
   // 渲染的回调函数
   const preview = () => {
@@ -123,11 +85,7 @@ export const useVditorPreview = (
       transform: (html: string) => {
         // 初始化 锚点
         // 用于 设置 颜色
-        let result = addFillToSVG(html)
-        // 给 blockquote 添加 type 以实现 callouts
-        result = addTypeToBlockquote(result)
-        // 给 markdown 添加 高亮显示 ==高亮文本==
-        result = addHighlight(result)
+        let result = addCalloutsAndHighlightAndFillToSvg(html)
         // 生成目录树
         addTree(result)
         return result

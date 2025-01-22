@@ -22,6 +22,7 @@
 @use "./theme-setting/index.scss" as *;
 // 引入 doc 样式
 @use "./doc/preview.scss" as *;
+@use "./doc/editor.scss" as *;
 
 $light: (
   // svg作为按钮的背景 需要把 十六进制的 # 符号换成 %23

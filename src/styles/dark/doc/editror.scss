@@ -2,4 +2,6 @@
 @use "../global/index.scss" as *;
 
 html[themes="#{$theme}"] {
+  #vditor-preview {
+  }
 }

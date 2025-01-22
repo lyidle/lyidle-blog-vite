@@ -7,24 +7,28 @@
 @use "./callouts.scss" as *;
 
 html[themes="#{$theme}"] {
-  // doc 页面
-  --doc-header-color: #dcf1ff;
-  --doc-header-link: #9ad5fd;
-  // waves 动画
-  $doc-header-waves-color: rgb(55, 83, 102);
-  --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
-  --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
-  --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
+  .doc-pages-header {
+    // doc 页面
+    --doc-header-color: #dcf1ff;
+    --doc-header-link: #9ad5fd;
+    // waves 动画
+    $doc-header-waves-color: rgb(55, 83, 102);
+    --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
+    --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
+    --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
+  }
+  .doc-menu-tree {
+    // 侧边栏的a链接高亮效果
+    --doc-menu-highlight: #eea8a8;
+  }
   .doc-pages-pr {
     // 主要的文字颜色
-    --doc-content-color: $primary-color;
+    --doc-content-color: #{$primary-color};
     // code 的颜色 `code`
     --doc-code-bg: rgb(199, 92, 92);
     --doc-code-color: white;
     // a 链接
     --doc-link-color: rgb(238, 70, 70);
-    // 侧边栏的a链接高亮效果
-    --doc-link-hightlight: #eea8a8;
     // 高亮
     --doc-highlight-bg: #4e71b7;
     --doc-highlight-color: #d8e5ff;
