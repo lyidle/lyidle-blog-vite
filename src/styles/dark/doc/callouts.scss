@@ -5,7 +5,7 @@
 // 引入 全局 变量
 @use "../global/index.scss" as *;
 
-// 定义颜色映射表
+// #region 定义颜色映射表
 $callouts: (
   default: (
     bg: #5c5c6a,
@@ -83,9 +83,10 @@ $callouts: (
     shadow: #{rgba(color.adjust(#475765, $lightness: 8%), 0.4)},
   ),
 );
+// #endregion 定义颜色映射表
 
 html[themes="#{$theme}"] {
-  .doc-pages-pr {
+  #vditor-preview {
     // callouts 样式
     // 遍历颜色映射表生成样式
     @each $types, $callouts-map in $callouts {

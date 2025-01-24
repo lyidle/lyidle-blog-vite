@@ -20,6 +20,7 @@ declare module 'vue' {
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTag: typeof import('element-plus/es')['ElTag']
     IconCar: typeof import('./src/components/icon/car/index.vue')['default']
     IconLoginCode: typeof import('./src/components/icon/login/code.vue')['default']
     IconLoginConfirmPass: typeof import('./src/components/icon/login/confirm-pass.vue')['default']

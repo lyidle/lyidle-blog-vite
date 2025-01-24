@@ -12,6 +12,7 @@ export const routerEventHandlered = (router: any) => {
     const { userStoreReset } = useUserStore()
     await userStoreReset()
     ElMessage.warning("token 过期,请重新登录~")
+    router.push("/")
   })
 
   // 错误信息去重处理

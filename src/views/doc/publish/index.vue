@@ -4,16 +4,46 @@
       <my-card class="doc-publish-content">
         <el-form>
           <el-form-item class="!mb-0" label="文章的标题">
-            <my-input v-model="test" placeholder="文章的标题"> </my-input>
+            <my-input v-model="title" placeholder="文章的标题"> </my-input>
           </el-form-item>
           <el-form-item class="!mb-0" label="文章的分类">
-            <my-input v-model="test" placeholder="文章的分类"> </my-input>
+            <my-input v-model="category" placeholder="文章的分类"> </my-input>
           </el-form-item>
           <el-form-item class="!mb-0" label="文章的标签">
-            <my-input v-model="test" placeholder="Account or Email"> </my-input>
+            <div class="flex gap-2 ml-0.625rem">
+              <el-tag
+                v-for="(tag, i) in tags"
+                :key="tag"
+                closable
+                :disable-transitions="false"
+                :type="tagsType[i % tagsType.length]"
+                @close="handleClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <template v-if="tags.length < 10">
+                <el-input
+                  v-if="inputVisible"
+                  ref="InputRef"
+                  v-model="inputValue"
+                  class="tags-input"
+                  size="small"
+                  @keyup.enter="handleInputConfirm"
+                  @blur="handleInputConfirm"
+                />
+                <el-button
+                  v-else
+                  class="button-new-tag"
+                  size="small"
+                  @click="showInput"
+                >
+                  + New Tag
+                </el-button>
+              </template>
+            </div>
           </el-form-item>
           <el-form-item class="!mb-0" label="文章的描述">
-            <my-input v-model="test" placeholder="Account or Email"> </my-input>
+            <my-input v-model="desc" placeholder="文章的描述"> </my-input>
           </el-form-item>
         </el-form>
         <h3 class="font-normal mb-0 mt-0.625rem mb-0.625rem">文章的内容</h3>
@@ -28,7 +58,47 @@
 import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
 // 引入 编辑器 全屏事件的 处理 hooks
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
-const test = ref()
+// 引入 仓库
+import { useDocEditorOpt } from "@/store/doc"
+// 引入 类型
+import type { InputInstance } from "element-plus"
+const { title, category, tags, desc } = storeToRefs(useDocEditorOpt())
+
+const tagsType = ["primary", "success", "info", "warning", "danger"]
+
+const inputValue = ref("")
+const inputVisible = ref(false)
+const InputRef = ref<InputInstance>()
+const handleClose = (tag: string) => {
+  tags.value.splice(tags.value.indexOf(tag), 1)
+}
+
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+
+const resetInput = () => {
+  inputVisible.value = false
+  inputValue.value = ""
+}
+const handleInputConfirm = () => {
+  // 没内容
+  if (!inputValue.value) {
+    resetInput()
+    return
+  }
+  // 重复
+  if (tags.value.includes(inputValue.value)) {
+    ElMessage.warning("标签不能重复哦~")
+    resetInput()
+    return
+  }
+  tags.value.push(inputValue.value)
+  resetInput()
+}
 const vditorEditor = ref()
 // 使用 hooks
 useVditorEditor(vditorEditor)
@@ -36,6 +106,7 @@ useIsFullscreen(vditorEditor)
 </script>
 
 <style scoped lang="scss">
+@use "sass:map";
 $content-pd: 0.9375rem 2.5rem;
 $toolbar-pl: 5rem;
 .doc-publish-content {
@@ -86,6 +157,7 @@ $toolbar-pl: 5rem;
       color: inherit;
       background-color: $preview-bg;
       cursor: var(--cursor-text);
+      overflow-x: hidden;
     }
 
     // 工具 栏
@@ -269,9 +341,9 @@ $toolbar-pl: 5rem;
     }
 
     // #region callouts 样式
-    // 遍历颜色映射表生成样式
-    @each $types, $icon in $callouts-icons {
-      blockquote[type="#{$types}"] {
+
+    @mixin callouts-gen($types: "default") {
+      & {
         padding: $preview-calouts-pd;
         // 左侧的边
         border-left-color: var(--doc-callouts-#{$types}-border-l-color);
@@ -319,7 +391,26 @@ $toolbar-pl: 5rem;
         }
       }
     }
+
+    @mixin callouts($types: "default") {
+      @if $types == "default" {
+        blockquote {
+          @include callouts-gen($types);
+        }
+      } @else {
+        blockquote[type="#{$types}"] {
+          @include callouts-gen($types);
+        }
+      }
+    }
+
+    // 遍历颜色映射表生成样式
+
+    @each $types, $icon in $callouts-icons {
+      @include callouts($types);
+    }
     // #endregion callouts 样式
+
     // 超链接
     a {
       @include pages-links-hover;
@@ -334,6 +425,7 @@ $toolbar-pl: 5rem;
     }
     pre > code.hljs {
       box-shadow: var(--doc-pre-code-shadow);
+      cursor: var(--cursor-default);
     }
     // 多选框
     .vditor-task {
@@ -386,7 +478,7 @@ $toolbar-pl: 5rem;
       height: $scissors-size;
       background-color: unset;
       cursor: var(--cursor-default);
-      position: relative;
+      position: relative !important;
       overflow: visible;
       // 普通分割线
       &::before {
@@ -398,7 +490,7 @@ $toolbar-pl: 5rem;
         transform: translateY(-50%);
         left: -$preview-pd;
         z-index: 1;
-        width: calc(100% + #{$preview-pd * 2});
+        width: 100%;
         height: 100%;
         // 普通分割线
         background-color: currentColor;
@@ -412,7 +504,7 @@ $toolbar-pl: 5rem;
       }
       &:hover {
         &::after {
-          left: calc(100% + $scissors-size / 2);
+          left: calc(100% - $scissors-size);
         }
       }
       // scissors
@@ -425,8 +517,8 @@ $toolbar-pl: 5rem;
         top: 50%;
         transform: translateY(-50%);
         transition: left var(--doc-scissors-dur);
-        left: -$preview-pd;
-        width: calc(100% + #{$preview-pd * 2});
+        left: 0;
+        width: 100%;
         height: $scissors-size;
         // 普通分割线
         background-color: currentColor;
@@ -551,6 +643,12 @@ $toolbar-pl: 5rem;
           }
         }
       }
+    }
+  }
+  // tags的input宽度
+  ::v-deep(.tags-input) {
+    input {
+      width: 5rem;
     }
   }
 }

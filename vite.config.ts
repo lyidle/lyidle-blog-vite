@@ -8,6 +8,7 @@ import build from "./config/vite.config/build"
 import plugin from "./config/vite.config/plugin"
 // 引入 scss  全局 变量 配置函数
 import generateScssImports from "./config/vite.config/scss"
+
 export default defineConfig(({ mode }) => {
   // 获取到当前环境
   const env = loadEnv(mode, process.cwd())
@@ -38,21 +39,21 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    // // 代理跨域
-    // server: {
-    //   // https: {
-    //   //   key: fs.readFileSync("certs/certkey.pem"),
-    //   //   cert: fs.readFileSync("certs/fullchain.pem"),
-    //   // },
-    //   proxy: {
-    //     // 运行时的反代配置
-    //     [env.VITE_API]: {
-    //       target: env.VITE_SERVE,
-    //       changeOrigin: true,
-    //       // rewrite: (path) =>
-    //       //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
-    //     },
-    //   },
-    // },
+    // 代理跨域
+    server: {
+      // https: {
+      //   key: fs.readFileSync("certs/certkey.pem"),
+      //   cert: fs.readFileSync("certs/fullchain.pem"),
+      // },
+      proxy: {
+        // 运行时的反代配置
+        [env.VITE_API]: {
+          target: env.VITE_SERVE,
+          changeOrigin: true,
+          // rewrite: (path) =>
+          //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
+        },
+      },
+    },
   }
 })

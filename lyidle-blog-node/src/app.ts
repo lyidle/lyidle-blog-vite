@@ -36,8 +36,11 @@ const api = require("@/routes")
 app.get("/", (req, res) => {
   res.send("hello")
 })
+
+const api_prefix = process.env.api_prefix || "/api"
+
 // 挂载路由
-app.use("/api", api)
+app.use(api_prefix, api)
 
 // 全局错误中间件
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

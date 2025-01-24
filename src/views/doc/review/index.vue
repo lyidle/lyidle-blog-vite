@@ -277,6 +277,7 @@ $header-container-h: 12.5rem;
     .myCard {
       @include setCardShadow;
     }
+
     // markdown 预览
     ::v-deep(#vditor-preview) {
       $preview-pd: 50px;
@@ -382,9 +383,8 @@ $header-container-h: 12.5rem;
       // #endregion h2-h6 编号
 
       // #region callouts 样式
-      // 遍历颜色映射表生成样式
-      @each $types, $icon in $callouts-icons {
-        blockquote[type="#{$types}"] {
+      @mixin callouts-gen($types: "default") {
+        & {
           padding: $preview-calouts-pd;
           // 左侧的边
           border-left-color: var(--doc-callouts-#{$types}-border-l-color);
@@ -432,7 +432,26 @@ $header-container-h: 12.5rem;
           }
         }
       }
+
+      @mixin callouts($types: "default") {
+        @if $types == "default" {
+          blockquote {
+            @include callouts-gen($types);
+          }
+        } @else {
+          blockquote[type="#{$types}"] {
+            @include callouts-gen($types);
+          }
+        }
+      }
+
+      // 遍历颜色映射表生成样式
+      @each $types, $icon in $callouts-icons {
+        @include callouts($types);
+      }
+
       // #endregion callouts 样式
+
       // 超链接
       a {
         @include pages-links-hover;
