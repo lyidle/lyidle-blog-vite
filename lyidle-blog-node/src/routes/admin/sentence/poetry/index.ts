@@ -1,7 +1,7 @@
 import express from "express"
 import axios from "axios"
 // 引入redis 设置缓存
-const { getKey, setKey } = require("@/utils/redis")
+import { getKey, setKey } from "@/utils/redis"
 const ms = require("ms")
 const default_expire = ms(process.env.default_expire)
 const router = express.Router()

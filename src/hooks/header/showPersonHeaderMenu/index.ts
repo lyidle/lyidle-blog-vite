@@ -4,8 +4,9 @@ import { useUserStore } from "@/store/user"
 import "./icons"
 // 引入类型
 import type { PersonMenuList } from "@/components/layout/header/types"
-
+import { useShowUserinfo } from "@/hooks/showUserinfo"
 export const useShowPersonHeaderMenu = () => {
+  const { showAccount } = useShowUserinfo({ showAccount: true })
   // 提取 数据
   const { userToken, userRole } = storeToRefs(useUserStore())
   // 提取 函数
@@ -54,7 +55,7 @@ export const useShowPersonHeaderMenu = () => {
       id: `${Math.random()}`,
       name: "个人中心",
       icon: { icon: "i-charm:person" },
-      to: "/manager",
+      to: `/user/space/${showAccount?.value}`,
     },
   ]
 

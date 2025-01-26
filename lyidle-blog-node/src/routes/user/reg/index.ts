@@ -3,10 +3,10 @@ import express from "express"
 // 发送注册邮箱
 import email from "@/routes/email/reg"
 // 引入 redis 设置缓存
-const { setKey, getKey, delKey } = require("@/utils/redis")
+import { setKey, getKey, delKey } from "@/utils/redis"
 const router = express.Router()
 // 正则判断
-const { codeReg } = require("@/routes/user/reg/RegExp")
+import { codeReg } from "@/RegExp/loginOrReg"
 // 引入模型
 const { User } = require("@/db/models")
 // 注册接口

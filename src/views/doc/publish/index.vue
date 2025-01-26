@@ -1,18 +1,48 @@
 <template>
   <layout-content>
     <template #content-start>
-      <my-card class="doc-publish-content">
-        <el-form>
-          <el-form-item class="!mb-0" label="文章的标题">
-            <my-input v-model="title" placeholder="文章的标题"> </my-input>
+      <my-card class="doc-publish-content relative">
+        <el-form :rules="rules" :model="docsFormData" ref="docsForm">
+          <el-form-item class="!mb-0">
+            <div class="flex justify-end w-100%">
+              <my-primary-button
+                size="small"
+                type="danger"
+                @click="resetDoc"
+                class="w-70px"
+                >重置表单</my-primary-button
+              >
+              <my-primary-button
+                size="small"
+                class="w-70px"
+                @click="handerUpload"
+                >提交文章</my-primary-button
+              >
+            </div>
           </el-form-item>
-          <el-form-item class="!mb-0" label="文章的分类">
-            <my-input v-model="category" placeholder="文章的分类"> </my-input>
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的标题"
+            prop="title"
+          >
+            <my-input v-model="docsFormData.title" placeholder="文章的标题">
+            </my-input>
           </el-form-item>
-          <el-form-item class="!mb-0" label="文章的标签">
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的分类"
+            prop="category"
+          >
+            <my-input v-model="docsFormData.category" placeholder="文章的分类">
+            </my-input>
+          </el-form-item>
+          <el-form-item
+            class="!mb-0 is-required doc-publish-item"
+            label="文章的标签"
+          >
             <div class="flex gap-2 ml-0.625rem">
               <el-tag
-                v-for="(tag, i) in tags"
+                v-for="(tag, i) in docsFormData.tags"
                 :key="tag"
                 closable
                 :disable-transitions="false"
@@ -21,7 +51,7 @@
               >
                 {{ tag }}
               </el-tag>
-              <template v-if="tags.length < 10">
+              <template v-if="tags.length < tagsReg.totalMax">
                 <el-input
                   v-if="inputVisible"
                   ref="InputRef"
@@ -42,11 +72,18 @@
               </template>
             </div>
           </el-form-item>
-          <el-form-item class="!mb-0" label="文章的描述">
-            <my-input v-model="desc" placeholder="文章的描述"> </my-input>
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的描述"
+            prop="desc"
+          >
+            <my-input v-model="docsFormData.desc" placeholder="文章的描述">
+            </my-input>
           </el-form-item>
         </el-form>
-        <h3 class="font-normal mb-0 mt-0.625rem mb-0.625rem">文章的内容</h3>
+        <h3 class="font-normal m-20px text-center font-size-1.625rem">
+          文章的内容
+        </h3>
         <div id="vditor-preview" ref="vditorEditor"></div>
       </my-card>
     </template>
@@ -62,15 +99,102 @@ import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 import { useDocEditorOpt } from "@/store/doc"
 // 引入 类型
 import type { InputInstance } from "element-plus"
-const { title, category, tags, desc } = storeToRefs(useDocEditorOpt())
+// 压缩 与 解压
+import { compressString } from "@/utils/compression"
+// 引入 api
+import { addArticle } from "@/api/article"
+// 引入 类型
+import type { AddArticleBody } from "@/api/article/types/addArticleBody"
+// 引入 正则
+import {
+  titleReg,
+  categoryReg,
+  tagsReg,
+  descReg,
+  contentReg,
+} from "@/RegExp/Docs"
+// 引入 前缀
+const prefix = import.meta.env.VITE_API
+
+const { title, category, tags, desc, length, context } = storeToRefs(
+  useDocEditorOpt()
+)
+
+// 重置表单
+const resetDoc = () => {
+  if (title.value || category.value || tags.value.length || desc.value) {
+    title.value = ""
+    category.value = ""
+    tags.value = []
+    desc.value = ""
+    // 使用 定时器 在 微任务后清除验证
+    setTimeout(() => {
+      docsForm.value.clearValidate()
+    }, 0)
+    ElMessage.success("重置表单成功~")
+  }
+}
+
+// #region 表单 验证
+const docsFormData = reactive({
+  title,
+  category,
+  desc,
+  tags,
+})
+
+const docsForm = ref()
+
+const rules = reactive({
+  title: [
+    {
+      required: true,
+      message: "标题不能为空哦~",
+      trigger: "change",
+    },
+    {
+      pattern: titleReg.reg,
+      message: titleReg.msg,
+      trigger: "change",
+    },
+  ],
+  category: [
+    {
+      required: true,
+      message: "文章分类不能为空哦~",
+      trigger: "change",
+    },
+    {
+      pattern: categoryReg.reg,
+      message: categoryReg.msg,
+      trigger: "change",
+    },
+  ],
+  desc: [
+    {
+      required: true,
+      message: "文章描述不能为空哦~",
+      trigger: "change",
+    },
+    {
+      pattern: descReg.reg,
+      message: descReg.msg,
+      trigger: "change",
+    },
+  ],
+})
 
 const tagsType = ["primary", "success", "info", "warning", "danger"]
 
 const inputValue = ref("")
 const inputVisible = ref(false)
 const InputRef = ref<InputInstance>()
+// 关闭 tags事件
 const handleClose = (tag: string) => {
-  tags.value.splice(tags.value.indexOf(tag), 1)
+  if (tags.value.length <= tagsReg.totalMin) {
+    ElMessage.error(tagsReg.msg)
+  }
+  docsFormData.tags.splice(docsFormData.tags.indexOf(tag), 1)
 }
 
 const showInput = () => {
@@ -84,6 +208,7 @@ const resetInput = () => {
   inputVisible.value = false
   inputValue.value = ""
 }
+
 const handleInputConfirm = () => {
   // 没内容
   if (!inputValue.value) {
@@ -91,24 +216,117 @@ const handleInputConfirm = () => {
     return
   }
   // 重复
-  if (tags.value.includes(inputValue.value)) {
-    ElMessage.warning("标签不能重复哦~")
+  if (docsFormData.tags.includes(inputValue.value)) {
+    ElMessage.error("标签不能重复哦~")
     resetInput()
     return
   }
-  tags.value.push(inputValue.value)
+  const len = tags.value.length + 1
+  if (len < tagsReg.totalMin || len > tagsReg.totalMax) {
+    ElMessage.error(tagsReg.msg)
+    resetInput()
+    return
+  }
+  docsFormData.tags.push(inputValue.value)
   resetInput()
 }
+
+// #endregion 表单 验证
+
+// vditor 容器
 const vditorEditor = ref()
+
 // 使用 hooks
-useVditorEditor(vditorEditor)
+const vditor = useVditorEditor(vditorEditor)
+
+// 使用 路由
+const router = useRouter()
+
+const mdAndFormReset = () => {
+  title.value = ""
+  category.value = ""
+  tags.value = []
+  desc.value = ""
+  context.value = ""
+}
+// 提交的数据整理
+const handerUpload = async () => {
+  try {
+    // 验证 数据
+    await docsForm.value.validate()
+    const len = tags.value.length
+    if (len < tagsReg.totalMin || len > tagsReg.totalMax) {
+      ElMessage.error(tagsReg.msg)
+      resetInput()
+      return
+    }
+    const content = vditor.value?.getValue() || ""
+    // 验证 内容
+    if (+(length.value || 0) < contentReg.min) {
+      ElMessage.error(contentReg.msg)
+      return
+    }
+    // 整理 数据
+    const data: AddArticleBody = {
+      title: docsFormData.title as string,
+      category: docsFormData.category as string,
+      tags: docsFormData.tags,
+      desc: docsFormData.desc || "",
+      content: compressString(content) || "",
+      length: length.value as string,
+    }
+
+    let match: RegExpExecArray | null
+    const urls = new Set<string>()
+    const api = prefix.replace("/", "\\")
+    // 判断有无值
+    if (content) {
+      const urlRegex = new RegExp(
+        `!\\[.*?\\]\\((\\\\${api}\\\\assets\\\\images([^)]*))\\)`,
+        "g"
+      )
+
+      // 使用循环查找所有匹配项
+      while ((match = urlRegex.exec(content)) !== null) {
+        if (match.index === urlRegex.lastIndex) {
+          urlRegex.lastIndex++
+        }
+        urls.add(match[1])
+      }
+    }
+    const arr = Array.from(urls)
+
+    urls.clear()
+
+    // 判断有无临时 链接
+    if (arr) data.tempImg = arr
+    const result = await addArticle(data)
+    // 判断有无 临时图片 不存在的 提示
+    if (result?.tempImgNull.length && Array.isArray(result?.tempImgNull)) {
+      result.tempImgNull.forEach((item) =>
+        ElMessage.error({
+          message: `临时图片:${item}不存在~`,
+          customClass: "selectMessage",
+          appendTo: "outer-context-menu",
+        })
+      )
+    }
+    const docId = result?.id
+    if (docId) {
+      router.replace(`/doc/${docId}`)
+      mdAndFormReset()
+    }
+    ElMessage.success("上传文章成功~")
+  } catch (error) {}
+}
+
 useIsFullscreen(vditorEditor)
 </script>
-
 <style scoped lang="scss">
 @use "sass:map";
 $content-pd: 0.9375rem 2.5rem;
 $toolbar-pl: 5rem;
+$item-gap-v: 0.8125rem;
 .doc-publish-content {
   // 设置 卡片 阴影
   @include setCardShadow;
@@ -644,6 +862,9 @@ $toolbar-pl: 5rem;
         }
       }
     }
+  }
+  .doc-publish-item {
+    margin-top: $item-gap-v;
   }
   // tags的input宽度
   ::v-deep(.tags-input) {

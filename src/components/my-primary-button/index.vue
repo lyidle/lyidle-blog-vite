@@ -1,5 +1,5 @@
 <template>
-  <el-button v-bind="$attrs" class="w-100%">
+  <el-button v-bind="$attrs" class="w-100%" type="primary">
     <slot></slot>
   </el-button>
 </template>

@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from "express"
 const { Setting } = require("@/db/models")
 const router = express.Router()
 // 引入redis 设置缓存
-const { setKey, getKey } = require("@/utils/redis")
+import { setKey, getKey } from "@/utils/redis"
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   // 提取需要的信息

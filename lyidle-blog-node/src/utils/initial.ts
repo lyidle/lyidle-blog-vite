@@ -1,5 +1,5 @@
 // 引入redis 设置缓存
-const { setKey, getKey } = require("@/utils/redis")
+import { setKey, getKey } from "@/utils/redis"
 // 引入模型
 const { User, Article, Setting } = require("@/db/models")
 const is_production = JSON.parse(process.env.is_production!)

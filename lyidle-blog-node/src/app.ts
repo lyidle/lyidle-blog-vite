@@ -2,6 +2,7 @@ import express from "express"
 import type { Request, Response, NextFunction } from "express"
 // 引入初始化
 import initialEnvironment from "@/utils/initial"
+import { resolve } from "path"
 // 导入环境变量
 require("dotenv").config()
 
@@ -27,6 +28,10 @@ app.use(express.urlencoded({ extended: false }))
 // 扩展request.result 用来定义返回类型
 const RequestExtension = require("@/middleware/RequestExtension")
 app.use(RequestExtension)
+// 挂载 静态资源目录
+
+// 静态资源
+app.use(express.static(resolve(__dirname, "./assets")))
 
 // 导入路由
 const api = require("@/routes")

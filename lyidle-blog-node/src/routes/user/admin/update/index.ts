@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
-const { setKey, delKey } = require("@/utils/redis")
+import { setKey, delKey } from "@/utils/redis"
 // 引入错误函数
 import myError from "@/utils/Error"
 // 设置token

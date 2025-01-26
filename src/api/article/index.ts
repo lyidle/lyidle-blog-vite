@@ -9,6 +9,9 @@ import type { GetRecentPagesQuery } from "@/api/article/types/getRecentPagesQuer
 import type { SearchArticle } from "@/api/article/types/searchArticle"
 import type { SearchArticleQuery } from "@/api/article/types/searchArticleQuery"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
+import { AddArticleBody } from "@/api/article/types/addArticleBody"
+import { AddArticle } from "@/api/article/types/addArticle"
+
 // 统一管理 api
 enum API {
   getCarousel = "/article/carousel",
@@ -16,6 +19,7 @@ enum API {
   getRecentPages = "/article/recentPages",
   searchArticleExact = "/article/search/exact",
   getOneArticle = "/article/getOne",
+  addArticle = "/article/admin/add",
 }
 
 // 引入前缀
@@ -66,3 +70,7 @@ export const getOneArticle = (id: string | number) =>
   request.get<any, GetOneArticle["data"]>(
     `${server + prefix + API.getOneArticle}/?id=${id}`
   )
+
+// 增加文章
+export const addArticle = (data: AddArticleBody) =>
+  request.post<any, AddArticle["data"]>(server + prefix + API.addArticle, data)

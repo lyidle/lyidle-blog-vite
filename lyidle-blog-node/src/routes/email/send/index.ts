@@ -3,12 +3,12 @@ import type { NextFunction, Request, Response } from "express"
 // 引入dayjs
 import dayjs from "dayjs"
 // 引入 redis
-const { setKey, getKey } = require("@/utils/redis")
+import { setKey, getKey } from "@/utils/redis"
 const nodemailer = require("nodemailer")
 // 引入时间转换
 const ms = require("ms")
 // 引入验证
-const { emailReg } = require("@/routes/user/reg/RegExp")
+import { emailReg } from "@/RegExp/loginOrReg"
 // 邮箱的配置
 const transporter = nodemailer.createTransport({
   host: process.env.email_host,

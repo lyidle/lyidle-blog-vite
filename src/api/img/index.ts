@@ -6,7 +6,8 @@ import request from "@/utils/request"
 import { PostTempImg } from "./types/postTempImg"
 // 统一管理 api
 export enum API {
-  temp = "/upload/img/temp",
+  urlImgTemp = "/upload/img/temp",
+  fileImgTemp = "/upload/files/img/temp",
 }
 
 // 引入前缀
@@ -15,8 +16,10 @@ const prefix = import.meta.env.VITE_API
 const server = import.meta.env.VITE_SERVE
 
 // vditor 的 图片 上传需要
-export const postTempImgUrl = server + prefix + API.temp
+export const tempImgUrl = server + prefix + API.urlImgTemp
+// vditor 的 图片 文件上传需要
+export const tempImgFiles = server + prefix + API.fileImgTemp
 
-// 获取菜单
-export const postTempImg = (url: string) =>
-  request.post<any, PostTempImg["data"]>(postTempImgUrl, { url })
+// 上传  图片 的接口 单个
+export const postTempImgUrl = (url: string) =>
+  request.post<any, PostTempImg["data"]>(tempImgUrl, { url })

@@ -6,7 +6,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入搜素函数
 import search from "@/routes/user/search/search"
 // 引入redis
-const { setKey, getKey } = require("@/utils/redis")
+import { setKey, getKey } from "@/utils/redis"
 const router = express.Router()
 // 获取当前token用户信息
 router.get(

@@ -3,7 +3,7 @@ const router = express.Router()
 // 导入模型
 const { Article } = require("@/db/models")
 // 引入 redis
-const { getKey, setKey } = require("@/utils/redis")
+import { getKey, setKey } from "@/utils/redis"
 router.get("/", async (req, res, next) => {
   const id = req.query.id
   if (!id) return res.result(void 0, "id是必传项哦~", false, 404)

@@ -6,11 +6,11 @@ const router = express.Router()
 // 对比密码
 const bcrypt = require("bcryptjs")
 // 引入正则判断
-const { accountReg, pwdReg } = require("@/routes/user/reg/RegExp")
+import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 // 引入模型
 const { User } = require("@/db/models")
 // 引入 redis 设置缓存
-const { delKey } = require("@/utils/redis")
+import { delKey } from "@/utils/redis"
 router.get("/", async (req, res, next) => {
   try {
     const { account: userAccount, password } = req.query
@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
     if (!accountReg.reg.test(account)) {
       return res.result(void 0, accountReg.msg, false)
     }
-    if (!pwdReg.reg.test(password)) {
+    if (!pwdReg.reg.test(password as string)) {
       return res.result(void 0, pwdReg.msg, false)
     }
     // 查找用户

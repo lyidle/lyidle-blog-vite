@@ -1,6 +1,6 @@
 import express, { NextFunction } from "express"
 // 引入 redis
-const { getKey } = require("@/utils/redis")
+import { getKey } from "@/utils/redis"
 const router = express.Router()
 router.use(async (req, res, next) => {
   // 配置通用的返回格式

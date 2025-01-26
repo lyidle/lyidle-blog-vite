@@ -1,36 +1,26 @@
-interface regType {
-  reg: RegExp
-  msg: string
-}
+// 正则
 // 账号
-const accountReg = {
+export const accountReg = {
   reg: /^.{1,32}$/,
   msg: "账号长度必须在1-32之间哦~",
 }
 // 名称
-const nickNameReg = {
+export const nickNameReg = {
   reg: /^.{1,32}$/,
   msg: "昵称长度必须在1-32之间哦~",
 }
 // 密码
-const pwdReg = {
+export const pwdReg = {
   reg: /^.{6,50}$/,
   msg: "密码长度长度必须在6-50之间哦~",
 }
 // 邮箱
-const emailReg = {
+export const emailReg = {
   reg: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
   msg: "范例:123@qq.com,邮箱格式不正确哦~~",
 }
 // 验证码
-const codeReg = {
+export const codeReg = {
   reg: /^[0-9]{6}$/,
   msg: "验证码格式必须要是0-9之间的六位数哦~",
-}
-module.exports = {
-  accountReg,
-  nickNameReg,
-  pwdReg,
-  emailReg,
-  codeReg,
 }

@@ -7,7 +7,7 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 const { Setting } = require("@/db/models")
 const router = express.Router()
 // 引入redis 设置缓存
-const { delKey } = require("@/utils/redis")
+import { delKey } from "@/utils/redis"
 router.delete(
   "/",
   [jwtMiddleware, isAdmin],

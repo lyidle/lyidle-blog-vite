@@ -7,7 +7,7 @@ import findArticleFn from "@/routes/article/admin/find"
 // 引入error 函数
 import myError from "@/utils/Error"
 // 引入 redis 设置缓存
-const { setKey, delKey } = require("@/utils/redis")
+import { setKey, delKey } from "@/utils/redis"
 const router = express.Router()
 router.put(
   "/",

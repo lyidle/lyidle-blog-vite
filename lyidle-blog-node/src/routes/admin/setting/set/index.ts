@@ -7,7 +7,7 @@ const router = express.Router()
 // 引入 模型
 const { Setting } = require("@/db/models")
 // 引入redis 设置缓存
-const { setKey, getKey } = require("@/utils/redis")
+import { setKey, getKey } from "@/utils/redis"
 router.post(
   "/",
   [jwtMiddleware, isAdmin],

@@ -1,7 +1,7 @@
 import express from "express"
 import IP2Region, { IP2RegionResult } from "ip2region"
 // 设置redis 缓存
-const { getKey, setKey } = require("@/utils/redis")
+import { getKey, setKey } from "@/utils/redis"
 // 导入 ip 包
 const ip = require("ip")
 // 引入模型

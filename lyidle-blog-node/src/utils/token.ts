@@ -1,6 +1,6 @@
 import { request } from "express"
 // 引入redis
-const { setKey } = require("@/utils/redis")
+import { setKey } from "@/utils/redis"
 // 引入时间转换
 const ms = require("ms")
 // 设置 token

@@ -17,9 +17,11 @@
 <script setup lang="ts" name="Avatar">
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
-
 // 提取需要展示的信息
-const { showAccount, showAvatar } = useShowUserinfo()
+const { showAccount, showAvatar } = useShowUserinfo({
+  showAccount: true,
+  showAvatar: true,
+})
 </script>
 
 <style scoped lang="scss">

@@ -11,8 +11,6 @@ import webInfo from "@/routes/webInfo"
 import visitor from "@/routes/visitor"
 // 引入 api/upload
 import upload from "./upload"
-// 引入 api/img
-import img from "./img"
 // 引入权限判断
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 const router = express.Router()
@@ -27,5 +25,4 @@ router.use("/visitor", visitor)
 router.use("/article", article)
 router.use("/webInfo", webInfo)
 router.use("/upload", jwtMiddleware, upload)
-router.use("/img", img)
 module.exports = router

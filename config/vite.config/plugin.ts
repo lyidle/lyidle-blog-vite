@@ -11,7 +11,6 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import ElementPlus from "unplugin-element-plus/vite"
 // UnoCSS
 import UnoCSS from "unocss/vite"
-
 export default () => {
   return [
     vue(),

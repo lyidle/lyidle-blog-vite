@@ -47,7 +47,7 @@
 import userIcon from "@/components/icon/login/user.vue"
 import passIcon from "@/components/icon/login/pass.vue"
 // 引入正则
-import { accountReg, pwdReg } from "../reg"
+import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 // 引入api
 import { reqLogin } from "@/api/user"
 // 引入仓库

@@ -33,8 +33,9 @@
               <div class="tip">前往小窝</div>
               <div class="car">
                 <icon-car></icon-car>
-              </div> </my-primary-button
-          ></router-link>
+              </div>
+            </my-primary-button>
+          </router-link>
           <div class="links">
             <a
               class="color-[var(--aside-userinfo-wechat-color)]"
@@ -82,6 +83,12 @@ import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
+// 提取需要展示的信息
+const { showNickName, showSigner } = useShowUserinfo({
+  showNickName: true,
+  showSigner: true,
+})
+
 const {
   // 网站 所有者信息
   adminAccount,
@@ -95,8 +102,6 @@ const {
   // 用户信息
   userToken,
 } = storeToRefs(useUserStore())
-// 提取需要展示的信息
-const { showNickName, showSigner } = useShowUserinfo()
 // 提取请求
 const { reqUserInfo } = useUserStore()
 

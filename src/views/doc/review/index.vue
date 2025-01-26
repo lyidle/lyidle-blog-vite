@@ -18,6 +18,7 @@
       <template #content-start>
         <teleport to="body" v-if="article">
           <context-menu>
+            <!-- 头部 -->
             <div class="doc-pages-header">
               <div class="container">
                 <div class="title cur-text">{{ article?.title }}</div>
@@ -131,6 +132,11 @@
             ref="observerMenu"
           ></div>
           <my-card>
+            <div class="mr-0.625rem mt-0.625rem flex justify-end">
+              <my-primary-button class="w-80px" size="small"
+                >修改</my-primary-button
+              >
+            </div>
             <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
           </my-card>
         </div>
@@ -155,7 +161,8 @@ import { useSettingStore } from "@/store/setting"
 import { useVditorPreview } from "@/hooks/Doc/vditorPreview"
 // 引入 文章侧边目录高亮显示
 import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
-
+// 解压缩
+import { decompressString } from "@/utils/compression"
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
@@ -168,6 +175,12 @@ onBeforeMount(async () => {
   try {
     // 获取文章
     const articles = await getOneArticle(route.params.id as string)
+    try {
+      // 解压缩展示文章
+      if (articles?.content)
+        articles.content =
+          (decompressString(articles.content) as string) || articles.content
+    } catch (error) {}
     article.value = articles
   } catch (error) {}
 })

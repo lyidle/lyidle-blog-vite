@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         set(value) {
           if (!Array.isArray(value))
             throw new setError("文章标签必须是一个数组哦~")
+          if (!value.length) throw new setError("文章标签至少要有一个哦~")
           const result = [...new Set([value].flat(Infinity))]
           this.setDataValue("tags", result)
         },
@@ -77,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
       desc: {
         type: DataTypes.STRING,
         validate: {
-          len: { args: [0, 255], msg: "文章描述长度必须在1-255之间哦~" },
+          len: { args: [1, 255], msg: "文章描述长度必须在1-255之间哦~" },
         },
       },
       poster: DataTypes.TEXT,

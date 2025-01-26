@@ -3,7 +3,7 @@ const router = express.Router()
 // 引入模型
 const { Article, Visitor, User, Setting } = require("@/db/models")
 // 引入 redis 设置缓存
-const { setKey, getKey, delKey } = require("@/utils/redis")
+import { setKey, getKey, delKey } from "@/utils/redis"
 router.get("/", async (req, res, next) => {
   try {
     // 获取创建站的时间

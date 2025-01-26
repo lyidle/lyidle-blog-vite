@@ -57,6 +57,13 @@ a {
 i {
   display: inline-block;
 }
+// 让message 信息可以勾选
+.selectMessage {
+  .el-message__content {
+    user-select: text;
+    cursor: var(--cursor-text);
+  }
+}
 // #endregion
 // #region scrollbar
 // background

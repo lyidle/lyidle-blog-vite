@@ -28,5 +28,3 @@ onMounted(async () => {
   await getOwnerInfo()
 })
 </script>
-
-<style scoped lang="scss"></style>

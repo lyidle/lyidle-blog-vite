@@ -25,7 +25,12 @@
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 // 提取需要展示的信息
-const { showAccount, showPages, showTags, showCategories } = useShowUserinfo()
+const { showAccount, showPages, showTags, showCategories } = useShowUserinfo({
+  showAccount: true,
+  showPages: true,
+  showTags: true,
+  showCategories: true,
+})
 </script>
 
 <style scoped lang="scss">

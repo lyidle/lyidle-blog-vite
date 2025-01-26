@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 const router = express.Router()
 // 引入redis 设置缓存
-const { setKey, getKey, delKey } = require("@/utils/redis")
+import { setKey, getKey, delKey } from "@/utils/redis"
 // 引入模型
 const { User, Article } = require("@/db/models")
 router.get(

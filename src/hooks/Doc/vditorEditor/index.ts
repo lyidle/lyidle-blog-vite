@@ -7,20 +7,30 @@ import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"
 // 引入 添加 高亮 和 callotus 的函数
 import { addHighlightAndCallouts } from "@/utils/doc/addHighlightAndCallouts"
+// 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 api
-import { postTempImgUrl, postTempImg } from "@/api/img"
-// 引入前缀
-const prefix = import.meta.env.VITE_API
+/* 
+ 文件 的上传地址 批量
+ 图片 的上传地址 单个
+ 图片 按钮批量 处理url的地址 接口是单个的
+
+*/
+import { tempImgFiles, tempImgUrl, postTempImgUrl } from "@/api/img"
+
+// 引入 处理url字符的方法
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+// 引入 正则
+import { isUrl } from "@/RegExp/Url/isUrl"
 export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
-  const { docHeight, context } = storeToRefs(useDocEditorOpt())
+  const { docHeight, context, length } = storeToRefs(useDocEditorOpt())
   const { userToken } = storeToRefs(useUserStore())
-  let vditor: null | Vditor = null
+  let vditor = ref<Vditor | null>(null)
 
   const editor = () => {
-    vditor = new Vditor("vditor-preview", {
+    vditor.value = new Vditor("vditor-preview", {
       height: docHeight.value,
       value: context.value,
       // 默认模式 是 所见即所得
@@ -64,76 +74,6 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
         "insert-after",
         "|",
         // "upload",
-        // imgTo link
-        {
-          name: "imgToBase64",
-          tip: "把所偶图片转成base64",
-          tipPosition: "n",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M7 9H3q-.425 0-.712-.288T2 8t.288-.712T3 7h4V4.85l-.875.875q-.3.3-.712.288T4.7 5.7q-.275-.3-.288-.7t.288-.7l2.6-2.6q.3-.3.7-.3t.7.3l2.6 2.6q.3.3.287.7t-.287.7q-.3.3-.712.313t-.713-.288L9 4.85V15h12q.425 0 .713.288T22 16t-.288.713T21 17h-4v2.15l.875-.875q.3-.3.713-.288t.712.313q.275.3.288.7t-.288.7l-2.6 2.6q-.3.3-.7.3t-.7-.3l-2.6-2.6q-.3-.3-.287-.7t.287-.7q.3-.3.713-.312t.712.287l.875.875V17H9q-.825 0-1.412-.587T7 15zm8 4V9h-4V7h4q.825 0 1.413.588T17 9v4z"/></svg>',
-          click: async (e, $vditor) => {
-            // 获取 md的信息
-            const value = vditor?.getValue()
-            let match: RegExpExecArray | null
-            const urls = new Set<string>()
-            // 判断有无值
-            if (value) {
-              const urlRegex = /!\[.*?\]\((.*?)\)/g
-              // 使用循环查找所有匹配项
-              while ((match = urlRegex.exec(value)) !== null) {
-                if (match.index === urlRegex.lastIndex) {
-                  urlRegex.lastIndex++
-                }
-                // 排除掉处理后的
-                if (!match[1].startsWith(prefix.replace("/", "\\")))
-                  urls.add(match[1])
-              }
-            }
-            const arr = Array.from(urls)
-            urls.clear()
-            // 保存 处理好的图片
-            let result = []
-            // 存在 且 为1 发起请求 处理图片
-            if (arr.length) {
-              // 遍历添加 处理结果
-              for (const item of arr) {
-                try {
-                  const handler = await postTempImg(item)
-                  if (handler?.url) {
-                    result.push({
-                      url: handler?.url,
-                      origin: handler?.origin,
-                    })
-                  }
-                } catch (error) {}
-              }
-            }
-
-            //
-            let Origins = ""
-            let Urls = ""
-
-            result.forEach((item, index) => {
-              Origins += `${index > 0 ? "|" : ""}${item.origin.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                "\\$&"
-              )}` // 转义特殊字符并拼接
-              Urls += `${index > 0 ? "|" : ""}${item.url}` // 拼接目标 URL
-            })
-
-            // 构造正则表达式匹配多个 origin
-            const reg = new RegExp(Origins, "g")
-
-            // 替换 value 中的 origin 为对应的 url
-            const contentValue = value?.replace(reg, (matched) => {
-              // 根据匹配的 origin 找到对应的 url
-              const index = result.findIndex((item) => item.origin === matched)
-              return result[index]?.url || matched // 替换为对应 url 或保持原值
-            })
-
-            // 处理完后 替换 内容
-            if (contentValue) vditor?.setValue(contentValue)
-          },
-        },
         "table",
         "|",
         "undo",
@@ -141,6 +81,97 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
         "|",
         "fullscreen",
         "edit-mode",
+        // 保存文档
+        {
+          name: "save",
+          tip: "保存文档",
+          tipPosition: "n",
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 4a2 2 0 0 1 2-2h10l4 4v10.2a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-2Z"/><path d="M10 2v4h6m2 12v-7h-8v7"/><path d="M18 22H4a2 2 0 0 1-2-2V6"/></g></svg>',
+          click: () => {
+            const content = vditor.value?.getValue()
+            context.value = content
+            ElMessage.success("保存文档成功~")
+          },
+        },
+        // 重置文档
+        {
+          name: "save",
+          tip: "重置文档",
+          tipPosition: "n",
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 2h4m-2 12v-4m-8 3a8 8 0 0 1 8-7a8 8 0 1 1-5.3 14L4 17.6"/><path d="M9 17H4v5"/></g></svg>',
+          click: () => {
+            context.value = ""
+            vditor.value?.setValue("")
+            ElMessage.success("重置文档成功~")
+          },
+        },
+        // imgTo link
+        {
+          name: "imgToLink",
+          tip: "批量上传图片",
+          tipPosition: "n",
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M11.678 20.271C7.275 21.318 4 25.277 4 30c0 5.523 4.477 10 10 10c.947 0 1.864-.132 2.733-.378m19.322-19.351c4.403 1.047 7.677 5.006 7.677 9.729c0 5.523-4.477 10-10 10c-.947 0-1.864-.132-2.732-.378M36 20c0-6.627-5.373-12-12-12s-12 5.373-12 12m5.065 7.881L24 20.924L31.132 28M24 38V24.462"/></svg>',
+          click: async (e, $vditor) => {
+            // 获取 md的信息
+            const value = vditor.value?.getValue()
+            if (!value?.trim()) return
+            let match: RegExpExecArray | null
+            const urls = new Set<string>()
+            // 判断有无值
+            const urlRegex = /!\[.*\]\((.*)\)/g
+            // 使用循环查找所有匹配项
+            while ((match = urlRegex.exec(value)) !== null) {
+              if (match.index === urlRegex.lastIndex) {
+                urlRegex.lastIndex++
+              }
+              // 需要是一个url
+              if (isUrl(match[1])) urls.add(match[1])
+            }
+
+            const arr = Array.from(urls)
+
+            urls.clear()
+            // 保存 处理好的图片
+            let result = []
+            // 存在 且 为1 发起请求 处理图片
+            if (!arr.length) return
+            // 遍历添加 处理结果
+            for (const item of arr) {
+              try {
+                const handler = await postTempImgUrl(item)
+                if (handler?.url) {
+                  result.push({
+                    url: handler?.url,
+                    origin: handler?.origin,
+                  })
+                }
+              } catch (error) {}
+              // 处理 url
+              const Origins = result
+                .map((item) => escapeUrlForRegExp(item.origin))
+                .join("|")
+
+              // 没有需要处理的则退出
+              if (!Origins) return
+
+              // 构造正则表达式匹配多个 origin
+              const reg = new RegExp(Origins, "g")
+
+              // 替换 value 中的 origin 为对应的 url
+              const contentValue = value?.replace(reg, (matched) => {
+                // 根据匹配的 origin 找到对应的 url
+                const index = result.findIndex(
+                  (item) => item.origin === matched
+                )
+                return result[index]?.url || matched // 替换为对应 url 或保持原值
+              })
+              // 处理完后 替换 内容
+              vditor.value?.setValue(contentValue)
+              ElMessage.success("图片链接替换成功~")
+            }
+          },
+        },
+        // more
         {
           name: "more",
           toolbar: [
@@ -153,13 +184,9 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
         },
       ],
       cache: { enable: false },
-      // 缓存 值 到仓库
-      // input(value) {
-      //   context.value = value
-      // },
       upload: {
         // 直接 上传图片的接口
-        linkToImgUrl: postTempImgUrl,
+        linkToImgUrl: tempImgUrl,
         // 直接 上传图片的接口 处理返回结果 适配 vditor
         linkToImgFormat: ($res: string): string => {
           const res = JSON.parse($res)
@@ -174,29 +201,67 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
           }
 
           if (res.code == 401) {
-            ElMessage.warning("没有权限转换图片~")
-            return JSON.stringify({ data: {} })
+            result.code = 1 //失败
+            ElMessage.warning("没有权限上传图片~")
+            result.msg = "没有权限上传图片~"
           }
 
           if (res.code !== 200 && res.code !== 401) {
-            ElMessage.warning("转换图片url失败~")
-            return JSON.stringify({ data: {} })
+            result.code = 1 //失败
+            result.msg = "上传图片失败"
+            ElMessage.error("上传图片失败~")
           }
 
-          // 成功的代码是 0 才能插入 链接
-          result.code = 0
+          if (result.code === 200)
+            // 成功的代码是 0 才能插入 链接
+            result.code = 0
+          ElMessage.success("上传图片成功~")
 
           const finall = JSON.stringify(result)
           return finall
         },
         headers: { Authorization: `Bearer ${userToken.value}` },
-        accept: "image/*",
+        accept: "image/*", //只允许 image字段
         max: 5 * 1024 * 1024,
-        url: postTempImgUrl,
-        multiple: false,
-        format: (files, res) => {
-          console.log(files, res)
-          return res
+        url: tempImgFiles,
+        format: (files, $res) => {
+          // 解析后端返回的数据
+          const res = typeof $res === "string" ? JSON.parse($res) : $res
+
+          const result = {
+            code: 0, // Vditor 成功状态码
+            msg: res.message || "上传成功",
+            data: {
+              errFiles: res.data?.errFiles || [],
+              succMap: res.data?.succMap || {},
+            },
+          }
+
+          // 成功
+          if (res.code === 200) {
+            res.data?.errFiles?.forEach((item: string) =>
+              ElMessage.error(`${item}上传失败~`)
+            )
+            for (const msg in res.data?.succMap) {
+              ElMessage.success(`${msg}上传成功~`)
+            }
+            return JSON.stringify(result)
+          }
+
+          // 处理后端返回失败的情况
+          const errorResult = {
+            code: 1, // Vditor 失败状态码
+            msg: res.message || "上传失败",
+            data: {
+              errFiles: files?.map((file) => file.name), // 全部作为失败文件
+              succMap: {},
+            },
+          }
+
+          errorResult.data.errFiles?.forEach((item) =>
+            ElMessage.error(`${item}上传失败~`)
+          )
+          return JSON.stringify(errorResult)
         },
       },
       // 控制高度
@@ -213,13 +278,17 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
       counter: {
         enable: true,
         type: "text",
+        after(len) {
+          // 赋值长度
+          length.value = len
+        },
       },
     })
   }
 
   // 监听 暗夜 变化
   mitt.on("isDark", (newV) => {
-    vditor?.setTheme("classic", "light", newV ? "github-dark" : "github")
+    vditor.value?.setTheme("classic", "light", newV ? "github-dark" : "github")
   })
 
   // 加载
@@ -229,5 +298,10 @@ export const useVditorEditor = (vditorEditor: Ref<HTMLDivElement>) => {
   })
 
   // 卸载
-  onBeforeUnmount(() => {})
+  onBeforeUnmount(() => {
+    vditor.value?.destroy()
+  })
+
+  // 返回 vditor 实例对象
+  return vditor
 }

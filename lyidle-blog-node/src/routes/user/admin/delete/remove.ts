@@ -3,7 +3,7 @@ import myError from "@/utils/Error"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入redis
-const { delKey, setKey, getKey } = require("@/utils/redis")
+import { delKey, setKey, getKey } from "@/utils/redis"
 // 引入时间转换
 const ms = require("ms")
 const { User, Article } = require("@/db/models")

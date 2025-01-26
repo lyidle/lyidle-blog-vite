@@ -91,7 +91,13 @@ import confirmPassIcon from "@/components/icon/login/confirm-pass.vue"
 import emailIcon from "@/components/icon/login/email.vue"
 import codeIcon from "@/components/icon/login/code.vue"
 // 引入正则
-import { accountReg, pwdReg, emailReg, codeReg, nickNameReg } from "../reg"
+import {
+  accountReg,
+  pwdReg,
+  emailReg,
+  codeReg,
+  nickNameReg,
+} from "@/RegExp/loginOrReg"
 // 引入 时间转换 转换 code 过期时间提示
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 引入api

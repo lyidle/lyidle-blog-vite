@@ -50,8 +50,9 @@ export default defineConfig(({ mode }) => {
         [env.VITE_API]: {
           target: env.VITE_SERVE,
           changeOrigin: true,
-          // rewrite: (path) =>
-          //   path.replace(new RegExp(`^${env.VITE_API}`), ""),
+          // 替换 /api/assets node后就是node的静态路径
+          rewrite: (path) =>
+            path.replace(new RegExp(`^${env.VITE_API + "/assets"}`), ""),
         },
       },
     },

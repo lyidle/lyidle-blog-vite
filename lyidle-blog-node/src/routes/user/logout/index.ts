@@ -5,7 +5,7 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 import { Request, Response, NextFunction } from "express"
 const router = express.Router()
 // 引入 redis 设置缓存
-const { delKey } = require("@/utils/redis")
+import { delKey } from "@/utils/redis"
 router.get(
   "/",
   [jwtMiddleware],

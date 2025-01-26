@@ -4,7 +4,7 @@ import type { Request, Response, NextFunction } from "express"
 // 引入权限判断
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入redis 更新缓存
-const { delKey } = require("@/utils/redis")
+import { delKey } from "@/utils/redis"
 // 引入模型
 const { Menu, MenuList } = require("@/db/models")
 const router = express.Router()

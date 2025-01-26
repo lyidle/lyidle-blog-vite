@@ -1,11 +1,24 @@
-// 引入仓库
+import { computed, ComputedRef } from "vue"
+import { storeToRefs } from "pinia"
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
-// 引入仓库
-export const useShowUserinfo = () => {
+
+// 定义选项类型
+type UseShowUserinfoOptions = {
+  showAccount?: boolean
+  showNickName?: boolean
+  showAvatar?: boolean
+  showSigner?: boolean
+  showPages?: boolean
+  showTags?: boolean
+  showCategories?: boolean
+  isAccount?: boolean
+}
+
+// 主函数
+export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
   // 提取需要的数据
   const {
-    // 用户信息
     userAccount,
     userNickName,
     userAvatar,
@@ -17,7 +30,6 @@ export const useShowUserinfo = () => {
   } = storeToRefs(useUserStore())
 
   const {
-    // 管理员信息，用于展示未登录的默认信息
     adminAccount,
     adminNickName,
     adminAvatar,
@@ -27,37 +39,49 @@ export const useShowUserinfo = () => {
     adminCategories,
   } = storeToRefs(useOwnerStore())
 
-  // 定义展示用的数据
-  const showAccount = computed(() =>
-    userToken.value ? userAccount.value : adminAccount.value
-  )
-  const showNickName = computed(() =>
+  // 定义一个函数来安全地创建 computed，如果选项中未启用，则返回 undefined
+  const createComputed = <T>(
+    key: keyof UseShowUserinfoOptions,
+    fn: () => T
+  ) => {
+    return options[key] ? computed(fn) : undefined
+  }
+
+  // 根据传入的 options 动态计算
+  const showAccount = createComputed("showAccount", () => {
+    return userToken.value ? userAccount.value : adminAccount.value
+  })
+
+  const showNickName = createComputed("showNickName", () =>
     userToken.value ? userNickName.value : adminNickName.value
   )
-  const showAvatar = computed(() => {
+
+  const showAvatar = createComputed("showAvatar", () => {
     const avatar = userToken.value ? userAvatar.value : adminAvatar.value
     return avatar || "var(--default-avatar)" // 判断是否有值，无值返回默认值
   })
-  const showSigner = computed(() =>
+
+  const showSigner = createComputed("showSigner", () =>
     userToken.value ? userSigner.value : adminSigner.value
   )
-  const showPages = computed(() =>
+
+  const showPages = createComputed("showPages", () =>
     userToken.value ? userPages.value : adminPages.value
   )
-  const showTags = computed(() =>
+
+  const showTags = createComputed("showTags", () =>
     userToken.value ? userTags.value : adminTags.value
   )
-  const showCategories = computed(() =>
+
+  const showCategories = createComputed("showCategories", () =>
     userToken.value ? userCategories.value : adminCategories.value
   )
 
-  // 用于判断是否存在 用户 服务器 可能没有 用户和admin
-  const isAccount = computed(() => {
-    if (userToken.value || adminAccount.value) return true
-    return false
+  const isAccount = createComputed("isAccount", () => {
+    return !!(userToken.value || adminAccount.value)
   })
 
-  // 返回展示用的 computed 数据
+  // 返回启用的 computed 数据
   return {
     showAccount,
     showNickName,
