@@ -34,12 +34,14 @@ $scr: (
 
 // 快速 设置 card的shadow 分为 fixed 和 普通的
 @mixin setCardShadow($var: --pages) {
-  @each $key, $value in $them {
-    html[themes="#{$key}"] body[banner-fixed="fixed"] & {
-      box-shadow: var(#{$var}-shadow-fixed);
-    }
-    html[themes="#{$key}"] & {
-      box-shadow: var(#{$var}-shadow);
+  .card_style {
+    @each $key, $value in $them {
+      html[themes="#{$key}"] body[banner-fixed="fixed"] & {
+        box-shadow: var(#{$var}-shadow-fixed);
+      }
+      html[themes="#{$key}"] & {
+        box-shadow: var(#{$var}-shadow);
+      }
     }
   }
 }

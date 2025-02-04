@@ -23,7 +23,20 @@ export default async (
     include: [
       {
         model: Article, // 包括 Article 模型
-        attributes: ["title", "category", "tags", "userId", "length", "id"], // 可以指定要查询的字段
+        attributes: [
+          "poster",
+          "title",
+          "category",
+          "tags",
+          "userId",
+          "length",
+          "createdAt",
+          "updatedAt",
+          "id",
+        ], // 可以指定要查询的字段
+        where: {
+          isBin: 0,
+        },
       },
     ],
     attributes: { exclude: ["pwd"] },

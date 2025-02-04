@@ -24,6 +24,7 @@ router.get("/", async (req, res, next) => {
         "updatedAt",
         "category",
         "tags",
+        "userId",
       ],
       limit: pageSize,
       offset,

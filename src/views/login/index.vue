@@ -20,10 +20,7 @@ const regRef = ref()
 $rotate-during: var(--login-rotate-during);
 $link-color: var(--login-link-color);
 // 设置 卡片 阴影
-.login,
-.reg {
-  @include setCardShadow;
-}
+@include setCardShadow(--login);
 
 .login-container {
   position: absolute;

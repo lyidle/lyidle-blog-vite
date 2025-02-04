@@ -6,6 +6,7 @@ import type {
   GetMenuList,
   PurpleBannerImg,
 } from "@/api/admin/types/getMenuList"
+import { Article } from "@/api/user/types/getUserInfo"
 import { RouteRecordRaw } from "vue-router"
 
 // 引入 整理 函数
@@ -51,6 +52,7 @@ export const useUserStore = defineStore(
     const userPages = ref<number>()
     const userTags = ref<number>()
     const userCategories = ref<number>()
+    const userDocs = ref<Article[]>([])
     const reqUserInfo = async () => {
       try {
         const result = await getUserInfo()
@@ -66,6 +68,7 @@ export const useUserStore = defineStore(
           userPages.value = pages
           userTags.value = tags
           userCategories.value = categories
+          userDocs.value = result?.[0]?.Articles
           // 重新加载路由
           mitt.emit("route:reload")
           return
@@ -95,6 +98,7 @@ export const useUserStore = defineStore(
         userPages.value = 0
         userTags.value = 0
         userCategories.value = 0
+        userDocs.value = []
         ElMessage.success("退出登录成功~")
       } catch (error) {
         ElMessage.error({
@@ -123,6 +127,7 @@ export const useUserStore = defineStore(
       userPages,
       userTags,
       userCategories,
+      userDocs,
       userToken,
       userStoreReset,
     }

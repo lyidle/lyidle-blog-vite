@@ -131,7 +131,7 @@
             v-if="asideCounts"
             ref="observerMenu"
           ></div>
-          <my-card>
+          <my-card class="card_style">
             <div class="mr-0.625rem mt-0.625rem flex justify-end">
               <my-primary-button class="w-80px" size="small" @click="scene = 1"
                 >修改</my-primary-button
@@ -226,8 +226,11 @@ $icon-m-r: 2px;
 $header-h: 18.75rem;
 $header-container-h: 12.5rem;
 
+// 设置 侧边栏标题
 @include content-aside-title(var(--aside-title-icon-bg));
 
+// 设置 卡片 阴影
+@include setCardShadow;
 // 头部 teleport body了
 .doc-pages-header {
   position: absolute;
@@ -302,10 +305,6 @@ $header-container-h: 12.5rem;
   // 文档 内容 区域
   .doc-content {
     position: relative;
-    // 设置 卡片 阴影
-    .myCard {
-      @include setCardShadow;
-    }
 
     // markdown 预览
     ::v-deep(.vditor-style) {

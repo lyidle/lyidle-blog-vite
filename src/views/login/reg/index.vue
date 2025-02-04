@@ -1,5 +1,5 @@
 <template>
-  <div class="reg" ref="reg">
+  <div class="reg card_style" ref="reg">
     <h1 class="text-center mt-0">注册</h1>
     <el-form
       label-width="70px"

@@ -1,5 +1,5 @@
 <template>
-  <my-card class="item-aside">
+  <my-card class="item-aside card_style">
     <div class="aside-title">
       <slot name="title"></slot>
     </div>
@@ -13,9 +13,7 @@
 
 <style scoped lang="scss">
 // 设置 卡片 阴影
-.item-aside {
-  @include setCardShadow;
-}
+@include setCardShadow;
 .aside-title {
   display: flex;
   align-items: center;

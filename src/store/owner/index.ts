@@ -3,6 +3,7 @@ import { searchUser } from "@/api/user"
 import { findOneSetting } from "@/api/admin"
 // 引入 类型
 import { Content as InfoContent } from "@/api/admin/types/Contact Info"
+import { Article } from "@/api/user/types/getUserInfo"
 // 引入 整理 函数
 import tinyCounts from "@/utils/tinyCounts"
 export const useOwnerStore = defineStore("Owner", () => {
@@ -14,6 +15,7 @@ export const useOwnerStore = defineStore("Owner", () => {
   const adminPages = ref<number>()
   const adminTags = ref<number>()
   const adminCategories = ref<number>()
+  const adminDocs = ref<Article[]>([])
   // 网站设置信息
   const ownerWeChat = ref<string>()
   const ownerQQ = ref<string>()
@@ -34,6 +36,7 @@ export const useOwnerStore = defineStore("Owner", () => {
         adminPages.value = pages
         adminTags.value = tags
         adminCategories.value = categories
+        adminDocs.value = adminResult?.[0].Articles
       }
     } catch (error) {}
   }
@@ -61,6 +64,7 @@ export const useOwnerStore = defineStore("Owner", () => {
     adminPages,
     adminTags,
     adminCategories,
+    adminDocs,
     // 网站 所有者信息
     ownerWeChat,
     ownerQQ,

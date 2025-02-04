@@ -24,6 +24,7 @@ export interface Article {
   tags: string[]
   title: string
   updatedAt: string
+  userId: number
   [property: string]: any
 }
 

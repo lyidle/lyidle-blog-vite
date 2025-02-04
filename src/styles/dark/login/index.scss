@@ -18,5 +18,8 @@ html[themes="#{$theme}"] {
     --login-btn-hover-color: #e9f6ff;
     // 底部提示信息的 切换链接颜色
     --login-link-color: #cb2d47;
+    // 卡片阴影
+    --login-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
+    --login-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
   }
 }

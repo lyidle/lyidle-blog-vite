@@ -59,7 +59,7 @@ export const constantRoute: RouteRecordRaw[] = [
         path: "/user/docs/:author",
         name: "FindAllUserDocs",
         meta: { title: "用户所有文章" },
-        component: () => import("@/views/user/docs/findAll/index.vue"),
+        component: () => import("@/views/user/docs/index.vue"),
       },
       // 用户查询 所有标签
       {

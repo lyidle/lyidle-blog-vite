@@ -1,5 +1,5 @@
 <template>
-  <div class="contain carousel">
+  <div class="contain carousel card_style">
     <carousel v-bind="$attrs">
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
@@ -87,9 +87,9 @@ $btns-bg-active-hover: var(--content-carousel-btns-bg-active-hover);
 $btns-radius: 10px;
 $btns-arrow-dur: 0.5s;
 $mini-dur: 0.5s;
+// 设置 卡片 阴影
+@include setCardShadow;
 .contain {
-  // 设置 卡片 阴影
-  @include setCardShadow;
   --content-pd-r: 40px;
   --content-pd-l: 30px;
   height: $carousel-height;

@@ -12,6 +12,9 @@ const search = async (
   const { id, author, title, desc, category, tags } = req.query
   const commend: any = {
     attributes: ["id", "author", "title", "desc", "category", "tags"],
+    where: {
+      isBin: 0,
+    },
   }
   if (!(id || author || title || desc || category || tags))
     return res.result(

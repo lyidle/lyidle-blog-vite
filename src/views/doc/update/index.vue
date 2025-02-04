@@ -1,5 +1,5 @@
 <template>
-  <my-card class="doc-publish-content relative">
+  <my-card class="doc-publish-content relative card_style">
     <el-form :rules="rules" :model="docsFormData" ref="docsForm">
       <el-form-item class="!mb-0">
         <div class="flex justify-end w-100%">
@@ -345,9 +345,10 @@ useIsFullscreen(vditorEditor)
 $content-pd: 0.9375rem 2.5rem;
 $toolbar-pl: 5rem;
 $item-gap-v: 0.8125rem;
+// 设置 卡片 阴影
+@include setCardShadow;
+
 .doc-publish-content {
-  // 设置 卡片 阴影
-  @include setCardShadow;
   @include set-el-label(var(--primary-color));
   padding: $content-pd;
   // markdown 预览

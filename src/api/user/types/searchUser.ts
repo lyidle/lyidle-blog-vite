@@ -25,10 +25,13 @@ export interface Datum {
 
 export interface Article {
   category: string
+  createdAt: string
   id: number
   length: number
+  poster: null | string
   tags: string[]
   title: string
+  updatedAt: string
   userId: number
   [property: string]: any
 }

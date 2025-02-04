@@ -1,5 +1,5 @@
 <template>
-  <div class="login" ref="login">
+  <div class="login card_style" ref="login">
     <h1 class="text-center mt-0">登录</h1>
     <el-form
       label-width="40px"
