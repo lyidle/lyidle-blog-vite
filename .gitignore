@@ -157,3 +157,4 @@ dist-ssr
 config.json
 test.*
 test
+lyidle-blog-node/src/assets/images
