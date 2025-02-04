@@ -9,9 +9,31 @@ const search = async (
   exact?: boolean,
   isBin: boolean = false
 ) => {
-  const { id, author, title, desc, category, tags } = req.query
+  const { query } = req
+  const { id, author, title, desc, category, tags } = query
+  /**
+   * @pagesize 每页显示条目个数
+   * @currentPage 当前页
+   */
+  const currentPage = Math.abs(Number(query.currentPage)) || 1
+  const pageSize = Math.abs(Number(query.pageSize)) || 10
+  const offset = (currentPage - 1) * pageSize
+
   const commend: any = {
-    attributes: ["id", "author", "title", "desc", "category", "tags"],
+    attributes: [
+      "id",
+      "author",
+      "title",
+      "desc",
+      "category",
+      "tags",
+      "userId",
+      "poster",
+      "createdAt",
+      "updatedAt",
+    ],
+    limit: pageSize,
+    offset,
     where: {
       isBin: 0,
     },
@@ -70,10 +92,19 @@ const search = async (
   }
   if (!isBin) commend.where.isBin = 0
   // 查询用户的所有文章
-  const result = await Article.findAll(commend)
-  if (JSON.stringify(result) === "[]")
-    return res.result(void 0, "查询文章失败~", false)
-  return res.result(result, "查询文章成功~")
+  const { count, rows } = await Article.findAndCountAll(commend)
+  if (!count) return res.result(void 0, "查询文章失败~", false)
+  return res.result(
+    {
+      pagination: {
+        total: count,
+        currentPage,
+        pageSize,
+      },
+      article: rows,
+    },
+    "查询文章成功~"
+  )
 }
 // 查询文章 模糊
 router.get("/", async (req, res) => {

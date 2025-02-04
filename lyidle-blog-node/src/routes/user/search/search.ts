@@ -1,6 +1,8 @@
 import { Op, literal } from "sequelize"
 // 引入类型
 import { Request, Response } from "express"
+// 引入 整理 个数的函数
+import { tinyUserDocsCounts } from "@/utils/doc/counts"
 // 导入模型
 const { Article, User } = require("@/db/models")
 interface RequestData {
@@ -15,7 +17,8 @@ export default async (
   data: RequestData | Request["query"],
   req: Request,
   res: Response,
-  exact?: boolean
+  exact?: boolean,
+  isCounts: boolean = false
 ) => {
   const { id, account, email, role, nickName } = data
 
@@ -42,12 +45,14 @@ export default async (
     attributes: { exclude: ["pwd"] },
   }
 
-  if (!(id || account || email || role || nickName))
-    return res.result(
+  if (!(id || account || email || role || nickName)) {
+    res.result(
       void 0,
-      "请至少传入id、account、email、role、nickName中的一个参数~",
+      "查询用户，请至少传入id、account、email、role、nickName中的一个参数~",
       false
     )
+    return false
+  }
 
   // 按照nickName查询
   if (nickName)
@@ -91,8 +96,22 @@ export default async (
   commend.where.isBin = 0
   // 查询用户的所有文章
   const findUser = await User.findAll(commend)
-  if (JSON.stringify(findUser) === "[]")
-    return res.result({ msg: data }, "查询用户信息失败~", false)
-  res.result(findUser, "查询用户信息成功~")
+  if (!findUser.length) {
+    res.result(void 0, "查询用户信息失败~", false)
+    return false
+  }
+  // 整理 个数
+  findUser.forEach((item: any) => {
+    const articles = item.dataValues.Articles
+    delete item.dataValues.Articles
+    if (isCounts) {
+      const { pages, tags, categories } = tinyUserDocsCounts(articles)
+      item.dataValues.counts = {
+        pages,
+        tags,
+        categories,
+      }
+    }
+  })
   return findUser
 }

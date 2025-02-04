@@ -7,8 +7,8 @@
     <template #body>
       <div class="item" v-for="item in pages" :key="item.id">
         <template v-if="item.id">
-          <router-link :to="`/doc/${item.id}`">
-            <div class="poster">
+          <div class="poster">
+            <router-link :to="`/doc/${item.id}`">
               <img
                 :style="{
                   background: 'no-repeat center',
@@ -21,14 +21,14 @@
                 alt=""
               />
               <div class="mask"></div>
-            </div>
-          </router-link>
-          <div class="content">
-            <router-link :to="`/doc/${item.id}`">
-              <div class="title line-clamp-2 route-link">
-                {{ item.title }}
-              </div>
             </router-link>
+          </div>
+          <div class="content">
+            <div class="title line-clamp-2 route-link">
+              <router-link :to="`/doc/${item.id}`">
+                {{ item.title }}
+              </router-link>
+            </div>
             <div class="date cur-text">{{ moment(item.updatedAt) }}</div>
           </div>
         </template>

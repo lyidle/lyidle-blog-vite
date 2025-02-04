@@ -1,6 +1,5 @@
-import type { Datum as userArticle } from "@/api/user/types/getUserInfo"
 // 整理 用户信息 如 总文章数、标签数、分类数
-const tinyCounts = (article: userArticle[] | undefined) => {
+export const tinyUserDocsCounts = (article: any[]) => {
   // 页数
   const pages = article?.length || 0
   // 标签数
@@ -22,4 +21,3 @@ const tinyCounts = (article: userArticle[] | undefined) => {
     categories,
   }
 }
-export default tinyCounts

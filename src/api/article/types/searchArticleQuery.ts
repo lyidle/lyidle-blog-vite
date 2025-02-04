@@ -8,6 +8,10 @@ export interface SearchArticleQuery {
    */
   category?: string
   /**
+   * 当前页默认值1
+   */
+  currentPage?: string
+  /**
    * 描述
    */
   desc?: string
@@ -15,6 +19,10 @@ export interface SearchArticleQuery {
    * ID 编号
    */
   id?: number
+  /**
+   * 一页显示的数量10
+   */
+  pageSize?: string
   /**
    * 标签
    */

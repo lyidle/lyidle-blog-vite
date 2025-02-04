@@ -10,8 +10,8 @@ export interface GetUserInfo {
 
 export interface Datum {
   account: string
-  Articles: Article[]
   avatar: null | string
+  counts: Counts
   createdAt: string
   email: string
   id: number
@@ -23,15 +23,9 @@ export interface Datum {
   [property: string]: any
 }
 
-export interface Article {
-  category: string
-  createdAt: string
-  id: number
-  length: number
-  poster: null | string
-  tags: string[]
-  title: string
-  updatedAt: string
-  userId: number
+export interface Counts {
+  categories: number
+  pages: number
+  tags: number
   [property: string]: any
 }

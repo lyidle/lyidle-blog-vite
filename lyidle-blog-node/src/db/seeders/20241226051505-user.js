@@ -13,7 +13,8 @@ module.exports = {
     const counts = 50
     const roles = [...new Set(...[default_user, "test", "other"])]
     const setRole = (i) => {
-      if (i === 1) return JSON.stringify([...new Set([Admin].flat(Infinity))])
+      if (i === 1)
+        return JSON.stringify([...new Set([Admin, "owner"].flat(Infinity))])
       return JSON.stringify([
         ...new Set([roles[Math.floor(Math.random() * roles.length)]]),
       ])

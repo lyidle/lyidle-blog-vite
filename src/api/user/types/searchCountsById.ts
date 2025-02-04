@@ -1,9 +1,9 @@
 /**
  * Request
  */
-export interface SearchUser {
+export interface SearchCountsById {
   code: number
-  data?: Datum[] | DataObject
+  data?: Datum[]
   message: string[] | string
   [property: string]: any
 }
@@ -11,6 +11,7 @@ export interface SearchUser {
 export interface Datum {
   account: string
   avatar: null | string
+  counts: Counts
   createdAt: string
   email: string
   id: number
@@ -22,16 +23,9 @@ export interface Datum {
   [property: string]: any
 }
 
-export interface DataObject {
-  msg?: Msg
-  [property: string]: any
-}
-
-export interface Msg {
-  account?: string
-  email?: string
-  id?: number
-  nickName?: string
-  role?: string
+export interface Counts {
+  categories: number
+  pages: number
+  tags: number
   [property: string]: any
 }

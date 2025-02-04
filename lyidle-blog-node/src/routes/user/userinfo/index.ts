@@ -20,9 +20,12 @@ router.get(
       const cacheValue = await getKey(`userInfo:${id}`)
       if (cacheValue) return res.result(cacheValue, "查询用户信息成功~")
       // 查询对应id的信息
-      const findUser = await search({ id: id as string }, req, res, true)
+      const findUser = await search({ id: id as string }, req, res, true, true)
+      // 不存在
+      if (!findUser) return
       // 存储用户信息 到 redis
       await setKey(`userInfo:${id}`, findUser)
+      return res.result(findUser, "查询用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "查询用户信息失败~", false)

@@ -1,11 +1,8 @@
 // 引入 api
-import { searchUser } from "@/api/user"
+import { searchCounts } from "@/api/user"
 import { findOneSetting } from "@/api/admin"
 // 引入 类型
 import { Content as InfoContent } from "@/api/admin/types/Contact Info"
-import { Article } from "@/api/user/types/getUserInfo"
-// 引入 整理 函数
-import tinyCounts from "@/utils/tinyCounts"
 export const useOwnerStore = defineStore("Owner", () => {
   // admin 信息
   const adminAccount = ref<string>()
@@ -15,7 +12,6 @@ export const useOwnerStore = defineStore("Owner", () => {
   const adminPages = ref<number>()
   const adminTags = ref<number>()
   const adminCategories = ref<number>()
-  const adminDocs = ref<Article[]>([])
   // 网站设置信息
   const ownerWeChat = ref<string>()
   const ownerQQ = ref<string>()
@@ -24,19 +20,16 @@ export const useOwnerStore = defineStore("Owner", () => {
   // 发起请求
   const getAdminUserInfo = async () => {
     try {
-      const adminResult = await searchUser({ role: "admin" })
+      const adminResult = await searchCounts({ role: "owner" })
       if (Array.isArray(adminResult)) {
         adminAccount.value = adminResult?.[0]?.account
         adminNickName.value = adminResult?.[0]?.nickName
         adminAvatar.value = adminResult?.[0]?.avatar || null
         adminSigner.value = adminResult?.[0]?.signer || null
-        const { pages, tags, categories } = tinyCounts(
-          adminResult?.[0]?.Articles
-        )
-        adminPages.value = pages
-        adminTags.value = tags
-        adminCategories.value = categories
-        adminDocs.value = adminResult?.[0].Articles
+
+        adminPages.value = adminResult?.[0].counts.pages
+        adminTags.value = adminResult?.[0].counts.tags
+        adminCategories.value = adminResult?.[0].counts.categories
       }
     } catch (error) {}
   }
@@ -64,7 +57,6 @@ export const useOwnerStore = defineStore("Owner", () => {
     adminPages,
     adminTags,
     adminCategories,
-    adminDocs,
     // 网站 所有者信息
     ownerWeChat,
     ownerQQ,

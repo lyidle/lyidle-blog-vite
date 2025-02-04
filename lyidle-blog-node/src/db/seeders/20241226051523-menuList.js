@@ -4,7 +4,7 @@ const data = require("../mock/menulist")
 // 导入环境变量
 require("dotenv").config()
 // 引入 redis 清理函数
-const { clear } = require("../../utils/redis")
+const { clear } = require("../../utils/redis/js")
 module.exports = {
   async up(queryInterface, Sequelize) {
     const menuList = []

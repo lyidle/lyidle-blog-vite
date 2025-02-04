@@ -23,10 +23,10 @@
         <div class="mini-nav-avater-container">
           <div
             class="pin"
-            :content="adminAccount ? `admin` : 'null'"
+            :content="adminAccount ? `owner` : 'null'"
             :style="{
               '--pin-left': adminAccount ? '-0.5rem' : '0rem',
-              '--pin-top': adminAccount ? '0.9375rem' : '0.9375rem',
+              '--pin-top': adminAccount ? '1.125rem' : '0.9375rem',
             }"
             v-if="!userToken"
           ></div>

@@ -9,6 +9,8 @@ import type { RegBody } from "./types/regBody"
 import type { GetUserInfo } from "./types/getUserInfo"
 import { SearchUser } from "./types/searchUser"
 import { SearchUserQuery } from "./types/searchUserQuery"
+import { SearchCountsById } from "./types/searchCountsById"
+import { SearchCountsByIdQuery } from "./types/searchCountsByIdQuery"
 import { Logout } from "./types/logout"
 // 统一管理 api
 enum API {
@@ -18,6 +20,7 @@ enum API {
   logout = "/user/logout",
   userInfo = "/user/userinfo",
   search = "/user/search",
+  searchCounts = "/user/search/counts",
 }
 
 // 引入前缀
@@ -51,4 +54,10 @@ export const getUserInfo = () =>
 export const searchUser = (data: SearchUserQuery) =>
   request.get<any, SearchUser["data"]>(
     server + prefix + API.search + `?${new URLSearchParams(data)}`
+  )
+
+// 按照id搜索 且统计个数
+export const searchCounts = (data: SearchCountsByIdQuery) =>
+  request.get<any, SearchCountsById["data"]>(
+    server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`
   )
