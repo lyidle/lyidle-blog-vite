@@ -21,7 +21,7 @@ html[themes="#{$theme}"] {
     // 侧边栏的a链接高亮效果
     --doc-menu-highlight: #eea8a8;
   }
-  #vditor-preview {
+  .vditor-style {
     // 主要的文字颜色
     --doc-content-color: #{$primary-color};
     // code 的颜色 `code`

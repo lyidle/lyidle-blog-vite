@@ -125,7 +125,7 @@
           </context-menu>
         </teleport>
         <!-- 卡片 -->
-        <div class="doc-content" ref="docRef">
+        <div class="doc-content" ref="docRef" v-show="scene === 0">
           <div
             class="observer-menu"
             v-if="asideCounts"
@@ -133,13 +133,23 @@
           ></div>
           <my-card>
             <div class="mr-0.625rem mt-0.625rem flex justify-end">
-              <my-primary-button class="w-80px" size="small"
+              <my-primary-button class="w-80px" size="small" @click="scene = 1"
                 >修改</my-primary-button
               >
             </div>
-            <div id="vditor-preview" ref="docPreview" class="cur-text"></div>
+            <div
+              id="vditor-preview"
+              ref="docPreview"
+              class="cur-text vditor-style"
+            ></div>
           </my-card>
         </div>
+        <DocumentUpdate
+          v-if="scene === 1"
+          v-model="scene"
+          :article
+          test="1"
+        ></DocumentUpdate>
       </template>
     </layout-content>
   </div>
@@ -163,6 +173,12 @@ import { useVditorPreview } from "@/hooks/Doc/vditorPreview"
 import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
 // 解压缩
 import { decompressString } from "@/utils/compression"
+// 引入 子组件
+import DocumentUpdate from "@/views/doc/update/index.vue"
+
+// 判断 场景
+const scene = ref(0)
+
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
@@ -292,7 +308,7 @@ $header-container-h: 12.5rem;
     }
 
     // markdown 预览
-    ::v-deep(#vditor-preview) {
+    ::v-deep(.vditor-style) {
       $preview-pd: 50px;
       $doc-primary-color: var(--doc-content-color);
       $color: #{$doc-primary-color};
@@ -306,6 +322,7 @@ $header-container-h: 12.5rem;
       color: $doc-primary-color;
       padding: $preview-pd;
       overflow: hidden;
+      border: unset;
 
       h1 {
         border-bottom: 0 !important;

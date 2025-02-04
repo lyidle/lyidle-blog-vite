@@ -85,6 +85,7 @@ router.post(
         // 把结果压缩后保存到数据库
         ArticleData.content = compressString(result)
       }
+
       // 创建文章
       const { dataValues } = await Article.create(ArticleData)
 

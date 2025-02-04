@@ -86,7 +86,7 @@ $callouts: (
 // #endregion 定义颜色映射表
 
 html[themes="#{$theme}"] {
-  #vditor-preview {
+  .vditor-style {
     // callouts 样式
     // 遍历颜色映射表生成样式
     @each $types, $callouts-map in $callouts {

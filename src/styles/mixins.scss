@@ -66,7 +66,7 @@ $currentTheme: 0;
 // 设置 el-form-item 的 label 颜色
 @mixin set-el-label($color) {
   ::v-deep(.el-form-item) {
-    label {
+    .el-form-item__label {
       color: $color;
     }
   }

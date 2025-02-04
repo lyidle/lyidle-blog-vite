@@ -1,5 +1,5 @@
 html {
-  #vditor-preview {
+  .vditor-style {
     // callouts的圆角
     --doc-border-radius: 5px;
   }
@@ -41,7 +41,7 @@ $callouts-icons: (
 // #endregion 图标
 
 html {
-  #vditor-preview {
+  .vditor-style {
     --doc-callouts-title-m-b: 10px;
     // callouts 的图标
     @each $callouts-types, $base-icon in $callouts-icons {

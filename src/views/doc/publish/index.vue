@@ -84,7 +84,7 @@
         <h3 class="font-normal m-20px text-center font-size-1.625rem">
           文章的内容
         </h3>
-        <div id="vditor-preview" ref="vditorEditor"></div>
+        <div id="vditor-publish" class="vditor-style" ref="vditorEditor"></div>
       </my-card>
     </template>
   </layout-content>
@@ -116,7 +116,7 @@ import {
 // 引入 前缀
 const prefix = import.meta.env.VITE_API
 
-const { title, category, tags, desc, length, context } = storeToRefs(
+const { title, category, tags, desc, length, docHeight, context } = storeToRefs(
   useDocEditorOpt()
 )
 
@@ -237,11 +237,16 @@ const handleInputConfirm = () => {
 const vditorEditor = ref()
 
 // 使用 hooks
-const vditor = useVditorEditor(vditorEditor)
+const vditor = useVditorEditor("vditor-publish", vditorEditor, {
+  docHeight,
+  context,
+  length,
+})
 
 // 使用 路由
 const router = useRouter()
 
+// 清空缓存
 const mdAndFormReset = () => {
   title.value = ""
   category.value = ""
@@ -273,9 +278,10 @@ const handerUpload = async () => {
       tags: docsFormData.tags,
       desc: docsFormData.desc || "",
       content: compressString(content) || "",
-      length: length.value as string,
+      length: length.value,
     }
 
+    // 处理临时链接
     let match: RegExpExecArray | null
     const urls = new Set<string>()
     const api = prefix.replace("/", "\\")
@@ -333,7 +339,7 @@ $item-gap-v: 0.8125rem;
   @include set-el-label(var(--primary-color));
   padding: $content-pd;
   // markdown 预览
-  ::v-deep(#vditor-preview) {
+  ::v-deep(.vditor-style) {
     $preview-pd: 0;
     $doc-primary-color: var(--doc-content-color);
     $color: #{$doc-primary-color};

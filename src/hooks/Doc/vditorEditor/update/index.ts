@@ -27,6 +27,8 @@ type RefOptionsType = {
   context: Ref<string>
   length: Ref<number>
 }
+export type vditorType = Ref<Vditor | null>
+
 /**
  *
  * @param containerId 容器id
@@ -34,16 +36,16 @@ type RefOptionsType = {
  * @param RefOptions 配置项 RefOptionsType
  * @returns vditor 实列对象
  */
-export const useVditorEditor = (
+export const useVditorUpdate = (
   containerId: string,
   vditorEditor: Ref<HTMLDivElement>,
   RefOptions: RefOptionsType
-) => {
+): vditorType => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
   const { docHeight, context, length } = RefOptions
   const { userToken } = storeToRefs(useUserStore())
-  let vditor = ref<Vditor | null>(null)
+  let vditor: vditorType = ref(null)
 
   const editor = () => {
     vditor.value = new Vditor(containerId, {
@@ -97,30 +99,6 @@ export const useVditorEditor = (
         "|",
         "fullscreen",
         "edit-mode",
-        // 保存文档
-        {
-          name: "save",
-          tip: "保存文档",
-          tipPosition: "n",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 4a2 2 0 0 1 2-2h10l4 4v10.2a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-2Z"/><path d="M10 2v4h6m2 12v-7h-8v7"/><path d="M18 22H4a2 2 0 0 1-2-2V6"/></g></svg>',
-          click: () => {
-            const content = vditor.value?.getValue()
-            context.value = content as string
-            ElMessage.success("保存文档成功~")
-          },
-        },
-        // 重置文档
-        {
-          name: "save",
-          tip: "重置文档",
-          tipPosition: "n",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 2h4m-2 12v-4m-8 3a8 8 0 0 1 8-7a8 8 0 1 1-5.3 14L4 17.6"/><path d="M9 17H4v5"/></g></svg>',
-          click: () => {
-            context.value = ""
-            vditor.value?.setValue("")
-            ElMessage.success("重置文档成功~")
-          },
-        },
         // imgTo link
         {
           name: "imgToLink",
@@ -150,7 +128,10 @@ export const useVditorEditor = (
             // 保存 处理好的图片
             let result = []
             // 存在 且 为1 发起请求 处理图片
-            if (!arr.length) return
+            if (!arr.length) {
+              ElMessage.warning("没有找到需要替换的图片~")
+              return
+            }
             // 遍历添加 处理结果
             for (const item of arr) {
               try {
@@ -307,15 +288,21 @@ export const useVditorEditor = (
     vditor.value?.setTheme("classic", "light", newV ? "github-dark" : "github")
   })
 
-  // 加载
-  onMounted(() => {
+  const Mounted = () => {
     // 加载编辑器
     editor()
+  }
+  const UnMounted = () => {
+    // 销毁
+    vditor.value?.destroy()
+  }
+
+  onMounted(() => {
+    Mounted()
   })
 
-  // 卸载
   onBeforeUnmount(() => {
-    vditor.value?.destroy()
+    UnMounted()
   })
 
   // 返回 vditor 实例对象

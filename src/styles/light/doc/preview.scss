@@ -22,7 +22,7 @@ html[themes="#{$theme}"] {
     --doc-menu-highlight: #992f2f;
   }
 
-  #vditor-preview {
+  .vditor-style {
     // 主要的文字颜色
     --doc-content-color: #{$primary-color};
     // code 的颜色 `code`

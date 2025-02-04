@@ -3,9 +3,9 @@ export const useDocEditorOpt = defineStore(
   () => {
     // 配置信息
     // 高度
-    const docHeight = ref<number | string>("85vh")
+    const docHeight = ref<string>("85vh")
     // 内容
-    const context = ref<string>()
+    const context = ref<string>("")
     // 标题
     const title = ref<string>()
     // 分类
@@ -15,7 +15,7 @@ export const useDocEditorOpt = defineStore(
     // 描述
     const desc = ref<string>()
     // 长度
-    const length = ref<number | string>()
+    const length = ref<number>(0)
     return {
       docHeight,
       context,

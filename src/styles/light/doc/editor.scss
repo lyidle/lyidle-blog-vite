@@ -7,7 +7,7 @@
 @use "../content/global/index.scss" as *;
 
 html[themes="#{$theme}"] {
-  #vditor-preview {
+  .vditor-style {
     /* 书写区域 */
     --editor-bg: #{$pages-card-bg};
     --editor-h1-border-l: 10px solid #{$primary-color};
