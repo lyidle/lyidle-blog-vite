@@ -15,7 +15,7 @@
               <my-primary-button
                 size="small"
                 class="w-70px"
-                @click="handerUpload"
+                v-throttle="{ fn: handerUpload }"
                 >更新文章</my-primary-button
               >
             </div>

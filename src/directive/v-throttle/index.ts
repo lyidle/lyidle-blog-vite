@@ -34,11 +34,11 @@ export const vThrottle: Directive<CustomDivElement, DevTipOptions> = {
       // 如果计时器已经存在，则直接返回
       if (el.timer) return
 
+      // 调用传入的函数并传递剩余参数
+      fn.call(el, e)
       // 开启计时器
       el.timer = setTimeout(() => {
         el.timer = null // 重置计时器
-        // 调用传入的函数并传递剩余参数
-        fn.call(el, e)
       }, time)
     }
 

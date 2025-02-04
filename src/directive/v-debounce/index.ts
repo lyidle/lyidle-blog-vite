@@ -13,7 +13,7 @@ interface CustomDivElement extends HTMLDivElement {
 export const vDebounce: Directive<CustomDivElement, DevTipOptions> = {
   mounted(el, options) {
     // 从 options.value 中提取 time 和 fn
-    let time = options.value?.time || 1000
+    let time = options.value?.time || 300
     const fn = options.value?.fn
 
     // 如果没有传递回调函数，抛出错误
