@@ -1,11 +1,13 @@
 /**
  * Request
  */
-export interface AddArticleBody {
+export interface UpdateArticleBody {
+  carousel?: string
   category: string
   content: string
   desc: string
-  length: string | number
+  id: number
+  length: string
   poster?: string
   tags: string[]
   title: string

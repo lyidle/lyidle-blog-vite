@@ -150,7 +150,7 @@ export const useVditorEditor = (
             // 保存 处理好的图片
             let result = []
             // 存在 且 为1 发起请求 处理图片
-            if (!arr.length) return
+            if (!arr.length) return ElMessage.warning("没有需要处理的图片哦~")
             // 遍历添加 处理结果
             for (const item of arr) {
               try {
@@ -168,7 +168,7 @@ export const useVditorEditor = (
                 .join("|")
 
               // 没有需要处理的则退出
-              if (!Origins) return
+              if (!Origins) return ElMessage.warning("没有需要处理的图片哦~")
 
               // 构造正则表达式匹配多个 origin
               const reg = new RegExp(Origins, "g")

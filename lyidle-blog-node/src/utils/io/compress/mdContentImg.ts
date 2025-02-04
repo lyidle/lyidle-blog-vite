@@ -28,11 +28,10 @@ const gifsicleQuality: NumberRange<1, 3> = 3
 账户
 */
 type successType = { url: string; origin: string }[]
-export const mdContentIm = async (
+export const mdContentImg = async (
   tempImg: string[],
   outputRelative: string,
-  $staticPath: string,
-  account: string
+  $staticPath: string
 ): Promise<{ tempImgNull: string[]; successImg: successType }> => {
   // 临时的图片 不存在的数组
   const tempImgNull: string[] = []
@@ -45,18 +44,6 @@ export const mdContentIm = async (
       if (!item) continue
       // 获取到对应的临时目录
       const staticPath = join($staticPath, item.replace("\\api", ""))
-      // const cacheValue = await getKey(
-      //   `img:${account}:md:content:${JSON.stringify(item)}`
-      // )
-      // if (cacheValue) {
-      //   // 判断文件是否真实存在
-      //   const isExist = existsSync(cacheValue)
-      //   if (isExist) {
-      //     // 存在则直接加入 successImg
-      //     successImg.push(cacheValue)
-      //     continue
-      //   }
-      // }
       const isExist = existsSync(staticPath)
       // 判断是否存在
       if (isExist) {
@@ -85,11 +72,6 @@ export const mdContentIm = async (
           // 去掉 assets之前的路径生成api
           const api = resolvePath.replace($staticPath, "")
           const result = { url: join(api_prefix, api), origin: item }
-          // 设置缓存
-          await setKey(
-            `img:${account}:md:content:${JSON.stringify(item)}`,
-            result
-          )
 
           // 删除 临时文件
           unlinkSync(staticPath)

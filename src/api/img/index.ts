@@ -4,10 +4,12 @@ import request from "@/utils/request"
   set的最后是携带的参数类型
 */
 import { PostTempImg } from "./types/postTempImg"
+import { MdToLinkPermanent } from "./types/mdToLinkPermanent"
 // 统一管理 api
 export enum API {
   urlImgTemp = "/upload/img/temp",
   fileImgTemp = "/upload/files/img/temp",
+  tempTOPermanent = "/upload/img/mdToLinkPermanent",
 }
 
 // 引入前缀
@@ -23,3 +25,10 @@ export const tempImgFiles = server + prefix + API.fileImgTemp
 // 上传  图片 的接口 单个
 export const postTempImgUrl = (url: string) =>
   request.post<any, PostTempImg["data"]>(tempImgUrl, { url })
+
+// 上传  图片 临时转 永久 markdown 的接口
+export const postMdImgPermanent = (tempImg: string[]) =>
+  request.post<any, MdToLinkPermanent["data"]>(
+    server + prefix + API.tempTOPermanent,
+    { tempImg }
+  )

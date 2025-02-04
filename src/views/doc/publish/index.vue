@@ -93,14 +93,14 @@
 <script setup lang="ts" name="DocumentPublish">
 // 引入 编辑器的 hooks
 import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
+// 引入 utils
+import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 // 引入 编辑器 全屏事件的 处理 hooks
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 仓库
 import { useDocEditorOpt } from "@/store/doc"
 // 引入 类型
 import type { InputInstance } from "element-plus"
-// 压缩 与 解压
-import { compressString } from "@/utils/compression"
 // 引入 api
 import { addArticle } from "@/api/article"
 // 引入 类型
@@ -113,8 +113,6 @@ import {
   descReg,
   contentReg,
 } from "@/RegExp/Docs"
-// 引入 前缀
-const prefix = import.meta.env.VITE_API
 
 const { title, category, tags, desc, length, docHeight, context } = storeToRefs(
   useDocEditorOpt()
@@ -277,55 +275,27 @@ const handerUpload = async () => {
       category: docsFormData.category as string,
       tags: docsFormData.tags,
       desc: docsFormData.desc || "",
-      content: compressString(content) || "",
+      content: "",
       length: length.value,
     }
 
-    // 处理临时链接
-    let match: RegExpExecArray | null
-    const urls = new Set<string>()
-    const api = prefix.replace("/", "\\")
-    // 判断有无值
-    if (content) {
-      const urlRegex = new RegExp(
-        `!\\[.*?\\]\\((\\\\${api}\\\\assets\\\\images([^)]*))\\)`,
-        "g"
-      )
+    // 处理 临时链接转换
+    await useMdReplaceImg(content, data)
 
-      // 使用循环查找所有匹配项
-      while ((match = urlRegex.exec(content)) !== null) {
-        if (match.index === urlRegex.lastIndex) {
-          urlRegex.lastIndex++
-        }
-        urls.add(match[1])
-      }
-    }
-    const arr = Array.from(urls)
-
-    urls.clear()
-
-    // 判断有无临时 链接
-    if (arr) data.tempImg = arr
     const result = await addArticle(data)
-    // 判断有无 临时图片 不存在的 提示
-    if (result?.tempImgNull.length && Array.isArray(result?.tempImgNull)) {
-      result.tempImgNull.forEach((item) =>
-        ElMessage.error({
-          message: `临时图片:${item}不存在~`,
-          customClass: "selectMessage",
-          appendTo: "outer-context-menu",
-        })
-      )
-    }
     const docId = result?.id
     if (docId) {
       router.replace(`/doc/${docId}`)
-      mdAndFormReset()
+      nextTick(() => {
+        mdAndFormReset()
+      })
     }
+
     ElMessage.success("上传文章成功~")
   } catch (error) {}
 }
 
+// 使用 编辑器是否全屏的hook
 useIsFullscreen(vditorEditor)
 </script>
 <style scoped lang="scss">

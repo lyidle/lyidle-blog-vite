@@ -38,6 +38,14 @@ export const constantRoute: RouteRecordRaw[] = [
         meta: { title: "发表文章", role: ["doc:publish"] },
         component: () => import("@/views/doc/publish/index.vue"),
       },
+      // 修改文章 需要有对应的权限 账号要一致
+      // query author id
+      {
+        path: "/doc/update",
+        name: "DocumentUpdate",
+        meta: { title: "修改文章" },
+        component: () => import("@/views/doc/update/index.vue"),
+      },
     ],
   },
   // 用户相关

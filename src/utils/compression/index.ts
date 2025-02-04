@@ -39,10 +39,6 @@ export function compressString(input: string): string | undefined {
 
 // 解压字符串
 export function decompressString(compressed: string): string | undefined {
-  try {
-    // 解压 Base64 -> Uint8Array -> 原始字符串
-    return pako.inflate(base64ToUint8Array(compressed), { to: "string" })
-  } catch (err) {
-    console.error("解压失败：", err)
-  }
+  // 解压 Base64 -> Uint8Array -> 原始字符串
+  return pako.inflate(base64ToUint8Array(compressed), { to: "string" })
 }

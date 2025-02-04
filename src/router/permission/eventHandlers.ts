@@ -12,7 +12,7 @@ export const routerEventHandlered = (router: any) => {
     const { userStoreReset } = useUserStore()
     await userStoreReset()
     ElMessage.warning("token 过期,请重新登录~")
-    router.push("/")
+    router.push({ path: "/", replace: true })
   })
 
   // 错误信息去重处理
@@ -30,7 +30,11 @@ export const routerEventHandlered = (router: any) => {
   })
 
   // 处理 Not Found 跳转
-  mitt.on("NotFound", () => {
-    router.push("/404")
+  mitt.on("NotFound", (res) => {
+    console.log(res)
+    if (res.message?.includes("没有查找到文章哦~"))
+      console.log("需要跳转没有文章的404页")
+
+    router.push({ path: "/404", replace: true })
   })
 }

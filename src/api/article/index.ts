@@ -11,7 +11,7 @@ import type { SearchArticleQuery } from "@/api/article/types/searchArticleQuery"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import { AddArticleBody } from "@/api/article/types/addArticleBody"
 import { AddArticle } from "@/api/article/types/addArticle"
-
+import { UpdateArticleBody } from "./types/updateArticleBody"
 // 统一管理 api
 enum API {
   getCarousel = "/article/carousel",
@@ -20,6 +20,7 @@ enum API {
   searchArticleExact = "/article/search/exact",
   getOneArticle = "/article/getOne",
   addArticle = "/article/admin/add",
+  updateArticle = "/article/admin/update",
 }
 
 // 引入前缀
@@ -74,3 +75,7 @@ export const getOneArticle = (id: string | number) =>
 // 增加文章
 export const addArticle = (data: AddArticleBody) =>
   request.post<any, AddArticle["data"]>(server + prefix + API.addArticle, data)
+
+// 更新文章
+export const updateArticle = (data: UpdateArticleBody) =>
+  request.put<any, void>(server + prefix + API.updateArticle, data)

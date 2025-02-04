@@ -8,6 +8,7 @@ import findArticleFn from "@/routes/article/admin/find"
 import myError from "@/utils/Error"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
+import { decompressString } from "@/utils/io/compress/compressAndDecompress"
 const router = express.Router()
 router.put(
   "/",
@@ -34,7 +35,6 @@ router.put(
         next(new myError("PermissionError"))
         return
       }
-
       // 提取body 信息
       const {
         title,
@@ -78,15 +78,16 @@ router.put(
       if (poster) findArticle.set("poster", poster)
 
       // 更新数据
-      const saveArticle = await findArticle.save()
+      const result = await findArticle.save()
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
       // 删除总字数统计缓存
       await delKey("webTotalWords")
       // 删除用户信息缓存
       await delKey(`userInfo:${req.auth.id}`)
-
-      res.result(saveArticle, "修改文章成功~")
+      // 删除 文章的缓存
+      await delKey(`ArticlefindByPk:${result.dataValues.id}`)
+      res.result(result, "修改文章成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "修改文章失败~", false)

@@ -10,7 +10,5 @@ export interface AddArticle {
 
 export interface Data {
   id: number
-  successImg: string[]
-  tempImgNull: string[]
   [property: string]: any
 }

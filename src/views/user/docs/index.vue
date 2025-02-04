@@ -47,6 +47,16 @@
                 </router-link>
               </div>
             </div>
+            <my-primary-button
+              class="w-80px"
+              size="small"
+              @click="
+                $router.push(
+                  `/doc/update?author=${article.author}&id=${article.id}`
+                )
+              "
+              >修改</my-primary-button
+            >
           </div>
         </div>
       </my-card>
@@ -202,6 +212,8 @@ $circle-bg-dur: var(--primary-during);
       gap: $gap;
       margin-top: $gap;
       position: relative;
+      justify-content: space-between;
+      align-items: center;
       // 每个文章的小圆
       &::before {
         display: block;

@@ -21,14 +21,22 @@ import { tempImgFiles, tempImgUrl, postTempImgUrl } from "@/api/img"
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 正则
 import { isUrl } from "@/RegExp/Url/isUrl"
+
 // 定义 配置项 Ref 存储 高度 内容 长度
 type RefOptionsType = {
   docHeight: Ref<string>
   context: Ref<string>
   length: Ref<number>
 }
+
 export type vditorType = Ref<Vditor | null>
 
+// 返回类型
+export type vditorReturnType = {
+  vditor: vditorType
+  Mounted: () => void
+  UnMounted: () => void
+}
 /**
  *
  * @param containerId 容器id
@@ -40,7 +48,7 @@ export const useVditorUpdate = (
   containerId: string,
   vditorEditor: Ref<HTMLDivElement>,
   RefOptions: RefOptionsType
-): vditorType => {
+): vditorReturnType => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
   const { docHeight, context, length } = RefOptions
@@ -128,10 +136,7 @@ export const useVditorUpdate = (
             // 保存 处理好的图片
             let result = []
             // 存在 且 为1 发起请求 处理图片
-            if (!arr.length) {
-              ElMessage.warning("没有找到需要替换的图片~")
-              return
-            }
+            if (!arr.length) return ElMessage.warning("没有需要处理的图片哦~")
             // 遍历添加 处理结果
             for (const item of arr) {
               try {
@@ -149,7 +154,7 @@ export const useVditorUpdate = (
                 .join("|")
 
               // 没有需要处理的则退出
-              if (!Origins) return
+              if (!Origins) return ElMessage.warning("没有需要处理的图片哦~")
 
               // 构造正则表达式匹配多个 origin
               const reg = new RegExp(Origins, "g")
@@ -297,14 +302,6 @@ export const useVditorUpdate = (
     vditor.value?.destroy()
   }
 
-  onMounted(() => {
-    Mounted()
-  })
-
-  onBeforeUnmount(() => {
-    UnMounted()
-  })
-
   // 返回 vditor 实例对象
-  return vditor
+  return { vditor, Mounted, UnMounted }
 }

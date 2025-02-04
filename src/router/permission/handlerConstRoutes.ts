@@ -22,7 +22,7 @@ export const handlerConstRoutes = (
   const isAccess = to.meta.role.find((item) => userRole.value.includes(item))
   // 没有 通过权限判断
   if (!isAccess) {
-    next("/")
+    next({ path: "/", replace: true })
     ElMessage.warning(`访问当前页面需要${to.meta.role}权限~`)
     return true
   }

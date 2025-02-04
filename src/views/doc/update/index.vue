@@ -1,110 +1,108 @@
 <template>
-  <my-card class="doc-publish-content relative card_style">
-    <el-form :rules="rules" :model="docsFormData" ref="docsForm">
-      <el-form-item class="!mb-0">
-        <div class="flex justify-end w-100%">
-          <my-primary-button
-            size="small"
-            type="warning"
-            @click="scene = 0"
-            class="w-70px"
-            >取消修改</my-primary-button
+  <layout-content>
+    <template #content-start>
+      <my-card class="doc-publish-content relative card_style">
+        <el-form :rules="rules" :model="docsFormData" ref="docsForm">
+          <el-form-item class="!mb-0">
+            <div class="flex justify-end w-100%">
+              <my-primary-button
+                size="small"
+                type="warning"
+                @click="$router.replace(`/user/docs/${docAuthor}`)"
+                class="w-70px"
+                >取消修改</my-primary-button
+              >
+              <my-primary-button
+                size="small"
+                class="w-70px"
+                @click="handerUpload"
+                >更新文章</my-primary-button
+              >
+            </div>
+          </el-form-item>
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的标题"
+            prop="title"
           >
-          <my-primary-button
-            size="small"
-            type="danger"
-            @click="resetDoc"
-            class="w-70px"
-            >重置表单</my-primary-button
+            <my-input v-model="docsFormData.title" placeholder="文章的标题">
+            </my-input>
+          </el-form-item>
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的分类"
+            prop="category"
           >
-          <my-primary-button size="small" class="w-70px" @click="handerUpload"
-            >提交文章</my-primary-button
+            <my-input v-model="docsFormData.category" placeholder="文章的分类">
+            </my-input>
+          </el-form-item>
+          <el-form-item
+            class="!mb-0 is-required doc-publish-item"
+            label="文章的标签"
           >
-        </div>
-      </el-form-item>
-      <el-form-item
-        class="!mb-0 doc-publish-item"
-        label="文章的标题"
-        prop="title"
-      >
-        <my-input v-model="docsFormData.title" placeholder="文章的标题">
-        </my-input>
-      </el-form-item>
-      <el-form-item
-        class="!mb-0 doc-publish-item"
-        label="文章的分类"
-        prop="category"
-      >
-        <my-input v-model="docsFormData.category" placeholder="文章的分类">
-        </my-input>
-      </el-form-item>
-      <el-form-item
-        class="!mb-0 is-required doc-publish-item"
-        label="文章的标签"
-      >
-        <div class="flex gap-2 ml-0.625rem">
-          <el-tag
-            v-for="(tag, i) in docsFormData.tags"
-            :key="tag"
-            closable
-            :disable-transitions="false"
-            :type="tagsType[i % tagsType.length]"
-            @close="handleClose(tag)"
+            <div class="flex gap-2 ml-0.625rem">
+              <el-tag
+                v-for="(tag, i) in docsFormData.tags"
+                :key="tag"
+                closable
+                :disable-transitions="false"
+                :type="tagsType[i % tagsType.length]"
+                @close="handleClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <template v-if="docsFormData.tags.length < tagsReg.totalMax">
+                <el-input
+                  v-if="inputVisible"
+                  ref="InputRef"
+                  v-model="inputValue"
+                  class="tags-input"
+                  size="small"
+                  @keyup.enter="handleInputConfirm"
+                  @blur="handleInputConfirm"
+                />
+                <el-button
+                  v-else
+                  class="button-new-tag"
+                  size="small"
+                  @click="showInput"
+                >
+                  + New Tag
+                </el-button>
+              </template>
+            </div>
+          </el-form-item>
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的描述"
+            prop="desc"
           >
-            {{ tag }}
-          </el-tag>
-          <template v-if="docsFormData.tags.length < tagsReg.totalMax">
-            <el-input
-              v-if="inputVisible"
-              ref="InputRef"
-              v-model="inputValue"
-              class="tags-input"
-              size="small"
-              @keyup.enter="handleInputConfirm"
-              @blur="handleInputConfirm"
-            />
-            <el-button
-              v-else
-              class="button-new-tag"
-              size="small"
-              @click="showInput"
-            >
-              + New Tag
-            </el-button>
-          </template>
-        </div>
-      </el-form-item>
-      <el-form-item
-        class="!mb-0 doc-publish-item"
-        label="文章的描述"
-        prop="desc"
-      >
-        <my-input v-model="docsFormData.desc" placeholder="文章的描述">
-        </my-input>
-      </el-form-item>
-    </el-form>
-    <h3 class="font-normal m-20px text-center font-size-1.625rem">
-      文章的内容
-    </h3>
-    <div id="vditor-update" class="vditor-style" ref="vditorEditor"></div>
-  </my-card>
+            <my-input v-model="docsFormData.desc" placeholder="文章的描述">
+            </my-input>
+          </el-form-item>
+        </el-form>
+        <h3 class="font-normal m-20px text-center font-size-1.625rem">
+          文章的内容
+        </h3>
+        <div id="vditor-update" class="vditor-style" ref="vditorEditor"></div>
+      </my-card>
+    </template>
+  </layout-content>
 </template>
 
 <script setup lang="ts" name="DocumentUpdate">
 // 引入 编辑器的 hooks
-import { useVditorUpdate } from "@/hooks/Doc/vditorEditor/update"
+import { useVditorUpdate, vditorType } from "@/hooks/Doc/vditorEditor/update"
 // 引入 编辑器 全屏事件的 处理 hooks
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 类型
 import type { InputInstance } from "element-plus"
-import type { GetOneArticle } from "@/api/article/types/getOneArticle"
-import { vditorType } from "@/hooks/Doc/vditorEditor/update"
 // 压缩 与 解压
-import { compressString } from "@/utils/compression"
+import { decompressString } from "@/utils/compression"
 // 引入 api
-import { addArticle } from "@/api/article"
+import { getOneArticle, updateArticle } from "@/api/article"
 // 引入 类型
-import type { AddArticleBody } from "@/api/article/types/addArticleBody"
+import { UpdateArticleBody } from "@/api/article/types/updateArticleBody"
 // 引入 正则
 import {
   titleReg,
@@ -113,38 +111,42 @@ import {
   descReg,
   contentReg,
 } from "@/RegExp/Docs"
-// 接收 场景变量
-const scene = defineModel()
-// 接收 文章数据
-const props = defineProps<{ article: GetOneArticle["data"]; test: string }>()
+// 引入 hooks
+import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 
-// 引入 前缀
-const prefix = import.meta.env.VITE_API
+const route = useRoute()
+const router = useRouter()
+
+// 得到 作者和id
+const docAuthor = route.query.author as string
+const docId = route.query.id as string
+// 获取文章数据
+const reqArticle = async () => {
+  try {
+    const Article = await getOneArticle(docId)
+    if (!Article?.content) {
+      ElMessage.error("没有找到文章信息~")
+      return
+    }
+    docsFormData.title = Article?.title || ""
+    docsFormData.category = Article?.category || ""
+    docsFormData.tags = Article?.tags || []
+    docsFormData.desc = Article?.desc || ""
+
+    try {
+      context.value = decompressString(Article?.content || "") as string
+    } catch (error) {
+      context.value = Article?.content || ""
+    }
+    // 挂载 vditor
+    vditorHookReturn.Mounted()
+  } catch (error) {}
+}
 
 // 文章相关信息
 const docHeight = ref("85vh")
 const length = ref()
-const context = ref<string>(props.article?.content || "")
-
-// 重置表单
-const resetDoc = () => {
-  if (
-    docsFormData.title ||
-    docsFormData.category ||
-    docsFormData.tags.length ||
-    docsFormData.desc
-  ) {
-    docsFormData.title = ""
-    docsFormData.category = ""
-    docsFormData.tags = []
-    docsFormData.desc = ""
-    // 使用 定时器 在 微任务后清除验证
-    setTimeout(() => {
-      docsForm.value.clearValidate()
-    }, 0)
-    ElMessage.success("重置表单成功~")
-  }
-}
+const context = ref<string>("")
 
 // #region 表单 验证
 const docsFormData = reactive<{
@@ -153,10 +155,10 @@ const docsFormData = reactive<{
   desc: string
   tags: string[]
 }>({
-  title: props.article?.title || "",
-  category: props.article?.category || "",
-  desc: props.article?.desc || "",
-  tags: props.article?.tags || [],
+  title: "",
+  category: "",
+  desc: "",
+  tags: [],
 })
 
 const docsForm = ref()
@@ -258,17 +260,9 @@ let vditorHookReturn = useVditorUpdate("vditor-update", vditorEditor, {
   context,
   length,
 })
-// vditor实列
-let vditor: vditorType = vditorHookReturn
 
-// 清空缓存
-const mdAndFormReset = () => {
-  docsFormData.title = ""
-  docsFormData.category = ""
-  docsFormData.tags = []
-  docsFormData.desc = ""
-  context.value = ""
-}
+// vditor实列
+let vditor: vditorType = vditorHookReturn.vditor
 
 // 提交的数据整理
 const handerUpload = async () => {
@@ -281,64 +275,47 @@ const handerUpload = async () => {
       resetInput()
       return
     }
-    const content = vditor.value?.getValue() || ""
     // 验证 内容
     if (+(length.value || 0) < contentReg.min) {
       ElMessage.error(contentReg.msg)
       return
     }
+    const content = vditor.value?.getValue() || ""
     // 整理 数据
-    const data: AddArticleBody = {
+    const data: UpdateArticleBody = {
       title: docsFormData.title as string,
       category: docsFormData.category as string,
       tags: docsFormData.tags,
       desc: docsFormData.desc || "",
-      content: compressString(content) || "",
+      content: "",
       length: length.value as string,
+      id: +docId,
     }
-    let match: RegExpExecArray | null
-    const urls = new Set<string>()
-    const api = prefix.replace("/", "\\")
-    // 判断有无值
-    if (content) {
-      const urlRegex = new RegExp(
-        `!\\[.*?\\]\\((\\\\${api}\\\\assets\\\\images([^)]*))\\)`,
-        "g"
-      )
-      // 使用循环查找所有匹配项
-      while ((match = urlRegex.exec(content)) !== null) {
-        if (match.index === urlRegex.lastIndex) {
-          urlRegex.lastIndex++
-        }
-        urls.add(match[1])
-      }
-    }
-    const arr = Array.from(urls)
-    urls.clear()
-    // 判断有无临时 链接
-    if (arr) data.tempImg = arr
-    console.log(data)
-    // const result = await addArticle(data)
-    // // 判断有无 临时图片 不存在的 提示
-    // if (result?.tempImgNull.length && Array.isArray(result?.tempImgNull)) {
-    //   result.tempImgNull.forEach((item) =>
-    //     ElMessage.error({
-    //       message: `临时图片:${item}不存在~`,
-    //       customClass: "selectMessage",
-    //       appendTo: "outer-context-menu",
-    //     })
-    //   )
-    // }
-    // const docId = result?.id
-    // if (docId) {
-    //   router.replace(`/doc/${docId}`)
-    //   mdAndFormReset()
-    // }
-    ElMessage.success("上传文章成功~")
+
+    // 处理 临时链接转换
+    await useMdReplaceImg(content, data)
+
+    // 更新
+    await updateArticle(data)
+
+    ElMessage.success("更新文章成功~")
+
+    router.replace(`/doc/${docId}`)
   } catch (error) {}
 }
 
+// 使用 编辑器是否全屏的hook
 useIsFullscreen(vditorEditor)
+
+// 挂载
+onMounted(async () => {
+  await reqArticle()
+})
+
+// 卸载
+onBeforeUnmount(() => {
+  vditorHookReturn.UnMounted()
+})
 </script>
 <style scoped lang="scss">
 @use "sass:map";
