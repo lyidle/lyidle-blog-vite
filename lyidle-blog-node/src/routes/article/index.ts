@@ -11,6 +11,10 @@ import recentPages from "@/routes/article/recentPages"
 import admin from "@/routes/article/admin"
 // 引入 api/article/getOne
 import getOne from "@/routes/article/getOneArticle"
+// 引入 api/article/getTags
+import getTags from "./getTags"
+// 引入 api/article/getCategories
+import getCategories from "./getCategories"
 const router = express.Router()
 // 挂载路由
 router.use("/get", getArticle)
@@ -19,4 +23,6 @@ router.use("/carousel", carousel)
 router.use("/recentPages", recentPages)
 router.use("/admin", admin)
 router.use("/getOne", getOne)
+router.use("/getTags", getTags)
+router.use("/getCategories", getCategories)
 export default router

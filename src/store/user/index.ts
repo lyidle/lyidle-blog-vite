@@ -6,7 +6,6 @@ import type {
   GetMenuList,
   PurpleBannerImg,
 } from "@/api/admin/types/getMenuList"
-import { Datum as Article } from "@/api/user/types/getUserInfo"
 import { RouteRecordRaw } from "vue-router"
 
 // 引入 路由过滤函数
