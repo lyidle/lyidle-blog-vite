@@ -4,7 +4,7 @@ export default async (req: Request, res: Response, cb?: Function) => {
   const { id } = req.body
   const commend: any = {}
   if (!id) return res.result(void 0, "没有找到文章哦~", false, 404)
-  // 按照id删除
+  // 按照id删除与修改
   commend.where = {
     id: id,
   }

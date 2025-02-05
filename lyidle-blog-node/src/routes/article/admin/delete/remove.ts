@@ -65,7 +65,7 @@ const remove = async (
       clearTimeout(tim as NodeJS.Timeout)
       tim = null
     }, delete_article_expire)
-    return res.result(void 0, "文章成功移到回收站~")
+    return res.result(delete_article_expire, "文章成功移到回收站~")
   }
   // 彻底删除
   await deleted(findArticle, id)

@@ -21,6 +21,8 @@ enum API {
   getOneArticle = "/article/getOne",
   addArticle = "/article/admin/add",
   updateArticle = "/article/admin/update",
+  binArticle = "/article/admin/bin",
+  clearArticle = "/article/admin/clear",
 }
 
 // 引入前缀
@@ -79,3 +81,15 @@ export const addArticle = (data: AddArticleBody) =>
 // 更新文章
 export const updateArticle = (data: UpdateArticleBody) =>
   request.put<any, void>(server + prefix + API.updateArticle, data)
+
+// 软删除文章 有后悔期间
+export const removeArticle = (id: number | string) =>
+  request.delete<any, number>(server + prefix + API.binArticle, {
+    data: { id },
+  })
+
+// 彻底删除文章 无后悔期间
+export const deleteArticle = (id: number | string) =>
+  request.delete<any, number>(server + prefix + API.clearArticle, {
+    data: { id },
+  })

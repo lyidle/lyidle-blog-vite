@@ -1,6 +1,6 @@
 import { App, Directive } from "vue"
 // 引入提示信息
-import { vTip } from "./v-dev-tip"
+import { vTip } from "./v-tip"
 // 引入 debounce
 import { vDebounce } from "./v-debounce"
 // 引入 节流

@@ -7,16 +7,25 @@
           <div class="text-[1.875rem] font-bold cur-text">
             文章总览 - {{ counts?.pages }}
           </div>
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="作者"
-            placement="top"
-          >
-            <div class="cur-text">
-              {{ account }}
-            </div>
-          </el-tooltip>
+          <div class="flex gap-10px items-center">
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="作者"
+              placement="top"
+            >
+              <div class="cur-text">
+                {{ account }}
+              </div>
+            </el-tooltip>
+            <my-primary-button
+              class="w-70px"
+              size="small"
+              @click=""
+              v-tip="{ type: 'warning', msg: '开发中~~' }"
+              >回收站</my-primary-button
+            >
+          </div>
         </div>
         <div v-for="item in articles" :key="item.year" class="card-container">
           <div class="years cur-text text-[1.625rem] my-0.9375rem">
@@ -48,16 +57,60 @@
                 </router-link>
               </div>
             </div>
-            <my-primary-button
-              class="w-80px"
-              size="small"
-              @click="
-                $router.push(
-                  `/doc/update?author=${article.author}&id=${article.id}`
-                )
-              "
-              >修改</my-primary-button
-            >
+            <!-- 每一项的按钮 -->
+            <div class="flex">
+              <!-- 修改 -->
+              <my-primary-button
+                class="w-50px"
+                size="small"
+                @click="
+                  $router.push(
+                    `/doc/update?author=${article.author}&id=${article.id}`
+                  )
+                "
+                >修改</my-primary-button
+              >
+              <!-- 软删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要把《${article.title}》回收到垃圾桶么?`"
+                placement="top"
+                @confirm="handlerRemove(article.id)"
+              >
+                <template #reference>
+                  <my-primary-button class="w-50px" size="small" type="danger"
+                    >软删除</my-primary-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <el-button size="small" @click="cancel">否</el-button>
+                  <el-button type="danger" size="small" @click="confirm">
+                    是
+                  </el-button>
+                </template>
+              </el-popconfirm>
+              <!-- 删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要彻底删除《${article.title}》么?`"
+                placement="top"
+                @confirm="handlerDelete(article.id)"
+              >
+                <template #reference>
+                  <my-primary-button class="w-50px" size="small" type="danger"
+                    >删除</my-primary-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <el-button size="small" @click="cancel">否</el-button>
+                  <el-button type="danger" size="small" @click="confirm">
+                    是
+                  </el-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </div>
         </div>
       </my-card>
@@ -68,7 +121,7 @@
 <script setup lang="ts" name="FindAllUserPages">
 // 引入 api
 import { searchCounts } from "@/api/user"
-import { searchArticleExact } from "@/api/article"
+import { deleteArticle, removeArticle, searchArticleExact } from "@/api/article"
 // 引入 类型
 import type { Counts } from "@/api/user/types/searchCountsById"
 import { Article } from "@/api/article/types/searchArticle"
@@ -76,6 +129,7 @@ import { Article } from "@/api/article/types/searchArticle"
 import { orderArticle } from "@/utils/doc/orderArticle"
 // 引入 moment
 import moment from "@/utils/moment"
+import { formatMilliseconds } from "@/utils/times/timeFormatter"
 
 // 文章 的 数据
 // 个数
@@ -128,7 +182,31 @@ const handlerArticles = async (author: string) => {
 }
 // 使用 路由 hook
 const route = useRoute()
+// 得到作者
 const account = route.params.author as string
+// 软删除文章的回调
+const handlerRemove = async (id: string | number) => {
+  try {
+    const expire = await removeArticle(id)
+    if (expire) {
+      ElMessage.success(
+        `移动到回收站成功，有效期${formatMilliseconds(expire)}~`
+      )
+    }
+    // 获取所有文章
+    await handlerArticles(account)
+  } catch (error) {}
+}
+// 删除文章的回调
+const handlerDelete = async (id: string | number) => {
+  try {
+    const result = await deleteArticle(id)
+    console.log(result)
+    ElMessage.success(`成功删除文章~`)
+    // 获取所有文章
+    await handlerArticles(account)
+  } catch (error) {}
+}
 onMounted(async () => {
   // 获取文章个数
   await handlerCounts(account)
