@@ -297,7 +297,8 @@ const handerUpload = async () => {
     await useMdReplaceImg(content, data)
 
     // 判断是否有上传海报
-    if (poster.value) {
+
+    if (poster.value.length) {
       data.poster = poster.value[0].url
     }
 

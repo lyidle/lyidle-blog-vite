@@ -123,7 +123,6 @@ import {
 } from "@/RegExp/Docs"
 // 引入 hooks
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
-import { removeFileStatic } from "@/api/img"
 
 const route = useRoute()
 const router = useRouter()

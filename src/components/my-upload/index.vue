@@ -27,7 +27,7 @@ export type uploadFiles = UploadUserFile[]
 // 接收 v-model
 // 展示的图片
 const fileList = defineModel<uploadFiles>()
-const props = withDefaults(defineProps<{ remove: boolean }>(), {
+const props = withDefaults(defineProps<{ remove?: boolean }>(), {
   remove: true,
 })
 // 是否显示添加框
