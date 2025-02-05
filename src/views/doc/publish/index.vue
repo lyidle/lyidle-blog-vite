@@ -3,6 +3,7 @@
     <template #content-start>
       <my-card class="doc-publish-content card_style relative">
         <el-form :rules="rules" :model="docsFormData" ref="docsForm">
+          <!-- 左侧按钮 -->
           <el-form-item class="!mb-0">
             <div class="flex justify-end w-100%">
               <my-primary-button
@@ -20,6 +21,7 @@
               >
             </div>
           </el-form-item>
+          <!-- 文章的标题 -->
           <el-form-item
             class="!mb-0 doc-publish-item"
             label="文章的标题"
@@ -28,6 +30,7 @@
             <my-input v-model="docsFormData.title" placeholder="文章的标题">
             </my-input>
           </el-form-item>
+          <!-- 文章的分类 -->
           <el-form-item
             class="!mb-0 doc-publish-item"
             label="文章的分类"
@@ -36,6 +39,7 @@
             <my-input v-model="docsFormData.category" placeholder="文章的分类">
             </my-input>
           </el-form-item>
+          <!-- 文章的标签 -->
           <el-form-item
             class="!mb-0 is-required doc-publish-item"
             label="文章的标签"
@@ -72,6 +76,7 @@
               </template>
             </div>
           </el-form-item>
+          <!-- 文章的描述 -->
           <el-form-item
             class="!mb-0 doc-publish-item"
             label="文章的描述"
@@ -80,10 +85,20 @@
             <my-input v-model="docsFormData.desc" placeholder="文章的描述">
             </my-input>
           </el-form-item>
+          <!-- poster -->
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的描述"
+            prop="desc"
+          >
+            <my-upload></my-upload>
+          </el-form-item>
         </el-form>
+        <!-- 文章的内容 -->
         <h3 class="font-normal m-20px text-center font-size-1.625rem">
           文章的内容
         </h3>
+        <!-- vditor -->
         <div id="vditor-publish" class="vditor-style" ref="vditorEditor"></div>
       </my-card>
     </template>
