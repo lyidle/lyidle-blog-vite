@@ -91,7 +91,7 @@
             label="文章的描述"
             prop="desc"
           >
-            <my-upload></my-upload>
+            <my-upload v-model="poster"></my-upload>
           </el-form-item>
         </el-form>
         <!-- 文章的内容 -->
@@ -129,9 +129,8 @@ import {
   contentReg,
 } from "@/RegExp/Docs"
 
-const { title, category, tags, desc, length, docHeight, context } = storeToRefs(
-  useDocEditorOpt()
-)
+const { title, category, tags, desc, length, docHeight, context, poster } =
+  storeToRefs(useDocEditorOpt())
 
 // 重置表单
 const resetDoc = () => {
@@ -297,6 +296,11 @@ const handerUpload = async () => {
     // 处理 临时链接转换
     await useMdReplaceImg(content, data)
 
+    // 判断是否有上传海报
+    if (poster.value) {
+      data.poster = poster.value[0].url
+    }
+
     const result = await addArticle(data)
     const docId = result?.id
     if (docId) {
@@ -306,6 +310,7 @@ const handerUpload = async () => {
       })
     }
 
+    poster.value = []
     ElMessage.success("上传文章成功~")
   } catch (error) {}
 }

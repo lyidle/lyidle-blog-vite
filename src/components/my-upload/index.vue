@@ -1,73 +1,129 @@
 <template>
   <el-upload
-    class="avatar-uploader"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-    :show-file-list="false"
-    :on-success="handleAvatarSuccess"
-    :before-upload="beforeAvatarUpload"
+    v-model:file-list="fileList"
+    list-type="picture-card"
+    :on-preview="handlePictureCardPreview"
+    :before-remove="handleRemove"
+    :http-request="handlerUpload"
+    :limit="1"
+    drag
   >
-    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-    <el-icon v-else class="avatar-uploader-icon"
-      ><i class="i-ep:plus"></i
-    ></el-icon>
+    <i class="i-ep:plus w-20px h-20px"></i>
   </el-upload>
+
+  <el-dialog v-model="dialogVisible">
+    <img w-full :src="dialogImageUrl" alt="Preview Image" />
+  </el-dialog>
 </template>
 
-<script setup lang="ts" name="MyUpload">
-import { ref } from "vue"
-import { ElMessage } from "element-plus"
-// import { Plus } from '@element-plus/icons-vue'
+<script lang="ts" setup name="MyUpload">
+// 引入  api
+import { postTempImgFiles, removeFileStatic } from "@/api/img"
+// 类型
+import type { UploadProps, UploadUserFile } from "element-plus"
 
-import type { UploadProps } from "element-plus"
+export type uploadFiles = UploadUserFile[]
 
-const imageUrl = ref("")
+// 接收 v-model
+// 展示的图片
+const fileList = defineModel<uploadFiles>()
+const props = withDefaults(defineProps<{ remove: boolean }>(), {
+  remove: true,
+})
+// 是否显示添加框
+const isShowPlus = computed(() => {
+  return Array.isArray(fileList.value) && fileList.value.length
+    ? "none"
+    : "block"
+})
 
-const handleAvatarSuccess: UploadProps["onSuccess"] = (
-  response,
-  uploadFile
-) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-}
+const dialogImageUrl = ref("")
+const dialogVisible = ref(false)
 
-const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
-  if (rawFile.type !== "image/jpeg") {
-    ElMessage.error("Avatar picture must be JPG format!")
+// 删除的回调
+const handleRemove: UploadProps["beforeRemove"] = async (uploadFile) => {
+  if (!props.remove) return true
+  try {
+    const url = uploadFile.url ? [uploadFile.url] : null
+    // 没有链接
+    if (!url) return false
+    // 从返回结果中提取成功和失败的结果
+    const { successMap, errorMap } = await removeFileStatic(url)
+    // 成功的
+    if (successMap.length)
+      for (let i = 0; i < successMap.length; i++) {
+        const item = successMap[i]
+
+        ElMessage.success(`删除文件${item}成功~`)
+        return true
+      }
+    // 错误的
+    if (errorMap.length)
+      for (let i = 0; i < errorMap.length; i++) {
+        const item = errorMap[i]
+        ElMessage.warning({
+          message: `删除文件${item}失败~`,
+          customClass: "selectMessage",
+        })
+        return false
+      }
+    // 错误
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error("Avatar picture size can not exceed 2MB!")
+  } catch (error) {
+    // 错误
     return false
   }
-  return true
+}
+
+// 预览图片
+const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!
+  dialogVisible.value = true
+}
+
+// 处理上传
+const handlerUpload: UploadProps["httpRequest"] = async (options) => {
+  const { file } = options // 获取上传的文件
+  try {
+    // 调用 API 上传文件
+    const response = await postTempImgFiles([file as File])
+
+    // 只获取 `succMap` 的第一个文件
+    const firstEntry = Object.entries(response.succMap)[0] // 取第一个键值对
+    if (firstEntry) {
+      const [fileName, fileUrl] = firstEntry
+      const newFile: UploadUserFile = {
+        name: fileName,
+        url: fileUrl,
+      }
+
+      ElMessage.success(`上传图片${newFile.name}成功~`)
+      // 展示图片
+      fileList.value = [newFile]
+    }
+
+    // 处理失败的文件列表
+    if (response.errFiles && response.errFiles.length > 0) {
+      fileList.value = []
+      response.errFiles.forEach((item) => ElMessage.error(`${item} 上传失败~`))
+    }
+  } catch (error: any) {
+    fileList.value = []
+  }
 }
 </script>
-
-<style scoped>
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
+<style lang="scss">
+.el-upload--picture-card {
+  display: v-bind(isShowPlus) !important;
+  background: unset;
+  border: unset;
+  .el-upload-dragger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: var(--cursor-pointer);
+  }
 }
 </style>

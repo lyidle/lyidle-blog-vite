@@ -1,3 +1,6 @@
+// 引入 类型
+import { uploadFiles } from "@/components/my-upload/index.vue"
+
 export const useDocEditorOpt = defineStore(
   "docEditorOptStore",
   () => {
@@ -16,6 +19,8 @@ export const useDocEditorOpt = defineStore(
     const desc = ref<string>()
     // 长度
     const length = ref<number>(0)
+    // 海报
+    const poster = ref<uploadFiles>([])
     return {
       docHeight,
       context,
@@ -24,6 +29,7 @@ export const useDocEditorOpt = defineStore(
       tags,
       desc,
       length,
+      poster,
     }
   },
   {
@@ -38,6 +44,7 @@ export const useDocEditorOpt = defineStore(
         "tags",
         "desc",
         "length",
+        "poster",
       ],
     },
   }

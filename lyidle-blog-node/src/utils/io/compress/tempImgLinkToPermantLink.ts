@@ -28,7 +28,7 @@ const gifsicleQuality: NumberRange<1, 3> = 3
 账户
 */
 type successType = { url: string; origin: string }[]
-export const mdContentImg = async (
+export const tempImgLinkToPermantLink = async (
   tempImg: string[],
   outputRelative: string,
   $staticPath: string
@@ -59,7 +59,8 @@ export const mdContentImg = async (
             outputRelative,
             gifsicleQuality
           )
-        } else if (lookup(staticPath)) {
+          // 需要是一个图片
+        } else if (lookup(staticPath).startsWith("image/")) {
           // 其他格式使用 sharp 压缩
           resolvePath = await compressAndSaveImage(
             file,

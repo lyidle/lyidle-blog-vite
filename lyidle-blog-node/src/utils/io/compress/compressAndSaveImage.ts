@@ -8,7 +8,7 @@ import { join } from "path"
 export const compressAndSaveImage = async (
   buffer: Buffer,
   route: string,
-  quality: NumberRange<1, 100> = 80
+  quality: NumberRange<1, 100> = 50
 ): Promise<string> => {
   // 生成唯一的文件名
   const uniqueOutputFileName = `${nanoid()}.jpeg`

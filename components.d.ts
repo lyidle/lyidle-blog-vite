@@ -13,6 +13,7 @@ declare module 'vue' {
     ContextMenu: typeof import('./src/components/context-menu/index.vue')['default']
     ContextMenuItem: typeof import('./src/components/context-menu/item.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']

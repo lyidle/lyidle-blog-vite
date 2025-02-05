@@ -5,11 +5,13 @@ import request from "@/utils/request"
 */
 import { PostTempImg } from "./types/postTempImg"
 import { MdToLinkPermanent } from "./types/mdToLinkPermanent"
+import { PostTempImgFiles } from "./types/postTempImgFiles"
 // 统一管理 api
 export enum API {
   urlImgTemp = "/upload/img/temp",
   fileImgTemp = "/upload/files/img/temp",
   tempTOPermanent = "/upload/img/mdToLinkPermanent",
+  remove = "/upload/remove",
 }
 
 // 引入前缀
@@ -26,9 +28,32 @@ export const tempImgFiles = server + prefix + API.fileImgTemp
 export const postTempImgUrl = (url: string) =>
   request.post<any, PostTempImg["data"]>(tempImgUrl, { url })
 
+// 上传  图片 的接口 文件
+export const postTempImgFiles = (files: File[]) => {
+  const formData = new FormData()
+  // `file[]` 是参数名，多个文件
+  files.forEach((file) => {
+    formData.append("file[]", file)
+  })
+
+  return request.post<FormData, PostTempImgFiles["data"]>(
+    tempImgFiles,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  )
+}
+
 // 上传  图片 临时转 永久 markdown 的接口
 export const postMdImgPermanent = (tempImg: string[]) =>
   request.post<any, MdToLinkPermanent["data"]>(
     server + prefix + API.tempTOPermanent,
     { tempImg }
   )
+
+// 删除文件
+export const removeFileStatic = (urls: string[]) =>
+  request.delete<any, any>(server + prefix + API.remove, { data: { urls } })

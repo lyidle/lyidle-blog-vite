@@ -9,7 +9,7 @@ router.get("/", async (req, res, next) => {
   try {
     const findUser = await search(req.query, req, res)
     // 不存在
-    if (!findUser) return res.result(void 0, "查询用户信息失败~", false)
+    if (!findUser) return
     return res.result(findUser, "查询用户信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
@@ -26,7 +26,7 @@ router.get("/exact", async (req, res, next) => {
   try {
     const findUser = await search(req.query, req, res, true)
     // 不存在
-    if (!findUser) return res.result(void 0, "查询用户信息失败~", false)
+    if (!findUser) return
     return res.result(findUser, "查询用户信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

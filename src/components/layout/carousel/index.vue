@@ -9,8 +9,9 @@
                 :style="{
                   background: 'no-repeat center',
                   backgroundSize: 'cover',
+                  // 转义url链接
                   backgroundImage: item.poster
-                    ? item.poster
+                    ? `url('${item.poster.replace(/\\/g, '/')}')`
                     : 'var(--default-img)',
                 }"
                 class="scale-[1.01]"

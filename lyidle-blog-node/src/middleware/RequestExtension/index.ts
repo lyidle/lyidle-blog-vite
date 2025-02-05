@@ -37,7 +37,7 @@ router.use(async (req, res, next) => {
     return
   }
   if (await getKey("initialWebInfo"))
-    return res.result(void 0, "正在初始化小站中，请稍后重试~")
+    return res.result(void 0, "正在初始化小站中，请稍后重试~", false)
   next()
 })
 module.exports = router

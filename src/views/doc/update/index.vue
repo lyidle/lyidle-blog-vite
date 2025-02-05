@@ -80,6 +80,15 @@
             <my-input v-model="docsFormData.desc" placeholder="文章的描述">
             </my-input>
           </el-form-item>
+
+          <!-- poster -->
+          <el-form-item
+            class="!mb-0 doc-publish-item"
+            label="文章的描述"
+            prop="desc"
+          >
+            <my-upload v-model="poster" :remove="false"></my-upload>
+          </el-form-item>
         </el-form>
         <h3 class="font-normal m-20px text-center font-size-1.625rem">
           文章的内容
@@ -97,6 +106,7 @@ import { useVditorUpdate, vditorType } from "@/hooks/Doc/vditorEditor/update"
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 类型
 import type { InputInstance } from "element-plus"
+import { uploadFiles } from "@/components/my-upload/index.vue"
 // 压缩 与 解压
 import { decompressString } from "@/utils/compression"
 // 引入 api
@@ -113,10 +123,12 @@ import {
 } from "@/RegExp/Docs"
 // 引入 hooks
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
+import { removeFileStatic } from "@/api/img"
 
 const route = useRoute()
 const router = useRouter()
-
+const poster = ref<uploadFiles>([])
+let originPoster: string | null = null
 // 得到 作者和id
 const docAuthor = route.query.author as string
 const docId = route.query.id as string
@@ -132,6 +144,13 @@ const reqArticle = async () => {
     docsFormData.category = Article?.category || ""
     docsFormData.tags = Article?.tags || []
     docsFormData.desc = Article?.desc || ""
+
+    if (Article.poster) {
+      // 展示poster
+      poster.value = [{ name: "", url: Article.poster }]
+      // 保存原有的图片
+      originPoster = Article.poster
+    }
 
     try {
       context.value = decompressString(Article?.content || "") as string
@@ -294,6 +313,12 @@ const handerUpload = async () => {
 
     // 处理 临时链接转换
     await useMdReplaceImg(content, data)
+
+    // 判断是否有更新的上传海报
+    const newPoster = poster.value?.[0]?.url
+    if (newPoster && newPoster !== originPoster && originPoster) {
+      data.poster = newPoster
+    }
 
     // 更新
     await updateArticle(data)

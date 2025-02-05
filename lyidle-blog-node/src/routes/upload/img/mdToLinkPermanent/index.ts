@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入 把临时图片转为永久图片的 函数 文章专用
-import { mdContentImg } from "@/utils/io/compress/mdContentImg"
+import { tempImgLinkToPermantLink } from "@/utils/io/compress/tempImgLinkToPermantLink"
 import { join, resolve } from "path"
 const router = express.Router()
 router.post(
@@ -25,7 +25,11 @@ router.post(
       // 静态文件路径
       const staticPath = resolve(__dirname, "../../../../")
       // 处理 临时图片 转为 永久
-      const result = await mdContentImg(tempImg, outputRelative, staticPath)
+      const result = await tempImgLinkToPermantLink(
+        tempImg,
+        outputRelative,
+        staticPath
+      )
 
       res.result({ ...result }, "图片转换成功~")
     } catch (error) {
