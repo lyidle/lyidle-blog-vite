@@ -1,5 +1,5 @@
 <template>
-  <div class="contain menu">
+  <div class="">
     <ul class="header-menu" ref="menu">
       <template v-for="item in userStore.userMenuList" :key="item.id">
         <li v-if="item.id">
