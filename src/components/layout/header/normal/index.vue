@@ -6,6 +6,8 @@
       首页
     </router-link>
   </li>
+  <!-- 笔记 -->
+  <layout-header-notes :menuStyle></layout-header-notes>
   <slot name="scend"></slot>
   <!-- 个人项 -->
   <li class="custom-menu-trigger">
@@ -17,7 +19,6 @@
       :data="PersonData?.data"
       :triangle="true"
       :menuStyle
-      :top="PersonData?.style.top"
       :left="PersonData?.style.left"
     >
       <template #body="{ item: sub }: { item: PersonMenuList }">
@@ -49,10 +50,11 @@ import { menuStyleType } from "@/components/my-menu/types"
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 
+// 个人页面
 const PersonData = useShowPersonHeaderMenu()
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

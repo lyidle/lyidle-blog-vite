@@ -16,7 +16,7 @@ module.exports = {
       icon: {
         type: Sequelize.TEXT,
       },
-      titleTo: {
+      to: {
         type: Sequelize.STRING,
       },
       layout: {

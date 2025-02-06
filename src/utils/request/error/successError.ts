@@ -55,17 +55,20 @@ export const handlerSuccessErrorMessage = (response: {
       response.data?.data?.msg?.role === "admin" &&
       response.data?.message?.[0] === "查询用户信息失败~"
     ) {
-      ElMessage.warning("网站管理员信息未初始化~")
+      mitt.emit("handler request error", {
+        msg: "网站管理员信息未初始化~",
+        type: "warning",
+      })
       return
     }
 
     messages.forEach((item: string) => {
-      ElMessage.error(item)
+      mitt.emit("handler request error", { msg: item })
     })
     return Promise.reject(messages)
   }
 
   // 处理其他未知错误
-  ElMessage.error("发生未知错误，请稍后再试~")
+  mitt.emit("handler request error", { msg: "发生未知错误，请稍后再试~" })
   return Promise.reject("发生未知错误，请稍后再试~")
 }

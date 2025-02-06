@@ -14,7 +14,7 @@ export interface Datum {
   id: number
   layout?: null | Layout
   name: string
-  titleTo: null | string
+  to: null | string
   [property: string]: any
 }
 
@@ -31,7 +31,7 @@ export interface Child {
   id: number
   menuId?: number
   name: string
-  to: string
+  to: null | string
   [property: string]: any
 }
 

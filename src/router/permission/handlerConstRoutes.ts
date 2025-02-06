@@ -13,6 +13,7 @@ export const handlerConstRoutes = (
 ): boolean | void => {
   // 提取数据
   const { userRole } = storeToRefs(useUserStore())
+
   if (!to.meta.role) return
   if (!Array.isArray(to.meta.role)) {
     console.error("路由的role，需要是一个数组~")
@@ -23,7 +24,7 @@ export const handlerConstRoutes = (
   // 没有 通过权限判断
   if (!isAccess) {
     next({ path: "/", replace: true })
-    ElMessage.warning(`访问当前页面需要${to.meta.role}权限~`)
+    ElMessage.warning(`访问当前页面需要 ${to.meta.role} 权限~`)
     return true
   }
 }

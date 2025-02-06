@@ -26,7 +26,6 @@ module.exports = {
       },
       to: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       bannerImg: {
         type: Sequelize.JSON,

@@ -27,11 +27,11 @@ const { bg, bgHover, colorHover } = props.style
 </script>
 
 <style scoped lang="scss">
-$menu-radius: 5px;
+$menu-radius: var(--header-topmenu-radius);
 .menu-item {
   @include flex();
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   background-color: v-bind(bg);
   min-width: 70px;
   min-height: 30px;

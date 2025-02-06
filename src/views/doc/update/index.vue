@@ -110,7 +110,7 @@ import { uploadFiles } from "@/components/my-upload/index.vue"
 // 压缩 与 解压
 import { decompressString } from "@/utils/compression"
 // 引入 api
-import { getOneArticle, updateArticle } from "@/api/article"
+import { getArticleByAuthorAndId, updateArticle } from "@/api/article"
 // 引入 类型
 import { UpdateArticleBody } from "@/api/article/types/updateArticleBody"
 // 引入 正则
@@ -123,6 +123,7 @@ import {
 } from "@/RegExp/Docs"
 // 引入 hooks
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
+import { mitt } from "@/utils/emitter"
 
 const route = useRoute()
 const router = useRouter()
@@ -134,7 +135,10 @@ const docId = route.query.id as string
 // 获取文章数据
 const reqArticle = async () => {
   try {
-    const Article = await getOneArticle(docId)
+    const Article = await getArticleByAuthorAndId({
+      author: docAuthor,
+      id: docId,
+    })
     if (!Article?.content) {
       ElMessage.error("没有找到文章信息~")
       return
@@ -158,7 +162,10 @@ const reqArticle = async () => {
     }
     // 挂载 vditor
     vditorHookReturn.Mounted()
-  } catch (error) {}
+  } catch (error) {
+    // 触发路由守卫 账户不一致事件
+    mitt.emit("account inconsistent")
+  }
 }
 
 // 文章相关信息

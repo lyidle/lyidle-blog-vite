@@ -10,7 +10,7 @@ export const filterUserMenuList = (
   )
   const result2 = userMenuList?.filter((item) => {
     // children为空 且标题 链接 存在
-    const to = item.titleTo
+    const to = item.to
     if (!item.children?.length && to) {
       return whitelist.includes(to)
     }

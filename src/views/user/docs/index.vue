@@ -68,6 +68,7 @@
                     `/doc/update?author=${article.author}&id=${article.id}`
                   )
                 "
+                v-author="{ author: article.author }"
                 >修改</my-primary-button
               >
               <!-- 软删除 -->
@@ -79,7 +80,11 @@
                 @confirm="handlerRemove(article.id)"
               >
                 <template #reference>
-                  <my-primary-button class="w-50px" size="small" type="danger"
+                  <my-primary-button
+                    class="w-50px"
+                    size="small"
+                    type="danger"
+                    v-author="{ author: article.author }"
                     >软删除</my-primary-button
                   >
                 </template>
@@ -99,7 +104,11 @@
                 @confirm="handlerDelete(article.id)"
               >
                 <template #reference>
-                  <my-primary-button class="w-50px" size="small" type="danger"
+                  <my-primary-button
+                    class="w-50px"
+                    size="small"
+                    type="danger"
+                    v-author="{ author: article.author }"
                     >删除</my-primary-button
                   >
                 </template>

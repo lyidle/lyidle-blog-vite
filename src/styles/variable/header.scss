@@ -2,10 +2,14 @@
   // 头部
   --header-height: 40px;
   --header-bg-initial-during: 0.3s;
-  // 头部导航
-  --header-topnav-margin: 20px;
   // 头部导航 底部线条
   --header-topnav-mask-height: 2px;
   // 左右边距
   --header-pd: 50px;
+  // 悬浮菜单的左边距
+  --header-topmenu-margin-left: 20px;
+  // 悬浮菜单的icon左边距
+  --header-topmenu-icon-mr: 3px;
+  // 悬浮菜单的圆角
+  --header-topmenu-radius: 5px;
 }

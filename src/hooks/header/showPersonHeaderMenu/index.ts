@@ -33,7 +33,6 @@ export const useShowPersonHeaderMenu = () => {
   ]
 
   const unLoginStyle = {
-    top: "30px",
     left: "-0.9375rem",
     width: "4.375rem",
   }
@@ -80,7 +79,6 @@ export const useShowPersonHeaderMenu = () => {
   ]
 
   const loginStyle = {
-    top: "30px",
     left: "-1.5625rem",
     width: "5.9375rem",
   }

@@ -4,6 +4,7 @@
       <template v-for="item in userStore.userMenuList" :key="item.id">
         <li v-if="item.id">
           <div class="title">
+            <!-- 有 to 的 则 重定向 -->
             <router-link
               :to="item.to || item.children?.[0]?.to || ''"
               v-if="item.to || item.children?.[0]?.to"
@@ -11,7 +12,8 @@
               <i :class="item.icon"></i>
               {{ item.name }}
             </router-link>
-            <a v-else v-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
+            <!-- 没有的 -->
+            <a v-else>
               <i :class="item.icon" class="w-1em h-1em"></i>
               {{ item.name }}
             </a>
@@ -26,9 +28,12 @@
           <ul class="contain" v-if="item.children" :data-id="item.id">
             <template v-for="sub in item.children" :key="item.id">
               <li class="subtitle">
-                <router-link :to="sub.to">
+                <!-- 有 to 的 则 router-link -->
+                <router-link :to="sub.to" v-if="sub.to">
                   <i :class="sub.icon"></i>{{ sub.name }}
                 </router-link>
+                <!-- 没有的 -->
+                <a v-else> <i :class="sub.icon"></i>{{ sub.name }} </a>
               </li>
             </template>
           </ul>

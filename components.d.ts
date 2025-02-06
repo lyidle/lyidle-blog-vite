@@ -61,6 +61,8 @@ declare module 'vue' {
     LayoutContentWebInfo: typeof import('./src/components/layout/content/web-info/index.vue')['default']
     LayoutHeader: typeof import('./src/components/layout/header/index.vue')['default']
     LayoutHeaderNormal: typeof import('./src/components/layout/header/normal/index.vue')['default']
+    LayoutHeaderNotes: typeof import('./src/components/layout/header/notes/index.vue')['default']
+    LayoutHeaderNotesMenu: typeof import('./src/components/layout/header/notes/menu/index.vue')['default']
     LayoutHeaderTopnav: typeof import('./src/components/layout/header/topnav/index.vue')['default']
     LayoutHeaderTopnavGenerate: typeof import('./src/components/layout/header/topnav/generate/index.vue')['default']
     LayoutHeaderTopnavMini: typeof import('./src/components/layout/header/topnav-mini/index.vue')['default']

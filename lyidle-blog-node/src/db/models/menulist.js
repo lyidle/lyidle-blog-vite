@@ -34,14 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       icon: {
         type: DataTypes.TEXT,
       },
-      to: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "子菜单to不能为空哦~" },
-          notEmpty: { msg: "子菜单to不能为空哦~" },
-        },
-      },
+      to: DataTypes.STRING,
       bannerImg: DataTypes.JSON,
     },
     {

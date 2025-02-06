@@ -49,13 +49,13 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 $menu-item-height: 25px;
-$icon-mr: 3px;
+$icon-mr: var(--header-topmenu-icon-mr);
 $icon-pl: 15px;
 $list-gap: 5px;
 ::v-deep(.topnav) {
   // 导航项目
   > li {
-    margin-left: var(--header-topnav-margin);
+    margin-left: var(--header-topmenu-margin-left);
     position: relative;
     height: 100%;
     > a {

@@ -1,5 +1,5 @@
 import express from "express"
-// 引入 /api/article/
+// 引入 /api/article/get
 import getArticle from "@/routes/article/getArticle"
 // 引入 /api/article/search
 import search from "@/routes/article/search"
@@ -9,8 +9,6 @@ import carousel from "@/routes/article/carousel"
 import recentPages from "@/routes/article/recentPages"
 // 引入 api/article/admin
 import admin from "@/routes/article/admin"
-// 引入 api/article/getOne
-import getOne from "@/routes/article/getOneArticle"
 // 引入 api/article/getTags
 import getTags from "./getTags"
 // 引入 api/article/getCategories
@@ -22,7 +20,6 @@ router.use("/search", search)
 router.use("/carousel", carousel)
 router.use("/recentPages", recentPages)
 router.use("/admin", admin)
-router.use("/getOne", getOne)
 router.use("/getTags", getTags)
 router.use("/getCategories", getCategories)
 export default router

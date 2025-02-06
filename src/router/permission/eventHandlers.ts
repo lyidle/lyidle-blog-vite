@@ -1,6 +1,9 @@
 import { mitt } from "@/utils/emitter"
 import { useUserStore } from "@/store/user"
 
+// 错误信息去重处理
+let onlyOne = ""
+
 /**
  * 配置全局事件处理
  * @param router - Vue Router 实例
@@ -15,12 +18,15 @@ export const routerEventHandlered = (router: any) => {
     router.push({ path: "/", replace: true })
   })
 
-  // 错误信息去重处理
-  let onlyOne = ""
-  mitt.on("handler request error", (message: string) => {
-    if (onlyOne === message) return
-    onlyOne = message
-    ElMessage.error(message)
+  mitt.on("account inconsistent", () => {
+    router.replace("/")
+    ElMessage.warning(`访问当前页面需要是本人的账户哦~`)
+  })
+
+  mitt.on("handler request error", ({ msg, type }) => {
+    if (onlyOne === msg) return
+    onlyOne = msg
+    ElMessage({ message: msg, type: type || "error" })
   })
 
   // 订阅路由变化

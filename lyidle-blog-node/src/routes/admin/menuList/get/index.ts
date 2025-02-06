@@ -24,8 +24,8 @@ router.get("/", async (req, res, next) => {
         exclude: ["createdAt", "updatedAt", "isBin", "role"],
       },
     })
-    if (JSON.stringify(result) === "[]")
-      return res.result(void 0, "获取菜单失败~", false)
+    // if (JSON.stringify(result) === "[]")
+    //   return res.result(void 0, "获取菜单失败~", false)
     // 没缓存设置
     await setKey("menuList", result)
     return res.result(result, "获取菜单成功~")

@@ -1,14 +1,16 @@
 <template>
-  <ul class="custom-menu" v-if="data.length" :style="{ left }">
+  <ul class="custom-menu" :style="{ left }">
     <li class="title" ref="title" v-if="triangle"><span></span></li>
-    <!-- 优先 id 然后 name 最后 item本身 作为 key -->
-
-    <template v-for="item in data" :key="item.id || item.name || item">
-      <my-menu-item :style="menuStyle">
-        <slot name="body" :item="item">
-          {{ item.name }}
-        </slot>
-      </my-menu-item>
+    <slot></slot>
+    <template v-if="data.length">
+      <!-- 优先 id 然后 name 最后 item本身 作为 key -->
+      <template v-for="item in data" :key="item.id || item.name || item">
+        <my-menu-item :style="menuStyle">
+          <slot name="body" :item="item">
+            {{ item.name }}
+          </slot>
+        </my-menu-item>
+      </template>
     </template>
   </ul>
 </template>
@@ -26,7 +28,7 @@ const props = withDefaults(
   }>(),
   {
     data: () => [],
-    top: "20px",
+    top: "30px",
     left: "-15px",
     triangle: false,
     menuStyle: () => ({

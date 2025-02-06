@@ -1,13 +1,13 @@
 <template>
   <template v-for="item in userMenuList" :key="item.id">
     <li class="custom-menu-trigger" v-if="item.id">
-      <!-- 标题有 titleTo 的 则 重定向 -->
-      <router-link :to="item.titleTo || ''" v-if="item.titleTo">
+      <!-- 标题有 to 的 则 重定向 -->
+      <router-link :to="item.to || ''" v-if="item.to">
         <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.name }}
       </router-link>
-      <!-- 没有的则提示 -->
-      <a v-else v-tip="{ type: 'warning', msg: '当前的菜单没有跳转项~' }">
+      <!-- 没有的 -->
+      <a v-else>
         <i :class="item.icon" class="w-1em h-1em"></i>
         {{ item.name }}
       </a>
@@ -20,8 +20,10 @@
         :menuStyle
       >
         <template #body="{ item }: { item: MenuListDatum }">
+          <!-- 有 to 的 则 router-link -->
           <router-link
             :to="item.to"
+            v-if="item.to"
             class="topnav-menu-item"
             :style="{
               width: item?.layout?.width ? item?.layout?.width : '70px',
@@ -29,6 +31,16 @@
           >
             <i :class="item.icon"></i> <span>{{ item.name }}</span>
           </router-link>
+          <!-- 没有的 -->
+          <a
+            v-else
+            class="topnav-menu-item"
+            :style="{
+              width: item?.layout?.width ? item?.layout?.width : '70px',
+            }"
+          >
+            <i :class="item.icon"></i> <span>{{ item.name }}</span>
+          </a>
         </template>
       </my-menu>
     </li>

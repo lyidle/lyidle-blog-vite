@@ -7,6 +7,11 @@ require("dotenv").config()
 const { clear } = require("../../utils/redis/js")
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // 不存在退出
+    if (!data.length) {
+      await clear()
+      return
+    }
     const menuList = []
     let menu = data.map((item, id) => {
       if (item.children) {
@@ -23,7 +28,7 @@ module.exports = {
       return {
         name: item.name ?? `${id + 1}`,
         icon: item.icon ?? `${id + 1}`,
-        titleTo: item?.titleTo,
+        to: item?.to,
         bannerImg: JSON.stringify(item.bannerImg),
         layout: JSON.stringify(item.layout),
         role: JSON.stringify([...new Set([item.role].flat(Infinity))]),

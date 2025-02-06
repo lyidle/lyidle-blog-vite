@@ -12,13 +12,15 @@ import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import { AddArticleBody } from "@/api/article/types/addArticleBody"
 import { AddArticle } from "@/api/article/types/addArticle"
 import { UpdateArticleBody } from "./types/updateArticleBody"
+import { GetArticleByAuthorAndIdQuery } from "./types/getArticleByAuthorAndIdQuery"
 // 统一管理 api
 enum API {
   getCarousel = "/article/carousel",
-  getArticle = "/article/get",
+  getArticle = "/article/get/pagination",
   getRecentPages = "/article/recentPages",
   searchArticleExact = "/article/search/exact",
-  getOneArticle = "/article/getOne",
+  getOneArticle = "/article/get/id",
+  getArticleByAuthorAndId = "/article/get/authorAndId",
   addArticle = "/article/admin/add",
   updateArticle = "/article/admin/update",
   binArticle = "/article/admin/bin",
@@ -74,6 +76,14 @@ export const searchArticleExact = (data: SearchArticleQuery) =>
 export const getOneArticle = (id: string | number) =>
   request.get<any, GetOneArticle["data"]>(
     `${server + prefix + API.getOneArticle}/?id=${id}`
+  )
+
+// 按照 作者 和 文章id 获取文章
+export const getArticleByAuthorAndId = (data: GetArticleByAuthorAndIdQuery) =>
+  request.get<any, GetOneArticle["data"]>(
+    `${server + prefix + API.getArticleByAuthorAndId}/?author=${
+      data.author
+    }&id=${data.id}`
   )
 
 // 增加文章

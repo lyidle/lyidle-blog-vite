@@ -42,7 +42,7 @@ export function handleErrorMessage(error: AxiosError): Promise<[string]> {
     }
   }
 
-  mitt.emit("handler request error", message)
+  mitt.emit("handler request error", { msg: message })
 
   return Promise.reject(message)
 }
