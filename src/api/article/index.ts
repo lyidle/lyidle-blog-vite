@@ -18,7 +18,10 @@ enum API {
   getCarousel = "/article/carousel",
   getArticle = "/article/get/pagination",
   getRecentPages = "/article/recentPages",
+  searchArticle = "/article/search",
   searchArticleExact = "/article/search/exact",
+  searchArticleMerge = "/article/search/merge",
+  searchArticleMergeExact = "/api/article/search/merge/exact",
   getOneArticle = "/article/get/id",
   getArticleByAuthorAndId = "/article/get/authorAndId",
   addArticle = "/article/admin/add",
@@ -28,6 +31,9 @@ enum API {
   getTagsAll = "/article/getTags/all",
   getCategoriesAll = "/article/getCategories/all",
 }
+
+// API 的 key 的类型
+export type APIKeysType = keyof typeof API
 
 // 引入前缀
 const prefix = import.meta.env.VITE_API
@@ -60,17 +66,33 @@ export const getRecentPages = (data?: GetRecentPagesQuery) =>
     }`
   )
 
+// 搜索文章的回调
+const searchArticleCallback = (api: APIKeysType) => {
+  return (data: SearchArticleQuery) =>
+    request.get<any, SearchArticle["data"]>(
+      `${server + prefix + API[api]}` +
+        `${data.id ? `/?id=${data.id}` : ""}` +
+        `${data.author ? `/?author=${data.author}` : ""}` +
+        `${data.category ? `/?category=${data.category}` : ""}` +
+        `${data.desc ? `/?desc=${data.desc}` : ""}` +
+        `${data.tags ? `/?tags=${data.tags}` : ""}` +
+        `${data.title ? `/?title=${data.title}` : ""}`
+    )
+}
+
+// 模糊搜索文章
+export const searchArticle = searchArticleCallback("searchArticle")
+
 // 精确搜索文章
-export const searchArticleExact = (data: SearchArticleQuery) =>
-  request.get<any, SearchArticle["data"]>(
-    `${server + prefix + API.searchArticleExact}` +
-      `${data.id ? `/?id=${data.id}` : ""}` +
-      `${data.author ? `/?author=${data.author}` : ""}` +
-      `${data.category ? `/?category=${data.category}` : ""}` +
-      `${data.desc ? `/?desc=${data.desc}` : ""}` +
-      `${data.tags ? `/?tags=${data.tags}` : ""}` +
-      `${data.title ? `/?title=${data.title}` : ""}`
-  )
+export const searchArticleExact = searchArticleCallback("searchArticleExact")
+
+// 模糊搜索文章和并查询
+export const searchArticleMerge = searchArticleCallback("searchArticleMerge")
+
+// 精确搜索文章和并查询
+export const searchArticleMergeExact = searchArticleCallback(
+  "searchArticleMergeExact"
+)
 
 // 按照id 获取文章
 export const getOneArticle = (id: string | number) =>

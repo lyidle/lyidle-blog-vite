@@ -48,7 +48,7 @@ const SoftWare = ref<string[]>([])
 
 // 获取菜单项 tags
 const reqTags = async (category: string, setRef: Ref<string[]>) => {
-  // 得到 tags
+  // 得到 tags 是全站文章的 category 个数默认是 10个
   const result = await searchArticleExact({ category })
   // 去重 存储
   setRef.value = [
