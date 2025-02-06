@@ -47,78 +47,24 @@ const search = async (
       false
     )
 
-  // 按照标签查询
+  const addCondition = (key: string, value: string, isExact = false) => {
+    if (!merge) {
+      commend.where = { [key]: isExact ? value : { [Op.like]: `%${value}%` } }
+    } else {
+      commend.where[key] = isExact ? value : { [Op.like]: `%${value}%` }
+    }
+  }
+
   if (tags) {
-    // 判断是否合并查询
-    if (!merge) {
-      commend.where = literal(`JSON_CONTAINS(tags, '"${tags}"')`)
-    } else {
-      commend.where.tags = literal(`JSON_CONTAINS(tags, '"${tags}"')`)
-    }
+    const condition = literal(`JSON_CONTAINS(tags, '"${tags}"')`)
+    !merge ? (commend.where = condition) : (commend.where.tags = condition)
   }
 
-  // 按照种类查询
-  if (category) {
-    if (!merge) {
-      commend.where = { category }
-    } else {
-      commend.where.category = category
-    }
-  }
-
-  // 按照描述查询
-  if (desc) {
-    if (exact)
-      if (!merge) {
-        commend.where = { desc }
-      } else {
-        commend.where.desc = desc
-      }
-    else if (!merge) {
-      commend.where = { desc: { [Op.like]: `%${desc}%` } }
-    } else {
-      commend.where.desc = { [Op.like]: `%${desc}%` }
-    }
-  }
-
-  // 按照标题查询
-  if (title) {
-    if (exact)
-      if (!merge) {
-        commend.where = { title }
-      } else {
-        commend.where.title = title
-      }
-    else if (!merge) {
-      commend.where = { title: { [Op.like]: `%${title}%` } }
-    } else {
-      commend.where.title = { [Op.like]: `%${title}%` }
-    }
-  }
-
-  // 按照作者查询
-  if (author) {
-    if (exact)
-      if (!merge) {
-        commend.where = { author }
-      } else {
-        commend.where.author = author
-      }
-    else if (!merge) {
-      commend.where = { author: { [Op.like]: `%${author}%` } }
-    } else {
-      commend.where.author = { [Op.like]: `%${author}%` }
-    }
-  }
-
-  // 按照 id 查询
-  if (id) {
-    if (!merge) {
-      commend.where = { id }
-    } else {
-      commend.where.id = id
-    }
-  }
+  if (category) addCondition("category", category, true)
+  if (desc) addCondition("desc", desc, exact)
+  if (title) addCondition("title", title, exact)
+  if (author) addCondition("author", author, exact)
+  if (id) addCondition("id", id, true)
 
   // 判断是否 查询回收站
   if (isBin) commend.where.isBin = 1
@@ -141,6 +87,14 @@ const search = async (
   )
 }
 
+/* 精确 和 模糊的区别 精确的一下信息是完全匹配
+ * desc
+ * title
+ * author
+ *
+ * 不论精确还是模糊 都是精确的是 tags category id
+ */
+
 // 查询文章 模糊
 router.get("/", async (req, res, next) => {
   try {
@@ -153,11 +107,6 @@ router.get("/", async (req, res, next) => {
 })
 
 // 查询文章 精确
-/* 
-desc
-title
-author
-*/
 
 router.get("/exact", async (req, res, next) => {
   try {
