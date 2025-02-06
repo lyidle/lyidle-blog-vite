@@ -12,5 +12,7 @@ html[themes="#{$theme}"] {
       rgba(137, 137, 137, 0.5),
       rgba(137, 137, 137, 0.3)
     );
+    // 欢迎词的文字阴影
+    --banner-wel-text-shadow: #4783ac;
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <context-menu class="global-content">
-    <div class="pages">
+    <div class="pages" :style="{ marginTop: `${$route.meta.pagesMt}` }">
       <div
         class="pages-content"
         :style="{ width: isShowAside ? undefined : '100%' }"

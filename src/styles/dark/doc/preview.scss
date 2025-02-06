@@ -11,11 +11,6 @@ html[themes="#{$theme}"] {
     // doc 页面
     --doc-header-color: #dcf1ff;
     --doc-header-link: #9ad5fd;
-    // waves 动画
-    $doc-header-waves-color: rgb(55, 83, 102);
-    --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
-    --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
-    --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
   }
   .doc-menu-tree {
     // 侧边栏的a链接高亮效果

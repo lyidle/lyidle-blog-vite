@@ -49,7 +49,7 @@
 @mixin pages-links-hover {
   transition: color var(--primary-during);
   &:hover {
-    color: var(--primary-links-hover);
+    color: var(--primary-links-hover) !important;
   }
 }
 // #endregion animation

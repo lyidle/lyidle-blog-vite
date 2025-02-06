@@ -23,6 +23,8 @@ enum API {
   updateArticle = "/article/admin/update",
   binArticle = "/article/admin/bin",
   clearArticle = "/article/admin/clear",
+  getTagsAll = "/article/getTags/all",
+  getCategoriesAll = "/article/getCategories/all",
 }
 
 // 引入前缀
@@ -93,3 +95,15 @@ export const deleteArticle = (id: number | string) =>
   request.delete<any, number>(server + prefix + API.clearArticle, {
     data: { id },
   })
+
+// 获取所有 tags
+export const getTagsAll = (author: string) =>
+  request.get<any, { [key in string]: number }>(
+    server + prefix + API.getTagsAll + `/?author=${author}`
+  )
+
+// 获取所有 categories
+export const getCategoriesAll = (author: string) =>
+  request.get<any, { [key in string]: number }>(
+    server + prefix + API.getCategoriesAll + `/?author=${author}`
+  )

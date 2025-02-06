@@ -113,14 +113,6 @@
                   </div>
                 </div>
               </div>
-              <div class="header-animate">
-                <animations-waves
-                  oneColor="var(--doc-header-waves-color-1)"
-                  twoColor="var(--doc-header-waves-color-2)"
-                  threeColor="var(--doc-header-waves-color-3)"
-                  class="cursor-[var(--cursor-default)]"
-                ></animations-waves>
-              </div>
             </div>
           </context-menu>
         </teleport>
@@ -201,7 +193,6 @@ useVditorPreview(article, menuTree, docPreview, useSideMenuHighlight)
 // 引入 函数
 @use "sass:map";
 
-$pages-m-t: -30vh;
 $header-t: 150px;
 $desc-gap: 10px;
 $hr-m-hor: 10px;
@@ -268,10 +259,6 @@ $header-container-h: 12.5rem;
         }
       }
     }
-  }
-  // 动画
-  > .header-animate {
-    height: $header-h - $header-container-h;
   }
 }
 // 模块样式
@@ -699,10 +686,6 @@ $header-container-h: 12.5rem;
         }
       }
     }
-  }
-  // 页面区域
-  ::v-deep(.pages) {
-    margin-top: $pages-m-t;
   }
   // 侧边栏吸附效果
   ::v-deep(.aside-menu-sticky-right) {

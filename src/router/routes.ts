@@ -1,5 +1,17 @@
 // 引入类型
 import { RouteRecordRaw } from "vue-router"
+
+/* meta 参数
+ * title 网页标签展示信息
+ * bannerContextHidden Boolean 焦点图的文字信息是否展示 欢迎词 和 古诗
+ * bannerWaves Boolean 波浪动画
+ * pagesMt 内容区域卡片的 上边距 和 banner 展示信息的 上边距
+ * bannerWel 欢迎词的文本信息
+ * bannerWelTextShadowHidden Boolean 欢迎词的阴影是否隐藏
+ * bannerPoetry 古诗信息
+ * role [""] 权限判断
+ */
+
 // 常量路由
 export const constantRoute: RouteRecordRaw[] = [
   {
@@ -28,7 +40,12 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/doc/:id",
         name: "Document",
-        meta: { title: "文章", bannerContext: true },
+        meta: {
+          title: "文章",
+          bannerContextHidden: true,
+          pagesMt: "-30vh",
+          bannerWaves: true,
+        },
         component: () => import("@/views/doc/review/index.vue"),
       },
       // 发布文章 需要有对应的权限
@@ -59,42 +76,60 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/user/space/:author",
         name: "UserSpace",
-        meta: { title: "用户空间" },
+        meta: { title: "空间" },
         component: () => import("@/views/user/space/index.vue"),
       },
       // 用户查询 所有文章
       {
         path: "/user/docs/:author",
         name: "FindAllUserDocs",
-        meta: { title: "用户所有文章" },
+        meta: {
+          title: "文章总览",
+          bannerWel: "文章总览",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/docs/index.vue"),
       },
       // 用户查询 所有标签
       {
         path: "/user/tags/:author",
         name: "FindAllUserTags",
-        meta: { title: "用户所有标签" },
+        meta: {
+          title: "标签总览",
+          bannerWel: "标签总览",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/tags/findAll/index.vue"),
       },
       // 用户查询 一个标签
       {
         path: "/user/tags",
         name: "UserTags",
-        meta: { title: "用户标签" },
+        meta: { title: "标签", bannerWel: "标签" },
         component: () => import("@/views/user/tags/onlyOne/index.vue"),
       },
       // 用户查询 所有分类
       {
         path: "/user/categories/:author",
         name: "FindAllUserCategories",
-        meta: { title: "用户所有分类" },
+        meta: {
+          title: "分类总览",
+          bannerWel: "分类总览",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/categories/findAll/index.vue"),
       },
       // 用户查询 一个分类
       {
         path: "/user/categories",
         name: "UserCategory",
-        meta: { title: "用户分类" },
+        meta: { title: "分类", bannerWel: "分类" },
         component: () => import("@/views/user/categories/onlyOne/index.vue"),
       },
     ],
@@ -102,7 +137,7 @@ export const constantRoute: RouteRecordRaw[] = [
   {
     path: "/manager",
     name: "Manager",
-    meta: { title: "管理页面", role: ["admin"] },
+    meta: { title: "管理", role: ["admin"] },
     component: () => import("@/components/layout/index.vue"),
   },
   // 个人

@@ -14,16 +14,17 @@ router.get("/", async (req, res) => {
   })
 
   // 得到 category
-  const categoriesMap = new Set()
+  const categoriesMap = new Map()
 
   // 循环 去重 category
   Articles.forEach((item: any) => {
     const category = item.dataValues?.category
-    categoriesMap.add(category)
+    let num = categoriesMap.get(category) || 0
+    categoriesMap.set(category, ++num)
   })
 
   // 得到结果
-  const categories = Array.from(categoriesMap)
+  const categories = Object.fromEntries(categoriesMap)
   categoriesMap.clear()
 
   // 返回

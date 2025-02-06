@@ -7,22 +7,54 @@
     <div
       class="banner"
       :style="{
-        height: height || bannerHeight,
+        height: height || $route.meta.bannerHeight || bannerHeight,
         top: bannerIsFixed ? '0' : 'unset',
         zIndex: bannerIsFixed ? '1' : 'unset',
         position: bannerIsFixed ? 'fixed' : 'unset',
       }"
     >
-      <div class="detail" v-if="!$route.meta.bannerContext">
-        <div class="title cur-text">{{ welcome }}</div>
+      <div
+        class="detail"
+        v-if="!$route.meta.bannerContextHidden"
+        :style="{
+          marginTop: `${$route.meta.pagesMt}`,
+        }"
+      >
+        <div
+          class="title cur-text"
+          :style="{
+            textShadow: `${
+              !$route.meta.bannerWelTextShadowHidden
+                ? '1px 1px 1px var(--banner-wel-text-shadow)'
+                : ''
+            }`,
+          }"
+        >
+          {{ $route.meta.bannerWel ?? welcome }}
+        </div>
         <div class="subtitle cur-text">
           <div v-if="poetry?.author">
-            {{ poetry?.content }}--{{ poetry?.author }}
+            {{
+              $route.meta.bannerPoetry ??
+              `${poetry?.content}--${poetry?.author}`
+            }}
           </div>
           <!-- 默认的展示诗词 -->
           <div v-else>夜来疏雨鸣金井，一叶舞空红浅。--王月山</div>
         </div>
       </div>
+      <teleport to="body">
+        <context-menu>
+          <div class="header-animate" v-if="$route.meta.bannerWaves">
+            <animations-waves
+              oneColor="var(--doc-header-waves-color-1)"
+              twoColor="var(--doc-header-waves-color-2)"
+              threeColor="var(--doc-header-waves-color-3)"
+              class="cursor-[var(--cursor-default)]"
+            ></animations-waves>
+          </div>
+        </context-menu>
+      </teleport>
     </div>
     <div class="fixed-replace" v-if="bannerIsFixed"></div>
   </context-menu>
@@ -106,6 +138,13 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+// 动画
+.header-animate {
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  top: 55vh;
+}
 .global-banner {
   .fixed-replace {
     width: 100%;
@@ -131,8 +170,8 @@ onMounted(async () => {
       width: 80%;
       overflow: hidden;
       .title {
-        font-size: 1.875rem;
-        font-weight: 500;
+        font-size: 40px;
+        font-weight: bold;
         text-align: center;
         color: v-bind(color);
       }

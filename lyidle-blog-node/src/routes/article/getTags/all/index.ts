@@ -14,18 +14,20 @@ router.get("/", async (req, res) => {
   })
 
   // 得到 tags
-  const tagsMap = new Set()
+  const tagsMap = new Map()
 
   // 循环 去重 tags
   Articles.forEach((item: any) => {
     const tags = item.dataValues?.tags
     tags.forEach((item: string) => {
-      tagsMap.add(item)
+      let num = tagsMap.get(item) || 0
+      tagsMap.set(item, ++num)
     })
   })
 
   // 得到结果
-  const tags = Array.from(tagsMap)
+  const tags = Object.fromEntries(tagsMap)
+
   tagsMap.clear()
 
   // 返回

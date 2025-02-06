@@ -208,10 +208,12 @@ const handlerDelete = async (id: string | number) => {
   } catch (error) {}
 }
 onMounted(async () => {
-  // 获取文章个数
-  await handlerCounts(account)
-  // 获取所有文章
-  await handlerArticles(account)
+  try {
+    // 获取文章个数
+    await handlerCounts(account)
+    // 获取所有文章
+    await handlerArticles(account)
+  } catch (error) {}
 })
 </script>
 
@@ -245,7 +247,7 @@ $circle-bg-dur: var(--primary-during);
       top: 0;
       // 和 圆 居中
       left: -$year-line-size - $gap -
-        ($year-circle-size / 2 - $year-line-size/2);
+        ($year-circle-size / 2 - $year-line-size / 2);
     }
     .years {
       // 年份的大圆
@@ -280,7 +282,7 @@ $circle-bg-dur: var(--primary-during);
         position: absolute;
         top: $year-circle-size / 2 - 8px;
         // 和 圆 居中
-        left: -$size - $gap - ($year-circle-size / 2 - $size/2);
+        left: -$size - $gap - ($year-circle-size / 2 - $size / 2);
         border-radius: 50%;
         z-index: 2;
       }
@@ -302,7 +304,7 @@ $circle-bg-dur: var(--primary-during);
         background-color: $circle-bg;
         position: absolute;
         // 和 圆 居中
-        left: -$circle-size - $gap - ($year-circle-size / 2 - $circle-size/2);
+        left: -$circle-size - $gap - ($year-circle-size / 2 - $circle-size / 2);
         top: 50%;
         transform: translateY(-50%);
         border-radius: 50%;
@@ -324,7 +326,7 @@ $circle-bg-dur: var(--primary-during);
         background-color: $circle-central;
         position: absolute;
         // 和 圆 居中
-        left: -$size - $gap - ($year-circle-size / 2 - $size/2);
+        left: -$size - $gap - ($year-circle-size / 2 - $size / 2);
         top: 50%;
         transform: translateY(-50%);
         border-radius: 50%;

@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:list";
 @use "./variable/index.scss" as *;
 // 屏幕尺寸 参照 element-plus的layout
 $scr: (
@@ -44,6 +45,17 @@ $scr: (
       }
     }
   }
+}
+
+// 简化 相同时间的 transition
+@mixin transition($duration, $properties...) {
+  $transitions: (); // 创建一个空列表
+
+  @each $property in $properties {
+    $transitions: list.append($transitions, $property $duration, comma);
+  }
+
+  transition: $transitions;
 }
 
 // 当前主题

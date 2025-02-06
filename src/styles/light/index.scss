@@ -68,4 +68,9 @@ html[themes="#{$theme}"] {
   // svg作为按钮的背景 需要把 十六进制的 # 符号换成 %23
   --scroll-button-bg: "%23a1c7ea";
   --scroll-button-bg-hover: "%236da3d5";
+  // waves 动画
+  $doc-header-waves-color: rgb(255, 255, 255);
+  --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
+  --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
+  --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
 }

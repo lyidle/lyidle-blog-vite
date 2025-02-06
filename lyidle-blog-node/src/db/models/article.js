@@ -43,12 +43,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       category: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(12),
         allowNull: false,
         validate: {
           notNull: { msg: "文章分类不能为空哦~" },
           notEmpty: { msg: "文章分类不能为空哦~" },
-          len: { args: [1, 10], msg: "文章分类长度必须在1-10之间哦~" },
+          len: { args: [1, 12], msg: "文章分类长度必须在1-12之间哦~" },
         },
       },
       tags: {
@@ -57,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章标签不能为空哦~" },
           notEmpty: { msg: "文章标签不能为空哦~" },
+          len: { args: [1, 12], msg: "文章标签长度必须在1-12之间哦~" },
         },
         set(value) {
           if (!Array.isArray(value))

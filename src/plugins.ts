@@ -12,6 +12,8 @@ import "@/components/icon/unocss"
 import "normalize.css"
 // 引入全局样式
 import "@/styles/reset.scss"
+// 引入 vditor 样式
+import "vditor/dist/index.css"
 // 引入 自定义指令
 import directives from "@/directive"
 export default {

@@ -1,135 +1,31 @@
-@mixin test {
-  // 超链接
-  a {
-    @include pages-links-hover;
-    color: var(--doc-link-color);
-  }
-
-  // 代码`code`
-  p code {
-    background-color: var(--doc-code-bg);
-    color: var(--doc-code-color);
-    font-size: 15px;
-    border-radius: var(--doc-code-radius);
-  }
-  pre > code.hljs {
-    box-shadow: var(--doc-pre-code-shadow);
-  }
-  // 多选框
-  .vditor-task {
-    // 垂直居中
+@use "../mixins.scss" as *;
+@use "../animations.scss" as *;
+// 词海的 的样式混合
+@mixin cloud-words {
+  $gap: 15px;
+  $m: 40px;
+  $cloudWords-margin: 0 $m $m $m;
+  .cloud-words-container {
     display: flex;
+    flex-wrap: wrap;
+    gap: $gap;
     align-items: center;
-    // 多选框
-    input[type="checkbox"] {
-      all: unset;
-      width: var(--doc-checkbox-size);
-      height: var(--doc-checkbox-size);
-      display: inline-block;
-      position: relative;
-      margin-right: var(--doc-checkbox-m-r);
-      border: var(--doc-checkbox-border);
-      border-radius: var(--doc-checkbox-radius);
-      overflow: hidden;
-      cursor: var(--cursor-default);
-    }
-    input[type="checkbox"]::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background-color: var(--doc-checkbox-bg);
-    }
-    input[type="checkbox"]:checked {
-      &::before {
-        display: block;
-        content: "";
-        position: absolute;
-        z-index: 2;
-        inset: 0;
-        color: var(--doc-checkbox-border-color);
-        background-color: currentColor;
-        -webkit-mask-image: var(--doc-checkbox-tick-url);
-        mask-image: var(--doc-checkbox-tick-url);
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        -webkit-mask-size: 100% 100%;
-        mask-size: 100% 100%;
+    justify-content: center;
+    margin: $cloudWords-margin;
+    .item {
+      width: fit-content;
+      // 云词 的容器
+      .cloud-words {
+        @include pages-links-hover;
+        @include transition(var(--primary-during), color, scale);
+        &:hover {
+          scale: 1.2;
+        }
+      }
+      // 标签文本
+      span {
+        font-size: 20px;
       }
     }
-  }
-
-  // 分割线
-  hr {
-    $scissors-size: 30px;
-    display: block;
-    height: $scissors-size;
-    background-color: unset;
-    cursor: var(--cursor-default);
-    position: relative;
-    overflow: visible;
-    // 普通分割线
-    &::before {
-      color: var(--doc-hr-color);
-      display: block;
-      content: "";
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: -$preview-pd;
-      z-index: 1;
-      width: calc(100% + #{$preview-pd * 2});
-      height: 100%;
-      // 普通分割线
-      background-color: currentColor;
-      -webkit-mask-image: var(--doc-hr-url);
-      mask-image: var(--doc-hr-url);
-      -webkit-mask-repeat: repeat-x;
-      mask-repeat: repeat-x;
-      $size: var(--doc-hr-size);
-      -webkit-mask-size: $size;
-      mask-size: $size;
-    }
-    &:hover {
-      &::after {
-        left: calc(100% + $scissors-size / 2);
-      }
-    }
-    // scissors
-    &::after {
-      color: var(--doc-hr-color);
-      display: block;
-      content: "";
-      position: absolute;
-      z-index: 2;
-      top: 50%;
-      transform: translateY(-50%);
-      transition: left var(--doc-scissors-dur);
-      left: -$preview-pd;
-      width: calc(100% + #{$preview-pd * 2});
-      height: $scissors-size;
-      // 普通分割线
-      background-color: currentColor;
-      -webkit-mask-image: var(--doc-scissors-url);
-      mask-image: var(--doc-scissors-url);
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-size: $scissors-size;
-      mask-size: $scissors-size;
-    }
-    // 脚注分割线
-    &.footnotes-defs-hr {
-      &::before {
-        color: var(--doc-footnotes-hr-color);
-      }
-    }
-  }
-
-  // 高亮
-  .doc-highlight {
-    background-color: var(--doc-highlight-bg);
-    color: var(--doc-highlight-color);
-    padding: var(--doc-highlight-pd);
-    border-radius: var(--doc-highlight-radius);
   }
 }

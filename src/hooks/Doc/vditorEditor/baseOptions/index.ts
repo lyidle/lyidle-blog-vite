@@ -4,8 +4,6 @@ import { useSettingStore } from "@/store/setting"
 import { addHighlightAndCallouts } from "@/utils/doc/addHighlightAndCallouts"
 // 图片文件转临时链接
 import { uploadImgTempFile } from "../uploadImgTempFile"
-// 引入样式
-import "vditor/dist/index.css"
 import { mitt } from "@/utils/emitter"
 // 引入 类型
 import type { vditorType } from "../update"

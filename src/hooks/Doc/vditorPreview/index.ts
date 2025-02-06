@@ -2,7 +2,6 @@
 import { mitt } from "@/utils/emitter"
 // 引入 Vditor
 import Vditor from "vditor"
-import "vditor/dist/index.css"
 // 引入 类型
 import type { TocNode } from "./types"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
