@@ -89,6 +89,7 @@ declare module 'vue' {
     MySelect: typeof import('./src/components/my-select/index.vue')['default']
     MySwitch: typeof import('./src/components/my-switch/index.vue')['default']
     MyUpload: typeof import('./src/components/my-upload/index.vue')['default']
+    ParseIcon: typeof import('./src/components/parse-icon/index.vue')['default']
     Ribbon: typeof import('./src/components/Ribbon/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

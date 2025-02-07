@@ -24,14 +24,10 @@ export const usePermission = (router: Router) => {
     // 如果路由发生变化 则触发 router changed 事件
     if (to !== from) mitt.emit("router changed", { to, from })
     // 处理常量路由的 权限问题
-    const isConstHandler = handlerConstRoutes(to, from, next)
-    // 拦截了 权限的 不需要 next
-    if (isConstHandler) return
+    handlerConstRoutes(to, from, router)
 
     // 处理 异步路由 没加载时 404 问题
-    const isHandler = handlerAsyncRoutes(to, from, next)
-    // 处理过了 404 问题 不需要再次 next
-    if (isHandler) return
+    handlerAsyncRoutes(to, from, router)
 
     next()
   })

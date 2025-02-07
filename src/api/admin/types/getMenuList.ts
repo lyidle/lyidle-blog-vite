@@ -32,6 +32,7 @@ export interface Child {
   menuId?: number
   name: string
   to: null | string
+  children?: Child[]
   [property: string]: any
 }
 

@@ -1,4 +1,5 @@
 <template>
+  <!-- 大屏和小屏都有的部分 -->
   <!-- 首页 -->
   <li>
     <router-link to="/home">

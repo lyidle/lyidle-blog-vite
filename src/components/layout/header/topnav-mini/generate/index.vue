@@ -1,46 +1,47 @@
 <template>
-  <div class="">
-    <ul class="header-menu" ref="menu">
-      <template v-for="item in userStore.userMenuList" :key="item.id">
-        <li v-if="item.id">
-          <div class="title">
-            <!-- 有 to 的 则 重定向 -->
-            <router-link
-              :to="item.to || item.children?.[0]?.to || ''"
-              v-if="item.to || item.children?.[0]?.to"
-            >
-              <i :class="item.icon"></i>
-              {{ item.name }}
-            </router-link>
-            <!-- 没有的 -->
-            <a v-else>
-              <i :class="item.icon" class="w-1em h-1em"></i>
-              {{ item.name }}
-            </a>
-            <div
-              class="right cur-pointer"
-              @click="toggle(item.id)"
-              v-if="JSON.stringify(item.children) !== '[]'"
-            >
-              <i class="toggle i-ic:baseline-plus w-1em h-1em"></i>
-            </div>
+  <!-- 小屏的抽屉 菜单 -->
+  <ul class="header-menu" ref="menu">
+    <template v-for="item in userStore.userMenuList" :key="item.id">
+      <li v-if="item.id">
+        <div class="title">
+          <!-- 有 to 的 则 router-link -->
+          <router-link :to="item.to" v-if="item.to">
+            <parse-icon :icon="item.icon"></parse-icon>
+            {{ item.name }}
+          </router-link>
+          <!-- 没有的 -->
+          <a v-else>
+            <parse-icon :icon="item.icon"></parse-icon>
+            {{ item.name }}
+          </a>
+          <!-- 需要有children -->
+          <div
+            class="right cur-pointer"
+            @click="toggle(item.id)"
+            v-if="item.children?.length"
+          >
+            <i class="toggle i-ic:baseline-plus w-1em h-1em"></i>
           </div>
-          <ul class="contain" v-if="item.children" :data-id="item.id">
-            <template v-for="sub in item.children" :key="item.id">
-              <li class="subtitle">
-                <!-- 有 to 的 则 router-link -->
-                <router-link :to="sub.to" v-if="sub.to">
-                  <i :class="sub.icon"></i>{{ sub.name }}
-                </router-link>
-                <!-- 没有的 -->
-                <a v-else> <i :class="sub.icon"></i>{{ sub.name }} </a>
-              </li>
-            </template>
-          </ul>
-        </li>
-      </template>
-    </ul>
-  </div>
+        </div>
+        <ul class="contain" v-if="item.children?.length" :data-id="item.id">
+          <template v-for="sub in item.children" :key="item.id">
+            <li class="subtitle">
+              <!-- 有 to 的 则 router-link -->
+              <router-link :to="sub.to" v-if="sub.to">
+                <parse-icon :icon="sub.icon"></parse-icon>
+                {{ sub.name }}
+              </router-link>
+              <!-- 没有的 -->
+              <a v-else>
+                <parse-icon :icon="sub.icon"></parse-icon>
+                {{ sub.name }}
+              </a>
+            </li>
+          </template>
+        </ul>
+      </li>
+    </template>
+  </ul>
 </template>
 
 <script setup lang="ts" name="TopNavMiniMenuList">
@@ -172,7 +173,10 @@ $menu-radius: 5px;
       // 上下边距撑开容器
       padding: 10px 0;
     }
-    i:not(.toggle) {
+    i:not(.toggle),
+    svg {
+      width: 16px;
+      height: 16px;
       // 左边距
       margin-left: $item-ident;
     }
@@ -190,7 +194,8 @@ $menu-radius: 5px;
       display: flex;
       justify-content: end;
       align-items: center;
-      i {
+      i,
+      svg {
         margin-right: 10px;
       }
     }

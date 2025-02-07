@@ -64,7 +64,8 @@ $list-gap: 5px;
       height: 100%;
       display: flex;
       align-items: center;
-      > i {
+      > i,
+      svg {
         margin-right: $icon-mr;
       }
     }

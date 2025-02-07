@@ -3,8 +3,8 @@ import { useUserStore } from "@/store/user"
 // 引入类型
 import type {
   RouteLocationNormalized,
-  NavigationGuardNext,
   _RouteLocationBase,
+  Router,
 } from "vue-router"
 /* 
     处理异步路由重定向到404问题
@@ -12,7 +12,7 @@ import type {
 export const handlerAsyncRoutes = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
-  next: NavigationGuardNext
+  router: Router
 ): boolean | void => {
   // 提取数据
   const { whitelist, routes } = storeToRefs(useUserStore())
@@ -22,13 +22,10 @@ export const handlerAsyncRoutes = (
     if (!to.redirectedFrom) return
     // 发生重定向的地址
     const redirect = to.redirectedFrom?.path
-    const path = to.redirectedFrom.path
-    const query = to.redirectedFrom.query
     if (!redirect) return
     // 再白名单则放行到对应的路由中
     if (routes.value?.length && whitelist.value.includes(redirect)) {
-      next({ path, query, replace: true })
-      return true
+      router.replace({ path: "/" })
     }
   }
 }
