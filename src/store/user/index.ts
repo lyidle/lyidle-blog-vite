@@ -29,7 +29,7 @@ export const useUserStore = defineStore(
         const result = await getMenuList()
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
-          userStoreRoutesFilter(result)
+          userStoreRoutesFilter(result, userRole)
         // 赋值处理的结果
         userMenuList.value = _userMenuList
         userBannerImg.value = _userBannerImg

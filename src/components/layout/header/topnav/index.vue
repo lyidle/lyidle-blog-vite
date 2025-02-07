@@ -2,6 +2,8 @@
   <ul class="topnav">
     <layout-header-normal :menuStyle>
       <template #scend>
+        <!-- 笔记 -->
+        <layout-header-notes :menuStyle></layout-header-notes>
         <layout-header-topnav-generate
           :menuStyle
         ></layout-header-topnav-generate>

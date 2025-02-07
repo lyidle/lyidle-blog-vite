@@ -12,6 +12,8 @@ export interface Datum {
   children?: Child[]
   icon: string
   id: number
+  parentId: number | null
+  role: string[]
   layout?: null | Layout
   name: string
   to: null | string
@@ -26,13 +28,15 @@ export interface PurpleBannerImg {
 }
 
 export interface Child {
-  bannerImg?: null | FluffyBannerImg
+  bannerImg?: null | PurpleBannerImg
+  children?: Child[]
   icon: string
   id: number
-  menuId?: number
+  parentId: number | null
+  role: string[]
+  layout?: null | Layout
   name: string
   to: null | string
-  children?: Child[]
   [property: string]: any
 }
 

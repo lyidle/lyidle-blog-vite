@@ -34,6 +34,10 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false,
       },
+      parentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true, // 顶级菜单的 parentId 为 null
+      },
     })
   },
   async down(queryInterface, Sequelize) {
