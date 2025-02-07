@@ -1,4 +1,4 @@
-import { extname, join, resolve } from "path"
+import { extname, join } from "path"
 import { existsSync, readFileSync, unlinkSync } from "fs"
 
 // gifsicle 压缩
@@ -8,8 +8,6 @@ import { compressAndSaveImage } from "@/utils/io/compress/compressAndSaveImage"
 
 // 用于 获取contentType
 const { lookup } = require("mime-types")
-// 引入 redis 设置缓存
-import { setKey, getKey } from "@/utils/redis"
 // api 的前缀
 const api_prefix = process.env.api_prefix || "/api"
 
@@ -42,6 +40,16 @@ export const tempImgLinkToPermantLink = async (
     for (const item of tempImg) {
       // 非空判断
       if (!item) continue
+
+      // 判断是否是静态目录下的文件
+      if (
+        !item.replace(/\//g, "\\").startsWith(api_prefix.replace("/", "\\"))
+      ) {
+        // 不存在 添加到 数组
+        tempImgNull.push(item)
+        continue
+      }
+
       // 获取到对应的临时目录
       const staticPath = join($staticPath, item.replace("\\api", ""))
       const isExist = existsSync(staticPath)
@@ -73,16 +81,15 @@ export const tempImgLinkToPermantLink = async (
           // 去掉 assets之前的路径生成api
           const api = resolvePath.replace($staticPath, "")
           const result = { url: join(api_prefix, api), origin: item }
-
           // 删除 临时文件
           unlinkSync(staticPath)
-
           successImg.push(result)
+          // 跳过
+          continue
         }
-        continue
       }
       // 不存在 添加到 数组
-      tempImgNull.push(api_prefix + item)
+      tempImgNull.push(item)
     }
   }
   return { tempImgNull, successImg }

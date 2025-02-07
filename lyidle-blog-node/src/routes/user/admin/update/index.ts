@@ -5,10 +5,9 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
 import { setKey, delKey } from "@/utils/redis"
-// 引入错误函数
-import myError from "@/utils/Error"
 // 设置token
 import { setToken } from "@/utils/token"
+// 引入 模型
 const { User } = require("@/db/models")
 const router = express.Router()
 router.put(
