@@ -8,6 +8,7 @@ import { echart } from "@/utils/echart"
 // 引入 类型
 import type { ECElementEvent, EChartsType } from "echarts/core"
 import type { ECOption } from "@/utils/echart"
+import { mitt } from "@/utils/emitter"
 const option = defineModel<ECOption>()
 const props = defineProps<{ click?: (params: ECElementEvent) => void }>()
 watch(
@@ -28,6 +29,15 @@ const chartInstance = ref()
 // chart 实列
 let myChart: EChartsType | undefined
 
+// 使用指定的配置项和数据显示图表。
+const reloadChart = () => {
+  // 没有配置项退出
+  if (!option.value) return
+  // 销毁旧的 chart
+  myChart?.dispose()
+  eCharts()
+}
+
 const eCharts = () => {
   // 没有配置项退出
   if (!option.value) return
@@ -42,6 +52,9 @@ const eCharts = () => {
     })
 }
 
+// 监听窗口变化
+mitt.on("window:resize", reloadChart)
+
 // 挂载
 onMounted(() => {
   eCharts()
@@ -49,5 +62,7 @@ onMounted(() => {
 // 销毁
 onBeforeUnmount(() => {
   myChart?.dispose()
+  // 取消监听窗口变化
+  mitt.off("window:resize", reloadChart)
 })
 </script>

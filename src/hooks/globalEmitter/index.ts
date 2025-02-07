@@ -6,6 +6,8 @@ import { useSwitchThemes } from "./themes"
 import { useScrollListener } from "./scroll"
 // 引入 F11劫持
 import { useFullScreen } from "./window/fullScreen"
+// 监听窗口大小变化事件
+import { useResize } from "./window/resize"
 // 暴露 全局的 emitter
 export const useGlobalEmitter = () => {
   // 挂载鼠标特效
@@ -16,4 +18,6 @@ export const useGlobalEmitter = () => {
   useScrollListener()
   // 使用 F11劫持 实现全屏
   useFullScreen()
+  // 监听窗口大小变化事件 防抖的
+  useResize()
 }
