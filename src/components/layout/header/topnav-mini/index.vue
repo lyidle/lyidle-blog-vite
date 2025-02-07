@@ -34,9 +34,7 @@
           <layout-avatar></layout-avatar>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
-          <layout-header-topnav-mini-generate
-            :style
-          ></layout-header-topnav-mini-generate>
+          <layout-header-topnav-mini-generate></layout-header-topnav-mini-generate>
         </div>
       </template>
     </my-drawer>
@@ -73,18 +71,6 @@ const isShow = () => {
 const handlerClose = () => {
   // 打开 html 的滚动条
   document.documentElement.style.overflow = "unset"
-}
-// 菜单的样式
-const style = {
-  icon: { plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" },
-  titleBg: "var(--header-mini-title-bg)",
-  titleBgHover: "var(--header-mini-title-bg-hover)",
-  titleColor: "var(--header-mini-title-color)",
-  titleColorHover: "var(--header-mini-title-color-hover)",
-  subtitleBg: "var(--header-mini-subtitle-bg)",
-  subtitleBgHover: "var(--header-mini-subtitle-bg-hover)",
-  subtitleColor: "var(--header-mini-subtitle-color)",
-  subtitleColorHover: "var(--header-mini-subtitle-color-hover)",
 }
 </script>
 

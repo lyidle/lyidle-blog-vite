@@ -70,7 +70,6 @@ declare module 'vue' {
     LayoutHeaderTopnavMiniDrawer: typeof import('./src/components/layout/header/topnav-mini/drawer/index.vue')['default']
     LayoutHeaderTopnavMiniGenerate: typeof import('./src/components/layout/header/topnav-mini/generate/index.vue')['default']
     LayoutHeaderTopnavMiniGenerateRecursive: typeof import('./src/components/layout/header/topnav-mini/generate/recursive/index.vue')['default']
-    'LayoutHeaderTopnavMiniGenerateRecursiveIndex copy': typeof import('./src/components/layout/header/topnav-mini/generate/recursive/index copy.vue')['default']
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     LayoutSetting: typeof import('./src/components/layout/setting/index.vue')['default']
     LayoutTheme: typeof import('./src/components/layout/theme/index.vue')['default']
