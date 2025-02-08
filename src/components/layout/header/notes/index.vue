@@ -1,5 +1,10 @@
 <template>
-  <my-menu-instance :data name="笔记" :menuStyle></my-menu-instance>
+  <my-menu-instance
+    :data="item"
+    :name="item.name"
+    :menuStyle
+    v-for="item in data"
+  ></my-menu-instance>
 </template>
 
 <script setup lang="ts" name="HeaderNotes">
@@ -41,6 +46,8 @@ onMounted(async () => {
   // 获取 后端 分类的 tags
   await reqTags("后端")
   // 去重
-  data.value = Array.from(new Set(toRaw(data.value)))
+  data.value = [
+    { name: "笔记", children: Array.from(new Set(toRaw(data.value))) },
+  ]
 })
 </script>

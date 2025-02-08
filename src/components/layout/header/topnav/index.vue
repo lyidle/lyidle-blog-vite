@@ -4,21 +4,14 @@
       <template #scend>
         <!-- 笔记 -->
         <layout-header-notes :menuStyle></layout-header-notes>
-        <!-- <my-menu-instance
-          v-for="item in userMenuList"
-          :data="[item]"
-          :name="item.name"
-          :menuStyle
-        ></my-menu-instance> -->
-      </template>
-      <template #last>
         <my-menu-instance
           v-for="item in userMenuList"
-          :data="[item]"
+          :data="item"
           :name="item.name"
           :menuStyle
         ></my-menu-instance>
       </template>
+      <template #last> </template>
     </layout-header-normal>
   </ul>
 </template>
@@ -30,9 +23,6 @@ import { menuStyleType } from "@/components/my-menu/types"
 import { useUserStore } from "@/store/user"
 
 const { userMenuList } = storeToRefs(useUserStore())
-userMenuList.value?.push(userMenuList.value?.[0])
-userMenuList.value?.push(userMenuList.value?.[0])
-userMenuList.value?.push(userMenuList.value?.[0])
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()

@@ -27,6 +27,8 @@ export const useUserStore = defineStore(
     const reqUserMenuList = async () => {
       try {
         const result = await getMenuList()
+        console.log(result)
+
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result, userRole)

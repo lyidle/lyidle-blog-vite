@@ -1,5 +1,5 @@
 <template>
-  <ul class="custom-menu" :style="{ left }">
+  <ul class="custom-menu">
     <li class="title" ref="title" v-if="triangle" v-bind="triangleAttrs">
       <span></span>
     </li>
@@ -23,7 +23,6 @@ import { menuStyleType } from "@/components/my-menu/types"
 const props = withDefaults(
   defineProps<{
     top?: string
-    left?: string
     triangle?: boolean
     triangleAttrs?: any
     menuStyle?: menuStyleType
@@ -32,7 +31,6 @@ const props = withDefaults(
   {
     data: () => [],
     top: "30px",
-    left: "-15px",
     triangle: false,
     menuStyle: () => ({
       bg: "white",
@@ -63,6 +61,8 @@ $list: custom-menu-trigger;
 $menu-radius: 5px;
 $menu-triangle-width: 10px;
 .custom-menu {
+  left: 50%;
+  transform: translateX(-50%);
   position: absolute;
   flex-direction: column;
   color: v-bind(color);

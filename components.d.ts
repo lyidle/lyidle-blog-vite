@@ -12,7 +12,7 @@ declare module 'vue' {
     Carousel: typeof import('./src/components/carousel/index.vue')['default']
     ContextMenu: typeof import('./src/components/context-menu/index.vue')['default']
     ContextMenuItem: typeof import('./src/components/context-menu/item.vue')['default']
-    copy: typeof import('./src/components/layout/header/topnav/generate/index copy.vue')['default']
+    copy: typeof import('./src/components/my-menu/instance/index copy.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']

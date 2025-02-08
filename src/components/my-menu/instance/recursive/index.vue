@@ -4,13 +4,25 @@
     :top="`${tagsTriangleTop}px`"
     :triangleAttrs="{
       style: {
-        ...triangleDirection,
+        ...triangleDirection(directionCallback(cloudDirection || direction)),
         top:
           children.length === 1
-            ? `calc(${triangleDirection.top} - 0.625rem)`
-            : triangleDirection.top,
+            ? `calc(${
+                triangleDirection(
+                  directionCallback(cloudDirection || direction)
+                ).top
+              } - 0.625rem)`
+            : triangleDirection(directionCallback(cloudDirection || direction))
+                .top,
       },
     }"
+    :style="
+      flowMenuContainerLeft(
+        parseInt(authWidth),
+        directionCallback(cloudDirection || direction)
+      )
+    "
+    class="sub-menu"
   >
     <my-menu-item
       :style="menuStyle"
@@ -18,24 +30,41 @@
       :key="sub"
       class="custom-menu-trigger"
     >
+      <!-- MathMax 禁止小于最小的值 itemWidth -->
       <my-anchor
         :to="sub.to"
         class="custom-menu-item"
-        :style="{ width: sub.width || itemWidth }"
+        :style="{ width: authWidth }"
       >
         <i class="i-iconoir:page-star w-1em h-1em"></i>
-        <span>{{ sub.name }}</span>
+        <span class="text-nowrap">{{ sub.name }}</span>
         <i
           v-if="sub.children?.length"
           class="i-weui:arrow-outlined toggle"
           :style="`${
-            direction === 'left' ? 'left:0' : 'right:0'
-          };--toggle-dir:${direction === 'left' ? '-1' : '1'}`"
-        ></i>
+            directionCallback(sub.layout?.topnavDirection || direction) ===
+            'left'
+              ? 'left:0'
+              : 'right:0'
+          };--toggle-dir:${
+            directionCallback(sub.layout?.topnavDirection || direction) ===
+            'left'
+              ? '-1'
+              : '1'
+          }`"
+        >
+        </i>
       </my-anchor>
       <MyMenuInstanceRecursive
         v-if="sub.children?.length"
-        v-bind="{ ...props, children: sub.children }"
+        v-bind="{
+          ...props,
+          children: sub.children,
+          cloudDirection: directionCallback(
+            sub.layout?.topnavDirection || direction
+          ),
+          authWidth: menuMathMax(sub.layout?.topnavWidth, itemWidth),
+        }"
         class="sub-menu"
       ></MyMenuInstanceRecursive>
     </my-menu-item>
@@ -46,37 +75,30 @@
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
 import { MenuData, directionType } from "../types"
+// 引入 辅助函数
+import {
+  flowMenuContainerLeft,
+  triangleDirection,
+  directionCallback,
+  menuMathMax,
+} from "../utils"
+
 // 接收props
 const props = defineProps<{
   menuStyle?: menuStyleType
   children: MenuData
   tagsTriangleTop: number
-  triangleDirection: { [key in string]: string | undefined }
   // 当子组件的 width 没有时 使用
   itemWidth: string
+  authWidth: string
   direction: directionType
+  cloudDirection?: directionType
+  left?: string
 }>()
 </script>
 
 <style scoped lang="scss">
-// 箭头 的 变形
-@mixin transform($deg: 0deg) {
-  transform: translateY(-50%) rotateZ(calc(#{$deg} * var(--toggle-dir)));
-}
-.custom-menu-item {
-  position: relative;
-  .toggle {
-    position: absolute;
-    width: 1rem;
-    height: 1rem;
-    top: 50%;
-    @include transform;
-    transition: transform 0.3s;
-  }
-  &:hover {
-    .toggle {
-      @include transform(180deg);
-    }
-  }
+.sub-menu {
+  margin-top: -5px !important;
 }
 </style>

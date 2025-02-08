@@ -1,5 +1,5 @@
 import express from "express"
-import { Op, literal, Sequelize } from "sequelize"
+import { Sequelize } from "sequelize"
 import { getKey, setKey } from "@/utils/redis" // Redis 缓存工具
 const { Menu } = require("@/db/models") // 只需引入 Menu，MenuList 用 parentId 关系维护
 const router = express.Router()
@@ -34,7 +34,6 @@ router.get("/", async (req, res, next) => {
 
     const menus = await Menu.findAll({
       where: Sequelize.literal(`JSON_CONTAINS(role, '["${role}"]')`), // MySQL JSON 查询
-      attributes: ["id", "name", "icon", "to", "parentId", "bannerImg", "role"],
       raw: true, // 以对象数组返回
     })
 

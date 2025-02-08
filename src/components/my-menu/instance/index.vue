@@ -4,70 +4,70 @@
       <i class="i-lucide:notebook-pen w-1em h-1em"> </i>
       {{ name }}
     </my-anchor>
-    <my-menu :triangle="true" left="-25px" :menuStyle class="my-menu-container">
-      <template v-for="item in data">
+    <template v-for="item in Array.isArray(data) ? data : [data]">
+      <my-menu :triangle="true" :menuStyle class="my-menu-container">
         <my-menu-item :style="menuStyle" class="custom-menu-trigger">
+          <!-- MathMax 禁止小于最小的值 itemWidth -->
           <my-anchor
             :to="item.to"
             class="custom-menu-item"
-            :style="{ width: item.width || itemWidth }"
+            :style="{ width: menuMathMax(item.layout?.topnavWidth, itemWidth) }"
           >
             <i class="i-iconoir:page-star w-1em h-1em"></i>
-            <span>{{ item.name }}</span>
+            <span class="text-nowrap">{{ item.name }}</span>
+            <i
+              v-if="item.children?.length"
+              class="i-weui:arrow-outlined toggle"
+              :style="`${
+                directionCallback(item.layout?.topnavDirection, direction) ===
+                'left'
+                  ? 'left:0'
+                  : 'right:0'
+              };--toggle-dir:${
+                directionCallback(item.layout?.topnavDirection, direction) ===
+                'left'
+                  ? '-1'
+                  : '1'
+              }`"
+            ></i>
           </my-anchor>
           <recursive
             v-if="item.children?.length"
             :menuStyle
             :children="item.children"
             :tagsTriangleTop="tagsTriangleTop"
-            :triangleDirection
             :direction
             :itemWidth
-            class="sub-menu"
+            :authWidth="menuMathMax(item.layout?.topnavWidth, itemWidth)"
+            :cloudDirection="item.layout?.topnavDirection"
           ></recursive>
         </my-menu-item>
-      </template>
-    </my-menu>
+      </my-menu>
+    </template>
   </li>
 </template>
 
 <script setup lang="ts" name="MyMenuInstance">
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
-import { directionType, MenuData } from "./types"
+import { directionType, MenuItem } from "./types"
 // 引入 子组件
 import recursive from "./recursive/index.vue"
+// 引入 辅助函数
+import { directionCallback, menuMathMax } from "./utils"
 
-const direction = ref<directionType>("right")
-// 根据方向算出具体的值 子集的位置信息
-const left = computed(() => {
-  return direction.value === "left" ? "calc(-100% - 13px)" : "calc(100% + 13px)"
-})
-
-// 三角的位置信息
-const triangleDirection = computed(() => {
-  return direction.value === "left"
-    ? {
-        right: "-60%",
-        top: "34px",
-        transform: "rotateZ(90deg)",
-      }
-    : {
-        right: "60%",
-        top: "34px",
-        transform: "rotateZ(270deg)",
-      }
-})
+// 默认的方向
+const direction = ref<directionType>("left")
 
 // 接收props
 defineProps<{
   menuStyle?: menuStyleType
-  data: MenuData
+  data: MenuItem | MenuItem[]
   name: string
 }>()
 
 // 笔记
-const itemWidth = "90px"
+const itemWidth = "100px"
 // 分类下 的 标签 menu的 三角位置
 const tagsTriangleTop = -20
 </script>
@@ -81,9 +81,25 @@ $icon-pl: 15px;
   @include flex(start);
   padding-left: $icon-pl;
   gap: $icon-mr;
-}
-.sub-menu {
-  left: v-bind(left) !important;
-  margin-top: -5px !important;
+  overflow: hidden;
+  // 箭头 的 变形
+  @mixin transform($deg: 0deg) {
+    transform: translateY(-50%) rotateZ(calc(#{$deg} * var(--toggle-dir)));
+  }
+
+  position: relative;
+  .toggle {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    top: 50%;
+    @include transform;
+    transition: transform 0.3s;
+  }
+  &:hover {
+    .toggle {
+      @include transform(180deg);
+    }
+  }
 }
 </style>

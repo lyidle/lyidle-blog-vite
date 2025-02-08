@@ -12,6 +12,7 @@ export interface Datum {
   children?: Child[]
   icon: string
   id: number
+  isBin: number
   parentId: number | null
   role: string[]
   layout?: null | Layout
@@ -32,6 +33,7 @@ export interface Child {
   children?: Child[]
   icon: string
   id: number
+  isBin: number
   parentId: number | null
   role: string[]
   layout?: null | Layout
@@ -48,8 +50,8 @@ export interface FluffyBannerImg {
 }
 
 export interface Layout {
-  left?: string
-  top?: string
-  width?: string
+  // 顶部导航的 动态菜单 的宽度
+  topnavWidth?: string
+  topnavDirection?: string
   [property: string]: any
 }
