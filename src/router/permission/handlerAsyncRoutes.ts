@@ -22,10 +22,11 @@ export const handlerAsyncRoutes = (
     if (!to.redirectedFrom) return
     // 发生重定向的地址
     const redirect = to.redirectedFrom?.path
+    const query = to.redirectedFrom?.query
     if (!redirect) return
     // 再白名单则放行到对应的路由中
     if (routes.value?.length && whitelist.value.includes(redirect)) {
-      router.replace({ path: "/" })
+      router.replace({ path: redirect, query })
     }
   }
 }

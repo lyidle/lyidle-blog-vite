@@ -230,4 +230,36 @@ export const asyncRoute: RouteRecordRaw[] = [
     meta: { title: "留言板" },
     component: () => import("@/views/test/index.vue"),
   },
+  // 留言板
+  {
+    path: "/tes",
+    name: "Tes",
+    meta: { title: "留言板" },
+    component: () => import("@/views/test/index.vue"),
+    redirect: "/tes/1",
+    children: [
+      {
+        path: "/tes/1",
+        name: "tes-2",
+        meta: { title: "tes-2" },
+        component: () => import("@/views/test/index.vue"),
+      },
+    ],
+  },
+  // 留言板
+  {
+    path: "/FAQs",
+    name: "FAQs",
+    meta: { title: "FAQs" },
+    component: () => import("@/views/test/index.vue"),
+    redirect: "/FAQs/1",
+    children: [
+      {
+        path: "/FAQs/1",
+        name: "FAQs-1",
+        meta: { title: "FAQs-1" },
+        component: () => import("@/views/test/index.vue"),
+      },
+    ],
+  },
 ]

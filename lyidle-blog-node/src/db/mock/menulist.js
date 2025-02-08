@@ -27,7 +27,7 @@ module.exports = [
         children: [
           {
             name: "Edit Profile",
-            to: "/note",
+            to: "/piece/piece1",
             bannerImg: { height: "90vh" },
             layout: { topnavWidth: "160px" },
           },
@@ -79,7 +79,6 @@ module.exports = [
         name: "Electronics",
         to: "/note",
         layout: { topnavWidth: "180px", topnavDirection: "left" },
-
         children: [
           {
             name: "Smartphones",
@@ -94,24 +93,24 @@ module.exports = [
               {
                 name: "Gaming Laptops",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "left" },
+                layout: { topnavWidth: "140px" },
               },
               {
                 name: "Ultrabooks",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "left" },
+                layout: { topnavWidth: "140px" },
               },
               {
                 name: "Workstations",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "left" },
+                layout: { topnavWidth: "140px" },
               },
             ],
           },
           {
             name: "Tablets",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "right" },
+            layout: { topnavWidth: "160px" },
           },
           {
             name: "Accessories",
@@ -121,12 +120,12 @@ module.exports = [
               {
                 name: "Chargers",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "right" },
+                layout: { topnavWidth: "140px" },
               },
               {
                 name: "Headphones",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "right" },
+                layout: { topnavWidth: "140px" },
               },
             ],
           },
@@ -135,22 +134,22 @@ module.exports = [
       {
         name: "Clothing",
         to: "/note",
-        layout: { topnavWidth: "180px", topnavDirection: "left" },
+        layout: { topnavWidth: "200px", topnavDirection: "left" },
         children: [
           {
             name: "Men's Clothing",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "left" },
+            layout: { topnavWidth: "160px" },
           },
           {
             name: "Women's Clothing",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "left" },
+            layout: { topnavWidth: "160px" },
           },
           {
             name: "Kids' Clothing",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "left" },
+            layout: { topnavWidth: "160px" },
           },
           {
             name: "Accessories",
@@ -160,12 +159,12 @@ module.exports = [
               {
                 name: "Belts",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "left" },
+                layout: { topnavWidth: "140px" },
               },
               {
                 name: "Hats",
                 to: "/note",
-                layout: { topnavWidth: "140px", topnavDirection: "left" },
+                layout: { topnavWidth: "140px" },
               },
             ],
           },
@@ -174,17 +173,17 @@ module.exports = [
       {
         name: "Furniture",
         to: "/note",
-        layout: { topnavWidth: "180px", topnavDirection: "left" },
+        layout: { topnavWidth: "300px", topnavDirection: "left" },
         children: [
           {
             name: "Living Room",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "left" },
+            layout: { topnavWidth: "160px" },
           },
           {
             name: "Bedroom",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "left" },
+            layout: { topnavWidth: "160px" },
           },
         ],
       },
@@ -204,7 +203,6 @@ module.exports = [
         name: "Mission",
         to: "/note",
         layout: { topnavWidth: "180px", topnavDirection: "left" },
-
         children: [
           {
             name: "History",
@@ -254,12 +252,19 @@ module.exports = [
       },
       {
         name: "Contact Us",
-        to: "/note",
+        to: "/comments",
+        bannerImg: { height: "50vh" },
+        layout: { topnavWidth: "180px" },
+      },
+      {
+        name: "Contact Ussf",
+        to: "/tes/1",
+        bannerImg: { height: "50vh" },
         layout: { topnavWidth: "180px" },
       },
       {
         name: "FAQs",
-        to: "/note",
+        to: "/FAQs/1",
         layout: { topnavWidth: "180px" },
       },
     ],

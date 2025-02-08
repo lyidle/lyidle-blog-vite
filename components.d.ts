@@ -82,6 +82,7 @@ declare module 'vue' {
     MyMenuAccordion: typeof import('./src/components/my-menu/accordion/index.vue')['default']
     MyMenuAccordionRecursive: typeof import('./src/components/my-menu/accordion/recursive/index.vue')['default']
     MyMenuInstance: typeof import('./src/components/my-menu/instance/index.vue')['default']
+    'MyMenuInstanceIndex copy': typeof import('./src/components/my-menu/instance/index copy.vue')['default']
     MyMenuInstanceRecursive: typeof import('./src/components/my-menu/instance/recursive/index.vue')['default']
     MyMenuItem: typeof import('./src/components/my-menu/item.vue')['default']
     MyMenuRecursive: typeof import('./src/components/my-menu/recursive/index.vue')['default']

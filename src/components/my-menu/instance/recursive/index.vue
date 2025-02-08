@@ -18,7 +18,7 @@
     }"
     :style="
       flowMenuContainerLeft(
-        parseInt(authWidth),
+        authWidth,
         directionCallback(cloudDirection || direction)
       )
     "
@@ -30,7 +30,6 @@
       :key="sub"
       class="custom-menu-trigger"
     >
-      <!-- MathMax 禁止小于最小的值 itemWidth -->
       <my-anchor
         :to="sub.to"
         class="custom-menu-item"
@@ -55,6 +54,7 @@
         >
         </i>
       </my-anchor>
+      <!-- menuMathMax 禁止小于最小的值 itemWidth 且需要取最大值 -->
       <MyMenuInstanceRecursive
         v-if="sub.children?.length"
         v-bind="{
@@ -63,7 +63,7 @@
           cloudDirection: directionCallback(
             sub.layout?.topnavDirection || direction
           ),
-          authWidth: menuMathMax(sub.layout?.topnavWidth, itemWidth),
+          authWidth: menuMathMax(handlerMaxWidth(sub), itemWidth),
         }"
         class="sub-menu"
       ></MyMenuInstanceRecursive>
@@ -81,6 +81,7 @@ import {
   triangleDirection,
   directionCallback,
   menuMathMax,
+  handlerMaxWidth,
 } from "../utils"
 
 // 接收props

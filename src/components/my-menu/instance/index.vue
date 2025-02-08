@@ -2,48 +2,51 @@
   <li class="custom-menu-trigger">
     <my-anchor>
       <i class="i-lucide:notebook-pen w-1em h-1em"> </i>
-      {{ name }}
+      {{ data.name }}
     </my-anchor>
-    <template v-for="item in Array.isArray(data) ? data : [data]">
-      <my-menu :triangle="true" :menuStyle class="my-menu-container">
-        <my-menu-item :style="menuStyle" class="custom-menu-trigger">
-          <!-- MathMax 禁止小于最小的值 itemWidth -->
-          <my-anchor
-            :to="item.to"
-            class="custom-menu-item"
-            :style="{ width: menuMathMax(item.layout?.topnavWidth, itemWidth) }"
-          >
-            <i class="i-iconoir:page-star w-1em h-1em"></i>
-            <span class="text-nowrap">{{ item.name }}</span>
-            <i
-              v-if="item.children?.length"
-              class="i-weui:arrow-outlined toggle"
-              :style="`${
-                directionCallback(item.layout?.topnavDirection, direction) ===
-                'left'
-                  ? 'left:0'
-                  : 'right:0'
-              };--toggle-dir:${
-                directionCallback(item.layout?.topnavDirection, direction) ===
-                'left'
-                  ? '-1'
-                  : '1'
-              }`"
-            ></i>
-          </my-anchor>
-          <recursive
+    <my-menu :triangle="true" :menuStyle class="my-menu-container">
+      <my-menu-item
+        :style="menuStyle"
+        class="custom-menu-trigger"
+        v-for="item in data.children"
+      >
+        <!-- menuMathMax 禁止小于最小的值 itemWidth 且需要取最大值 -->
+        <my-anchor
+          :to="item.to"
+          class="custom-menu-item"
+          :style="{ width: menuMathMax(parentMaxWidth, itemWidth) }"
+        >
+          <i class="i-iconoir:page-star w-1em h-1em"></i>
+          <span class="text-nowrap">{{ item.name }}</span>
+          <i
             v-if="item.children?.length"
-            :menuStyle
-            :children="item.children"
-            :tagsTriangleTop="tagsTriangleTop"
-            :direction
-            :itemWidth
-            :authWidth="menuMathMax(item.layout?.topnavWidth, itemWidth)"
-            :cloudDirection="item.layout?.topnavDirection"
-          ></recursive>
-        </my-menu-item>
-      </my-menu>
-    </template>
+            class="i-weui:arrow-outlined toggle"
+            :style="`${
+              directionCallback(item.layout?.topnavDirection, direction) ===
+              'left'
+                ? 'left:0'
+                : 'right:0'
+            };--toggle-dir:${
+              directionCallback(item.layout?.topnavDirection, direction) ===
+              'left'
+                ? '-1'
+                : '1'
+            }`"
+          ></i>
+        </my-anchor>
+        <!-- menuMathMax 禁止小于最小的值 itemWidth 且需要取最大值 -->
+        <recursive
+          v-if="item.children?.length"
+          :menuStyle
+          :children="item.children"
+          :tagsTriangleTop="tagsTriangleTop"
+          :direction
+          :itemWidth
+          :authWidth="menuMathMax(parentMaxWidth, itemWidth)"
+          :cloudDirection="item.layout?.topnavDirection"
+        ></recursive>
+      </my-menu-item>
+    </my-menu>
   </li>
 </template>
 
@@ -54,18 +57,18 @@ import { directionType, MenuItem } from "./types"
 // 引入 子组件
 import recursive from "./recursive/index.vue"
 // 引入 辅助函数
-import { directionCallback, menuMathMax } from "./utils"
+import { directionCallback, handlerMaxWidth, menuMathMax } from "./utils"
+
+// 接收props
+const props = defineProps<{
+  menuStyle?: menuStyleType
+  data: MenuItem
+}>()
+
+const parentMaxWidth = handlerMaxWidth(props.data)
 
 // 默认的方向
 const direction = ref<directionType>("left")
-
-// 接收props
-defineProps<{
-  menuStyle?: menuStyleType
-  data: MenuItem | MenuItem[]
-  name: string
-}>()
-
 // 笔记
 const itemWidth = "100px"
 // 分类下 的 标签 menu的 三角位置

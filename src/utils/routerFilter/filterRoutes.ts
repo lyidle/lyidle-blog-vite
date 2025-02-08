@@ -11,23 +11,30 @@ export const filterRoutes = (
   menuList: GetMenuList["data"]
 ): { _whitelist: string[]; _routes: RouteRecordRaw[] } => {
   // 提取所有 `to` 路径（包括子菜单）
-  const toPaths = new Set<string>()
+  const toPathsSet = new Set<string>()
   menuList?.forEach((menu) => {
-    if (menu.to) toPaths.add(menu.to)
+    if (menu.to) toPathsSet.add(menu.to)
     menu.children?.forEach((child) => {
-      if (child.to) toPaths.add(child.to)
+      if (child.to) toPathsSet.add(child.to)
     })
   })
+
+  // 得到处理后的结果
+  const toPaths = Array.from(toPathsSet)
+  toPathsSet.clear()
+
+  // 判断是否以路径 结果 开头
+  const isStartWith = (data: string) =>
+    toPaths.find((item) => item.startsWith(data))
 
   // 递归匹配路由
   const filterRoutes = (routes: RouteRecordRaw[]) => {
     return (
       routes
         .map((route) => {
-          // 判断是否有 path
-          if (toPaths.has(route.path)) {
+          if (isStartWith(route.path)) {
             // 有children 递归
-            if (route.children) {
+            if (route.children?.length) {
               route.children = filterRoutes(route.children)
             }
             // 存在 返回路由
@@ -58,6 +65,7 @@ export const filterRoutes = (
 
   // 白名单
   const whiteListSet = new Set()
+
   resultRoutes.forEach((item) => {
     whiteListSet.add(item.path)
     item.children?.forEach(($item) => {

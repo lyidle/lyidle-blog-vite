@@ -10,11 +10,11 @@ export interface GetMenuList {
 export interface Datum {
   bannerImg?: null | PurpleBannerImg
   children?: Child[]
-  icon: string
-  id: number
-  isBin: number
-  parentId: number | null
-  role: string[]
+  icon?: string
+  id?: number
+  isBin?: number
+  parentId?: number | null
+  role?: string[]
   layout?: null | Layout
   name: string
   to: null | string
@@ -23,7 +23,7 @@ export interface Datum {
 
 export interface PurpleBannerImg {
   dark?: string
-  height?: string
+  height?: string | number
   light?: string
   [property: string]: any
 }
@@ -31,11 +31,11 @@ export interface PurpleBannerImg {
 export interface Child {
   bannerImg?: null | PurpleBannerImg
   children?: Child[]
-  icon: string
-  id: number
-  isBin: number
-  parentId: number | null
-  role: string[]
+  icon?: string
+  id?: number
+  isBin?: number
+  parentId?: number | null
+  role?: string[]
   layout?: null | Layout
   name: string
   to: null | string

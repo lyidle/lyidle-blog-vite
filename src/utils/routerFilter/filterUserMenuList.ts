@@ -1,5 +1,5 @@
 // 引入类型
-import type { GetMenuList } from "@/api/admin/types/getMenuList"
+import type { Child, GetMenuList } from "@/api/admin/types/getMenuList"
 
 export const filterUserMenuList = (
   menuList: GetMenuList["data"],
@@ -22,7 +22,8 @@ export const filterUserMenuList = (
         ) {
           // 有children 递归
           if (item.children?.length) {
-            item.children = filterMenuList(item.children)
+            const children = filterMenuList(item.children)
+            if (children?.length) item.children = children as Child[]
           }
           return item
         }
@@ -30,5 +31,7 @@ export const filterUserMenuList = (
       })
     )?.filter(Boolean) as GetMenuList["data"]
   }
-  return filterMenuList(menuList)
+  const result = filterMenuList(menuList)
+
+  return result
 }

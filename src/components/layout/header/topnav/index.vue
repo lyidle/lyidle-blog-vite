@@ -7,7 +7,6 @@
         <my-menu-instance
           v-for="item in userMenuList"
           :data="item"
-          :name="item.name"
           :menuStyle
         ></my-menu-instance>
       </template>
