@@ -1,6 +1,8 @@
 <template>
   <ul class="custom-menu" :style="{ left }">
-    <li class="title" ref="title" v-if="triangle"><span></span></li>
+    <li class="title" ref="title" v-if="triangle" v-bind="triangleAttrs">
+      <span></span>
+    </li>
     <slot></slot>
     <template v-if="data.length">
       <!-- 优先 id 然后 name 最后 item本身 作为 key -->
@@ -23,6 +25,7 @@ const props = withDefaults(
     top?: string
     left?: string
     triangle?: boolean
+    triangleAttrs?: any
     menuStyle?: menuStyleType
     data?: any[]
   }>(),
@@ -72,7 +75,7 @@ $menu-triangle-width: 10px;
     height: 20px;
     position: relative;
     display: flex;
-    z-index: -1;
+    z-index: -3;
     // 三角形
     span {
       background-color: transparent;

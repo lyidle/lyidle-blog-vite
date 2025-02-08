@@ -4,9 +4,20 @@
       <template #scend>
         <!-- 笔记 -->
         <layout-header-notes :menuStyle></layout-header-notes>
-        <layout-header-topnav-generate
+        <!-- <my-menu-instance
+          v-for="item in userMenuList"
+          :data="[item]"
+          :name="item.name"
           :menuStyle
-        ></layout-header-topnav-generate>
+        ></my-menu-instance> -->
+      </template>
+      <template #last>
+        <my-menu-instance
+          v-for="item in userMenuList"
+          :data="[item]"
+          :name="item.name"
+          :menuStyle
+        ></my-menu-instance>
       </template>
     </layout-header-normal>
   </ul>
@@ -15,6 +26,13 @@
 <script setup lang="ts" name="TopNav">
 // 引入类型
 import { menuStyleType } from "@/components/my-menu/types"
+// 引入store
+import { useUserStore } from "@/store/user"
+
+const { userMenuList } = storeToRefs(useUserStore())
+userMenuList.value?.push(userMenuList.value?.[0])
+userMenuList.value?.push(userMenuList.value?.[0])
+userMenuList.value?.push(userMenuList.value?.[0])
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()

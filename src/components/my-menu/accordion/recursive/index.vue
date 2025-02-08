@@ -30,14 +30,14 @@
 
 <script setup lang="ts" name="AccordionRecursive">
 // 引入类型
-import { MenuList } from "../types"
+import { AccordionMenuList } from "../types"
 // 引入 图标
 import "../icons"
 
 // 接收 props
 const props = withDefaults(
   defineProps<{
-    data: MenuList
+    data: AccordionMenuList
     titleBg?: string
     titleBgHover?: string
     titleColor?: string
