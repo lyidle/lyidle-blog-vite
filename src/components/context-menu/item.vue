@@ -1,6 +1,6 @@
 <template>
   <div class="menu-item">
-    <i :class="icon"></i>
+    <parse-icon :icon="icon"></parse-icon>
     <span>{{ content }}</span>
   </div>
 </template>

@@ -11,7 +11,7 @@
   <component
     v-else
     :is="(parsedIcon(icon).name === 'svg' && parsedIcon(icon).data) || 'i'"
-    :class="parsedIcon(icon).name === 'class' ? icon : ''"
+    :class="parsedIcon(icon).name === 'class' ? parsedIcon(icon).data : ''"
     class="w-1em h-1em"
   />
 </template>

@@ -87,11 +87,10 @@
           </el-form-item>
           <!-- poster -->
           <el-form-item
-            class="!mb-0 doc-publish-item"
-            label="文章的描述"
-            prop="desc"
+            class="!mb-0 doc-publish-item ml-11px"
+            label="文章的海报"
           >
-            <my-upload v-model="poster"></my-upload>
+            <my-upload v-model="poster" class="ml-10px"></my-upload>
           </el-form-item>
         </el-form>
         <!-- 文章的内容 -->
@@ -110,6 +109,8 @@
 import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
 // 引入 utils
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
+// 引入 处理删除文件的函数
+import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 // 引入 编辑器 全屏事件的 处理 hooks
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 仓库
@@ -133,8 +134,15 @@ const { title, category, tags, desc, length, docHeight, context, poster } =
   storeToRefs(useDocEditorOpt())
 
 // 重置表单
-const resetDoc = () => {
-  if (title.value || category.value || tags.value.length || desc.value) {
+const resetDoc = async () => {
+  const urls = poster.value?.[0]?.url
+  if (
+    urls ||
+    title.value ||
+    category.value ||
+    tags.value.length ||
+    desc.value
+  ) {
     title.value = ""
     category.value = ""
     tags.value = []
@@ -143,6 +151,24 @@ const resetDoc = () => {
     setTimeout(() => {
       docsForm.value.clearValidate()
     }, 0)
+
+    if (urls) {
+      await handlerRemoveFileStatic([urls], {
+        error: (url) => {
+          // 删除失败 说明临时图片没有了
+          poster.value = []
+          ElMessage.warning({
+            message: `删除文件${url}失败,临时图片被销毁了哦~`,
+            customClass: "selectMessage",
+          })
+        },
+        success: (url) => {
+          console.log(url === urls)
+          if (url === urls) poster.value = []
+        },
+      })
+    }
+
     ElMessage.success("重置表单成功~")
   }
 }

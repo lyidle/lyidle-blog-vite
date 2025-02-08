@@ -7,6 +7,8 @@
     :http-request="handlerUpload"
     :limit="1"
     drag
+    class="ml-10px"
+    :class="$attrs.class"
   >
     <i class="i-ep:plus w-20px h-20px"></i>
   </el-upload>
@@ -18,7 +20,9 @@
 
 <script lang="ts" setup name="MyUpload">
 // 引入  api
-import { postTempImgFiles, removeFileStatic } from "@/api/img"
+import { postTempImgFiles } from "@/api/img"
+// 引入 处理删除文件的函数
+import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 // 类型
 import type { UploadProps, UploadUserFile } from "element-plus"
 
@@ -43,36 +47,9 @@ const dialogVisible = ref(false)
 // 删除的回调
 const handleRemove: UploadProps["beforeRemove"] = async (uploadFile) => {
   if (!props.remove) return true
-  try {
-    const url = uploadFile.url ? [uploadFile.url] : null
-    // 没有链接
-    if (!url) return false
-    // 从返回结果中提取成功和失败的结果
-    const { successMap, errorMap } = await removeFileStatic(url)
-    // 成功的
-    if (successMap.length)
-      for (let i = 0; i < successMap.length; i++) {
-        const item = successMap[i]
-
-        ElMessage.success(`删除文件${item}成功~`)
-        return true
-      }
-    // 错误的
-    if (errorMap.length)
-      for (let i = 0; i < errorMap.length; i++) {
-        const item = errorMap[i]
-        ElMessage.warning({
-          message: `删除文件${item}失败~`,
-          customClass: "selectMessage",
-        })
-        return false
-      }
-    // 错误
-    return false
-  } catch (error) {
-    // 错误
-    return false
-  }
+  const url = uploadFile.url ? [uploadFile.url] : null
+  if (url) return await handlerRemoveFileStatic(url)
+  else return false
 }
 
 // 预览图片

@@ -1,7 +1,7 @@
 <template>
   <li class="custom-menu-trigger">
     <my-anchor>
-      <i class="i-lucide:notebook-pen w-1em h-1em"> </i>
+      <parse-icon :icon="data.icon"></parse-icon>
       {{ data.name }}
     </my-anchor>
     <my-menu :triangle="true" :menuStyle class="my-menu-container">
@@ -16,7 +16,7 @@
           class="custom-menu-item"
           :style="{ width: menuMathMax(parentMaxWidth, itemWidth) }"
         >
-          <i class="i-iconoir:page-star w-1em h-1em"></i>
+          <parse-icon :icon="data.icon"></parse-icon>
           <span class="text-nowrap">{{ item.name }}</span>
           <i
             v-if="item.children?.length"
@@ -60,10 +60,20 @@ import recursive from "./recursive/index.vue"
 import { directionCallback, handlerMaxWidth, menuMathMax } from "./utils"
 
 // 接收props
-const props = defineProps<{
-  menuStyle?: menuStyleType
-  data: MenuItem
-}>()
+const props = withDefaults(
+  defineProps<{
+    menuStyle?: menuStyleType
+    data: MenuItem
+    item_h?: string
+    iconM_r?: string
+    iconP_l?: string
+  }>(),
+  {
+    item_h: "var(--header-topmenu-icon-mr)",
+    iconM_r: "var(--header-topmenu-h)",
+    iconP_l: "var(--header-topmenu-icon-pl)",
+  }
+)
 
 const parentMaxWidth = handlerMaxWidth(props.data)
 
@@ -77,8 +87,8 @@ const tagsTriangleTop = -20
 
 <style lang="scss">
 $icon-mr: var(--header-topmenu-icon-mr);
-$menu-item-height: 25px;
-$icon-pl: 15px;
+$menu-item-height: var(--header-topmenu-h);
+$icon-pl: var(--header-topmenu-icon-pl);
 .custom-menu-item {
   height: $menu-item-height;
   @include flex(start);

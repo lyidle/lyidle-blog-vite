@@ -1,5 +1,8 @@
 export const parsedIcon = (icon: string) => {
-  const isBg = icon.startsWith("background:")
+  const isBg = icon?.startsWith("background:")
+  // 默认 图标
+  const _default = { name: "class", data: "i-tdesign:filter-3-filled" }
+  // 是database 图标
   if (isBg) {
     const bg = icon.split("background:")[1]
     return {
@@ -8,7 +11,8 @@ export const parsedIcon = (icon: string) => {
     }
   }
 
-  if (icon.startsWith("<svg")) {
+  // 是 svg
+  if (icon?.startsWith("<svg")) {
     const parser = new DOMParser()
     const doc = parser.parseFromString(icon, "image/svg+xml")
 
@@ -18,9 +22,9 @@ export const parsedIcon = (icon: string) => {
       // 指定 attributes 的类型
       const attributes: Record<string, string> = Array.from(
         svgElement.attributes
-      ).reduce((acc: Record<string, string>, attr) => {
-        acc[attr.name] = attr.value
-        return acc
+      ).reduce((pre: Record<string, string>, attr) => {
+        pre[attr.name] = attr.value
+        return pre
       }, {})
 
       return {
@@ -30,5 +34,11 @@ export const parsedIcon = (icon: string) => {
     }
   }
 
+  // 没有图标
+  if (!icon) {
+    return _default
+  }
+
+  // class 图标 需要打包时 有导入 类名
   return { name: "class", data: icon }
 }

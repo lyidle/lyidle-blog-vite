@@ -28,10 +28,6 @@ defineProps<{ menuStyle?: menuStyleType }>()
 </script>
 
 <style scoped lang="scss">
-$menu-item-height: 40px;
-$icon-mr: 3px;
-$icon-pl: 15px;
-$list-gap: 5px;
 .topnav {
   display: flex;
   height: 100%;

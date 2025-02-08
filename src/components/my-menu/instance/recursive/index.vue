@@ -35,7 +35,7 @@
         class="custom-menu-item"
         :style="{ width: authWidth }"
       >
-        <i class="i-iconoir:page-star w-1em h-1em"></i>
+        <parse-icon :icon="sub.icon"></parse-icon>
         <span class="text-nowrap">{{ sub.name }}</span>
         <i
           v-if="sub.children?.length"

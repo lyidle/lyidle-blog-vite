@@ -83,11 +83,14 @@
 
           <!-- poster -->
           <el-form-item
-            class="!mb-0 doc-publish-item"
-            label="文章的描述"
-            prop="desc"
+            class="!mb-0 doc-publish-item ml-11px"
+            label="文章的海报"
           >
-            <my-upload v-model="poster" :remove="false"></my-upload>
+            <my-upload
+              v-model="poster"
+              :remove="false"
+              class="ml-10px"
+            ></my-upload>
           </el-form-item>
         </el-form>
         <h3 class="font-normal m-20px text-center font-size-1.625rem">

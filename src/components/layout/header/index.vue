@@ -48,9 +48,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-$menu-item-height: 25px;
+$menu-item-height: var(--header-topmenu-h);
 $icon-mr: var(--header-topmenu-icon-mr);
-$icon-pl: 15px;
+$icon-pl: var(--header-topmenu-icon-pl);
 $list-gap: 5px;
 ::v-deep(.topnav) {
   // 导航项目
@@ -84,10 +84,10 @@ $list-gap: 5px;
       width: 100%;
     }
   }
-
   // 悬浮的菜单项目
   .topnav-menu-item {
     height: $menu-item-height;
+    overflow: hidden;
     @include flex(start);
     padding-left: $icon-pl;
     gap: $list-gap;
