@@ -34,7 +34,7 @@
           <layout-avatar></layout-avatar>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
-          <layout-header-topnav-mini-generate></layout-header-topnav-mini-generate>
+          <my-menu-accordion :data="userMenuList"></my-menu-accordion>
         </div>
       </template>
     </my-drawer>
@@ -50,6 +50,7 @@ import { useOwnerStore } from "@/store/owner"
 const {
   // 用户信息
   userToken,
+  userMenuList,
 } = storeToRefs(useUserStore())
 
 // 接收props

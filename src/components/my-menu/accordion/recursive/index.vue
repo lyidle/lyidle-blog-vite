@@ -1,42 +1,65 @@
 <template>
-  <ul class="menu-list" ref="menus">
-    <template v-for="item in MenuList" :key="item.name">
+  <template v-for="item in data" :key="item.name">
+    <ul class="menu-list" ref="menus" v-if="item.name">
       <li>
         <div class="menu-item">
           <div class="start-icon">
-            <parse-icon :icon="item.icon"></parse-icon>
-            <router-link v-if="item.to" :to="item.to">{{
-              item.name
-            }}</router-link>
-            <a v-else>{{ item.name }}</a>
-          </div>
-          <div
-            v-if="item.children?.length"
-            class="toggle"
-            @click="toggle($event, item.id)"
-          >
-            <i :class="icon.plus"></i>
+            <router-link v-if="item.to" :to="item.to">
+              <parse-icon :icon="item.icon"></parse-icon>{{ item.name }}
+            </router-link>
+            <a v-else>
+              <parse-icon :icon="item.icon"></parse-icon>{{ item.name }}
+            </a>
+            <div
+              v-if="item.children?.length"
+              class="toggle"
+              @click="toggle($event)"
+            >
+              <i :class="icon.plus"></i>
+            </div>
           </div>
         </div>
         <ul v-if="item.children?.length" class="submenu">
-          <!-- 递归调用 修改 props中的 MenuList 为 children-->
-          <RecursiveMenuList v-bind="{ ...props, MenuList: item.children }" />
+          <!-- 递归调用 修改 props中的 data 为 children -->
+          <AccordionRecursive v-bind="{ ...props, data: item.children }" />
         </ul>
       </li>
-    </template>
-  </ul>
+    </ul>
+  </template>
 </template>
 
-<script setup lang="ts" name="RecursiveMenuList">
+<script setup lang="ts" name="AccordionRecursive">
 // 引入类型
-import { GetMenuList } from "@/api/admin/types/getMenuList"
+import { MenuList } from "../types"
+// 引入 图标
+import "../icons"
 
 // 接收 props
-const props = defineProps<{
-  MenuList: GetMenuList["data"]
-}>()
-
-const icon = { plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" }
+const props = withDefaults(
+  defineProps<{
+    data: MenuList
+    titleBg?: string
+    titleBgHover?: string
+    titleColor?: string
+    titleColorHover?: string
+    subBg?: string
+    subBgHover?: string
+    subColor?: string
+    subColorHover?: string
+    icon?: { plus: string; minus: string }
+  }>(),
+  {
+    icon: () => ({ plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" }),
+    titleBg: "var(--header-mini-title-bg)",
+    titleBgHover: "var(--header-mini-title-bg-hover)",
+    titleColor: "var(--header-mini-title-color)",
+    titleColorHover: "var(--header-mini-title-color-hover)",
+    subBg: "var(--header-mini-subtitle-bg)",
+    subBgHover: "var(--header-mini-subtitle-bg-hover)",
+    subColor: "var(--header-mini-subtitle-color)",
+    subColorHover: "var(--header-mini-subtitle-color-hover)",
+  }
+)
 
 // map值的类型
 type MapType = {
@@ -62,9 +85,10 @@ const parentSubMenuCallback = (el: Element): void => {
 }
 
 // 切换按钮
-const toggle = (e: MouseEvent, id: number) => {
-  // 点击的目标 的父级
-  const parent = (e.target as HTMLLIElement).parentElement as HTMLDivElement
+const toggle = (e: MouseEvent) => {
+  // 点击的 项目 的父级 menu-item
+  const parent = (e.target as HTMLLIElement)?.parentElement
+    ?.parentElement as HTMLDivElement
   if (!parent) return
   const cache = openMenus.get(parent)
   if (cache) {
@@ -78,8 +102,8 @@ const toggle = (e: MouseEvent, id: number) => {
       cache.submenu.style.height = `${cache.height}px`
       // 引起回流
       parent.getBoundingClientRect()
-      cache.toggle.classList.add(icon.plus || "")
-      cache.toggle.classList.remove(icon.minus || "")
+      cache.toggle.classList.add(props.icon.plus || "")
+      cache.toggle.classList.remove(props.icon.minus || "")
       cache.submenu.style.height = "0"
       openMenus.set(parent, defaultValue)
       return
@@ -90,8 +114,8 @@ const toggle = (e: MouseEvent, id: number) => {
 
     // 往上递归 得到 parentSubMenu
     parentSubMenuCallback(parent)
-    cache.toggle.classList.add(icon.minus || "")
-    cache.toggle.classList.remove(icon.plus || "")
+    cache.toggle.classList.add(props.icon.minus || "")
+    cache.toggle.classList.remove(props.icon.plus || "")
     cache.submenu.style.height = `${cache.height}px`
     openMenus.set(parent, defaultValue)
     return
@@ -124,8 +148,8 @@ const toggle = (e: MouseEvent, id: number) => {
   parentSubMenuCallback(parent)
   // 设置高度
   submenu.style.height = `${defaultValue.height}px`
-  toggle.classList.add(icon.minus || "")
-  toggle.classList.remove(icon.plus || "")
+  toggle.classList.add(props.icon.minus || "")
+  toggle.classList.remove(props.icon.plus || "")
   openMenus.set(parent, defaultValue)
 }
 
@@ -136,17 +160,18 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-$item-bg: var(--header-mini-title-bg);
-$item-bg-hover: var(--header-mini-title-bg-hover);
-$item-color: var(--header-mini-title-color);
-$item-color-hover: var(--header-mini-title-color-hover);
-$sub-bg: var(--header-mini-subtitle-bg);
-$sub-bg-hover: var(--header-mini-subtitle-bg-hover);
-$sub-color: var(--header-mini-subtitle-color);
-$sub-color-hover: var(--header-mini-subtitle-color-hover);
+$item-bg: v-bind(titleBg);
+$item-bg-hover: v-bind(titleBgHover);
+$item-color: v-bind(titleColor);
+$item-color-hover: v-bind(titleColorHover);
+$sub-bg: v-bind(subBg);
+$sub-bg-hover: v-bind(subBgHover);
+$sub-color: v-bind(subColor);
+$sub-color-hover: v-bind(subColorHover);
 $menu-item-h: 35px;
 $gap: 5px;
 $item-bg: transparent;
+$ident: 20px;
 // 组件容器
 .menu-list {
   list-style: none;
@@ -155,9 +180,8 @@ $item-bg: transparent;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    cursor: pointer;
     height: $menu-item-h;
-    padding-left: 20px;
+    position: relative;
     background-color: $item-bg;
     color: $item-color;
     // 悬浮
@@ -167,16 +191,25 @@ $item-bg: transparent;
     }
     // 开始的 图标集合
     .start-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: $gap;
-      margin-left: $gap * 2;
+      a {
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        left: $ident;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: $gap;
+      }
     }
     // 切换按钮
     .toggle {
+      z-index: 2;
+      position: absolute;
+      right: 0;
+      top: 0;
       height: $menu-item-h;
-      width: 50px;
+      width: 35px;
       display: flex;
       justify-content: center;
       align-items: center;
