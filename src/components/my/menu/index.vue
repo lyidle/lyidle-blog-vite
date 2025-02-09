@@ -25,7 +25,7 @@
 
 <script setup lang="ts" name="MyMenu">
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 const props = withDefaults(
   defineProps<{
     top?: string

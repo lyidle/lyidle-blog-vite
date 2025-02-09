@@ -1,7 +1,7 @@
 <template>
   <layout-content>
     <template #content-start>
-      <layout-carousel
+      <my-carousel-instance
         :data="carousel"
         autoplay
         direction="top"
@@ -9,7 +9,7 @@
         :gap="1500"
         v-if="carousel"
       >
-      </layout-carousel>
+      </my-carousel-instance>
     </template>
     <template #content-card>
       <layout-content-card

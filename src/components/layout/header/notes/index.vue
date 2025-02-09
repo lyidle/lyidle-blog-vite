@@ -11,8 +11,8 @@
 // 引入 接口
 import { searchArticleExact } from "@/api/article"
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
-import { MenuData } from "@/components/my-menu/instance/types"
+import { menuStyleType } from "@/components/my/menu/types"
+import { MenuData } from "@/components/my/menu/instance/types"
 
 // 接收props
 defineProps<{ menuStyle?: menuStyleType }>()

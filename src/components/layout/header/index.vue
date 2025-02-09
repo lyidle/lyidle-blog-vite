@@ -11,7 +11,7 @@
 <script setup lang="ts" name="LayoutHeader">
 import { observer, ObserverCallback } from "@/utils/observer"
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 // 悬浮菜单的样式
@@ -107,9 +107,6 @@ $list-gap: 5px;
   height: var(--header-height);
   @include flex(space-between);
   padding: 0 var(--header-pd);
-  @include media(xs) {
-    padding: 0 13px;
-  }
   background-color: v-bind(headerBg);
   position: fixed;
   box-sizing: border-box;
@@ -117,6 +114,9 @@ $list-gap: 5px;
   z-index: $global-header-index;
   transition: background-color var(--header-bg-initial-during),
     padding var(--header-bg-initial-during);
+  @include media(xs) {
+    padding: 0 13px;
+  }
   .logo {
     font-family: "LOGO";
   }

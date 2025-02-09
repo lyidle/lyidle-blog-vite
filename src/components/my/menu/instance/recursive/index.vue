@@ -42,7 +42,7 @@
         class="custom-menu-item"
         :style="{ width: authWidth }"
       >
-        <parse-icon :icon="sub.icon"></parse-icon>
+        <icon-parse :icon="sub.icon"></icon-parse>
         <span class="text-nowrap">{{ sub.name }}</span>
         <i
           v-if="sub.children?.length"
@@ -80,7 +80,7 @@
 
 <script setup lang="ts" name="MyMenuInstanceRecursive">
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 import { MenuData, directionType } from "../types"
 // 引入 辅助函数
 import {

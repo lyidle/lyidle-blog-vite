@@ -1,7 +1,7 @@
 <template>
   <li class="custom-menu-trigger">
     <my-anchor>
-      <parse-icon :icon="data.icon"></parse-icon>
+      <icon-parse :icon="data.icon"></icon-parse>
       {{ data.name }}
     </my-anchor>
     <my-menu :triangle="true" :menuStyle class="my-menu-container">
@@ -16,7 +16,7 @@
           class="custom-menu-item"
           :style="{ width: menuMathMax(parentMaxWidth, itemWidth) }"
         >
-          <parse-icon :icon="data.icon"></parse-icon>
+          <icon-parse :icon="data.icon"></icon-parse>
           <span class="text-nowrap">{{ item.name }}</span>
           <i
             v-if="item.children?.length"
@@ -52,7 +52,7 @@
 
 <script setup lang="ts" name="MyMenuInstance">
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 import { directionType, MenuItem } from "./types"
 // 引入 子组件
 import recursive from "./recursive/index.vue"

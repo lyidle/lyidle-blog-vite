@@ -1,5 +1,5 @@
 // 引入 类型
-import { uploadFiles } from "@/components/my-upload/index.vue"
+import { uploadFiles } from "@/components/my/upload/index.vue"
 
 export const useDocEditorOpt = defineStore(
   "docEditorOptStore",

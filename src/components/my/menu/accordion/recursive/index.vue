@@ -5,10 +5,10 @@
         <div class="menu-item">
           <div class="start-icon">
             <router-link v-if="item.to" :to="item.to">
-              <parse-icon :icon="item.icon"></parse-icon>{{ item.name }}
+              <icon-parse :icon="item.icon"></icon-parse>{{ item.name }}
             </router-link>
             <a v-else>
-              <parse-icon :icon="item.icon"></parse-icon>{{ item.name }}
+              <icon-parse :icon="item.icon"></icon-parse>{{ item.name }}
             </a>
             <div
               v-if="item.children?.length"

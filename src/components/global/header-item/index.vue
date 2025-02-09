@@ -30,7 +30,7 @@
 import type { PersonMenuList } from "@/components/layout/header/types"
 import { ReturnType } from "@/hooks/header/showPersonHeaderMenu"
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 
 defineProps<{ data: ReturnType; menuStyle: menuStyleType }>()
 </script>

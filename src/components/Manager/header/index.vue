@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts" name="ManagerHeader">
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 悬浮菜单的样式

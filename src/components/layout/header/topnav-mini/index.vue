@@ -33,7 +33,9 @@
           <!-- 头像 -->
           <global-avatar></global-avatar>
           <layout-link-pages></layout-link-pages>
-          <Ribbon bg="var(--scissors-color)"></Ribbon>
+          <global-animations-ribbon
+            bg="var(--scissors-color)"
+          ></global-animations-ribbon>
           <my-menu-accordion :data="userMenuList"></my-menu-accordion>
         </div>
       </template>
@@ -42,7 +44,7 @@
 </template>
 <script setup lang="ts" name="TopNavMini">
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"

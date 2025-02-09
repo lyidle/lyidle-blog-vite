@@ -109,7 +109,7 @@ import { useVditorUpdate, vditorType } from "@/hooks/Doc/vditorEditor/update"
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 类型
 import type { InputInstance } from "element-plus"
-import { uploadFiles } from "@/components/my-upload/index.vue"
+import { uploadFiles } from "@/components/my/upload/index.vue"
 // 压缩 与 解压
 import { decompressString } from "@/utils/compression"
 // 引入 api

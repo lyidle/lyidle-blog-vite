@@ -1,6 +1,6 @@
 <template>
   <div class="contain carousel card_style">
-    <carousel v-bind="$attrs">
+    <my-carousel v-bind="$attrs">
       <template #body="{ item }: { item: Datum }">
         <div class="data-item">
           <div class="poster">
@@ -44,11 +44,11 @@
       <template #next>
         <div>next</div>
       </template>
-    </carousel>
+    </my-carousel>
   </div>
 </template>
 
-<script setup lang="ts" name="MyCarousel">
+<script setup lang="ts" name="MyCarouselInstance">
 import moment from "@/utils/moment"
 // 引入类型
 import type { Datum } from "@/api/article/types/getCarousel"

@@ -15,7 +15,7 @@
 
 <script setup lang="ts" name="TopNav">
 // 引入类型
-import { menuStyleType } from "@/components/my-menu/types"
+import { menuStyleType } from "@/components/my/menu/types"
 // 引入store
 import { useUserStore } from "@/store/user"
 
