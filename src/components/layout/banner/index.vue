@@ -1,5 +1,5 @@
 <template>
-  <context-menu class="global-banner">
+  <my-context-menu class="global-banner">
     <!-- 用于判断是否离开视口 固定header -->
     <div
       class="banner-observer absolute top-0 left-0 z-3 h-10px w-100% pointer-events-none"
@@ -44,7 +44,7 @@
         </div>
       </div>
       <teleport to="body">
-        <context-menu>
+        <my-context-menu>
           <div
             class="header-animate"
             v-if="$route.meta.bannerWaves"
@@ -59,11 +59,11 @@
               class="cursor-[var(--cursor-default)]"
             ></global-animations-waves>
           </div>
-        </context-menu>
+        </my-context-menu>
       </teleport>
     </div>
     <div class="fixed-replace" v-if="bannerIsFixed"></div>
-  </context-menu>
+  </my-context-menu>
 </template>
 
 <script setup lang="ts" name="Banner">

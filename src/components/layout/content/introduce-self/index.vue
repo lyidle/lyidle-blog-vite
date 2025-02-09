@@ -1,5 +1,5 @@
 <template>
-  <context-menu>
+  <my-context-menu>
     <layout-content-aside-card>
       <template #body>
         <div class="aside-container aside-userinfo">
@@ -74,7 +74,7 @@
     <template #body>
       <layout-content-menu />
     </template>
-  </context-menu>
+  </my-context-menu>
 </template>
 
 <script setup lang="ts" name="AsideIntroduceSelf">

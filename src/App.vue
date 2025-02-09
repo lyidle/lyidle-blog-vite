@@ -1,10 +1,10 @@
 <template>
-  <context-menu>
+  <my-context-menu>
     <global-theme></global-theme>
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="route.path" />
     </router-view>
-  </context-menu>
+  </my-context-menu>
 </template>
 
 <script setup lang="ts" name="App">

@@ -17,7 +17,7 @@
       <!-- 内容区 -->
       <template #content-start>
         <teleport to="body" v-if="article">
-          <context-menu>
+          <my-context-menu>
             <!-- 头部 -->
             <div class="doc-pages-header">
               <div class="container">
@@ -114,7 +114,7 @@
                 </div>
               </div>
             </div>
-          </context-menu>
+          </my-context-menu>
         </teleport>
         <!-- 卡片 -->
         <div class="doc-content" ref="docRef">
@@ -174,6 +174,7 @@ onBeforeMount(async () => {
           (decompressString(articles.content) as string) || articles.content
     } catch (error) {}
     article.value = articles
+    console.log(article.value)
   } catch (error) {}
 })
 

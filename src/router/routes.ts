@@ -38,7 +38,7 @@ export const constantRoute: RouteRecordRaw[] = [
     children: [
       // 文章
       {
-        path: "/doc/",
+        path: "/doc/:id",
         name: "Document",
         meta: {
           title: "文章",

@@ -1,6 +1,6 @@
 <template>
   <template v-if="asideCounts">
-    <context-menu-item
+    <my-context-menu-item
       :content="`${isAside ? '打开' : '关闭'}侧边信息`"
       :icon="
         !isAside
@@ -8,7 +8,7 @@
           : 'i-arcticons:photoprism-gallery'
       "
       @click="isAside = !isAside"
-    ></context-menu-item>
+    ></my-context-menu-item>
   </template>
 </template>
 

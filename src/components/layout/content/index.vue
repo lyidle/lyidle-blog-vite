@@ -1,7 +1,7 @@
 <template>
   <global-animations-ornaments></global-animations-ornaments>
   <global-tools></global-tools>
-  <context-menu
+  <my-context-menu
     class="global-content"
     :style="{ marginTop: `${$route.meta.pagesMt}` }"
   >
@@ -30,7 +30,7 @@
       <layout-content-menu />
     </template>
     <slot name="outer"></slot>
-  </context-menu>
+  </my-context-menu>
 </template>
 
 <script setup lang="ts" name="Content">

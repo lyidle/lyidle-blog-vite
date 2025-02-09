@@ -1,6 +1,6 @@
 <template>
   <template v-if="asideCounts">
-    <context-menu-item
+    <my-context-menu-item
       :content="`${contentIsReverse ? '右侧' : '左侧'}侧边信息`"
       :icon="
         !contentIsReverse
@@ -8,7 +8,7 @@
           : 'i-arcticons:goodwy-gallery'
       "
       @click="contentIsReverse = !contentIsReverse"
-    ></context-menu-item>
+    ></my-context-menu-item>
   </template>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <context-menu>
+    <my-context-menu>
       <div :class="name">
         <div class="drawer-mask" @click="close" v-if="drawer"></div>
         <transition name="drawer">
@@ -9,7 +9,7 @@
           </div>
         </transition>
       </div>
-    </context-menu>
+    </my-context-menu>
   </teleport>
 </template>
 

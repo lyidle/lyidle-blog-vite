@@ -33,35 +33,35 @@
           <i class="i-lets-icons:arrow-down"></i>
         </div>
       </div>
-      <context-menu-item
+      <my-context-menu-item
         :content="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
         :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
         @click="bannerIsFixed = !bannerIsFixed"
       >
-      </context-menu-item>
-      <context-menu-item
+      </my-context-menu-item>
+      <my-context-menu-item
         v-if="themes === 'switch'"
         :content="`${isDark ? '暗夜' : '白天'}模式`"
         :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
         @click="isDark = !isDark"
       >
-      </context-menu-item>
-      <context-menu-item
+      </my-context-menu-item>
+      <my-context-menu-item
         :content="'个性化设置'"
         :icon="'i-basil:edit-outline'"
         @click="openSettings"
-      ></context-menu-item>
-      <context-menu-item
+      ></my-context-menu-item>
+      <my-context-menu-item
         :content="'复制文本'"
         :icon="'i-material-symbols-light:print'"
         @click="handleContextMenu"
         v-if="isCopyText"
-      ></context-menu-item>
-      <context-menu-item
+      ></my-context-menu-item>
+      <my-context-menu-item
         :content="'打印页面'"
         :icon="'i-material-symbols-light:print'"
         onclick="window.print()"
-      ></context-menu-item>
+      ></my-context-menu-item>
       <slot name="body"></slot>
     </div>
   </div>
