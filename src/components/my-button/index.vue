@@ -7,7 +7,7 @@
   </el-button>
 </template>
 
-<script setup lang="ts" name="MyButton_">
+<script setup lang="ts" name="MyButton">
 import { useExposeInstance } from "@/hooks/useExposeInstance"
 const instance = ref()
 const slots = defineSlots()

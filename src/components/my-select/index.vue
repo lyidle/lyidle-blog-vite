@@ -15,7 +15,7 @@
   </el-select>
 </template>
 
-<script setup lang="ts" name="MySwitch">
+<script setup lang="ts" name="MySelect">
 const value = defineModel()
 const props = defineProps(["options"])
 </script>
