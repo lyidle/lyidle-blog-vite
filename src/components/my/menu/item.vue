@@ -25,7 +25,7 @@ const { bgHover, colorHover } = props.style
 </script>
 
 <style scoped lang="scss">
-$menu-radius: var(--header-topmenu-radius);
+$menu-radius: var(--menu-radius);
 .menu-item {
   @include flex();
   position: relative;

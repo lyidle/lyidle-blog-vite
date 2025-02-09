@@ -123,12 +123,5 @@ $underline-bg: var(--header-topnav-mask-color);
   .logo {
     font-family: "LOGO";
   }
-  // 设置menu的阴影
-  ::v-deep(.custom-menu),
-  ::v-deep(.custom-popover) {
-    .title {
-      filter: drop-shadow(var(--header-menu-drop-shadow));
-    }
-  }
 }
 </style>

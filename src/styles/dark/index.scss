@@ -76,4 +76,6 @@ html[themes="#{$theme}"] {
   --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
   --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
   --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
+  // menu的阴影
+  --menu-drop-shadow: 0 0 3px rgb(42, 42, 42);
 }

@@ -64,7 +64,7 @@ $list: custom-menu-trigger;
     }
   }
 }
-$menu-radius: var(--header-topmenu-radius);
+$menu-radius: var(--menu-radius);
 $menu-triangle-width: 10px;
 .custom-menu {
   left: 50%;
@@ -87,6 +87,7 @@ $menu-triangle-width: 10px;
     left: 50%;
     z-index: -999;
     transform: translateX(-50%);
+    filter: drop-shadow(var(--menu-drop-shadow));
     // 三角形
     span {
       background-color: transparent;
@@ -111,7 +112,7 @@ $menu-triangle-width: 10px;
     pointer-events: none;
     background-color: v-bind(bg);
     z-index: -1;
-    filter: drop-shadow(var(--header-menu-drop-shadow));
+    filter: drop-shadow(var(--menu-drop-shadow));
   }
 }
 </style>
