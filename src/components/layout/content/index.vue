@@ -1,6 +1,9 @@
 <template>
-  <context-menu class="global-content">
-    <div class="pages" :style="{ marginTop: `${$route.meta.pagesMt}` }">
+  <context-menu
+    class="global-content"
+    :style="{ marginTop: `${$route.meta.pagesMt}` }"
+  >
+    <div class="pages">
       <div
         class="pages-content"
         :style="{ width: isShowAside ? undefined : '100%' }"
@@ -144,7 +147,10 @@ $translate-y: -5px;
 $aside-pd: 20px;
 $aside-width: var(--aside-width);
 .global-content {
-  overflow: hidden;
+  @include media(mi) {
+    width: 100%;
+    overflow: hidden;
+  }
   .pages {
     color: var(--primary-color);
     width: var(--content-width);
@@ -157,6 +163,7 @@ $aside-width: var(--aside-width);
     gap: $item-gap;
     position: relative;
     z-index: $global-content-index;
+
     /* 左边内容区 */
     > .pages-content {
       width: calc(100% - $aside-width);

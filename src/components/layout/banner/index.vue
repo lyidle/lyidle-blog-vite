@@ -45,7 +45,13 @@
       </div>
       <teleport to="body">
         <context-menu>
-          <div class="header-animate" v-if="$route.meta.bannerWaves">
+          <div
+            class="header-animate"
+            v-if="$route.meta.bannerWaves"
+            :style="{
+              marginTop: `${`calc(${$route.meta.pagesMt} + 20vh)` || '55vh'}`,
+            }"
+          >
             <animations-waves
               oneColor="var(--doc-header-waves-color-1)"
               twoColor="var(--doc-header-waves-color-2)"
