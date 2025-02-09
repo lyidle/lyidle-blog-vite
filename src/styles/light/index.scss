@@ -76,7 +76,7 @@ html[themes="#{$theme}"] {
   --doc-header-waves-color-1: #{rgba($doc-header-waves-color, 0.562)};
   --doc-header-waves-color-2: #{rgba($doc-header-waves-color, 0.253)};
   --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
-  // menu的阴影
+  // menu的阴影 把 x 单独提取出来 控制 x 的方向 * -1 or 1
   --drop-shadow-x: 3px;
   --menu-drop-shadow: 3px 3px rgba(52, 46, 46, 0.237);
   // 头部导航的菜单相关颜色
