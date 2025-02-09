@@ -7,7 +7,6 @@
           right="-40px"
           top="50px"
           :triangle="{ right: '50px' }"
-          bg="white"
         ></global-setting>
       </li>
       <!-- 个人项 -->

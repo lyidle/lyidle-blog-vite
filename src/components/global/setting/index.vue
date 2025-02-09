@@ -2,7 +2,7 @@
   <a class="custom-popover-trigger custom-setting item-a">
     <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
     {{ label }}
-    <my-popover :width :height :label v-bind="$attrs" :bg>
+    <my-popover :width :height :label v-bind="$attrs">
       <template #body>
         <el-form label-width="130px" class="m-5px m-l-15px header-setting">
           <el-form-item
@@ -123,13 +123,11 @@ withDefaults(
     width?: string
     height?: string
     label?: string
-    bg?: string
   }>(),
   {
     label: "设置",
     height: "unset",
     width: "180px",
-    bg: "var(--header-setting-bg)",
   }
 )
 </script>

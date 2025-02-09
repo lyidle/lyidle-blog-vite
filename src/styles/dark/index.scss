@@ -84,4 +84,7 @@ html[themes="#{$theme}"] {
   --menu-bg-hover: #5c8096;
   --menu-color: #c6d6ed;
   --menu-color-hover: #ffffff;
+  // popover 头部的设置
+  --popover-bg: #3d5b6e;
+  --popover-color: var(--primary-color);
 }

@@ -50,7 +50,8 @@ html[themes="#{$theme}"] {
     --menu-color: var(--header-color);
     --menu-color-hover: #ecf5ff;
     // 头部导航设置
-    --header-setting-bg: var(--header-primary-bg);
+    --popover-bg: var(--header-primary-bg);
+    --popover-color: var(--primary-color);
     --header-setting-label-color: var(--header-color);
   }
 }

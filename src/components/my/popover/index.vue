@@ -24,7 +24,7 @@ const props = withDefaults(
     left: "",
     width: "100px",
     height: "70px",
-    bg: "white",
+    bg: "var(--popover-bg)",
     triangle: () => ({
       show: "true",
       left: "",
@@ -78,7 +78,7 @@ $menu-color-light: v-bind(bg);
   position: absolute;
   background-color: $menu-color-light;
   border-radius: $menu-radius;
-  color: var(--primary-color);
+  color: var(--popover-color);
   // 动画
   transition: top 0.3s;
   top: v-bind(initialTop);
