@@ -8,9 +8,14 @@
     :limit="1"
     drag
     class="ml-10px"
-    :class="$attrs.class"
+    v-bind="$attrs"
+    ref="instance"
   >
     <i class="i-ep:plus w-20px h-20px"></i>
+    <template v-for="(_, name) in slots" #[name]="scopedData">
+      <slot :name="name" v-bind="scopedData" v-if="scopedData"></slot>
+      <slot :name="name" v-else></slot>
+    </template>
   </el-upload>
 
   <el-dialog v-model="dialogVisible">
@@ -27,6 +32,17 @@ import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 import type { UploadProps, UploadUserFile } from "element-plus"
 
 export type uploadFiles = UploadUserFile[]
+
+// 处理 默认的事情
+
+import { useExposeInstance } from "@/hooks/useExposeInstance"
+const instance = ref()
+const slots = defineSlots()
+// 使用 Hook
+const { exposed } = useExposeInstance(instance)
+
+// 在组件的 <script setup> 中调用 defineExpose
+defineExpose(exposed)
 
 // 接收 v-model
 // 展示的图片

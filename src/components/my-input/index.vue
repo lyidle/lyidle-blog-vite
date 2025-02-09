@@ -1,6 +1,6 @@
 <template>
   <el-input v-bind="$attrs" ref="instance">
-    <template v-for="(_, name) in slots" #[name]="scopedData" :key="name">
+    <template v-for="(_, name) in slots" #[name]="scopedData">
       <slot :name="name" v-bind="scopedData" v-if="scopedData"></slot>
       <slot :name="name" v-else></slot>
     </template>
