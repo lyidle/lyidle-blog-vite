@@ -26,10 +26,10 @@ import { menuStyleType } from "@/components/my/menu/types"
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 悬浮菜单的样式
 const menuStyle: menuStyleType = {
-  bg: "white",
-  bgHover: "white",
-  color: "black",
-  colorHover: "black",
+  bg: "var(--menu-bg)",
+  bgHover: "var(--menu-bg-hover)",
+  color: "var(--menu-color)",
+  colorHover: "var(--menu-color-hover)",
 }
 // 个人页面
 const PersonData = useShowPersonHeaderMenu()

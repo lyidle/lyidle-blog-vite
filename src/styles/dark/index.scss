@@ -78,4 +78,9 @@ html[themes="#{$theme}"] {
   --doc-header-waves-color-3: #{rgba($doc-header-waves-color, 0.74)};
   // menu的阴影
   --menu-drop-shadow: 0 0 3px rgb(42, 42, 42);
+  // 头部导航的菜单颜色
+  --menu-bg: #3d5b6e;
+  --menu-bg-hover: #5c8096;
+  --menu-color: #c6d6ed;
+  --menu-color-hover: #ffffff;
 }

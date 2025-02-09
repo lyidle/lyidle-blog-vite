@@ -16,10 +16,10 @@ import { menuStyleType } from "@/components/my/menu/types"
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 // 悬浮菜单的样式
 const menuStyle: menuStyleType = {
-  bg: "var(--header-menu-bg)",
-  bgHover: "var(--header-menu-bg-hover)",
-  color: "var(--header-menu-color)",
-  colorHover: "var(--header-menu-color-hover)",
+  bg: "var(--menu-bg)",
+  bgHover: "var(--menu-bg-hover)",
+  color: "var(--menu-color)",
+  colorHover: "var(--menu-color-hover)",
 }
 // 导航的颜色
 // 头部字体颜色

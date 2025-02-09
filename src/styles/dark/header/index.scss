@@ -45,10 +45,10 @@ html[themes="#{$theme}"] {
     --header-bg-sticky: #4b5f6cf3;
     --header-color-sticky: var(--header-color);
     // 头部导航的菜单颜色
-    --header-menu-bg: var(--header-primary-bg);
-    --header-menu-bg-hover: #5c8096;
-    --header-menu-color: var(--header-color);
-    --header-menu-color-hover: #ffffff;
+    --menu-bg: var(--header-primary-bg);
+    --menu-bg-hover: #5c8096;
+    --menu-color: var(--header-color);
+    --menu-color-hover: #ffffff;
     // 头部导航设置
     --header-setting-bg: var(--header-primary-bg);
     --header-setting-label-color: var(var(--primary-color));

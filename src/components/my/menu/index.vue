@@ -39,10 +39,10 @@ const props = withDefaults(
     top: "30px",
     triangle: false,
     menuStyle: () => ({
-      bg: "white",
-      bgHover: "#e5baee",
-      color: "#203b5b",
-      colorHover: "#203b5b",
+      bg: "var(--menu-bg)",
+      bgHover: "var(--menu-bg-hover)",
+      color: "var(--menu-color)",
+      colorHover: "var(--menu-color-hover)",
     }),
   }
 )
