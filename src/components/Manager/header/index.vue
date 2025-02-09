@@ -98,12 +98,23 @@ $avatar-size: $manager-header-height - 10;
       }
     }
     // 悬浮的菜单项目
-    .topnav-menu-item {
+    ::v-deep(.topnav-menu-item) {
       height: $menu-item-height;
       overflow: hidden;
       @include flex(start);
       padding-left: $icon-pl;
       gap: $list-gap;
+      > a {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        i,
+        svg {
+          margin-right: $icon-mr;
+        }
+      }
     }
   }
 }

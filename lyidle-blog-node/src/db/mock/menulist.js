@@ -1,5 +1,6 @@
 "use strict"
-
+const { resolve } = require("path")
+const data = require(resolve(__dirname, "./testRoutes"))
 const manager = [
   {
     name: "Manager",
@@ -83,5 +84,7 @@ const manager = [
       },
     ],
   },
+  ...data,
 ]
+
 module.exports = manager

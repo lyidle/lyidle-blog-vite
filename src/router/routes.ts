@@ -1,4 +1,6 @@
 // 引入类型
+import { asyncRoutesTest } from "@/test/asyncRoute"
+// 引入 测试 的路由
 import { RouteRecordRaw } from "vue-router"
 
 /* meta 参数
@@ -294,4 +296,5 @@ export const asyncRoute: RouteRecordRaw[] = [
       },
     ],
   },
+  ...asyncRoutesTest,
 ]
