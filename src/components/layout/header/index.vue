@@ -3,24 +3,16 @@
     <div class="logo">
       <router-link to="/">{{ LOGO }}</router-link>
     </div>
-    <layout-header-topnav :menuStyle></layout-header-topnav>
-    <layout-header-topnav-mini :menuStyle></layout-header-topnav-mini>
+    <layout-header-topnav></layout-header-topnav>
+    <layout-header-topnav-mini></layout-header-topnav-mini>
   </div>
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
 import { observer, ObserverCallback } from "@/utils/observer"
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
-// 悬浮菜单的样式
-const menuStyle: menuStyleType = {
-  bg: "var(--menu-bg)",
-  bgHover: "var(--menu-bg-hover)",
-  color: "var(--menu-color)",
-  colorHover: "var(--menu-color-hover)",
-}
+
 // 导航的颜色
 // 头部字体颜色
 const headerColor = ref<string>("white")

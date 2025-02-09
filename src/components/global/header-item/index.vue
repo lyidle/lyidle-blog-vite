@@ -4,12 +4,7 @@
       <i class="i-iconoir:page-star w-1em h-1em"></i>
       个人
     </a>
-    <my-menu
-      :data="data?.data"
-      :triangle="true"
-      :menuStyle
-      :left="data?.style.left"
-    >
+    <my-menu :data="data?.data" :triangle="true" :left="data?.style.left">
       <template #body="{ item: sub }: { item: PersonMenuList }">
         <router-link
           :to="sub.to"
@@ -29,10 +24,8 @@
 // 引入类型
 import type { PersonMenuList } from "@/components/layout/header/types"
 import { ReturnType } from "@/hooks/header/showPersonHeaderMenu"
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 
-defineProps<{ data: ReturnType; menuStyle: menuStyleType }>()
+defineProps<{ data: ReturnType }>()
 </script>
 
 <style scoped lang="scss"></style>

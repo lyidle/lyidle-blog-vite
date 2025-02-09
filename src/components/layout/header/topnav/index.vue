@@ -1,11 +1,10 @@
 <template>
   <ul class="topnav">
-    <layout-header-normal :menuStyle>
+    <layout-header-normal>
       <template #scend>
         <my-menu-instance
           v-for="item in userMenuList"
           :data="item"
-          :menuStyle
         ></my-menu-instance>
       </template>
       <template #last> </template>
@@ -14,15 +13,10 @@
 </template>
 
 <script setup lang="ts" name="TopNav">
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 // 引入store
 import { useUserStore } from "@/store/user"
 
 const { userMenuList } = storeToRefs(useUserStore())
-
-// 接收props
-defineProps<{ menuStyle?: menuStyleType }>()
 </script>
 
 <style scoped lang="scss">

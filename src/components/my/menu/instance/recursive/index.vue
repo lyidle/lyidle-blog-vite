@@ -28,11 +28,9 @@
         directionCallback(cloudDirection || direction)
       )
     "
-    :menuStyle
     class="sub-menu"
   >
     <my-menu-item
-      :style="menuStyle"
       v-for="sub in children"
       :key="sub"
       class="custom-menu-trigger"
@@ -79,8 +77,6 @@
 </template>
 
 <script setup lang="ts" name="MyMenuInstanceRecursive">
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 import { MenuData, directionType } from "../types"
 // 引入 辅助函数
 import {
@@ -93,7 +89,6 @@ import {
 
 // 接收props
 const props = defineProps<{
-  menuStyle?: menuStyleType
   children: MenuData
   tagsTriangleTop: number
   // 当子组件的 width 没有时 使用

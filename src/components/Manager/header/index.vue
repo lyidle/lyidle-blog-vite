@@ -11,7 +11,7 @@
         ></global-setting>
       </li>
       <!-- 个人项 -->
-      <global-header-item class="tools-item" :data="PersonData" :menuStyle>
+      <global-header-item class="tools-item" :data="PersonData">
       </global-header-item>
       <li class="tools-item avatar">
         <global-avatar></global-avatar>
@@ -21,16 +21,9 @@
 </template>
 
 <script setup lang="ts" name="ManagerHeader">
-import { menuStyleType } from "@/components/my/menu/types"
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
-// 悬浮菜单的样式
-const menuStyle: menuStyleType = {
-  bg: "var(--menu-bg)",
-  bgHover: "var(--menu-bg-hover)",
-  color: "var(--menu-color)",
-  colorHover: "var(--menu-color-hover)",
-}
+
 // 个人页面
 const PersonData = useShowPersonHeaderMenu()
 </script>

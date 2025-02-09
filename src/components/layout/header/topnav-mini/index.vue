@@ -1,7 +1,7 @@
 <template>
   <div class="header-menu-container">
     <ul class="topnav">
-      <layout-header-normal :menuStyle>
+      <layout-header-normal>
         <template #last-scend>
           <!-- 菜单项 -->
           <li>
@@ -43,8 +43,6 @@
   </div>
 </template>
 <script setup lang="ts" name="TopNavMini">
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
@@ -54,9 +52,6 @@ const {
   userToken,
   userMenuList,
 } = storeToRefs(useUserStore())
-
-// 接收props
-defineProps<{ menuStyle?: menuStyleType }>()
 
 const {
   // 管理员信息 用于展示没登陆的默认信息

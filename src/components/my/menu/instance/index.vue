@@ -4,12 +4,8 @@
       <icon-parse :icon="data.icon"></icon-parse>
       {{ data.name }}
     </my-anchor>
-    <my-menu :triangle="true" :menuStyle class="my-menu-container">
-      <my-menu-item
-        :style="menuStyle"
-        class="custom-menu-trigger"
-        v-for="item in data.children"
-      >
+    <my-menu :triangle="true" class="my-menu-container">
+      <my-menu-item class="custom-menu-trigger" v-for="item in data.children">
         <!-- menuMathMax 禁止小于最小的值 itemWidth 且需要取最大值 -->
         <my-anchor
           :to="item.to"
@@ -37,7 +33,6 @@
         <!-- menuMathMax 禁止小于最小的值 itemWidth 且需要取最大值 -->
         <recursive
           v-if="item.children?.length"
-          :menuStyle
           :children="item.children"
           :tagsTriangleTop="tagsTriangleTop"
           :direction
@@ -51,8 +46,6 @@
 </template>
 
 <script setup lang="ts" name="MyMenuInstance">
-// 引入类型
-import { menuStyleType } from "@/components/my/menu/types"
 import { directionType, MenuItem } from "./types"
 // 引入 子组件
 import recursive from "./recursive/index.vue"
@@ -62,7 +55,6 @@ import { directionCallback, handlerMaxWidth, menuMathMax } from "./utils"
 // 接收props
 const props = withDefaults(
   defineProps<{
-    menuStyle?: menuStyleType
     data: MenuItem
     item_h?: string
     iconM_r?: string
