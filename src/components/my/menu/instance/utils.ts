@@ -2,28 +2,30 @@
 import { directionType, MenuItem } from "./types"
 // 控制层级
 let index = 0
+export type styleType = { [key: string]: string | number }
 
 // 根据方向算出具体的值 子集的位置信息
 export const flowMenuContainerLeft = (
   width: string | number,
-  direction?: directionType,
-  returnIndex: boolean = false
-): string | number => {
-  if (returnIndex) return index as number
-  // 每次 子集菜单 自增
+  direction?: directionType
+): styleType => {
+  // 每次子集菜单自增
   ++index
-  return direction === "left"
-    ? `
-  left: 0;
-  transform: translateX(calc((${width} + 30px) * -1));
-  z-index:${index};
-`
-    : `
-  left: unset;
-  right: 0;
-  transform: translateX(calc(${width} + 30px ));
-  z-index:${index};
-`
+
+  const styleObject: styleType = {
+    zIndex: index,
+  }
+
+  if (direction === "left") {
+    styleObject["left"] = 0
+    styleObject["transform"] = `translateX(calc((${width} + 30px) * -1))`
+  } else {
+    styleObject["left"] = "unset"
+    styleObject["right"] = 0
+    styleObject["transform"] = `translateX(calc(${width} + 30px))`
+  }
+
+  return styleObject
 }
 
 // 三角的位置信息

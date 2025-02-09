@@ -67,6 +67,8 @@ $list: custom-menu-trigger;
 $menu-radius: var(--menu-radius);
 $menu-triangle-width: 10px;
 .custom-menu {
+  // 控制dropshadow的x轴
+  --isLeft: -1;
   left: 50%;
   transform: translateX(-50%);
   position: absolute;
@@ -87,7 +89,9 @@ $menu-triangle-width: 10px;
     left: 50%;
     z-index: -999;
     transform: translateX(-50%);
-    filter: drop-shadow(var(--menu-drop-shadow));
+    filter: drop-shadow(
+      calc(var(--isLeft) * var(--drop-shadow-x)) var(--menu-drop-shadow)
+    );
     // 三角形
     span {
       background-color: transparent;
@@ -112,7 +116,9 @@ $menu-triangle-width: 10px;
     pointer-events: none;
     background-color: v-bind(bg);
     z-index: -1;
-    filter: drop-shadow(var(--menu-drop-shadow));
+    filter: drop-shadow(
+      calc(var(--isLeft) * var(--drop-shadow-x)) var(--menu-drop-shadow)
+    );
   }
 }
 </style>

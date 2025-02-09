@@ -22,12 +22,12 @@
               ).top,
       },
     }"
-    :style="
-      flowMenuContainerLeft(
+    :style="{
+      ...flowMenuContainerLeft(
         authWidth,
         directionCallback(cloudDirection || direction)
-      )
-    "
+      ),
+    }"
     class="sub-menu"
   >
     <my-menu-item
