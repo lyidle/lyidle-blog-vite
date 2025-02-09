@@ -100,8 +100,8 @@ $title-m-t: 35px;
 $title-m-b: 10px;
 // 底部源信息 距离
 $meta-gap: 5px;
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 .layout-content {
   height: $content-height;
   flex: 1 1 0;

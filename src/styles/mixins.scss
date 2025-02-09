@@ -38,12 +38,27 @@ $scr: (
   .card_style {
     @each $key, $value in $them {
       html[themes="#{$key}"] body[banner-fixed="fixed"] & {
-        box-shadow: var(#{$var}-shadow-fixed);
+        box-shadow: var(#{$var}-card-shadow-fixed);
       }
       html[themes="#{$key}"] & {
-        box-shadow: var(#{$var}-shadow);
+        box-shadow: var(#{$var}-card-shadow);
       }
     }
+  }
+}
+
+// 设置卡片的样式
+@mixin setCardStyle($var: --pages) {
+  @include setCardShadow($var: --pages);
+  .card_style {
+    background-color: var(#{$var}-card-bg);
+  }
+}
+// 设置卡片的样式
+@mixin setManagerCardStyle($var: --manager) {
+  @include setCardShadow($var: --manager);
+  .card_style {
+    background-color: var(#{$var}-card-bg);
   }
 }
 

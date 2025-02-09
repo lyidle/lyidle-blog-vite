@@ -1,5 +1,6 @@
 @use "../mixins.scss" as *;
 @use "../animations.scss" as *;
+
 // 词海的 的样式混合
 @mixin cloud-words {
   $gap: 15px;

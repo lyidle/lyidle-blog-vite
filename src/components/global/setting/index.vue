@@ -2,16 +2,7 @@
   <a class="custom-popover-trigger custom-setting item-a">
     <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
     {{ label }}
-    <my-popover
-      :right
-      :top
-      :left
-      :width
-      :height
-      :label
-      :triangle
-      bg="var(--header-setting-bg)"
-    >
+    <my-popover :width :height :label v-bind="$attrs" :bg>
       <template #body>
         <el-form label-width="130px" class="m-5px m-l-15px header-setting">
           <el-form-item
@@ -129,19 +120,16 @@ const {
 // 定义与接收props
 withDefaults(
   defineProps<{
-    top?: string
-    right?: string
-    left?: string
     width?: string
     height?: string
-    bg?: string
     label?: string
-    triangle?: { show?: string; left?: string; right?: string }
+    bg?: string
   }>(),
   {
     label: "设置",
     height: "unset",
     width: "180px",
+    bg: "var(--header-setting-bg)",
   }
 )
 </script>

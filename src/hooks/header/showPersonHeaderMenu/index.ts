@@ -5,7 +5,14 @@ import "./icons"
 // 引入类型
 import type { PersonMenuList } from "@/components/layout/header/types"
 import { useShowUserinfo } from "@/hooks/showUserinfo"
-export const useShowPersonHeaderMenu = () => {
+
+export type ReturnType = {
+  data: PersonMenuList[]
+  style: { left: string; width: string }
+}
+export type headerItemReturnType = ComputedRef<ReturnType>
+
+export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const { showAccount } = useShowUserinfo({ showAccount: true })
   // 提取 数据
   const { userToken, userRole } = storeToRefs(useUserStore())
@@ -100,5 +107,5 @@ export const useShowPersonHeaderMenu = () => {
       return { data: result, style: loginStyle }
     }
   })
-  return PersonData
+  return PersonData as headerItemReturnType
 }

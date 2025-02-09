@@ -1,6 +1,8 @@
 // 引入api
 import { getMenuList } from "@/api/admin"
 import { getUserInfo, reqLogout } from "@/api/user"
+// 引入 异步路由
+import { asyncRoute } from "@/router/routes"
 // 引入类型
 import type {
   GetMenuList,
@@ -17,6 +19,8 @@ export const useUserStore = defineStore(
   () => {
     // 用户的菜单数据
     const userMenuList = ref<GetMenuList["data"]>([])
+    //  后台管理的菜单
+    const adminMenuList = ref<GetMenuList["data"]>([])
     // 用户的 焦点图信息
     const userBannerImg = ref<{ [key in string]: PurpleBannerImg }>({})
     // 用户的 白名单路径
@@ -31,8 +35,16 @@ export const useUserStore = defineStore(
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result, userRole)
-        // 赋值处理的结果
-        userMenuList.value = _userMenuList
+
+        // 过滤掉后台管理的菜单
+        userMenuList.value = _userMenuList?.filter(
+          (item) => item.name !== asyncRoute[0].name
+        )
+
+        adminMenuList.value = _userMenuList?.filter(
+          (item) => item.name == asyncRoute[0].name
+        )
+
         userBannerImg.value = _userBannerImg
         whitelist.value = _whitelist
         routes.value = _routes
@@ -111,6 +123,7 @@ export const useUserStore = defineStore(
       userBannerImg,
       whitelist,
       userMenuList,
+      adminMenuList,
       routes,
       reqUserInfo,
       // 用户信息

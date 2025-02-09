@@ -39,8 +39,15 @@ const options: ObserverCallback = {
 }
 
 onMounted(() => {
+  // 有 banner 则代理动态吸附
   const el = document.querySelector(".banner-observer")
   el && observer(el, options)
+  // 没有 的 则是没有图片背景的
+  // 需要修改默认显示的颜色
+  if (!el) {
+    headerBg.value = "var(--header-bg-sticky)"
+    headerColor.value = "var(--header-color-sticky)"
+  }
 })
 onUnmounted(() => {
   options.stop?.()

@@ -1,8 +1,6 @@
 <template>
   <context-menu>
-    <animations-ornaments></animations-ornaments>
-    <Tools></Tools>
-    <layout-theme></layout-theme>
+    <global-theme></global-theme>
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="route.path" />
     </router-view>

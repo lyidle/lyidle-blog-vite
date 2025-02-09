@@ -1,11 +1,12 @@
 // 引入 全局 变量
+@use "../../global/index.scss" as *;
+
 // 内容 区域 共同的 变量
 $pages-card-bg: white;
-@use "../../global/index.scss" as *;
 html[themes="#{$theme}"] {
   .global-content {
     --pages-card-bg: #{$pages-card-bg};
-    --pages-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
-    --pages-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
+    --pages-card-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
+    --pages-card-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
   }
 }

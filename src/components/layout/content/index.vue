@@ -1,4 +1,6 @@
 <template>
+  <global-animations-ornaments></global-animations-ornaments>
+  <global-tools></global-tools>
   <context-menu
     class="global-content"
     :style="{ marginTop: `${$route.meta.pagesMt}` }"
@@ -241,10 +243,6 @@ $aside-width: var(--aside-width);
         padding: $aside-pd;
         border-radius: var(--pages-card-radius);
       }
-    }
-    // 卡片颜色
-    ::v-deep(.myCard) {
-      background-color: var(--pages-card-bg);
     }
   }
 }

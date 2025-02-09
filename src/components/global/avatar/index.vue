@@ -8,6 +8,7 @@
           backgroundImage: showAvatar,
         }"
         alt=""
+        v-bind="$attrs"
         class="avatar w-100% h-100% block"
       />
     </router-link>

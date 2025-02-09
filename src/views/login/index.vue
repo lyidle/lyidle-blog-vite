@@ -19,9 +19,8 @@ const regRef = ref()
 <style lang="scss">
 $rotate-during: var(--login-rotate-during);
 $link-color: var(--login-link-color);
-// 设置 卡片 阴影
-@include setCardShadow(--login);
-
+// 设置 卡片 样式
+@include setCardStyle(--login);
 .login-container {
   position: absolute;
   width: 50%;
@@ -40,7 +39,6 @@ $link-color: var(--login-link-color);
     position: absolute;
     padding: 20px 40px;
     border-radius: 15px;
-    background-color: var(--login-card-bg);
     backdrop-filter: blur(0.5px);
     // 旋转过渡
     transition: transform $rotate-during;

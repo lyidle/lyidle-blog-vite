@@ -52,8 +52,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 // 设置 词海
 @include cloud-words;
 </style>

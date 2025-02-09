@@ -30,7 +30,7 @@
           </li>
         </ul>
         <div class="content">
-          <layout-theme-global v-if="setScene == 0"></layout-theme-global>
+          <global-theme-global v-if="setScene == 0"></global-theme-global>
           <div v-if="setScene == 1"><div>test1</div></div>
           <div v-if="setScene == 2"><div>test2</div></div>
           <div v-if="setScene == 3"><div>test3</div></div>

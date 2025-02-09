@@ -16,7 +16,7 @@ export const filterUserMenuList = (
           item.to &&
           whitelist.includes(item.to) &&
           // 权限在用户权限中 或者是 user
-          item.role.find(
+          item.role?.find(
             (item) => item.includes("user") || role.value.includes(item)
           )
         ) {

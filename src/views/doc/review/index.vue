@@ -204,8 +204,8 @@ $header-container-h: 12.5rem;
 // 设置 侧边栏标题
 @include content-aside-title(var(--aside-title-icon-bg));
 
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 // 头部 teleport body了
 .doc-pages-header {
   position: absolute;

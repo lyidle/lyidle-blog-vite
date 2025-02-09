@@ -31,7 +31,7 @@
             v-if="!userToken"
           ></div>
           <!-- 头像 -->
-          <layout-avatar></layout-avatar>
+          <global-avatar></global-avatar>
           <layout-link-pages></layout-link-pages>
           <Ribbon bg="var(--scissors-color)"></Ribbon>
           <my-menu-accordion :data="userMenuList"></my-menu-accordion>

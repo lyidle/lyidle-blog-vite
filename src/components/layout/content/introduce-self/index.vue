@@ -14,7 +14,7 @@
           ></div>
           <div class="userInfo">
             <!-- 头像 -->
-            <layout-avatar></layout-avatar>
+            <global-avatar></global-avatar>
           </div>
           <div class="username font-size-1.5625rem text-center cur-text">
             {{ showNickName }}

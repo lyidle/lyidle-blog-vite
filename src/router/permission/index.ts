@@ -10,6 +10,8 @@ import { initMenuList } from "./initMenuList"
 import { handlerAsyncRoutes } from "./handlerAsyncRoutes"
 // 引入 处理 常量路由的 权限
 import { handlerConstRoutes } from "./handlerConstRoutes"
+// 引入 设置title 的函数
+import { setTitle } from "./setTitle"
 /**
  * 配置权限控制逻辑
  * @param router - Vue Router 实例
@@ -28,6 +30,10 @@ export const usePermission = (router: Router) => {
 
     // 处理 异步路由 没加载时 404 问题
     handlerAsyncRoutes(to, from, router)
+
+    // 设置title
+    const title = to.meta.title
+    setTitle(title)
 
     next()
   })

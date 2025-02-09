@@ -1,0 +1,10 @@
+$manager-header-height: 40px;
+$manager-context-tools-height: 30px;
+.manager-container {
+  // 侧边栏 的展开和收起宽度
+  --manager-aside-expand-width: 250px;
+  --manager-aside-fold-width: 60px;
+  // 应用的宽度
+  --manager-aside-width: var(--manager-aside-expand-width);
+  --primary-during: 0.3s;
+}

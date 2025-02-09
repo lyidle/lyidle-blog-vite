@@ -227,8 +227,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 $gap: 10px;
 $poster-size: 6.25rem;
 $year-circle-size: 25px;

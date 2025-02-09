@@ -88,8 +88,8 @@ $btns-bg-active-hover: var(--content-carousel-btns-bg-active-hover);
 $btns-radius: 10px;
 $btns-arrow-dur: 0.5s;
 $mini-dur: 0.5s;
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 .contain {
   --content-pd-r: 40px;
   --content-pd-l: 30px;
@@ -104,7 +104,7 @@ $mini-dur: 0.5s;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    background-color: var(--pages-card-bg);
+    @include setCardStyle;
     transition: height $mini-dur;
     &:hover {
       img {

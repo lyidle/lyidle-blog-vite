@@ -52,12 +52,12 @@
               marginTop: `${`calc(${$route.meta.pagesMt} + 20vh)` || '55vh'}`,
             }"
           >
-            <animations-waves
+            <global-animations-waves
               oneColor="var(--doc-header-waves-color-1)"
               twoColor="var(--doc-header-waves-color-2)"
               threeColor="var(--doc-header-waves-color-3)"
               class="cursor-[var(--cursor-default)]"
-            ></animations-waves>
+            ></global-animations-waves>
           </div>
         </context-menu>
       </teleport>

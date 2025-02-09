@@ -350,8 +350,8 @@ useIsFullscreen(vditorEditor)
 $content-pd: 0.9375rem 2.5rem;
 $toolbar-pl: 5rem;
 $item-gap-v: 0.8125rem;
-// 设置 卡片 阴影
-@include setCardShadow;
+// 设置 卡片 样式
+@include setCardStyle;
 .doc-publish-content {
   @include set-el-label(var(--primary-color));
   padding: $content-pd;
