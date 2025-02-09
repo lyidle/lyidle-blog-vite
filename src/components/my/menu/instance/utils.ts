@@ -16,14 +16,17 @@ export const flowMenuContainerLeft = (
     zIndex: index,
   }
 
-  if (direction === "left") {
-    styleObject["left"] = 0
-    styleObject["transform"] = `translateX(calc((${width} + 30px) * -1))`
-  } else {
+  if (direction === "right") {
     styleObject["left"] = "unset"
     styleObject["right"] = 0
     styleObject["transform"] = `translateX(calc(${width} + 30px))`
+    styleObject["--isLeft"] = 1
+    return styleObject
   }
+
+  styleObject["left"] = 0
+  styleObject["transform"] = `translateX(calc((${width} + 30px) * -1))`
+  styleObject["--isLeft"] = -1
 
   return styleObject
 }
@@ -32,20 +35,22 @@ export const flowMenuContainerLeft = (
 export const triangleDirection = (
   width: string | number,
   direction?: directionType
-) => {
-  return direction === "left"
-    ? {
-        left: `calc(${width} + 17px)`,
-        right: "unset",
-        top: "34px",
-        transform: "rotateZ(90deg)",
-      }
-    : {
-        right: `unset`,
-        left: "unset",
-        top: "34px",
-        transform: "rotateZ(270deg) translateY(-21px)",
-      }
+): { [key: string]: string | number } => {
+  const styleObject: { [key: string]: string | number } = {
+    top: "34px", // 公共样式
+  }
+  if (direction === "right") {
+    styleObject["right"] = `unset`
+    styleObject["left"] = "unset"
+    styleObject["transform"] = "rotateZ(270deg) translateY(-20px)"
+    return styleObject
+  }
+
+  styleObject["left"] = `calc(${width} + 16px)`
+  styleObject["right"] = "unset"
+  styleObject["transform"] = "rotateZ(90deg)"
+
+  return styleObject
 }
 
 export const directionCallback = (
