@@ -12,5 +12,8 @@ html[themes="#{$theme}"] {
     --manager-card-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
     --header-bg: white;
     --header-color: #{$primary-color};
+
+    // 头部导航 底部线条
+    --header-topnav-mask-color: #8dbcdc;
   }
 }

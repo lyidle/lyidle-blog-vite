@@ -9,5 +9,7 @@ html[themes="#{$theme}"] {
     --manager-card-bg: #{$pages-card-bg};
     --manager-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
     --manager-card-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+    // 头部导航 底部线条
+    --header-topnav-mask-color: #95adca;
   }
 }

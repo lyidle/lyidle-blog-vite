@@ -35,4 +35,4 @@ import { menuStyleType } from "@/components/my/menu/types"
 defineProps<{ data: ReturnType; menuStyle: menuStyleType }>()
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

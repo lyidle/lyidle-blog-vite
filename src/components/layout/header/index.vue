@@ -59,10 +59,13 @@ $menu-item-height: var(--header-topmenu-h);
 $icon-mr: var(--header-topmenu-icon-mr);
 $icon-pl: var(--header-topmenu-icon-pl);
 $list-gap: 5px;
+$item-left: var(--header-topmenu-margin-left);
+$underline-height: var(--header-topnav-mask-height);
+$underline-bg: var(--header-topnav-mask-color);
 ::v-deep(.topnav) {
   // 导航项目
   > li {
-    margin-left: var(--header-topmenu-margin-left);
+    margin-left: $item-left;
     position: relative;
     height: 100%;
     > a {
@@ -81,8 +84,8 @@ $list-gap: 5px;
       content: "";
       display: block;
       width: 0;
-      height: var(--header-topnav-mask-height);
-      background-color: var(--header-topnav-mask-color);
+      height: $underline-height;
+      background-color: $underline-bg;
       position: absolute;
       bottom: 5px;
       transition: 0.3s;

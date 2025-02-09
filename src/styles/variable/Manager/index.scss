@@ -7,4 +7,17 @@ $manager-context-tools-height: 30px;
   // 应用的宽度
   --manager-aside-width: var(--manager-aside-expand-width);
   --primary-during: 0.3s;
+
+  // 头部导航 底部线条
+  --header-topnav-mask-height: 2px;
+  // 左右边距
+  --header-pd: 50px;
+  // 悬浮菜单的左边距
+  --header-topmenu-margin-left: 20px;
+  // 悬浮菜单的icon左边距
+  --header-topmenu-h: 25px;
+  --header-topmenu-icon-mr: 5px;
+  --header-topmenu-icon-pl: 15px;
+  // 悬浮菜单的圆角
+  --header-topmenu-radius: 5px;
 }
