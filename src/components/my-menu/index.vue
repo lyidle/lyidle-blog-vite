@@ -1,6 +1,11 @@
 <template>
   <ul class="custom-menu">
-    <li class="title" ref="title" v-if="triangle" v-bind="triangleAttrs">
+    <li
+      class="title !h-1.25rem"
+      ref="title"
+      v-if="triangle"
+      v-bind="triangleAttrs"
+    >
       <span></span>
     </li>
     <slot></slot>
@@ -14,6 +19,7 @@
         </my-menu-item>
       </template>
     </template>
+    <div class="menu-mask"></div>
   </ul>
 </template>
 
@@ -58,7 +64,7 @@ $list: custom-menu-trigger;
     }
   }
 }
-$menu-radius: 5px;
+$menu-radius: var(--header-topmenu-radius);
 $menu-triangle-width: 10px;
 .custom-menu {
   left: 50%;
@@ -70,12 +76,17 @@ $menu-triangle-width: 10px;
   transition: top 0.3s;
   top: v-bind(initialTop);
   pointer-events: none;
+  border-radius: $menu-radius;
   opacity: 0;
   .title {
+    width: fit-content;
     height: 20px;
     position: relative;
     display: flex;
     z-index: -3;
+    left: 50%;
+    z-index: -999;
+    transform: translateX(-50%);
     // 三角形
     span {
       background-color: transparent;
@@ -90,6 +101,17 @@ $menu-triangle-width: 10px;
       border: $menu-triangle-width solid transparent;
       border-color: transparent transparent v-bind(bg) transparent;
     }
+  }
+  .menu-mask {
+    display: block;
+    position: absolute;
+    inset: 0;
+    top: 1.25rem;
+    border-radius: $menu-radius;
+    pointer-events: none;
+    background-color: v-bind(bg);
+    z-index: -1;
+    filter: drop-shadow(var(--header-menu-drop-shadow));
   }
 }
 </style>

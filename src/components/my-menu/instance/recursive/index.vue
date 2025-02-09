@@ -4,16 +4,22 @@
     :top="`${tagsTriangleTop}px`"
     :triangleAttrs="{
       style: {
-        ...triangleDirection(directionCallback(cloudDirection || direction)),
+        ...triangleDirection(
+          authWidth,
+          directionCallback(cloudDirection || direction)
+        ),
         top:
           children.length === 1
             ? `calc(${
                 triangleDirection(
+                  authWidth,
                   directionCallback(cloudDirection || direction)
                 ).top
               } - 0.625rem)`
-            : triangleDirection(directionCallback(cloudDirection || direction))
-                .top,
+            : triangleDirection(
+                authWidth,
+                directionCallback(cloudDirection || direction)
+              ).top,
       },
     }"
     :style="
@@ -22,6 +28,7 @@
         directionCallback(cloudDirection || direction)
       )
     "
+    :menuStyle
     class="sub-menu"
   >
     <my-menu-item

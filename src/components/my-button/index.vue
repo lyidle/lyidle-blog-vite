@@ -1,10 +1,23 @@
 <template>
-  <el-button v-bind="$attrs" class="w-100%" type="primary">
-    <slot></slot>
+  <el-button v-bind="$attrs" class="w-100%" type="primary" ref="instance">
+    <template v-for="(_, name) in slots" :key="name" #[name]="scopedData">
+      <slot :name="name" v-bind="scopedData" v-if="scopedData"></slot>
+      <slot :name="name" v-else></slot>
+    </template>
   </el-button>
 </template>
 
-<script setup lang="ts" name="MyInput"></script>
+<script setup lang="ts" name="MyButton_">
+import { useExposeInstance } from "@/hooks/useExposeInstance"
+const instance = ref()
+const slots = defineSlots()
+
+// 使用 Hook
+const { exposed } = useExposeInstance(instance)
+
+// 在组件的 <script setup> 中调用 defineExpose
+defineExpose(exposed)
+</script>
 
 <style scoped lang="scss">
 // button样式

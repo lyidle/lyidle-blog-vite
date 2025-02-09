@@ -8,7 +8,6 @@
 const props = withDefaults(
   defineProps<{
     style?: {
-      bg?: string
       bgHover?: string
       color?: string
       colorHover?: string
@@ -16,14 +15,13 @@ const props = withDefaults(
   }>(),
   {
     style: () => ({
-      bg: "white",
       bgHover: "#e5baee",
       color: "#203b5b",
       colorHover: "#203b5b",
     }),
   }
 )
-const { bg, bgHover, colorHover } = props.style
+const { bgHover, colorHover } = props.style
 </script>
 
 <style scoped lang="scss">
@@ -31,8 +29,6 @@ $menu-radius: var(--header-topmenu-radius);
 .menu-item {
   @include flex();
   position: relative;
-  // overflow: hidden;
-  background-color: v-bind(bg);
   min-width: 70px;
   min-height: 30px;
   &:hover {

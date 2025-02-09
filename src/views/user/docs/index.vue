@@ -18,12 +18,12 @@
                 {{ account }}
               </div>
             </el-tooltip>
-            <my-primary-button
+            <my-button
               class="w-70px"
               size="small"
               @click=""
               v-tip="{ type: 'warning', msg: '开发中~~' }"
-              >回收站</my-primary-button
+              >回收站</my-button
             >
           </div>
         </div>
@@ -60,7 +60,7 @@
             <!-- 每一项的按钮 -->
             <div class="flex">
               <!-- 修改 -->
-              <my-primary-button
+              <my-button
                 class="w-50px"
                 size="small"
                 @click="
@@ -69,7 +69,7 @@
                   )
                 "
                 v-author="{ author: article.author }"
-                >修改</my-primary-button
+                >修改</my-button
               >
               <!-- 软删除 -->
               <el-popconfirm
@@ -80,12 +80,12 @@
                 @confirm="handlerRemove(article.id)"
               >
                 <template #reference>
-                  <my-primary-button
+                  <my-button
                     class="w-50px"
                     size="small"
                     type="danger"
                     v-author="{ author: article.author }"
-                    >软删除</my-primary-button
+                    >软删除</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -104,12 +104,12 @@
                 @confirm="handlerDelete(article.id)"
               >
                 <template #reference>
-                  <my-primary-button
+                  <my-button
                     class="w-50px"
                     size="small"
                     type="danger"
                     v-author="{ author: article.author }"
-                    >删除</my-primary-button
+                    >删除</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">

@@ -1,8 +1,24 @@
 <template>
-  <el-input v-bind="$attrs"><slot></slot></el-input>
+  <el-input v-bind="$attrs" ref="instance">
+    <template v-for="(_, name) in slots" #[name]="scopedData" :key="name">
+      <slot :name="name" v-bind="scopedData" v-if="scopedData"></slot>
+      <slot :name="name" v-else></slot>
+    </template>
+  </el-input>
 </template>
 
-<script setup lang="ts" name="MyInput"></script>
+<script setup lang="ts" name="MyInput">
+import { useExposeInstance } from "@/hooks/useExposeInstance"
+
+const instance = ref()
+const slots = defineSlots()
+
+// 使用 Hook
+const { exposed } = useExposeInstance(instance)
+
+// 在组件的 <script setup> 中调用 defineExpose
+defineExpose(exposed)
+</script>
 
 <style scoped lang="scss">
 ::v-deep(.el-input__wrapper) {

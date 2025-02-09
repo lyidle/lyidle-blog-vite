@@ -6,18 +6,18 @@
           <!-- 左侧按钮 -->
           <el-form-item class="!mb-0">
             <div class="flex justify-end w-100%">
-              <my-primary-button
+              <my-button
                 size="small"
                 type="danger"
                 @click="resetDoc"
                 class="w-70px"
-                >重置表单</my-primary-button
+                >重置表单</my-button
               >
-              <my-primary-button
+              <my-button
                 size="small"
                 class="w-70px"
                 v-throttle="{ fn: handerUpload }"
-                >提交文章</my-primary-button
+                >提交文章</my-button
               >
             </div>
           </el-form-item>

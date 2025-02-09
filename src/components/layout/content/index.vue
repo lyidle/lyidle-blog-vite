@@ -144,6 +144,7 @@ $translate-y: -5px;
 $aside-pd: 20px;
 $aside-width: var(--aside-width);
 .global-content {
+  overflow: hidden;
   .pages {
     color: var(--primary-color);
     width: var(--content-width);

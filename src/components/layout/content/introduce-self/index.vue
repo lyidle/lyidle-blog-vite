@@ -29,12 +29,12 @@
             class="block w-100% h-100%"
             :to="`/user/space/${adminAccount}`"
           >
-            <my-primary-button type="primary" class="userinfo-btn">
+            <my-button type="primary" class="userinfo-btn">
               <div class="tip">前往小窝</div>
               <div class="car">
                 <icon-car></icon-car>
               </div>
-            </my-primary-button>
+            </my-button>
           </router-link>
           <div class="links">
             <a

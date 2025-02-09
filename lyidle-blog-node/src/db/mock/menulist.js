@@ -115,7 +115,7 @@ module.exports = [
           {
             name: "Accessories",
             to: "/note",
-            layout: { topnavWidth: "160px", topnavDirection: "right" },
+            layout: { topnavWidth: "160px", topnavDirection: "left" },
             children: [
               {
                 name: "Chargers",

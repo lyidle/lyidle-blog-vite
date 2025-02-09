@@ -7,6 +7,8 @@
       首页
     </router-link>
   </li>
+  <!-- 笔记 -->
+  <layout-header-notes :menuStyle></layout-header-notes>
   <slot name="scend"></slot>
   <!-- 个人项 -->
   <li class="custom-menu-trigger">

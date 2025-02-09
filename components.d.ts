@@ -73,6 +73,7 @@ declare module 'vue' {
     LayoutThemeGlobalMoveEffect: typeof import('./src/components/layout/theme/global/moveEffect/index.vue')['default']
     LayoutThemeGlobalSetThemes: typeof import('./src/components/layout/theme/global/setThemes/index.vue')['default']
     MyAnchor: typeof import('./src/components/my-anchor/index.vue')['default']
+    MyButton: typeof import('./src/components/my-button/index.vue')['default']
     MyCard: typeof import('./src/components/my-card/index.vue')['default']
     MyChart: typeof import('./src/components/my-chart/index.vue')['default']
     MyDialog: typeof import('./src/components/my-dialog/index.vue')['default']

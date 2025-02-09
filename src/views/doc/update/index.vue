@@ -5,19 +5,19 @@
         <el-form :rules="rules" :model="docsFormData" ref="docsForm">
           <el-form-item class="!mb-0">
             <div class="flex justify-end w-100%">
-              <my-primary-button
+              <my-button
                 size="small"
                 type="warning"
                 @click="$router.replace(`/user/docs/${docAuthor}`)"
                 class="w-70px"
-                >取消修改</my-primary-button
+                >取消修改</my-button
               >
-              <my-primary-button
+              <my-button
                 size="small"
                 class="w-70px"
                 v-throttle="{ fn: handerUpload }"
-                >更新文章</my-primary-button
-              >
+                >更新文章
+              </my-button>
             </div>
           </el-form-item>
           <el-form-item

@@ -2,8 +2,6 @@
   <ul class="topnav">
     <layout-header-normal :menuStyle>
       <template #scend>
-        <!-- 笔记 -->
-        <layout-header-notes :menuStyle></layout-header-notes>
         <my-menu-instance
           v-for="item in userMenuList"
           :data="item"

@@ -100,6 +100,9 @@ $list-gap: 5px;
   height: var(--header-height);
   @include flex(space-between);
   padding: 0 var(--header-pd);
+  @include media(xs) {
+    padding: 0 13px;
+  }
   background-color: v-bind(headerBg);
   position: fixed;
   box-sizing: border-box;
@@ -113,7 +116,9 @@ $list-gap: 5px;
   // 设置menu的阴影
   ::v-deep(.custom-menu),
   ::v-deep(.custom-popover) {
-    filter: drop-shadow(var(--header-menu-drop-shadow));
+    .title {
+      filter: drop-shadow(var(--header-menu-drop-shadow));
+    }
   }
 }
 </style>

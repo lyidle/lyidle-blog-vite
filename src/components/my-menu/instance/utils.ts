@@ -6,36 +6,43 @@ let index = 0
 // 根据方向算出具体的值 子集的位置信息
 export const flowMenuContainerLeft = (
   width: string | number,
-  direction?: directionType
-) => {
+  direction?: directionType,
+  returnIndex: boolean = false
+): string | number => {
+  if (returnIndex) return index as number
   // 每次 子集菜单 自增
   ++index
   return direction === "left"
     ? `
   left: 0;
-  transform: translateX(calc((${width} + 25px) * -1));
+  transform: translateX(calc((${width} + 30px) * -1));
   z-index:${index};
 `
     : `
   left: unset;
   right: 0;
-  transform: translateX(calc(${width} + 25px ));
+  transform: translateX(calc(${width} + 30px ));
   z-index:${index};
 `
 }
 
 // 三角的位置信息
-export const triangleDirection = (direction?: directionType) => {
+export const triangleDirection = (
+  width: string | number,
+  direction?: directionType
+) => {
   return direction === "left"
     ? {
-        left: "calc(50% + 10px)",
+        left: `calc(${width} + 17px)`,
+        right: "unset",
         top: "34px",
         transform: "rotateZ(90deg)",
       }
     : {
-        right: "calc(50% + 10px)",
+        right: `unset`,
+        left: "unset",
         top: "34px",
-        transform: "rotateZ(270deg)",
+        transform: "rotateZ(270deg) translateY(-21px)",
       }
 }
 
