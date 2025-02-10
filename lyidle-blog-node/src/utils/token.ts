@@ -12,6 +12,7 @@ export const setToken = async (userInfo: typeof request.auth) => {
   let tokenData: Partial<typeof request.auth> = {}
   tokenData.id = userInfo.id
   tokenData.account = userInfo.account
+  // 可能为 null
   tokenData.avater = userInfo.avater ?? null
   tokenData.signer = userInfo.signer ?? null
   tokenData.email = userInfo.email

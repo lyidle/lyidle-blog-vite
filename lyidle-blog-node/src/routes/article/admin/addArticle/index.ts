@@ -8,55 +8,25 @@ const router = express.Router()
 const { Article } = require("@/db/models")
 // 引入 redis 设置缓存
 import { setKey, getKey, delKey } from "@/utils/redis"
-import { join, resolve } from "path"
-import { tempImgLinkToPermantLink } from "@/utils/io/compress/tempImgLinkToPermantLink"
-
-// 用于 获取contentType
-const { lookup } = require("mime-types")
 
 router.post(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { title, content, category, tags, carousel, desc, poster, length } =
-      req.body
+    const { title, content, category, tags, desc, poster, length } = req.body
 
-    const { account } = req.auth
     const ArticleData: any = {
       author: req.auth.account,
+      userId: req.auth.id,
       title,
       content,
       category,
       tags,
-      carousel: carousel ?? 0,
       desc,
       poster,
       length,
-      userId: req.auth.id,
     }
-    // 判断是否有poster 和是否是图片
-    if (poster && lookup(poster).startsWith("image/")) {
-      // 生成的文件 的路径
-      const outputRelative = join(
-        __dirname,
-        `../../../../assets/images/${account}/md/poster`
-      )
 
-      // 静态文件路径
-      const staticPath = resolve(__dirname, "../../../../")
-
-      try {
-        // 处理 临时图片 转为 永久
-        const { successImg } = await tempImgLinkToPermantLink(
-          [poster],
-          outputRelative,
-          staticPath
-        )
-        ArticleData.poster = successImg[0]?.url
-      } catch (error) {
-        console.warn("文章的poster处理错误~", error)
-      }
-    }
     try {
       // 创建文章
       const { dataValues } = await Article.create(ArticleData)

@@ -16,57 +16,57 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { account, pwd, email, avatar, signer, nickName, role } = req.body
+
       const id = req.auth.id
 
       // 都没有时返回没有找到
       if (
-        !(
-          pwd ||
-          email ||
-          avatar ||
-          signer ||
-          avatar === null ||
-          signer === null ||
-          nickName ||
-          role
-        )
+        !account &&
+        !pwd &&
+        !email &&
+        // 可能为 null
+        avatar !== null &&
+        !avatar &&
+        // 可能为 null
+        signer !== null &&
+        !signer &&
+        !nickName &&
+        !role
       )
-        return res.result(
-          void 0,
-          "请至少传入以下信息中的一个pwd、email、avatar、signer、nickName、role,~",
-          false
-        )
+        return res.result(void 0, "修改用户失败哦~", false)
 
       // 查询
-      const findUser = await User.findByPk(id, {
-        attributes: { exclude: ["createdAt", "updatedAt"] },
-      })
+      const findUser = await User.findByPk(id)
 
       // 判断有无找到用户
       if (!findUser) return res.result(void 0, "没有找到对应用户信息~", false)
 
       // 提取需要的变量
-      const {
-        account: userAccount,
-        nickName: userNickName,
-        email: userEmail,
-      } = findUser.dataValues
+      const { account: userAccount, email: userEmail } = findUser.dataValues
 
-      // // 错误信息汇总
-      // const erroArray: string[] = []
-      // // 判断是否重复
-      // if (account == userAccount) erroArray.push("账号不能和旧的账号重复~")
-      // if (email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
-      // if (erroArray.length) return res.result(void 0, erroArray, false)
+      // 错误信息汇总
+      const erroArray: string[] = []
+      // 判断是否重复
+      if (account && account == userAccount)
+        erroArray.push("账号不能和旧的账号重复~")
+      // 通过 判断 是否传递账号
+      else account && findUser.set("account", account)
+
+      if (email && email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
+      // 通过 判断 是否传递邮箱
+      else email && findUser.set("email", email)
+      if (erroArray.length) return res.result(void 0, erroArray, false)
 
       // 都通过加入更新
-      findUser.set("account", account || userAccount)
-      findUser.set("nickName", nickName || userNickName)
-      if (pwd) findUser.set("pwd", pwd)
-      findUser.set("email", email || userEmail)
-      findUser.set("avatar", avatar || null)
-      findUser.set("signer", signer || null)
-      findUser.set("role", role || [])
+      nickName && findUser.set("nickName", nickName)
+      pwd && findUser.set("pwd", pwd)
+      // 可能为null
+      ;(avatar == null || avatar) && findUser.set("avatar", avatar)
+      // 可能为null
+      ;(signer == null || signer) && findUser.set("signer", signer)
+
+      role?.length && findUser.set("role", role)
+
       // 更新数据库
       const { dataValues } = await findUser.save()
 
@@ -74,11 +74,12 @@ router.put(
       if (pwd)
         //删除token
         await delKey(`token:${id}`)
-      else {
-        await setToken(dataValues)
-      }
+      // 没有 修改 密码 则不需要重新登录
+      else await setToken(dataValues)
+
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)
+
       return res.result(void 0, "修改用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
