@@ -37,5 +37,9 @@ html[themes="#{$theme}"] {
       )};
     --accordion-subtitle-color: #{$accordion-color};
     --accordion-subtitle-color-hover: #{$accordion-color-hover};
+    // 面包屑
+    --header-crumb-unable-color: #a1aab5;
+    --header-crumb-color: #{$primary-color};
+    --header-crumb-color-hover: var(--primary-links-hover);
   }
 }

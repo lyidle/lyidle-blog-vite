@@ -1,18 +1,17 @@
 <template>
-  <template v-for="item in data" :key="item.name">
+  <template v-for="(item, index) in data" :key="item.name">
     <ul class="menu-list" ref="menus" v-if="item.name">
       <li>
         <div class="menu-item">
           <div class="start-icon">
             <my-anchor v-if="filterPath(item)" :to="filterPath(item)">
-              <slot
-                name="link"
-                :data="{ icon: item.icon, name: item.name }"
-                v-if="$slots.link"
-              >
+              <!-- 使用 的my-anchor 的默认插槽  -->
+              <slot name="link" :index :item>
+                <icon-parse :icon="item.icon"></icon-parse>
+                <span class="truncate w-75%">{{ item.name }}</span>
               </slot>
-              <icon-parse :icon="item.icon" v-else></icon-parse>{{ item.name }}
             </my-anchor>
+            <!-- 切换按钮 -->
             <div
               v-if="item.children?.length"
               class="toggle"
@@ -22,9 +21,15 @@
             </div>
           </div>
         </div>
+        <!-- 判断 有无子集 -->
         <ul v-if="item.children?.length" class="submenu">
           <!-- 递归调用 修改 props中的 data 为 children -->
-          <AccordionRecursive v-bind="{ ...props, data: item.children }" />
+          <AccordionRecursive v-bind="{ ...props, data: item.children }">
+            <!-- 插槽传递 -->
+            <template #link="{ item, index }">
+              <slot name="link" :index :item> </slot>
+            </template>
+          </AccordionRecursive>
         </ul>
       </li>
     </ul>
@@ -176,7 +181,7 @@ $sub-bg-hover: v-bind(subBgHover);
 $sub-color: v-bind(subColor);
 $sub-color-hover: v-bind(subColorHover);
 $menu-item-h: 35px;
-$gap: 5px;
+$gap: var(--accordion-icon-gap);
 $item-bg: transparent;
 $ident: 20px;
 // 组件容器
@@ -198,14 +203,15 @@ $ident: 20px;
     }
     // 开始的 图标集合
     .start-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
       a {
-        position: absolute;
-        z-index: 1;
-        inset: 0;
-        left: $ident;
+        width: 100%;
+        margin-left: $ident;
         display: flex;
         align-items: center;
-        justify-content: start;
         gap: $gap;
       }
     }

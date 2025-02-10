@@ -28,6 +28,9 @@ $scroll-thumb-radius: 20px;
 $scroll-thumb-border-width: 2px;
 
 html {
+  // 手风琴 图标间距
+  --accordion-icon-gap: 5px;
+  // 滚动条
   --scroll-vert-size: 10px;
   --scroll-hor-size: 10px;
   // 滚动的 挂饰动画 右侧

@@ -10,17 +10,16 @@
         ></i>
       </li>
       <li class="tools-item">
-        <el-breadcrumb>
+        <el-breadcrumb :separator-icon="ArrowRight">
           <!-- 动态展示路由 -->
           <el-breadcrumb-item
             v-for="(item, index) in $route.matched"
             :key="index"
             v-show="item.meta.title"
             :to="item.path"
+            class="crumb-item"
           >
-            <el-icon v-if="item.meta?.icon">
-              <i :class="`${item.meta.icon}`" />
-            </el-icon>
+            <icon-parse :icon="item.meta?.icon" class="mr-5px"></icon-parse>
             <span>{{ item.meta.title }}</span>
           </el-breadcrumb-item>
         </el-breadcrumb>
@@ -47,6 +46,7 @@
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 引入 图标
 import { icons } from "./icon"
+import ArrowRight from "@/components/icon/arrow-right/index.vue"
 // 引入 仓库
 import { useManagerStore } from "@/store/manager"
 // 提取变量
@@ -63,9 +63,13 @@ $item-left: var(--header-topmenu-margin-left);
 $underline-height: var(--header-topnav-mask-height);
 $underline-bg: var(--header-topnav-mask-color);
 $avatar-size: $manager-header-height - 10;
+$color: var(--header-color);
+$crumb-unable-color: var(--header-crumb-unable-color);
+$crumb-color: var(--header-crumb-color);
+$crumb-color-hover: var(--header-crumb-color-hover);
 .manager-header {
   background-color: var(--header-bg);
-  color: var(--header-color);
+  color: $color;
   box-shadow: var(--header-shadow);
   // 导航项目
   .tools-item {
@@ -90,6 +94,17 @@ $avatar-size: $manager-header-height - 10;
   .breadcrumb {
     height: 100%;
     display: flex;
+    .crumb-item {
+      // 没有激活的
+      --el-text-color-regular: #{$crumb-unable-color};
+      // 激活的
+      --el-text-color-primary: #{$crumb-color};
+      // 悬浮
+      --el-color-primary: #{$crumb-color-hover};
+      span {
+        font-weight: normal;
+      }
+    }
   }
   // 右侧 工具 栏
   .tools {

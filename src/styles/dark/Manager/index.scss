@@ -4,7 +4,7 @@
 @use "sass:color";
 
 // 内容 区域 共同的 变量
-$pages-card-bg: #2d4c5f;
+$pages-card-bg: #272b2e;
 html[themes="#{$theme}"] {
   .manager-container {
     --primary-color: #{$primary-color};
@@ -14,7 +14,7 @@ html[themes="#{$theme}"] {
     // 右侧 顶部 header
     --header-bg: #{$pages-card-bg};
     --header-color: #{$primary-color};
-    --header-shadow: 1px 1px 3px #42464a;
+    --header-shadow: 1px 1px 3px #141f2a;
     // 右侧 内容区域 卡片
     --manager-card-bg: #{$pages-card-bg};
     --manager-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
@@ -36,5 +36,9 @@ html[themes="#{$theme}"] {
       )};
     --accordion-subtitle-color: #{$accordion-color};
     --accordion-subtitle-color-hover: #{$accordion-color-hover};
+    // 面包屑
+    --header-crumb-unable-color: #a1aab5;
+    --header-crumb-color: #{$primary-color};
+    --header-crumb-color-hover: var(--primary-links-hover);
   }
 }

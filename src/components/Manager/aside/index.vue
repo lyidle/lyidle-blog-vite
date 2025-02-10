@@ -4,7 +4,13 @@
       v-if="adminMenuList.length"
       :data="adminMenuList"
       radius="5px"
-    ></my-menu-accordion>
+    >
+      <!-- 自定义 图标 -->
+      <template #link="{ item }">
+        <icon-parse :icon="item.icon"></icon-parse>
+        <span class="truncate w-75%">{{ item.meta.title }}</span>
+      </template>
+    </my-menu-accordion>
   </div>
 </template>
 

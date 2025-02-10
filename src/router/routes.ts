@@ -195,6 +195,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         path: "/manager/menu",
         meta: { title: "菜单管理", role: ["admin"] },
         component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+        redirect: "/manager/menu/list",
         children: [
           {
             name: "MenuList",
@@ -221,6 +222,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         path: "/manager/user",
         meta: { title: "用户管理", role: ["admin"] },
         component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+        redirect: "/manager/user/list",
         children: [
           {
             name: "UserList",
@@ -247,6 +249,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         path: "/manager/role",
         meta: { title: "角色管理", role: ["admin"] },
         component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+        redirect: "/manager/role/list",
         children: [
           {
             name: "RoleList",
@@ -273,6 +276,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         path: "/manager/permission",
         meta: { title: "权限管理", role: ["admin"] },
         component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+        redirect: "/manager/permission/list",
         children: [
           {
             name: "PermissionList",
