@@ -178,123 +178,68 @@ export const anyRoute: RouteRecordRaw[] = [
 // 异步路由 需要权限判断的
 export const asyncRoute: RouteRecordRaw[] = [
   {
-    name: "Manager",
-    path: "/manager",
+    name: "Admin",
+    path: "/admin",
     meta: { title: "管理", role: ["admin"] },
-    component: () => import("@/components/Manager/index.vue"),
-    redirect: "/manager/dashBoard",
+    component: () => import("@/components/manager/index.vue"),
+    redirect: "/admin/dashboard",
     children: [
       {
-        name: "DashBoard",
-        path: "/manager/dashBoard",
+        name: "Dashboard",
+        path: "/admin/dashboard",
         meta: { title: "仪表盘", role: ["admin"] },
-        component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+        component: () => import("@/views/admin/dashboard/index.vue"),
       },
       {
-        name: "MenuManagement",
-        path: "/manager/menu",
-        meta: { title: "菜单管理", role: ["admin"] },
-        component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-        redirect: "/manager/menu/list",
+        name: "ArticleManagement",
+        path: "/admin/articles",
+        meta: { title: "文章管理", role: ["admin"] },
+        redirect: "/admin/articles/list",
         children: [
           {
-            name: "MenuList",
-            path: "/manager/menu/list",
-            meta: { title: "菜单列表", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "ArticleList",
+            path: "/admin/articles/list",
+            meta: { title: "文章列表", role: ["admin"] },
+            component: () => import("@/views/admin/articles/list/index.vue"),
           },
           {
-            name: "MenuEdit",
-            path: "/manager/menu/edit/",
-            meta: { title: "编辑菜单", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "CategoryManagement",
+            path: "/admin/articles/category",
+            meta: { title: "分类管理", role: ["admin"] },
+            component: () =>
+              import("@/views/admin/articles/category/index.vue"),
           },
           {
-            name: "MenuCreate",
-            path: "/manager/menu/create",
-            meta: { title: "创建菜单", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "TagManagement",
+            path: "/admin/articles/tag",
+            meta: { title: "标签管理", role: ["admin"] },
+            component: () => import("@/views/admin/articles/tag/index.vue"),
           },
         ],
       },
       {
-        name: "UserManagement",
-        path: "/manager/user",
-        meta: { title: "用户管理", role: ["admin"] },
-        component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-        redirect: "/manager/user/list",
-        children: [
-          {
-            name: "UserList",
-            path: "/manager/user/list",
-            meta: { title: "用户列表", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-          {
-            name: "UserEdit",
-            path: "/manager/user/edit/",
-            meta: { title: "编辑用户", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-          {
-            name: "UserCreate",
-            path: "/manager/user/create",
-            meta: { title: "创建用户", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-        ],
-      },
-      {
-        name: "RoleManagement",
-        path: "/manager/role",
-        meta: { title: "角色管理", role: ["admin"] },
-        component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-        redirect: "/manager/role/list",
-        children: [
-          {
-            name: "RoleList",
-            path: "/manager/role/list",
-            meta: { title: "角色列表", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-          {
-            name: "RoleEdit",
-            path: "/manager/role/edit/",
-            meta: { title: "编辑角色", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-          {
-            name: "RoleCreate",
-            path: "/manager/role/create",
-            meta: { title: "创建角色", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-          },
-        ],
-      },
-      {
-        name: "PermissionManagement",
-        path: "/manager/permission",
+        name: "AccessManagement",
+        path: "/admin/access",
         meta: { title: "权限管理", role: ["admin"] },
-        component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
-        redirect: "/manager/permission/list",
+        redirect: "/admin/access/users",
         children: [
           {
-            name: "PermissionList",
-            path: "/manager/permission/list",
-            meta: { title: "权限列表", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "UserManagement",
+            path: "/admin/access/users",
+            meta: { title: "用户管理", role: ["admin"] },
+            component: () => import("@/views/admin/access/users/index.vue"),
           },
           {
-            name: "PermissionEdit",
-            path: "/manager/permission/edit/",
-            meta: { title: "编辑权限", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "RoleManagement",
+            path: "/admin/access/roles",
+            meta: { title: "角色管理", role: ["admin"] },
+            component: () => import("@/views/admin/access/roles/index.vue"),
           },
           {
-            name: "PermissionCreate",
-            path: "/manager/permission/create",
-            meta: { title: "创建权限", role: ["admin"] },
-            component: () => import("@/views/Manager/index.vue"), // 统一使用 index.vue
+            name: "MenuManagement",
+            path: "/admin/access/menus",
+            meta: { title: "菜单管理", role: ["admin"] },
+            component: () => import("@/views/admin/access/menus/index.vue"),
           },
         ],
       },

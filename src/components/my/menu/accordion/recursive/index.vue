@@ -221,7 +221,7 @@ $ident: 20px;
       position: absolute;
       right: 0;
       top: 0;
-      height: $menu-item-h;
+      height: 100%;
       width: 35px;
       display: flex;
       justify-content: center;

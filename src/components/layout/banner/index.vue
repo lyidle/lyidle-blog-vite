@@ -45,13 +45,10 @@
       </div>
       <teleport to="body">
         <my-context-menu>
-          <div
-            class="header-animate"
-            v-if="$route.meta.bannerWaves"
-            :style="{
-              marginTop: `${`calc(${$route.meta.pagesMt} + 20vh)` || '55vh'}`,
-            }"
-          >
+          <div class="header-animate" v-if="$route.meta.bannerWaves">
+            <!--       :style="{
+              top: `${`calc(${$route.meta.pagesMt} + 20vh)` || '55vh'}`,
+            }" -->
             <global-animations-waves
               oneColor="var(--doc-header-waves-color-1)"
               twoColor="var(--doc-header-waves-color-2)"
@@ -142,14 +139,24 @@ onMounted(async () => {
   } catch (error) {}
 })
 </script>
-
+<style lang="scss">
+body[banner-fixed="fixed"] {
+  // 动画
+  .header-animate {
+    position: fixed;
+    top: 50vh;
+    left: 0;
+    z-index: 1;
+  }
+}
+</style>
 <style scoped lang="scss">
 // 动画
 .header-animate {
   width: 100%;
   height: 100px;
   position: absolute;
-  top: 55vh;
+  top: 50vh;
 }
 .global-banner {
   .fixed-replace {
@@ -180,12 +187,14 @@ onMounted(async () => {
         font-weight: bold;
         text-align: center;
         color: v-bind(color);
+        transition: font-size var(--primary-during);
       }
       .subtitle {
+        transition: font-size var(--primary-during);
         max-width: 100%;
         margin-top: 10px;
         text-align: center;
-        font-size: 1.25rem;
+        font-size: 20px;
         color: v-bind(color);
         overflow: hidden;
         // 省略号
@@ -194,10 +203,10 @@ onMounted(async () => {
       }
       @include media(xs) {
         .title {
-          font-size: 1.5625rem;
+          font-size: 30px;
         }
         .subtitle {
-          font-size: 0.9375rem;
+          font-size: 15px;
         }
       }
     }

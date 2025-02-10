@@ -8,7 +8,7 @@
       @contextmenu.capture.prevent.stop
     >
       <div class="title">
-        <div class="icon" @click="$router.back()">
+        <div class="icon" @click="goBack">
           <i class="i-lets-icons:arrow-left"></i>
         </div>
         <div class="icon" @click="$router.go(1)">
@@ -78,7 +78,9 @@ import { useContextMenu } from "@/hooks/context-menu/base"
 // 引入 复制到剪贴板的方法
 import { handleContextMenu } from "@/hooks/context-menu/copyToClipboard"
 import { mitt } from "@/utils/emitter"
-
+// 回到上一个路径
+import { useGoBack } from "@/hooks/useGoBack"
+const goBack = useGoBack()
 // 提取需要的变量
 const {
   isDark,

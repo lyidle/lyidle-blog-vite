@@ -2,14 +2,14 @@
   <div class="manager-header">
     <ul class="breadcrumb">
       <!-- 展开和收起按钮 -->
-      <li class="start-icon tools-item">
+      <li class="start-icon manager-header-item">
         <i
           :class="isFold ? icons.fold : icons.expand"
           class="cur-pointer"
           @click="isFold = !isFold"
         ></i>
       </li>
-      <li class="tools-item">
+      <li class="manager-header-item">
         <el-breadcrumb :separator-icon="ArrowRight">
           <!-- 动态展示路由 -->
           <el-breadcrumb-item
@@ -19,7 +19,7 @@
             :to="item.path"
             class="crumb-item"
           >
-            <icon-parse :icon="item.meta?.icon" class="mr-5px"></icon-parse>
+            <icon-parse :icon="item.meta?.icon" class="icon"></icon-parse>
             <span>{{ item.meta.title }}</span>
           </el-breadcrumb-item>
         </el-breadcrumb>
@@ -27,15 +27,23 @@
     </ul>
     <ul class="tools">
       <!-- 个人项 -->
-      <global-header-item class="tools-item avatar" :data="PersonData">
+      <global-header-item class="manager-header-item avatar" :data="PersonData">
         <global-avatar></global-avatar>
       </global-header-item>
-      <li class="tools-item">
+      <li class="manager-header-item">
         <global-setting
           right="10px"
           top="50px"
           :triangle="{ right: '0', left: 'unset' }"
         ></global-setting>
+      </li>
+      <li class="manager-header-item">
+        <icon-parse
+          icon="i-f7:gobackward"
+          class="icon w-20px h-20px"
+        ></icon-parse>
+        <!-- 当没有上个路径信息时replace 到 /  -->
+        <a @click="goBack">返回</a>
       </li>
     </ul>
   </div>
@@ -49,6 +57,9 @@ import { icons } from "./icon"
 import ArrowRight from "@/components/icon/arrow-right/index.vue"
 // 引入 仓库
 import { useManagerStore } from "@/store/manager"
+// 回到上一个路径
+import { useGoBack } from "@/hooks/useGoBack"
+const goBack = useGoBack()
 // 提取变量
 const { isFold } = storeToRefs(useManagerStore())
 // 个人页面
@@ -71,8 +82,15 @@ $crumb-color-hover: var(--header-crumb-color-hover);
   background-color: var(--header-bg);
   color: $color;
   box-shadow: var(--header-shadow);
+  .icon {
+    margin-right: $icon-mr;
+  }
+  // 右侧 工具的样式
+  .tools {
+    margin-right: $item-left;
+  }
   // 导航项目
-  .tools-item {
+  .manager-header-item {
     margin-left: $item-left;
     position: relative;
     height: 100%;
@@ -115,7 +133,7 @@ $crumb-color-hover: var(--header-crumb-color-hover);
     height: 100%;
     align-items: center;
     // 导航项目
-    .tools-item {
+    .manager-header-item {
       // 导航下划线
       &:not(.avatar)::before {
         content: "";

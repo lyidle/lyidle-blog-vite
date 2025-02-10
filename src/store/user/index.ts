@@ -39,7 +39,7 @@ export const useUserStore = defineStore(
 
         // 过滤掉后台管理的菜单
         userMenuList.value = _userMenuList?.filter(
-          (item) => item.name !== asyncRoute[0].name
+          (item) => item.name !== "Admin"
         )
 
         userBannerImg.value = _userBannerImg

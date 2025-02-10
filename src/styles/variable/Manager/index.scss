@@ -6,6 +6,8 @@ $manager-header-height: 40px;
   --manager-aside-fold-width: 60px;
   // 侧边栏 应用 的宽度
   --manager-aside-width: var(--manager-aside-expand-width);
+  // 侧边栏的 每一项 高度
+  --aside-item-height: 50px;
   --primary-during: 0.3s;
 
   // 头部导航 底部线条

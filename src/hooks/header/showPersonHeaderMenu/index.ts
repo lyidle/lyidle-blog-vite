@@ -81,7 +81,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
       id: `${Math.random()}`,
       name: "管理页面",
       icon: { icon: "i-charm:person" },
-      to: "/manager",
+      to: "/admin",
     },
   ]
 

@@ -29,5 +29,8 @@ onMounted(() => {
 .manager-aside {
   background-color: var(--aside-bg);
   box-shadow: var(--aside-shadow);
+  ::v-deep(.menu-item) {
+    height: var(--aside-item-height);
+  }
 }
 </style>

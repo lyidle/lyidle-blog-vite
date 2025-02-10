@@ -10,12 +10,18 @@ $scr: (
   lg: 1920px,
 );
 
-// 快速创建响应式媒体查询的 mixin。 基于 max-width
-/// @param {String} $size - 预定义屏幕尺寸的键，例如：`mi`、`xs`、`sm`、`md`、`lg`。
-// 如果传入的 `$size` 不在 `$scr` 中，将发出警告。
-@mixin media($size) {
-  @if map.has-key($scr, $size) {
-    @media screen and (max-width: map.get($scr, $size)) {
+/// 快速创建响应式媒体查询的 mixin。
+/// @param {String|Number} $size - 预定义屏幕尺寸的键（如 `mi`、`xs`、`sm`、`md`、`lg`）或动态单位（当 `$height` 为 `true` 时）。
+/// @param {Boolean} $height - 是否基于 `max-height` 进行查询，默认为 `false`（即 `max-width`）。
+/// 如果传入的 `$size` 不在 `$scr` 中且 `$height` 为 `false`，将发出警告。
+@mixin media($size, $height: false) {
+  @if $height and type-of($size) == number {
+    @media screen and (max-height: $size) {
+      @content;
+    }
+  } @else if map.has-key($scr, $size) {
+    $dimension: if($height, max-height, max-width);
+    @media screen and (#{$dimension}: map.get($scr, $size)) {
       @content;
     }
   } @else {

@@ -30,7 +30,7 @@ const filterRoutes = (routes: RouteRecordRaw[], whitelist: string[]) => {
 
 export const filterManagerRoutes = () => {
   const findManager = asyncRoute?.find((item) =>
-    (item.name as string).includes("Manager")
+    (item.name as string).includes("Admin")
   )?.children
   // 是否存在
   const isExist = findManager?.length ? findManager : []
