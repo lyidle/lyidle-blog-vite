@@ -4,12 +4,15 @@
       <li>
         <div class="menu-item">
           <div class="start-icon">
-            <router-link v-if="item.to" :to="item.to">
-              <icon-parse :icon="item.icon"></icon-parse>{{ item.name }}
-            </router-link>
-            <a v-else>
-              <icon-parse :icon="item.icon"></icon-parse>{{ item.name }}
-            </a>
+            <my-anchor v-if="filterPath(item)" :to="filterPath(item)">
+              <slot
+                name="link"
+                :data="{ icon: item.icon, name: item.name }"
+                v-if="$slots.link"
+              >
+              </slot>
+              <icon-parse :icon="item.icon" v-else></icon-parse>{{ item.name }}
+            </my-anchor>
             <div
               v-if="item.children?.length"
               class="toggle"
@@ -30,7 +33,7 @@
 
 <script setup lang="ts" name="AccordionRecursive">
 // 引入类型
-import { AccordionMenuList } from "../types"
+import { AccordionMenuItem, AccordionMenuList } from "../types"
 // 引入 图标
 import "../icons"
 
@@ -50,14 +53,14 @@ const props = withDefaults(
   }>(),
   {
     icon: () => ({ plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" }),
-    titleBg: "var(--header-mini-title-bg)",
-    titleBgHover: "var(--header-mini-title-bg-hover)",
-    titleColor: "var(--header-mini-title-color)",
-    titleColorHover: "var(--header-mini-title-color-hover)",
-    subBg: "var(--header-mini-subtitle-bg)",
-    subBgHover: "var(--header-mini-subtitle-bg-hover)",
-    subColor: "var(--header-mini-subtitle-color)",
-    subColorHover: "var(--header-mini-subtitle-color-hover)",
+    titleBg: "var(--accordion-title-bg)",
+    titleBgHover: "var(--accordion-title-bg-hover)",
+    titleColor: "var(--accordion-title-color)",
+    titleColorHover: "var(--accordion-title-color-hover)",
+    subBg: "var(--accordion-subtitle-bg)",
+    subBgHover: "var(--accordion-subtitle-bg-hover)",
+    subColor: "var(--accordion-subtitle-color)",
+    subColorHover: "var(--accordion-subtitle-color-hover)",
   }
 )
 
@@ -153,6 +156,10 @@ const toggle = (e: MouseEvent) => {
   openMenus.set(parent, defaultValue)
 }
 
+// 过滤出可以用的路径
+const filterPath = (item: AccordionMenuItem): string => {
+  return item.path || item.redirect || item.to || ""
+}
 // 卸载
 onBeforeUnmount(() => {
   openMenus.clear()

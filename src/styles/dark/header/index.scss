@@ -18,19 +18,19 @@ html[themes="#{$theme}"] {
     --mini-drawer-pin-bg: #36759f;
     --mini-drawer-pin-color: #dbf1ff;
     // 头部小屏drawer导航的菜单颜色
-    $header-mini-bg-hover: #396396;
-    $header-mini-color-hover: #e9f6ff;
-    --header-mini-title-bg: transparent;
-    --header-mini-title-bg-hover: #{$header-mini-bg-hover};
-    --header-mini-title-color: var(--header-color);
-    --header-mini-title-color-hover: #{$header-mini-color-hover};
-    --header-mini-subtitle-bg: transparent;
-    --header-mini-subtitle-bg-hover: #{color.adjust(
-        $header-mini-bg-hover,
+    $accordion-bg-hover: #396396;
+    $accordion-color-hover: #e9f6ff;
+    --accordion-title-bg: transparent;
+    --accordion-title-bg-hover: #{$accordion-bg-hover};
+    --accordion-title-color: var(--header-color);
+    --accordion-title-color-hover: #{$accordion-color-hover};
+    --accordion-subtitle-bg: transparent;
+    --accordion-subtitle-bg-hover: #{color.adjust(
+        $accordion-bg-hover,
         $lightness: 8%
       )};
-    --header-mini-subtitle-color: var(--header-color);
-    --header-mini-subtitle-color-hover: #{$header-mini-color-hover};
+    --accordion-subtitle-color: var(--header-color);
+    --accordion-subtitle-color-hover: #{$accordion-color-hover};
   }
   .global-header {
     // 头部区域的颜色

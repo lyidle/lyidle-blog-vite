@@ -87,4 +87,18 @@ html[themes="#{$theme}"] {
   // popover 头部的设置
   --popover-bg: #3d5b6e;
   --popover-color: var(--primary-color);
+  // 手风琴 菜单
+  $accordion-bg-hover: #396396;
+  $accordion-color-hover: #e9f6ff;
+  --accordion-title-bg: transparent;
+  --accordion-title-bg-hover: #{$accordion-bg-hover};
+  --accordion-title-color: var(--primary-color);
+  --accordion-title-color-hover: #{$accordion-color-hover};
+  --accordion-subtitle-bg: transparent;
+  --accordion-subtitle-bg-hover: #{color.adjust(
+      $accordion-bg-hover,
+      $lightness: 8%
+    )};
+  --accordion-subtitle-color: var(--primary-color);
+  --accordion-subtitle-color-hover: #{$accordion-color-hover};
 }

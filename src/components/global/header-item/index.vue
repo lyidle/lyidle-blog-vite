@@ -1,9 +1,12 @@
 <template>
   <li class="custom-menu-trigger">
-    <a>
-      <i class="i-iconoir:page-star w-1em h-1em"></i>
-      个人
-    </a>
+    <slot v-if="$slots.default"></slot>
+    <template v-else>
+      <a>
+        <i class="i-iconoir:page-star w-1em h-1em"></i>
+        个人
+      </a>
+    </template>
     <my-menu :data="data?.data" :triangle="true" :left="data?.style.left">
       <template #body="{ item: sub }: { item: PersonMenuList }">
         <router-link

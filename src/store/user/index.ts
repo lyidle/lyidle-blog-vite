@@ -13,6 +13,7 @@ import { RouteRecordRaw } from "vue-router"
 // 引入 路由过滤函数
 import { userStoreRoutesFilter } from "@/utils/routerFilter"
 import { mitt } from "@/utils/emitter"
+import { filterManagerRoutes } from "@/router/permission/filterManagerRoutes"
 
 export const useUserStore = defineStore(
   "User",
@@ -20,7 +21,7 @@ export const useUserStore = defineStore(
     // 用户的菜单数据
     const userMenuList = ref<GetMenuList["data"]>([])
     //  后台管理的菜单
-    const adminMenuList = ref<GetMenuList["data"]>([])
+    const adminMenuList = ref<any[]>([])
     // 用户的 焦点图信息
     const userBannerImg = ref<{ [key in string]: PurpleBannerImg }>({})
     // 用户的 白名单路径
@@ -41,14 +42,16 @@ export const useUserStore = defineStore(
           (item) => item.name !== asyncRoute[0].name
         )
 
-        adminMenuList.value = _userMenuList?.filter(
-          (item) => item.name == asyncRoute[0].name
-        )
-
         userBannerImg.value = _userBannerImg
         whitelist.value = _whitelist
         routes.value = _routes
       } catch (error) {}
+    }
+
+    // 处理 管理页面的菜单 数据
+    const reqAdminMenuList = () => {
+      // 调用函数 过滤完的manager结果
+      adminMenuList.value = filterManagerRoutes()
     }
 
     // 用户信息
@@ -92,6 +95,8 @@ export const useUserStore = defineStore(
         await reqLogout()
         // 用户的菜单数据
         userMenuList.value = []
+        // 管理页面的菜单数据
+        adminMenuList.value = []
         // 用户的 焦点图信息
         userBannerImg.value = {}
         // 用户的 白名单路径
@@ -120,10 +125,11 @@ export const useUserStore = defineStore(
 
     return {
       reqUserMenuList,
+      adminMenuList,
+      reqAdminMenuList,
       userBannerImg,
       whitelist,
       userMenuList,
-      adminMenuList,
       routes,
       reqUserInfo,
       // 用户信息

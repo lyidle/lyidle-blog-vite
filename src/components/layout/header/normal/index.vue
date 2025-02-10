@@ -15,7 +15,11 @@
   <slot name="last-scend"></slot>
   <!-- 设置项 -->
   <li>
-    <global-setting right="-40px" top="50px" :triangle="{ right: '50px' }">
+    <global-setting
+      right="-10px"
+      top="50px"
+      :triangle="{ right: '20px', left: 'unset' }"
+    >
     </global-setting>
   </li>
   <slot name="last"></slot>

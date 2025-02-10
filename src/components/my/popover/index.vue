@@ -1,9 +1,8 @@
 <template>
-  <div class="custom-popover" :style="{ left, right }">
-    <div class="triangle" ref="triangle">
-      <div ref="depTriangle" class="depTriangle"></div>
-    </div>
+  <div class="custom-popover" :style="{ left, right, transform }">
+    <div class="title"></div>
     <slot name="body"></slot>
+    <div class="popover-mask"></div>
   </div>
 </template>
 
@@ -13,6 +12,7 @@ const props = withDefaults(
     top?: string
     left?: string
     right?: string
+    transform?: string
     width?: string
     height?: string
     bg?: string
@@ -22,39 +22,25 @@ const props = withDefaults(
     top: "",
     right: "",
     left: "",
+    transform: "",
     width: "100px",
     height: "70px",
     bg: "var(--popover-bg)",
     triangle: () => ({
       show: "true",
-      left: "",
-      right: "",
+      left: "45%",
+      right: "unset",
     }),
   }
 )
 const initialTop = `${parseFloat(props.top) + 10}px`
 const hoverTop = props.top
-const triangle = ref()
-const depTriangle = ref()
-onMounted(() => {
-  // 顶部小三角
-  if (props.triangle.show === "true" || props.triangle.show === undefined) {
-    triangle.value.style.display = "block"
-  } else {
-    triangle.value.style.display = "none"
-  }
-  if (props.triangle.left) {
-    depTriangle.value.style.position = "absolute"
-    depTriangle.value.style.left = props.triangle.left
-  }
-  if (props.triangle.right) {
-    depTriangle.value.style.position = "absolute"
-    depTriangle.value.style.right = props.triangle.right
-  }
-})
+const triangleLeft = props.triangle.left
+const triangleRight = props.triangle.right
 </script>
 
 <style scoped lang="scss">
+$triangle-width-size: 10px;
 // 需要悬浮的父级列表
 $list: custom-popover-trigger;
 // 引入头部变量
@@ -76,33 +62,38 @@ $menu-color-light: v-bind(bg);
   width: v-bind(width);
   height: v-bind(height);
   position: absolute;
-  background-color: $menu-color-light;
-  border-radius: $menu-radius;
   color: var(--popover-color);
   // 动画
   transition: top 0.3s;
   top: v-bind(initialTop);
   opacity: 0;
   pointer-events: none;
-  .triangle {
-    width: 100%;
-    height: $menu-border-width * 2;
+  .title {
     position: absolute;
-    top: -$menu-border-width * 2;
-    .depTriangle {
-      width: $menu-border-width * 2;
-      height: 100%;
-      margin: auto;
-      &::before {
-        content: "";
-        display: block;
-        width: 0;
-        height: 0;
-        position: relative;
-        bottom: -1px;
-        border: $menu-border-width solid transparent;
-        border-bottom-color: $menu-color-light;
-      }
+    top: 0;
+    height: 10px;
+    width: 100%;
+    transform: translateY(-100%);
+  }
+  .popover-mask {
+    position: absolute;
+    inset: 0;
+    background-color: $menu-color-light;
+    border-radius: $menu-radius;
+    z-index: -1;
+    filter: drop-shadow(-3px 3px 3px rgba(52, 46, 46, 0.237));
+    &::before {
+      display: block;
+      content: "";
+      position: absolute;
+      top: 0;
+      left: v-bind(triangleLeft);
+      right: v-bind(triangleRight);
+      width: 0;
+      height: 0;
+      border: $triangle-width-size solid transparent;
+      border-bottom-color: $menu-color-light;
+      transform: translateY(-100%);
     }
   }
 }

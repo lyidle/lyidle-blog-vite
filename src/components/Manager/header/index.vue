@@ -1,19 +1,42 @@
 <template>
   <div class="manager-header">
-    header
+    <ul class="breadcrumb">
+      <!-- 展开和收起按钮 -->
+      <li class="start-icon tools-item">
+        <i
+          :class="isFold ? icons.fold : icons.expand"
+          class="cur-pointer"
+          @click="isFold = !isFold"
+        ></i>
+      </li>
+      <li class="tools-item">
+        <el-breadcrumb>
+          <!-- 动态展示路由 -->
+          <el-breadcrumb-item
+            v-for="(item, index) in $route.matched"
+            :key="index"
+            v-show="item.meta.title"
+            :to="item.path"
+          >
+            <el-icon v-if="item.meta?.icon">
+              <i :class="`${item.meta.icon}`" />
+            </el-icon>
+            <span>{{ item.meta.title }}</span>
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </li>
+    </ul>
     <ul class="tools">
+      <!-- 个人项 -->
+      <global-header-item class="tools-item avatar" :data="PersonData">
+        <global-avatar></global-avatar>
+      </global-header-item>
       <li class="tools-item">
         <global-setting
-          right="-40px"
+          right="10px"
           top="50px"
-          :triangle="{ right: '50px' }"
+          :triangle="{ right: '0', left: 'unset' }"
         ></global-setting>
-      </li>
-      <!-- 个人项 -->
-      <global-header-item class="tools-item" :data="PersonData">
-      </global-header-item>
-      <li class="tools-item avatar">
-        <global-avatar></global-avatar>
       </li>
     </ul>
   </div>
@@ -22,7 +45,12 @@
 <script setup lang="ts" name="ManagerHeader">
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
-
+// 引入 图标
+import { icons } from "./icon"
+// 引入 仓库
+import { useManagerStore } from "@/store/manager"
+// 提取变量
+const { isFold } = storeToRefs(useManagerStore())
 // 个人页面
 const PersonData = useShowPersonHeaderMenu()
 </script>
@@ -36,13 +64,33 @@ $underline-height: var(--header-topnav-mask-height);
 $underline-bg: var(--header-topnav-mask-color);
 $avatar-size: $manager-header-height - 10;
 .manager-header {
-  width: 100%;
-  height: $manager-header-height;
   background-color: var(--header-bg);
   color: var(--header-color);
-  box-shadow: 1px 1px 3px rgb(117, 112, 112);
-  position: relative;
-  z-index: $manager-header-index;
+  box-shadow: var(--header-shadow);
+  // 导航项目
+  .tools-item {
+    margin-left: $item-left;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    > a {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      > i,
+      svg {
+        margin-right: $icon-mr;
+      }
+    }
+  }
+  // 左侧 面包屑
+  .breadcrumb {
+    height: 100%;
+    display: flex;
+  }
   // 右侧 工具 栏
   .tools {
     position: absolute;
@@ -53,23 +101,6 @@ $avatar-size: $manager-header-height - 10;
     align-items: center;
     // 导航项目
     .tools-item {
-      margin-left: $item-left;
-      position: relative;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      > a {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        > i,
-        svg {
-          margin-right: $icon-mr;
-        }
-      }
-      position: relative;
       // 导航下划线
       &:not(.avatar)::before {
         content: "";

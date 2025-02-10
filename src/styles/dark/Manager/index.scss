@@ -1,15 +1,40 @@
 // 引入 全局 变量
 @use "./global/index.scss" as *;
+// 引入 函数
+@use "sass:color";
 
 // 内容 区域 共同的 变量
-$pages-card-bg: #375366;
+$pages-card-bg: #2d4c5f;
 html[themes="#{$theme}"] {
   .manager-container {
     --primary-color: #{$primary-color};
+    // 左侧 侧边栏
+    --aside-bg: #1b232b;
+    --aside-shadow: 1px 0 4px #14232d;
+    // 右侧 顶部 header
+    --header-bg: #{$pages-card-bg};
+    --header-color: #{$primary-color};
+    --header-shadow: 1px 1px 3px #42464a;
+    // 右侧 内容区域 卡片
     --manager-card-bg: #{$pages-card-bg};
     --manager-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
     --manager-card-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
     // 头部导航 底部线条
     --header-topnav-mask-color: #95adca;
+    // 手风琴 菜单
+    $accordion-bg-hover: #35516c;
+    $accordion-color: #9db5c4;
+    $accordion-color-hover: #c3d9e7;
+    --accordion-title-bg: transparent;
+    --accordion-title-bg-hover: #{$accordion-bg-hover};
+    --accordion-title-color: #{$accordion-color};
+    --accordion-title-color-hover: #{$accordion-color-hover};
+    --accordion-subtitle-bg: transparent;
+    --accordion-subtitle-bg-hover: #{color.adjust(
+        $accordion-bg-hover,
+        $lightness: 5%
+      )};
+    --accordion-subtitle-color: #{$accordion-color};
+    --accordion-subtitle-color-hover: #{$accordion-color-hover};
   }
 }
