@@ -18,7 +18,7 @@ router.put(
       // 汇总 错误信息
       const errorArray = []
       if (!name) errorArray.push("name是必传项哦~")
-      if (!content) errorArray.push("content或者jsonContent是必传项哦~")
+      if (!content) errorArray.push("content是必传项哦~")
       if (errorArray.length) return res.result(void 0, errorArray, false)
 
       const findSetting = await Setting.findOne({ where: { name } })

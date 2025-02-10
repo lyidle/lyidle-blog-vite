@@ -1,6 +1,8 @@
 "use strict"
 const { Model } = require("sequelize")
 
+// 引入错误函数
+const setError = require("../utils/setError")
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     static associate(models) {
@@ -20,6 +22,12 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "菜单 title 不能为空" },
           notEmpty: { msg: "菜单 title 不能为空" },
           len: { args: [1, 32], msg: "菜单长度必须在1-32之间" },
+          async isUnique(value) {
+            const findOne = await sequelize.models.Menu.findOne({
+              where: { name: value },
+            })
+            if (findOne) throw new Error("菜单已存在哦~")
+          },
         },
       },
       icon: DataTypes.TEXT,
@@ -43,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "角色不能为空" },
         },
         set(value) {
-          if (!Array.isArray(value)) throw new Error("角色必须是一个数组")
+          if (!Array.isArray(value)) throw new setError("角色必须是一个数组")
           this.setDataValue("role", [...new Set(value.flat(Infinity))])
         },
       },
