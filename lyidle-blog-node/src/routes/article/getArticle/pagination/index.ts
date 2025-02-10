@@ -28,7 +28,7 @@ router.get("/", async (req, res, next) => {
       ],
       limit: pageSize,
       offset,
-      where: { isBin: 0 },
+      where: { isBin: "" },
     })
     if (JSON.stringify(rows) === "[]")
       return res.result(void 0, "获取文章失败~", false)

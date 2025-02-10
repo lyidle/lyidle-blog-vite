@@ -3,8 +3,8 @@ const { Article } = require("@/db/models")
 export default async (req: Request, res: Response, cb?: Function) => {
   const { id } = req.body
   const commend: any = {}
-  if (!id) return res.result(void 0, "没有找到文章哦~", false, 404)
-  // 按照id删除与修改
+  if (!id) return res.result(void 0, "没有找到文章哦~", false)
+  // 按照id 查询
   commend.where = {
     id: id,
   }
@@ -16,7 +16,7 @@ export default async (req: Request, res: Response, cb?: Function) => {
   const findArticle = await Article.findOne(commend)
 
   // 没有找到文章
-  if (!findArticle) return res.result(void 0, "没有找到文章哦~", false, 404)
+  if (!findArticle) return res.result(void 0, "没有找到文章哦~", false)
   // 找到返回
   return { findArticle, id }
 }

@@ -5,6 +5,8 @@ import type { NextFunction, Request, Response } from "express"
 import remove from "@/routes/user/admin/delete/remove"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
+// 引入redis
+import { getKey } from "@/utils/redis"
 const router = express.Router()
 // 彻底删除
 router.delete(
@@ -12,10 +14,18 @@ router.delete(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await remove(req, res, next, true)
+      const { id } = req.body
+
+      // 判断是否移动到垃圾桶
+      const isBin = await getKey(`userBin:${id}`)
+
+      if (isBin)
+        return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
+
+      await remove(req, res, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "删除用户失败~", false)
+        res.result(void 0, "用户移动到回收站失败~", false)
       )
     }
   }

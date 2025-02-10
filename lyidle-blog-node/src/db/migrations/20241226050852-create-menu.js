@@ -26,9 +26,7 @@ module.exports = {
         type: Sequelize.JSON,
       },
       isBin: {
-        type: Sequelize.TINYINT,
-        allowNull: false,
-        defaultValue: 0,
+        type: Sequelize.DATE,
       },
       role: {
         type: Sequelize.JSON,

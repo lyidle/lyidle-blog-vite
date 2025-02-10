@@ -11,6 +11,10 @@ import { setKey, delKey } from "@/utils/redis"
 import { tempImgLinkToPermantLink } from "@/utils/io/compress/tempImgLinkToPermantLink"
 import { join, resolve } from "path"
 import { unlink } from "fs/promises"
+
+// 引入 模型
+const { Article } = require("@/db/models")
+
 // 用于 获取contentType
 const { lookup } = require("mime-types")
 // api 的前缀
@@ -22,69 +26,69 @@ router.put(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // 调用查找函数
-      const findArticles = await findArticleFn(
-        req,
-        res,
-        ({ commend }: { commend: any }) => {
-          commend.attributes = {
-            exclude: ["updatedAt", "UserId", "isBin"],
-          }
-        }
-      )
+      const { id: articleId } = req.body
 
-      // 没有找到退出 相应的信息 查找函数中设置了
-      if (!findArticles?.id) return
-      const { findArticle } = findArticles
+      // 初始命令
+      const commend: any = {}
+
+      if (!articleId)
+        return res.result(void 0, "删除文章时，没有找到文章哦~", false)
+
+      // 按照id 查询
+      commend.where = {
+        id: articleId,
+        attributes: {
+          exclude: ["updatedAt", "UserId", "isBin"],
+        },
+      }
+
+      // 查找是否有文章
+      const findArticle = await Article.findOne(commend)
+
+      // 没有找到文章
+      if (!findArticle)
+        return res.result(void 0, "修改文章时，没有找到文章哦~", false)
+
+      // 找到提取
+      const { userId } = findArticle
 
       // 判断是否是用户的文章
-      if (req.auth.id !== findArticle.userId) {
-        next(new myError("PermissionError"))
-        return
+      if (req.auth.id !== userId) {
+        return res.result(void 0, "修改文章时，不能修改他人的文章哦~", false)
       }
 
       // 提取body 信息
-      const {
-        title,
-        content,
-        category,
-        tags: newArticleTags,
-        carousel,
-        desc,
-        poster,
-        length,
-      } = req.body
+      const { title, content, category, tags, carousel, desc, poster, length } =
+        req.body
 
+      // 提取 jwt 信息
       const { account } = req.auth
 
       // 非空判断
       if (
-        !(
-          title ||
-          content ||
-          category ||
-          newArticleTags ||
-          carousel ||
-          desc ||
-          poster ||
-          length
-        )
+        !title &&
+        !content &&
+        !length &&
+        !category &&
+        !tags &&
+        !carousel &&
+        !desc &&
+        !poster
       )
         return res.result(
           void 0,
-          "请至少传入以下信息中的一个title、content、category、tags、carousel、desc、poster、length~",
+          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc、poster哦~",
           false
         )
 
-      if (title)
-        // 检查并赋值字段
-        findArticle.set("title", title)
-      if (content) findArticle.set("content", content)
-      if (content && length) findArticle.set("length", length)
-      if (category) findArticle.set("category", category)
-      if (newArticleTags) findArticle.set("tags", newArticleTags)
-      if (carousel) findArticle.set("carousel", carousel)
-      if (desc) findArticle.set("desc", desc)
+      // 检查并赋值字段
+      title && findArticle.set("title", title)
+      content && length && findArticle.set("content", content)
+      content && length && findArticle.set("length", length)
+      category && findArticle.set("category", category)
+      tags && findArticle.set("tags", tags)
+      carousel && findArticle.set("carousel", carousel)
+      desc && findArticle.set("desc", desc)
 
       let oldPosterPath = ""
       // 判断是否有poster 和是否是图片

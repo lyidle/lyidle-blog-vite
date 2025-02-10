@@ -38,7 +38,7 @@ export default async (
           "id",
         ], // 可以指定要查询的字段
         where: {
-          isBin: 0,
+          isBin: "",
         },
       },
     ],

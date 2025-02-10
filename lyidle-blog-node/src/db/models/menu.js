@@ -34,15 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       to: DataTypes.STRING,
       layout: DataTypes.JSON,
       bannerImg: DataTypes.JSON,
-      isBin: {
-        type: DataTypes.TINYINT,
-        validate: {
-          isTiny(value) {
-            if (value !== 0 && value !== 1)
-              throw new Error("isBin 只能为 0 和 1")
-          },
-        },
-      },
+      isBin: DataTypes.DATE,
       role: {
         type: DataTypes.JSON,
         allowNull: false,

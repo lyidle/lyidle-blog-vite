@@ -54,9 +54,7 @@ module.exports = {
         },
       },
       isBin: {
-        type: Sequelize.TINYINT,
-        allowNull: false,
-        defaultValue: 0,
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,

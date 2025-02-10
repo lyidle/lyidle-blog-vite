@@ -1,7 +1,5 @@
-// 引入错误函数
-import myError from "@/utils/Error"
 // 引入类型
-import type { NextFunction, Request, Response } from "express"
+import type { Request, Response } from "express"
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
 // 引入时间转换
@@ -26,38 +24,26 @@ const deleted = async (findUser: any, userId: number, email: string) => {
 const remove = async (
   req: Request,
   res: Response,
-  next: NextFunction,
-  bin: boolean = false
+  bin: boolean = false,
+  isAuth = true
 ) => {
-  // const { id, account } = req.body
-  const commend: any = {
-    attributes: ["email", "id"],
-    where: { id: req.auth.id },
-  }
-  // if (!(id || account)) return res.result(void 0, "没有找到用户哦~", false)
-  // // 按照account删除
-  // if (account)
-  //   commend.where = {
-  //     account,
-  //   }
-  // // 按照id删除
-  // if (id)
-  //   commend.where = {
-  //     id: id,
-  //   }
-  // 查找是否有用户 以及得到邮箱
-  const findUser = await User.findOne(commend)
+  const { id } = req.body
+
+  // 查找是否有用户
+  const findUser = await User.findByPk(id)
   // 没有找到用户
-  if (!findUser) return res.result(void 0, "没有找到用户哦~", false, 404)
+  if (!findUser) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
 
-  // 判断是否是该用户
-  if (req.auth.id !== findUser.dataValues.id) {
-    next(new myError("PermissionError"))
-    return
+  // 找到提取需要的信息
+  const { id: userId, email } = findUser.dataValues
+
+  // 是否 权限 判断
+  if (isAuth) {
+    // 判断是否是用户的文章
+    if (req.auth.id !== userId) {
+      return res.result(void 0, "删除用户时，不能删除他人的用户哦~", false)
+    }
   }
-
-  // 提取需要的信息
-  const { email, id: userId } = findUser.dataValues
 
   // 删除用户信息缓存
   await delKey(`token:${userId}`)
@@ -70,23 +56,16 @@ const remove = async (
   if (bin) {
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userBin:${userId}`)
-    if (isBin) return res.result(void 0, "请勿重复操作~", false)
+    if (isBin)
+      return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
 
-    const data = { isBin: 1 }
-    await findUser.update(data, { where: { id: userId } })
+    // 设置数据
+    findUser.set("isBin", Date.now() + delete_user_expire)
+    // 更新
+    await findUser.save()
+
     await setKey(`userBin:${userId}`, true)
-    // 到时间自动删除
-    let tim: NodeJS.Timeout | null = setTimeout(async () => {
-      // 查询是否真的移除用户
-      const result = await User.findByPk(userId)
-      // 判断是否真的删除了
-      if (result.dataValues.isBin) {
-        // 彻底删除
-        await deleted(findUser, userId, email)
-      }
-      clearTimeout(tim as NodeJS.Timeout)
-      tim = null
-    }, delete_user_expire)
+
     return res.result(void 0, "用户成功移动到回收站~")
   }
 

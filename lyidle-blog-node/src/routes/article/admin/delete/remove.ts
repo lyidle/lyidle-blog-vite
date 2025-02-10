@@ -1,13 +1,8 @@
-// 引入查找文章的函数
-import findArticleFn from "@/routes/article/admin/find"
-// 引入error 函数
-import myError from "@/utils/Error"
-// 引入类型
-import type { NextFunction } from "express"
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
 // 引入时间转换
 const ms = require("ms")
+
 // 软删除文章的时间
 const delete_article_expire = ms(process.env.delete_article_expire)
 // 引入模型
@@ -17,25 +12,35 @@ const deleted = async (delArticle: any, id: number | string) => {
   // 删除文章
   await delArticle.destroy()
   // 删除临时的 userArticleBin
-  await delKey(`userArticleBin`)
+  await delKey(`userArticleBin:${id}`)
 }
 // 删除函数
 const remove = async (
   req: any,
   res: any,
-  next: NextFunction,
-  bin: boolean = false
+  bin: boolean = false,
+  isAuth = true
 ) => {
-  const findArticles = await findArticleFn(req, res)
-  // 没找到返回
-  if (!findArticles?.findArticle) return
-  // 找到提取
-  const { id, findArticle } = findArticles
-  const userId = findArticle.dataValues.userId
-  // 判断是否是用户的文章
-  if (req.auth.id !== userId) {
-    next(new myError("PermissionError"))
-    return
+  const { id: articleId } = req.body
+
+  if (!articleId)
+    return res.result(void 0, "删除文章时，没有找到文章哦~", false)
+
+  // 查找是否有文章
+  const findArticle = await Article.findByPk(articleId)
+  // 没有找到文章
+  if (!findArticle)
+    return res.result(void 0, "删除文章时，没有找到文章哦~", false)
+
+  // 找到提取需要的信息
+  const { id, userId } = findArticle.dataValues
+
+  // 是否 权限 判断
+  if (isAuth) {
+    // 判断是否是用户的文章
+    if (req.auth.id !== userId) {
+      return res.result(void 0, "删除文章时，不能删除他人的文章哦~", false)
+    }
   }
 
   // 删除用户信息缓存
@@ -44,29 +49,24 @@ const remove = async (
   await delKey(`webTotalPages`)
   await delKey(`webTotalWords`)
 
+  // 回收到垃圾桶
   if (bin) {
     // 只能点击移动到一次垃圾桶
     const isBin = await getKey(`userArticleBin:${id}`)
-    if (isBin) return res.result(void 0, "请勿重复操作~", false)
+    if (isBin)
+      return res.result(void 0, "文章移动到垃圾桶了，请勿重复操作~", false)
 
-    const data = { isBin: 1 }
-    await findArticle.update(data, { where: { id } })
+    // 设置数据
+    findArticle.set("isBin", Date.now() + delete_article_expire)
+    // 更新
+    await findArticle.save()
+    // 设置缓存
     await setKey(`userArticleBin:${id}`, true)
-    // 到时间自动删除
-    let tim: NodeJS.Timeout | null = setTimeout(async () => {
-      // 删除临时的userArticleBin
-      await delKey(`userArticleBin:${id}`)
-      // 查询是否真的移除用户
-      const result = await Article.findByPk(id)
-      if (result.dataValues.isBin) {
-        // 彻底删除
-        await deleted(findArticle, id)
-      }
-      clearTimeout(tim as NodeJS.Timeout)
-      tim = null
-    }, delete_article_expire)
+
+    // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_article_expire, "文章成功移到回收站~")
   }
+
   // 彻底删除
   await deleted(findArticle, id)
   return res.result(void 0, "删除文章成功~")
