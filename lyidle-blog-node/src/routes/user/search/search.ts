@@ -22,6 +22,15 @@ export default async (
 ) => {
   const { id, account, email, role, nickName } = data
 
+  if (!(id || account || email || role || nickName)) {
+    res.result(
+      void 0,
+      "查询用户，请至少传入id、account、email、role、nickName中的一个参数~",
+      false
+    )
+    return
+  }
+
   const commend: any = {
     include: [
       {
@@ -38,20 +47,11 @@ export default async (
           "id",
         ], // 可以指定要查询的字段
         where: {
-          isBin: "",
+          isBin: null,
         },
       },
     ],
     attributes: { exclude: ["pwd"] },
-  }
-
-  if (!(id || account || email || role || nickName)) {
-    res.result(
-      void 0,
-      "查询用户，请至少传入id、account、email、role、nickName中的一个参数~",
-      false
-    )
-    return false
   }
 
   // 按照nickName查询
@@ -93,12 +93,12 @@ export default async (
       id,
     }
   }
-  commend.where.isBin = 0
+
   // 查询用户的所有文章
   const findUser = await User.findAll(commend)
   if (!findUser.length) {
     res.result(void 0, "查询用户信息失败~", false)
-    return false
+    return
   }
   // 整理 个数
   findUser.forEach((item: any) => {

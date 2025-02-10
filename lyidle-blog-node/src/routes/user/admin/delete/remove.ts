@@ -7,6 +7,17 @@ const ms = require("ms")
 const { User, Article } = require("@/db/models")
 // 软删除用户的时间
 const delete_user_expire = ms(process.env.delete_user_expire)
+// 不管是否删除都要移除的 定时任务 也需要
+export const publicUserRemove = async (userId: number) => {
+  // 删除用户信息缓存
+  await delKey(`token:${userId}`)
+  await delKey(`userInfo:${userId}`)
+
+  // 删除文章的缓存
+  await delKey(`userArticleBin`)
+  await delKey(`webTotalPages`)
+  await delKey(`webTotalWords`)
+}
 // 彻底删除函数
 const deleted = async (findUser: any, userId: number, email: string) => {
   // 删除文章
@@ -15,9 +26,16 @@ const deleted = async (findUser: any, userId: number, email: string) => {
   await findUser.destroy()
   // 删除时用户数量-1
   const userCounts = await getKey("userCounts")
+  let num = +userCounts - 1
+  // 越界判断
+  if (num < 0) num = 0
+  // 设置用户数量
   await setKey("userCounts", +userCounts - 1)
   // 删除临时的userBin
   await delKey(`userBin:${userId}`)
+
+  // 不管是否删除都要移除的
+  await publicUserRemove(userId)
 }
 
 // 删除函数await
@@ -45,13 +63,8 @@ const remove = async (
     }
   }
 
-  // 删除用户信息缓存
-  await delKey(`token:${userId}`)
-  await delKey(`userInfo:${userId}`)
-  // 删除文章的缓存
-  await delKey(`userArticleBin`)
-  await delKey(`webTotalPages`)
-  await delKey(`webTotalWords`)
+  // 不管是否删除都要移除的
+  await publicUserRemove(userId)
 
   if (bin) {
     // 只能点击移动到一次垃圾桶

@@ -1,8 +1,122 @@
-## 设置信息的 content 一律需要 json 化存储
+# redis
 
-# token 字段
+## 网站信息
 
+### `webCreatedAt`
+
+> [!value] 创站时间
+
+```js
+getKey("webCreatedAt")
 ```
+
+### `touristCounts`
+
+> [!value] 访客数量
+
+```js
+getKey("touristCounts")
+```
+
+### `userCounts`
+
+> [!value] 用户数量
+
+```js
+getKey("userCounts")
+```
+
+### `webTotalPages`
+
+> [!value] 文章数
+
+```js
+getKey("webTotalPages")
+```
+
+### `webUpdatedAt`
+
+> [!value] 网站最后更新时间
+
+```js
+getKey("webUpdatedAt")
+```
+
+### `webTotalWords`
+
+> [!value] 网站总字数
+
+```js
+getKey("webTotalWords")
+```
+
+### `setting:公告`
+
+> [!value] 公告
+
+```js
+getKey(`setting:公告`)
+```
+
+## 网站所有者的信息
+
+### `setting:版权`
+
+> [!value] 网站版权信息
+
+```js
+getKey("setting:版权")
+```
+
+### setting:联系方式
+
+> [!value] 网站所有者的联系方式
+
+```js
+getKey("setting:联系方式")
+```
+
+### `setting:${name}`
+
+> [!value] 获取设置信息
+
+```js
+getKey(`setting:${name}`)
+```
+
+## 网站状态
+
+### `initialWebInfo`
+
+> [!value] 初始化小站中
+
+```js
+getKey("initialWebInfo")
+```
+
+## 临时垃圾桶值
+
+### `userArticleBin:${id}`
+
+> [!value] 文章是否移动到垃圾桶
+
+```js
+getKey(`userArticleBin:${id}`)
+```
+
+### `userBin:${id}`
+
+> [!value] 用户是否移动到垃圾桶
+
+```js
+getKey(`userBin:${id}`)
+```
+
+## 用户信息
+
+### token 字段
+
+```json
 {
   "id",
   "account",
@@ -14,92 +128,89 @@
 }
 ```
 
-# redis 设置缓存
+### `token:${id}`
 
-## token
+> [!value] token
 
-`getKey(`token:${id}`)`
-登录时设置,修改时改了 pwd 和删除用户时需要删除缓存
-修改时没改 pwd，则更新
+```js
+getKey(`token:${id}`)
+```
 
-## regCode 注册密码发送邮箱
+### `userInfo:${cacheKey}`
 
-`setKey(`regCode:${email}`,code)`
-发送邮箱时设置，验证通过删除
+> [!value] 用户信息
 
-## forgetCode 忘记密码发送邮箱
+```js
+getKey(`userInfo:${cacheKey}`)
+```
 
-`getKey(`forgetCode:${email}`)`
-发送邮箱时设置，验证通过删除
+### `ipRegion:${userIp}`
 
-## userBin 垃圾桶临时变量
+> [!value] 访客 ip
 
-`delKey(`userBin:${userId}`)`
-进入垃圾桶后禁止再次回收
-移除垃圾桶时也要删除
+```js
+getKey(`ipRegion:${userIp}`)
+```
 
-## userArticleBin 垃圾桶临时变量
+## 验证码
 
-`delKey(`userArticleBin:${userId}`)`
-进入垃圾桶后禁止再次回收
-移除垃圾桶时也要删除
+### `${setData}:${email}`
 
-## userInfo 用户信息
+> [!value] 根据邮箱获取验证码
 
-`getKey(`userInfo:${id}`)`
-获取时设置，修改和删除时要删除缓存
-登录时也删除缓存
-修改和删除和增加文章时也删除缓存
+```js
+setData: "regCode" | "forgetCode"
+// redis 插入的键值
+const cacheKey = `${setData}:${email}`
+// 获取redis的数据
+let result = await getKey(cacheKey)
+```
 
-## announce 公告
+## 获取文章
 
-`getKey(`announce`)`
-获取和设置时设置值
+### `ArticlefindAuthorAndId:${id}`
 
-## upRegion ip 信息
+> [!value] 根据文章 id 和用户 id 查找文章 判断是否是 文章页面 404 了
 
-`getKey(`ipRegion:${userIp}`)`
+```js
+getKey(`ArticlefindAuthorAndId:${id}`)
+```
 
-## menuList 菜单
+### `ArticlefindByPk:${id}`
 
-`getKey(`menuList`)`
-获取和设置时设置值
+> [!value] 根据 id 获取文章
 
-## poetry 古诗
+```js
+getKey(`ArticlefindByPk:${id}`)
+```
 
-`getKey(`poetry`)`
-获取时设置值 使用的第三方 api
+## 获取菜单
 
-## webCreatedAt 网站创建时间
+### `menu:${role}`
 
-`getKey("webCreatedAt")`
-运行程序时初始化
+> [!value] 获取菜单
 
-## webUpdatedAt 网站文章最后更新时间
+```js
+const cacheKey = `menu:${role}`
+const cachedData = await getKey(cacheKey)
+```
 
-`getKey("webUpdatedAt")`
-文章创建和更新时，赋值
+## 获取古诗
 
-## touristCounts 游客数量
+### `poetry`
 
-`getKey("touristCounts")`
-获取 webinfo 时设置，访客数增加时，赋值 加了本地 ip 和 设备 限制
+> [!value] 获取古诗词
 
-## userCounts 用户数量
+```js
+getKey("poetry")
+```
 
-`getKey("userCounts")`
-初始化管理员账号时默认 1
-登录增 +1
-删除用户 -1
+## 上传
 
-## webTotalPages 文章总数
+### `upload:img:temp:${account}:${url}`
 
-`getKey("webTotalPages")`
-文章增加和删除时赋值
-用户删除时删除缓存
+> [!value] 上传临时文件是否 上传过了
 
-## totalWords 网站文章总字数
-
-`getKey("totalWords")`
-获取 webinfo 时设置，更新文章和删除文章与增加文章时删除缓存
-用户删除时删除缓存
+```js
+getKey(`upload:img:temp:${account}:${url}`)
+```

@@ -37,7 +37,7 @@ const search = async (
     limit: pageSize,
     offset,
     where: {
-      isBin: "",
+      isBin: null,
     },
   }
   if (!(id || author || title || desc || category || tags))
