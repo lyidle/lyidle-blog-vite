@@ -30,3 +30,16 @@
     }
   }
 }
+
+// 管理页面 的header 按钮布局
+@mixin adminHeaderBtns {
+  .admin-header-btns {
+    display: flex;
+    gap: var(--admin-content-header-gap);
+    margin-bottom: var(--admin-content-item-gap);
+    button {
+      width: 100px;
+      margin: unset;
+    }
+  }
+}

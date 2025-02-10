@@ -1,24 +1,44 @@
 <template>
   <div class="admin-container">
-    <my-search-admin> </my-search-admin>
+    <my-search-admin :submit="handlerSearch"> </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg)">
-      <div>AdminAccessUsers</div>
+      <div class="admin-header-btns">
+        <my-button>添加用户</my-button>
+        <my-button>批量删除</my-button>
+      </div>
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        :row-class-name="tableRowClassName"
+      >
+        <el-table-column prop="date" label="Date" width="width" />
+        <el-table-column prop="name" label="Name" width="width" />
+        <el-table-column prop="address" label="Address" width="width" />
+        <template #empty>
+          <div class="flex items-center justify-center h-100%">
+            <el-empty />
+          </div>
+        </template>
+      </el-table>
     </my-card>
   </div>
 </template>
 
 <script setup lang="ts" name="AdminAccessUsers">
-//
+// 搜索回调
+const handlerSearch = () => {
+  ElMessage("test11")
+}
 </script>
 
 <style scoped lang="scss">
 .admin-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  .admin-search {
-  }
+  gap: var(--admin-content-card-gap);
+  @include adminHeaderBtns;
   .admin-content {
+    padding: var(--admin-content-card-pd);
   }
 }
 </style>

@@ -9,21 +9,6 @@
           @click="isFold = !isFold"
         ></i>
       </li>
-      <li class="manager-header-item">
-        <el-breadcrumb :separator-icon="ArrowRight">
-          <!-- 动态展示路由 -->
-          <el-breadcrumb-item
-            v-for="(item, index) in $route.matched"
-            :key="index"
-            v-show="item.meta.title"
-            :to="item.path"
-            class="crumb-item"
-          >
-            <icon-parse :icon="item.meta?.icon" class="icon"></icon-parse>
-            <span>{{ item.meta.title }}</span>
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </li>
     </ul>
     <ul class="tools">
       <!-- 个人项 -->
@@ -54,7 +39,6 @@
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 引入 图标
 import { icons } from "./icon"
-import ArrowRight from "@/components/icon/arrow-right/index.vue"
 // 引入 仓库
 import { useManagerStore } from "@/store/manager"
 // 回到上一个路径
@@ -75,15 +59,16 @@ $underline-height: var(--header-topnav-mask-height);
 $underline-bg: var(--header-topnav-mask-color);
 $avatar-size: $manager-header-height - 10;
 $color: var(--header-color);
-$crumb-unable-color: var(--header-crumb-unable-color);
-$crumb-color: var(--header-crumb-color);
-$crumb-color-hover: var(--header-crumb-color-hover);
 .manager-header {
   background-color: var(--header-bg);
   color: $color;
   box-shadow: var(--header-shadow);
   .icon {
     margin-right: $icon-mr;
+  } // 左侧 面包屑
+  .breadcrumb {
+    height: 100%;
+    display: flex;
   }
   // 右侧 工具的样式
   .tools {
@@ -105,22 +90,6 @@ $crumb-color-hover: var(--header-crumb-color-hover);
       > i,
       svg {
         margin-right: $icon-mr;
-      }
-    }
-  }
-  // 左侧 面包屑
-  .breadcrumb {
-    height: 100%;
-    display: flex;
-    .crumb-item {
-      // 没有激活的
-      --el-text-color-regular: #{$crumb-unable-color};
-      // 激活的
-      --el-text-color-primary: #{$crumb-color};
-      // 悬浮
-      --el-color-primary: #{$crumb-color-hover};
-      span {
-        font-weight: normal;
       }
     }
   }

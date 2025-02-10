@@ -1,5 +1,6 @@
 // 右侧 的 头部
 $manager-header-height: 40px;
+
 .manager-container {
   // 侧边栏 的展开和收起宽度
   --manager-aside-expand-width: 250px;
@@ -12,8 +13,6 @@ $manager-header-height: 40px;
 
   // 头部导航 底部线条
   --header-topnav-mask-height: 2px;
-  // 左右边距
-  --header-pd: 50px;
   // 悬浮菜单的左边距
   --header-topmenu-margin-left: 20px;
   // 悬浮菜单的icon左边距
@@ -23,5 +22,10 @@ $manager-header-height: 40px;
   // 悬浮菜单的圆角
   --menu-radius: 5px;
 
-  // admin 的卡片 左边距
+  // 内容 pd
+  --admin-content-pd: 30px;
+  --admin-content-card-gap: 15px;
+  --admin-content-item-gap: 15px;
+  --admin-content-card-pd: 20px;
+  --admin-content-header-gap: 15px;
 }

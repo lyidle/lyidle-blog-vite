@@ -58,7 +58,8 @@ document.body.setAttribute("banner-fixed", "")
     // 内容
     .manager-content {
       height: calc(100% - $manager-header-height);
-      padding: 30px;
+      padding: var(--admin-content-pd);
+      padding-top: var(--admin-content-card-gap);
       overflow: hidden;
       position: relative;
       z-index: $manager-content-index;
