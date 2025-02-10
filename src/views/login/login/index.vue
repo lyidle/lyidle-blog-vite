@@ -5,12 +5,13 @@
       label-width="40px"
       label-position="left"
       :model="loginData"
-      @keyup.enter="handlerLogin"
+      @submit.prevent="handlerLogin"
       :rules="loginRules"
       ref="loginForm"
     >
       <el-form-item label="账号" prop="account">
         <el-input
+          class="login-input"
           placeholder="Account or Email"
           v-model.trim="loginData.account"
           :prefix-icon="userIcon"
@@ -18,6 +19,7 @@
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input
+          class="login-input"
           placeholder="Password"
           v-model="loginData.password"
           show-password
@@ -25,13 +27,9 @@
           :prefix-icon="passIcon"
         ></el-input>
       </el-form-item>
-      <el-button
-        type="primary"
-        class="w-100% mt-5px"
-        v-debounce="{ fn: handlerLogin }"
-      >
+      <my-button class="w-100% mt-5px login-button" native-type="submit">
         登录
-      </el-button>
+      </my-button>
     </el-form>
     <div class="tip text-center">
       <span>没有账号？</span>
@@ -52,6 +50,8 @@ import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 import { reqLogin } from "@/api/user"
 // 引入仓库
 import { useUserStore } from "@/store/user"
+import throttle from "@/utils/throttle"
+
 // 导出对应数据
 const { userToken } = storeToRefs(useUserStore())
 const props = defineProps(["reg"])
@@ -96,7 +96,7 @@ const loginForm = ref()
 const login = ref()
 const router = useRouter()
 // 处理登录
-const handlerLogin = async () => {
+const handlerLogin = throttle(async () => {
   try {
     await loginForm.value.validateField()
     const result = await reqLogin(loginData)
@@ -104,7 +104,7 @@ const handlerLogin = async () => {
     ElMessage.success("登录成功~")
     router.push("/")
   } catch (error) {}
-}
+}, 1000)
 // 前往注册的切换动画
 const toReg = () => {
   props.reg.style.transform = "rotateY(0deg)"

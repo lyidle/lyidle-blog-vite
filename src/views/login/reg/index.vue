@@ -3,75 +3,80 @@
     <h1 class="text-center mt-0">注册</h1>
     <el-form
       label-width="70px"
-      @keyup.enter="handlerReg"
+      @submit.prevent="handlerReg"
       label-position="left"
       :model="regData"
       :rules="regRules"
       ref="regForm"
     >
       <el-form-item label="账号" prop="account">
-        <el-input
+        <my-input
+          class="login-input"
           placeholder="Account"
           v-model.trim="regData.account"
           :prefix-icon="userIcon"
-        ></el-input>
+        ></my-input>
       </el-form-item>
       <el-form-item label="用户名" prop="nickName">
-        <el-input
+        <my-input
+          class="login-input"
           placeholder="NickName"
           v-model.trim="regData.nickName"
           :prefix-icon="userIcon"
-        ></el-input>
+        ></my-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input
+        <my-input
+          class="login-input"
           placeholder="E-Mail"
           v-model.trim="regData.email"
           :prefix-icon="emailIcon"
-        ></el-input>
+        ></my-input>
       </el-form-item>
       <el-form-item label="验证码" prop="code">
         <div class="flex w-100%">
-          <el-input
+          <my-input
             placeholder="Code"
             v-model="regData.code"
-            class="flex-1"
+            class="login-input flex-1"
             :prefix-icon="codeIcon"
           >
-          </el-input>
-          <el-button
+          </my-input>
+          <my-button
             type="primary"
-            class="w-50px ml-10px"
+            class="w-50px ml-10px login-button"
             :disabled="!codeIsActive"
             v-debounce="{ fn: handlerCode }"
           >
             {{ code }}
-          </el-button>
+          </my-button>
         </div>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input
+        <my-input
+          class="login-input"
           placeholder="Password"
           show-password
           v-model="regData.password"
           autocomplete="off"
           :prefix-icon="passIcon"
-        ></el-input>
+        ></my-input>
       </el-form-item>
       <el-form-item label="确认密码" prop="confirmPassword">
-        <el-input
+        <my-input
+          class="login-input"
           placeholder="Confirm Password"
           show-password
           v-model="regData.confirmPassword"
           autocomplete="off"
           :prefix-icon="confirmPassIcon"
-        ></el-input>
+        ></my-input>
       </el-form-item>
-      <el-button
+      <my-button
         type="primary"
-        class="w-100% mt-5px"
-        v-debounce="{ fn: handlerReg }"
-        >注册</el-button
+        class="w-100% mt-5px login-button"
+        native-type="submit"
+        >注册</my-button
       >
     </el-form>
     <div class="tip text-center">
@@ -102,6 +107,7 @@ import {
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 引入api
 import { reqRegEmail, reqReg } from "@/api/user"
+import throttle from "@/utils/throttle"
 const props = defineProps(["login"])
 const reg = ref()
 // code倒计时
@@ -188,14 +194,14 @@ const regRules = reactive({
   ],
 })
 // 处理注册
-const handlerReg = async () => {
+const handlerReg = throttle(async () => {
   try {
     await regForm.value.validate()
     await reqReg(regData)
     ElMessage.success("注册成功~")
     toLogin()
   } catch (error) {}
-}
+}, 1000)
 // 发送验证码按钮
 const handlerCode = async () => {
   try {

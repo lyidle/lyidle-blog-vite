@@ -97,6 +97,7 @@ declare module 'vue' {
     MyMenuInstanceRecursive: typeof import('./src/components/my/menu/instance/recursive/index.vue')['default']
     MyMenuItem: typeof import('./src/components/my/menu/item.vue')['default']
     MyPopover: typeof import('./src/components/my/popover/index.vue')['default']
+    MySearchAdmin: typeof import('./src/components/my/search/admin/index.vue')['default']
     MySelect: typeof import('./src/components/my/select/index.vue')['default']
     MySwitch: typeof import('./src/components/my/switch/index.vue')['default']
     MyUpload: typeof import('./src/components/my/upload/index.vue')['default']

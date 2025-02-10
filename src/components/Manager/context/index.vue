@@ -2,9 +2,7 @@
   <div class="manager-context">
     <manager-header></manager-header>
     <div class="manager-content">
-      <my-card class="card_style" bg="var(--manager-card-bg)">
-        <slot></slot>
-      </my-card>
+      <slot></slot>
     </div>
   </div>
 </template>
