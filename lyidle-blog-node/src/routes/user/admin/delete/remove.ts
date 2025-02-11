@@ -13,14 +13,14 @@ export const publicUserRemove = async (userId: number) => {
   await delKey(`token:${userId}`)
   await delKey(`userInfo:${userId}`)
 
-  // 删除文章的缓存
+  // 删除用户的缓存
   await delKey(`userArticleBin`)
   await delKey(`webTotalPages`)
   await delKey(`webTotalWords`)
 }
 // 彻底删除函数
 const deleted = async (findUser: any, userId: number, email: string) => {
-  // 删除文章
+  // 删除用户
   await Article.destroy({ where: { userId } })
   // 删除用户
   await findUser.destroy()
@@ -57,7 +57,7 @@ const remove = async (
 
   // 是否 权限 判断
   if (isAuth) {
-    // 判断是否是用户的文章
+    // 判断是否是用户的用户
     if (req.auth.id !== userId) {
       return res.result(void 0, "删除用户时，不能删除他人的用户哦~", false)
     }

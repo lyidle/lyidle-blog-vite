@@ -8,7 +8,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
 import { getKey } from "@/utils/redis"
 const router = express.Router()
-// 彻底删除
+// 移动到垃圾桶
 router.delete(
   "/",
   [jwtMiddleware],

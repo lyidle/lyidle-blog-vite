@@ -12,16 +12,20 @@ export const createUserWithRoles = async (userData: any, roles: string[]) => {
       throw new Error("用户不存在")
     }
 
-    // 为用户添加角色
-    // 遍历 roles 数组，查找或创建角色，并关联用户和角色
     if (roles && Array.isArray(roles)) {
-      for (const roleName of roles) {
-        const [role] = await Role.findOrCreate({
-          where: { name: roleName },
-          defaults: { name: roleName },
+      // 批量查找或创建角色
+      const roleInstances = await Promise.all(
+        roles.map(async (roleName) => {
+          const [role] = await Role.findOrCreate({
+            where: { name: roleName },
+            defaults: { name: roleName },
+          })
+          return role
         })
-        await user.addRole(role) // 关联用户和角色
-      }
+      )
+
+      // 直接重置用户角色
+      await user.setRoles(roleInstances)
     }
 
     return user
