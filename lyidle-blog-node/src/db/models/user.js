@@ -13,7 +13,7 @@ const {
 // 导入环境变量
 require("dotenv").config()
 // 引入错误函数
-const setError = require("../utils/setError")
+const setDbError = require("../../utils/error/setDbError/js")
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         // 使用hash加密
         set(value) {
-          if (!pwdReg.reg.test(value)) throw new setError(pwdReg.msg)
+          if (!pwdReg.reg.test(value)) throw new setDbError(pwdReg.msg)
           this.setDataValue("pwd", bcrypt.hashSync(value, 10))
         },
       },

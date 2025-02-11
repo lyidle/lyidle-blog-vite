@@ -1,7 +1,7 @@
 // 类型
 import type { Request, Response, NextFunction } from "express"
 // 引用封装的错误函数
-import myError from "@/utils/Error"
+import myError from "@/utils/error/myError"
 // 引入redis
 import { getKey } from "@/utils/redis"
 // 引入jwt

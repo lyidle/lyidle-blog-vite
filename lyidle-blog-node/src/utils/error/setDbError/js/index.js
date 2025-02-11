@@ -1,5 +1,5 @@
 const { ValidationError, ValidationErrorItem } = require("sequelize")
-module.exports = class setError {
+module.exports = class setDbError {
   constructor(msgs) {
     let msg = [new ValidationErrorItem(msgs)]
     if (Array.isArray(msgs))

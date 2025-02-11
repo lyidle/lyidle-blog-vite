@@ -7,6 +7,8 @@ import { jwtMiddleware } from "@/middleware/auth"
 import { setKey, delKey } from "@/utils/redis"
 // 设置token
 import { setToken } from "@/utils/token"
+import myError from "@/utils/error/myError"
+
 // 引入 模型
 const { User } = require("@/db/models")
 const router = express.Router()
@@ -68,7 +70,7 @@ router.put(
       // 可能为null
       ;(signer == null || signer) && findUser.set("signer", signer)
 
-      // role?.length && findUser.set("role", role)
+      // role?.length && findUser.setRoles("role", role)
 
       // 更新数据库
       const { dataValues } = await findUser.save()

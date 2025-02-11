@@ -6,6 +6,7 @@ import email from "@/routes/email/reg"
 import { setKey, getKey, delKey } from "@/utils/redis"
 // 正则判断
 import { codeReg } from "@/RegExp/loginOrReg"
+// 引入 创建用户和权限 权限没有时才创建
 import { createUserWithRoles } from "@/utils/db/user/createUserWithRoles"
 const router = express.Router()
 
@@ -53,7 +54,7 @@ router.post("/", async (req, res, next) => {
       email,
     }
 
-    const result = await createUserWithRoles(user, default_user)
+    const result = await createUserWithRoles(user, default_user, next)
 
     // 注册成功后删除缓存
     await delKey(`regCode:${email}`)

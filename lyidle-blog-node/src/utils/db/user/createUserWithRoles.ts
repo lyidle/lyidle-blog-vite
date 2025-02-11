@@ -1,6 +1,15 @@
-const { User, Role } = require("@/db/models")
+// 引入 类型
+import type { NextFunction } from "express"
+// 引入 设置和创建权限 权限没有时才创建
+import { setRoles } from "./setRoles"
 
-export const createUserWithRoles = async (userData: any, roles: string[]) => {
+const { User } = require("@/db/models")
+
+export const createUserWithRoles = async (
+  userData: any,
+  roles: string[],
+  next: NextFunction
+) => {
   // 存储 创建 的 用户
   let user: any
   try {
@@ -9,23 +18,14 @@ export const createUserWithRoles = async (userData: any, roles: string[]) => {
 
     // 确保用户和角色都存在
     if (!user) {
-      throw new Error("用户不存在")
+      throw new Error("创建用户时，用户创建后不存在哦~")
     }
 
-    if (roles && Array.isArray(roles)) {
-      // 批量查找或创建角色
-      const roleInstances = await Promise.all(
-        roles.map(async (roleName) => {
-          const [role] = await Role.findOrCreate({
-            where: { name: roleName },
-            defaults: { name: roleName },
-          })
-          return role
-        })
-      )
-
-      // 直接重置用户角色
-      await user.setRoles(roleInstances)
+    // 设置和创建权限
+    const result = await setRoles(roles)
+    if (result) {
+      //  直接重置用户角色
+      await user.setRoles(result)
     }
 
     return user
