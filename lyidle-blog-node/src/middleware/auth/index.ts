@@ -37,7 +37,7 @@ export const jwtMiddleware = async (
 }
 
 // 管理员权限验证
-const adminData: string[] = JSON.parse(process.env.Admin!)
+const adminData: string[] = JSON.parse(process.env.default_admin!)
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { role: userRole } = req.auth

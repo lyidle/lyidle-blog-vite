@@ -8,7 +8,8 @@ const {
   nickNameReg,
   pwdReg,
   emailReg,
-} = require("@/RegExp/loginOrReg")
+} = require("../../RegExp/loginOrReg/js")
+
 // 导入环境变量
 require("dotenv").config()
 // 引入错误函数

@@ -1,7 +1,7 @@
 "use strict"
 const { Model } = require("sequelize")
 // 清除缓存
-const { setKey, getKey } = require("@/utils/redis")
+const { setKey, getKey } = require("../../utils/redis/js")
 module.exports = (sequelize, DataTypes) => {
   class Visitor extends Model {
     /**
