@@ -6,8 +6,11 @@ import getMenuList from "./get"
 import setMenuList from "./set"
 // 更新
 import putMenuList from "./put"
+// 删除
+import deleteMenuList from "./delete"
 const router = express.Router()
 router.use(getMenuList)
 router.use(setMenuList)
 router.use(putMenuList)
+router.use(deleteMenuList)
 export default router

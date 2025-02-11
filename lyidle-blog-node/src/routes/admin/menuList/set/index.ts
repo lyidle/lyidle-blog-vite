@@ -8,7 +8,13 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入 模型
 const { Menu } = require("@/db/models")
 const router = express.Router()
-
+// 清除 菜单 的缓存
+export const delRoles = async (roles: string[]) => {
+  if (roles && roles.length) {
+    // 清除 redis 缓存
+    await Promise.all(roles.map((item: string) => delKey(`menu:${item}`)))
+  }
+}
 // 用户角色用户组
 const default_user = JSON.parse(process.env.default_user!)
 // 创建菜单
@@ -38,11 +44,8 @@ router.post(
 
       // 得到 roles
       const roles = dataValues.role
-      if (roles && roles.length) {
-        // 清除 redis 缓存
-        await Promise.all(roles.map((item: string) => delKey(`menu:${item}`)))
-      }
-
+      // 清除 菜单 的缓存
+      await delRoles(roles)
       res.result(void 0, "创建菜单成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
