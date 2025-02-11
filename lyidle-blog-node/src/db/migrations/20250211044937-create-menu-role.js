@@ -3,22 +3,24 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("MenuRoles", {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
       menuId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: "Menus", key: "id" },
+        primaryKey: true,
+        references: {
+          model: "Menus",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       roleId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: "Roles", key: "id" },
+        primaryKey: true,
+        references: {
+          model: "Roles",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       createdAt: {

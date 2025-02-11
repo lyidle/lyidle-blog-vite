@@ -12,7 +12,7 @@ const { User, Role } = require("@/db/models")
 // 引入 redis 设置缓存
 import { delKey } from "@/utils/redis"
 // 引入 处理 用户的role 的函数
-import { handlerUserRoles } from "@/utils/handlerRoles"
+import { handlerUserRoles } from "@/utils/db/handlerRoles"
 router.get("/", async (req, res, next) => {
   try {
     const { account: userAccount, password } = req.query

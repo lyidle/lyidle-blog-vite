@@ -2,9 +2,9 @@ import { Op, literal } from "sequelize"
 // 引入类型
 import { Request, Response } from "express"
 // 引入 整理 个数的函数
-import { tinyUserDocsCounts } from "@/utils/doc/counts"
+import { tinyUserDocsCounts } from "@/utils/db/doc"
 // 引入 处理 用户的role 的函数
-import { handlerUserRoles } from "@/utils/handlerRoles"
+import { handlerUserRoles } from "@/utils/db/handlerRoles"
 // 导入模型
 const { Article, User, Role } = require("@/db/models")
 
@@ -49,7 +49,8 @@ export default async (
         model: Role,
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不获取中间表数据
-        required: role ? true : false, // 只有当 role 过滤时，才必须匹配
+        where: role ? { name: role } : {},
+        required: Boolean(role), // 只有当 role 过滤时，才必须匹配
       },
     ],
     attributes: { exclude: ["pwd"] }, //排除密码
@@ -61,13 +62,6 @@ export default async (
   if (nickName) {
     commend.where.nickName = exact ? nickName : { [Op.like]: `%${nickName}%` }
   }
-
-  // // 按照角色查询
-  // if (role?.length && role.length > 0) {
-  //   commend.include.find((item: any) => item.model === Role).where = {
-  //     name: { [Op.in]: role },
-  //   }
-  // }
 
   // 按照邮箱查询
   if (email) commend.where.email = email

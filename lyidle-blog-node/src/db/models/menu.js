@@ -10,8 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       // 递归关联：一个菜单也可能是某个菜单的子级
       Menu.belongsTo(models.Menu, { foreignKey: "parentId", as: "parent" })
 
-      // 关联角色（多对多）
-      Menu.belongsToMany(models.Role, { through: models.MenuRole })
+      // 关联角色 通过 MenuRole 关联 Role
+      Menu.belongsToMany(models.Role, {
+        through: "MenuRole",
+        foreignKey: "menuId",
+      })
     }
   }
 

@@ -5,6 +5,7 @@ export const handlerUserRoles = (findUser: any[], cb?: (item: any) => void) => {
     cb && cb(item)
     // 把 role 变为 string[]
     const roles = item.dataValues.Roles
+
     delete item.dataValues.Roles
     item.dataValues.role = roles.map((item: { name: string }) => item.name)
   })

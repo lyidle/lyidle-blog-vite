@@ -4,11 +4,14 @@ import express from "express"
 import email from "@/routes/email/reg"
 // 引入 redis 设置缓存
 import { setKey, getKey, delKey } from "@/utils/redis"
-const router = express.Router()
 // 正则判断
 import { codeReg } from "@/RegExp/loginOrReg"
-// 引入模型
-const { User } = require("@/db/models")
+import { createUserWithRoles } from "@/utils/db/user/createUserWithRoles"
+const router = express.Router()
+
+// 普通用户组
+const default_user = JSON.parse(process.env.default_user!)
+
 // 注册接口
 router.post("/", async (req, res, next) => {
   const {
@@ -42,20 +45,22 @@ router.post("/", async (req, res, next) => {
     if (findCode != code) {
       return res.result(void 0, "验证码不正确~", false)
     }
+
     const user = {
       account,
       nickName,
       pwd: password,
       email,
     }
-    // 通过校验插入用户 插入用户组 sequelize模型设置了验证器
-    await User.create(user)
+
+    const result = await createUserWithRoles(user, default_user)
+
     // 注册成功后删除缓存
     await delKey(`regCode:${email}`)
     // 注册成功用户数+1
     const userCounts = await getKey("userCounts")
     await setKey("userCounts", +userCounts + 1)
-    return res.result(void 0, "注册成功~")
+    return res.result(result, "注册成功~")
   } catch (err: any) {
     return res.validateAuth(err, next, () =>
       res.result(void 0, "注册失败~", false)
