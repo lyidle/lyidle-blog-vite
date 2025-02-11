@@ -4,18 +4,22 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入redis
-import { setKey, delKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 设置token
 import { setToken } from "@/utils/token"
-import myError from "@/utils/error/myError"
+// 设置用户角色
+import { setRoles } from "@/utils/db/user/setRoles"
 
 // 引入 模型
 const { User } = require("@/db/models")
+const db = require("@/db/models")
 const router = express.Router()
 router.put(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
+    // 开启事务 防止 设置role时 用户更新失败 后可以回滚
+    const transaction = await db.sequelize.transaction()
     try {
       const { account, pwd, email, avatar, signer, nickName, role } = req.body
 
@@ -62,6 +66,12 @@ router.put(
       // 存在错误信息返回
       if (erroArray.length) return res.result(void 0, erroArray, false)
 
+      // 处理 角色信息
+      const roles = role?.length && (await setRoles(role))
+      if (roles.length) {
+        await findUser.setRoles(roles, { transaction })
+      }
+
       // 都通过加入更新
       nickName && findUser.set("nickName", nickName)
       pwd && findUser.set("pwd", pwd)
@@ -70,10 +80,10 @@ router.put(
       // 可能为null
       ;(signer == null || signer) && findUser.set("signer", signer)
 
-      // role?.length && findUser.setRoles("role", role)
-
       // 更新数据库
       const { dataValues } = await findUser.save()
+      // 提交事务
+      await transaction.commit()
 
       // 改变了pwd 需要重新登录
       if (pwd)
@@ -87,6 +97,8 @@ router.put(
 
       return res.result(void 0, "修改用户信息成功~")
     } catch (error) {
+      // 如果出现错误，回滚事务
+      await transaction.rollback()
       res.validateAuth(error, next, () =>
         res.result(void 0, "修改用户信息失败~", false)
       )

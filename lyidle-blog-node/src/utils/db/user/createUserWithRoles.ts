@@ -23,7 +23,7 @@ export const createUserWithRoles = async (
 
     // 设置和创建权限
     const result = await setRoles(roles)
-    if (result) {
+    if (result.length) {
       //  直接重置用户角色
       await user.setRoles(result)
     }

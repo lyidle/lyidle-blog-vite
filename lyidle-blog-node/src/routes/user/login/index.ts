@@ -49,7 +49,6 @@ router.get("/", async (req, res, next) => {
         },
       ],
     })
-
     // 判断有无找到用户
     if (findUser == null) {
       return res.result(void 0, "没有找到用户~", false)
