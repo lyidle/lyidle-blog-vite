@@ -57,6 +57,9 @@ router.put(
       else email && findUser.set("email", email)
       if (erroArray.length) return res.result(void 0, erroArray, false)
 
+      // 存在错误信息返回
+      if (erroArray.length) return res.result(void 0, erroArray, false)
+
       // 都通过加入更新
       nickName && findUser.set("nickName", nickName)
       pwd && findUser.set("pwd", pwd)
@@ -65,7 +68,7 @@ router.put(
       // 可能为null
       ;(signer == null || signer) && findUser.set("signer", signer)
 
-      role?.length && findUser.set("role", role)
+      // role?.length && findUser.set("role", role)
 
       // 更新数据库
       const { dataValues } = await findUser.save()
