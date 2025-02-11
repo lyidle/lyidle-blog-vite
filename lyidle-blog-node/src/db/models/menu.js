@@ -1,15 +1,17 @@
 "use strict"
 const { Model } = require("sequelize")
 
-// 引入错误函数
-const setError = require("../utils/setError")
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     static associate(models) {
       // 递归关联：一个菜单可以有多个子菜单
       Menu.hasMany(models.Menu, { foreignKey: "parentId", as: "children" })
+
       // 递归关联：一个菜单也可能是某个菜单的子级
       Menu.belongsTo(models.Menu, { foreignKey: "parentId", as: "parent" })
+
+      // 关联角色（多对多）
+      Menu.belongsToMany(models.Role, { through: models.MenuRole })
     }
   }
 
@@ -35,27 +37,9 @@ module.exports = (sequelize, DataTypes) => {
       layout: DataTypes.JSON,
       bannerImg: DataTypes.JSON,
       isBin: DataTypes.DATE,
-      role: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "角色不能为空" },
-          notEmpty: { msg: "角色不能为空" },
-        },
-        set(value) {
-          if (!Array.isArray(value)) throw new setError("角色必须是一个数组")
-          this.setDataValue("role", [...new Set(value.flat(Infinity))])
-        },
-      },
-      parentId: {
-        type: DataTypes.INTEGER,
-        allowNull: true, // 顶级菜单的 parentId 为 null
-      },
+      parentId: DataTypes.INTEGER,
     },
-    {
-      sequelize,
-      modelName: "Menu",
-    }
+    { sequelize, modelName: "Menu" }
   )
 
   return Menu

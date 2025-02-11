@@ -8,9 +8,11 @@ const bcrypt = require("bcryptjs")
 // 引入正则判断
 import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 // 引入模型
-const { User } = require("@/db/models")
+const { User, Role } = require("@/db/models")
 // 引入 redis 设置缓存
 import { delKey } from "@/utils/redis"
+// 引入 处理 用户的role 的函数
+import { handlerUserRoles } from "@/utils/handlerRoles"
 router.get("/", async (req, res, next) => {
   try {
     const { account: userAccount, password } = req.query
@@ -36,10 +38,18 @@ router.get("/", async (req, res, next) => {
         "signer",
         "email",
         "nickName",
-        "role",
         "pwd",
       ],
+      include: [
+        {
+          model: Role,
+          attributes: ["name"], // 只获取角色名称
+          through: { attributes: [] }, // 不获取中间表数据
+          required: true,
+        },
+      ],
     })
+
     // 判断有无找到用户
     if (findUser == null) {
       return res.result(void 0, "没有找到用户~", false)
@@ -50,6 +60,10 @@ router.get("/", async (req, res, next) => {
     }
     // 剔除密码
     delete findUser.dataValues.pwd
+
+    // 调用处理用户权限的 函数
+    handlerUserRoles([findUser])
+
     // 登录验证成功后创建 token
     const token = await setToken(findUser.dataValues)
     await delKey(`userInfo:${findUser.dataValues.id}`)

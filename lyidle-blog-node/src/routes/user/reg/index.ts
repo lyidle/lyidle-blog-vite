@@ -47,7 +47,6 @@ router.post("/", async (req, res, next) => {
       nickName,
       pwd: password,
       email,
-      role: [],
     }
     // 通过校验插入用户 插入用户组 sequelize模型设置了验证器
     await User.create(user)

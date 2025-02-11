@@ -2,35 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Menus", {
+    await queryInterface.createTable("MenuRoles", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
-        type: Sequelize.STRING(32),
-        allowNull: false,
-      },
-      icon: {
-        type: Sequelize.TEXT,
-      },
-      to: {
-        type: Sequelize.STRING,
-      },
-      layout: {
-        type: Sequelize.JSON,
-      },
-      bannerImg: {
-        type: Sequelize.JSON,
-      },
-      isBin: {
-        type: Sequelize.DATE,
-      },
-      parentId: {
+      menuId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // 顶级菜单的 parentId 为 null
+        allowNull: false,
+        references: { model: "Menus", key: "id" },
+        onDelete: "CASCADE",
+      },
+      roleId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "Roles", key: "id" },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +32,6 @@ module.exports = {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Menus")
+    await queryInterface.dropTable("MenuRoles")
   },
 }

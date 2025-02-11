@@ -33,10 +33,6 @@ module.exports = {
       signer: {
         type: Sequelize.STRING,
       },
-      role: {
-        type: Sequelize.JSON,
-        allowNull: false,
-      },
       isBin: {
         type: Sequelize.DATE,
       },

@@ -13,20 +13,18 @@ const {
 require("dotenv").config()
 // 引入错误函数
 const setError = require("../utils/setError")
-// 引入普通用户 权限组
-const default_user = JSON.parse(process.env.default_user)
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // 一个用户可以有多篇文章
       User.hasMany(models.Article)
+
+      // 关联角色（多对多）
+      User.belongsToMany(models.Role, { through: models.UserRole })
     }
   }
+
   User.init(
     {
       account: {
@@ -86,34 +84,16 @@ module.exports = (sequelize, DataTypes) => {
             const findOne = await sequelize.models.User.findOne({
               where: { email: value },
             })
-            if (findOne) {
-              throw new Error("邮箱已存在~")
-            }
+            if (findOne) throw new Error("邮箱已存在~")
           },
         },
       },
       avatar: DataTypes.TEXT,
       signer: DataTypes.STRING,
-      role: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        validate: {
-          notNull: { msg: "角色不能为空哦~" },
-          notEmpty: { msg: "角色不能为空哦~" },
-        },
-        set(value) {
-          if (!Array.isArray(value)) throw new setError("角色必须是一个数组哦~")
-          // 保证至少有个 普通用户组的权限
-          const result = [...new Set([value, default_user].flat(Infinity))]
-          this.setDataValue("role", result)
-        },
-      },
       isBin: DataTypes.DATE,
     },
-    {
-      sequelize,
-      modelName: "User",
-    }
+    { sequelize, modelName: "User" }
   )
+
   return User
 }
