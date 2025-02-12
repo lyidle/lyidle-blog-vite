@@ -33,15 +33,15 @@ module.exports = {
     const adminIds = deduplication(handlerRole(roles, seeder_admin))
     const userIds = deduplication(handlerRole(roles, default_user))
     const ownerIds = deduplication(adminIds, handlerRole(roles, default_owner))
-    const test = handlerRole(roles, ["admin"])
+
     let currentId = 1
     const menus = []
     const menuRoles = []
 
     function processMenu(menu, parentId = null) {
       const menuId = currentId++
-      const roles = test
-
+      const menuRole = handlerRole(roles, menu.role)
+      const $roles = (menuRole.length ? menuRole : userIds) || userIds
       menus.push({
         id: menuId,
         name: menu.name,
@@ -54,7 +54,7 @@ module.exports = {
         updatedAt: new Date(),
       })
 
-      roles.forEach((roleId) => {
+      $roles.forEach((roleId) => {
         menuRoles.push({
           menuId,
           roleId,

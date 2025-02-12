@@ -14,16 +14,16 @@ router.put(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id, name, icon, layout, role, parentId, isBin } = req.body
+    const { id, name, icon, to, layout, role, parentId } = req.body
 
     // 没有 id、name 返回失败
     if ((id !== 0 && !id) || !name)
       return res.result(void 0, "id、name是必传项哦~", false)
 
-    if (icon! && layout! && role! && parentId! && isBin)
+    if (icon! && !to && layout! && role! && parentId)
       return res.result(
         void 0,
-        "更新菜单至少需要icon、layout、role、parentId、isBin其中的一个参数哦~",
+        "更新菜单至少需要icon、to、layout、role、parentId其中的一个参数哦~",
         false
       )
 
@@ -42,7 +42,6 @@ router.put(
       layout && findMenu.set("layout", layout)
       role && findMenu.set("role", role)
       parentId && findMenu.set("parentId", parentId)
-      isBin && findMenu.set("isBin", isBin)
 
       const { dataValues } = await findMenu.save()
       // 得到 roles

@@ -51,9 +51,9 @@ module.exports = {
       users.push({
         id: userId,
         account: `test${i}`,
-        nickName: `User ${i}`,
+        nickName: `test${i}`,
         pwd: bcrypt.hashSync("123456", 10),
-        email: `user${i}@example.com`,
+        email: `test${i}@example.com`,
         createdAt: new Date(),
         updatedAt: new Date(),
       })

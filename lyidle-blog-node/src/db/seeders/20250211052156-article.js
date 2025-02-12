@@ -23,21 +23,21 @@ module.exports = {
       ["学习", "考试"],
     ]
 
-    for (let i = 1; i < articleCounts; i++) {
+    for (let i = 1; i <= articleCounts; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)]
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
 
       articles.push({
-        title: `示例文章 ${i}`,
-        content: `这是示例文章 ${i} 的内容，包含一些随机文本。`,
-        author: `作者${i}`,
+        title: `文章的title${i}`,
+        content: `这是示例文章${i}的内容，包含一些随机文本。`,
+        author: `test${i}`,
         category: randomCategory,
         tags: JSON.stringify(randomTags),
         carousel: Math.random() > 0.5 ? 1 : 0,
-        desc: `示例文章 ${i} 的描述内容。`,
+        desc: `文章的描述内容${i}`,
         // poster: `https://example.com/poster${i}.jpg`,
-        length: Math.floor(Math.random() * 2000) + 500,
+        length: 20 + i,
         userId: randomUser.id,
         createdAt: new Date(),
         updatedAt: new Date(),

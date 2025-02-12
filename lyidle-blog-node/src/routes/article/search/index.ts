@@ -31,6 +31,7 @@ const search = async (
       "tags",
       "userId",
       "poster",
+      "length",
       "createdAt",
       "updatedAt",
     ],
