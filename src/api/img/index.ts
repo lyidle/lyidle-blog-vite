@@ -50,13 +50,6 @@ export const postTempImgFiles = (files: File[]) => {
   )
 }
 
-// 上传  图片 临时转 永久 markdown专用 的接口
-export const postMdImgPermanent = (tempImg: string[]) =>
-  request.post<any, MdToLinkPermanent["data"]>(
-    server + prefix + API.mdTempTOPermanent,
-    { tempImg }
-  )
-
 // 上传  图片 临时转 永久  的接口 需要传入 临时图片路径、作者 和 路径
 export const postImgPermanent = (data: PostImgPermanentBody) =>
   request.post<any, MdToLinkPermanent["data"]>(

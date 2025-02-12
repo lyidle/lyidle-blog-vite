@@ -1,6 +1,9 @@
 // 引入 api
-import { postMdImgPermanent } from "@/api/img"
+import { postImgPermanent } from "@/api/img"
+// 压缩
 import { compressString } from "@/utils/compression"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
 // 替换 md的 临时链接
 export const useMdReplaceImg = async (content: string, data: any) => {
   // 引入 前缀
@@ -42,11 +45,21 @@ export const useMdReplaceImg = async (content: string, data: any) => {
 }
 // 转换 临时链接为永久
 export const useMdImgToLinkPermanent = async (
-  temImg: string[],
+  tempImg: string[],
   content: string
 ) => {
+  const { userAccount } = storeToRefs(useUserStore())
+  if (!userAccount.value) {
+    ElMessage.error("临时的图片转永久链接需要登录~")
+    return
+  }
+
   try {
-    const result = await postMdImgPermanent(temImg)
+    const result = await postImgPermanent({
+      tempImg,
+      account: userAccount.value,
+      path: "/md/content",
+    })
     if (result) {
       const { successImg, tempImgNull } = result
       // 临时图片失效的

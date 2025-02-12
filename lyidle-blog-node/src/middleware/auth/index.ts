@@ -19,14 +19,14 @@ export const jwtMiddleware = async (
     algorithms: ["HS256"],
   })(req, res, async (err) => {
     if (err) {
-      throw new myError("UnauthorizedError")
+      return next(new myError("UnauthorizedError"))
     }
     try {
       const { id } = req.auth // 从 auth 中获取用户 ID
       // 检查 Redis 中是否存在 token
       const findUser = await getKey(`token:${id}`)
       if (!findUser) {
-        throw new myError("UnauthorizedError")
+        return next(new myError("UnauthorizedError"))
       }
       // 如果验证通过，继续执行后续中间件
       next()
@@ -43,7 +43,7 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { role: userRole } = req.auth
   // 判断是否有权限
   if (!adminData.some((item) => userRole.includes(item)))
-    throw new myError("UnauthorizedError")
+    return next(new myError("UnauthorizedError"))
 
   next()
 }
