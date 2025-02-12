@@ -16,12 +16,13 @@ router.get(
     try {
       // 得到id
       const id = req.auth.id
+      if (!id) throw new Error("获取 jwt 时出错没有id")
 
       // 缓存用户信息
       const cacheValue = await getKey(`userInfo:${id}`)
       if (cacheValue) return res.result(cacheValue, "获取用户信息成功~")
       // 查询对应id的信息
-      const findUser = await search({ id: id as string }, req, res, true, true)
+      const findUser = await search({ id }, res, true, true)
       // 不存在
       if (!findUser) return
       // 存储用户信息 到 redis

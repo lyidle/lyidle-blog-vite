@@ -7,7 +7,7 @@ const router = express.Router()
 // 模糊搜索
 router.get("/", async (req, res, next) => {
   try {
-    const findUser = await search(req.query, req, res)
+    const findUser = await search(req.query, res)
     // 不存在
     if (!findUser) return
     return res.result(findUser, "查询用户信息成功~")
@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
 */
 router.get("/exact", async (req, res, next) => {
   try {
-    const findUser = await search(req.query, req, res, true)
+    const findUser = await search(req.query, res, true)
     // 不存在
     if (!findUser) return
     return res.result(findUser, "查询用户信息成功~")
@@ -55,7 +55,7 @@ router.get("/counts", async (req, res, next) => {
   }
 
   try {
-    const findUser = await search({ id, role, account }, req, res, true, true)
+    const findUser = await search(req.query, res, true, true)
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis

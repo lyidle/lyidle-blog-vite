@@ -18,8 +18,7 @@ interface RequestData {
 
 // 搜索函数
 export default async (
-  data: RequestData | Request["query"],
-  req: Request,
+  data: RequestData | { [key in string]: any },
   res: Response,
   exact?: boolean,
   isCounts: boolean = false
@@ -39,6 +38,7 @@ export default async (
     include: [
       {
         model: Article,
+        as: "articles",
         attributes: ["category", "tags", "id"],
         where: {
           isBin: null,
@@ -47,10 +47,11 @@ export default async (
       },
       {
         model: Role,
+        as: "role",
         attributes: ["name"], // 只获取角色名称
-        through: { attributes: [] }, // 不获取中间表数据
-        where: role ? { name: role } : {},
-        required: Boolean(role), // 只有当 role 过滤时，才必须匹配
+        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+        where: role ? { name: role } : {}, // 传入 role 时查询对于的 role 没有时 查询全部
+        required: Boolean(role), // 没有 role 时 防止被过滤 有 role时过滤
       },
     ],
     attributes: { exclude: ["pwd"] }, //排除密码
@@ -82,15 +83,14 @@ export default async (
   }
 
   // 调用处理用户权限的 函数
-  handlerUserRoles(findUser, (item) => {
-    const articles = item.dataValues.Articles
-    delete item.dataValues.Articles
+  return handlerUserRoles(findUser, (item) => {
+    const articles = item.articles
+    // 删除 articles 字段
+    delete item.articles
     // 整理个数
     if (isCounts) {
       const { pages, tags, categories } = tinyUserDocsCounts(articles)
-      item.dataValues.counts = { pages, tags, categories }
+      item.counts = { pages, tags, categories }
     }
   })
-
-  return findUser
 }

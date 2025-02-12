@@ -43,6 +43,7 @@ router.get("/", async (req, res, next) => {
       include: [
         {
           model: Role,
+          as: "role",
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不获取中间表数据
           required: true,
@@ -61,11 +62,11 @@ router.get("/", async (req, res, next) => {
     delete findUser.dataValues.pwd
 
     // 调用处理用户权限的 函数
-    handlerUserRoles([findUser])
+    const user = handlerUserRoles([findUser])
 
     // 登录验证成功后创建 token
-    const token = await setToken(findUser.dataValues)
-    await delKey(`userInfo:${findUser.dataValues.id}`)
+    const token = await setToken(user?.[0])
+    await delKey(`userInfo:${user.id}`)
     return res.result({ token }, "登录成功~")
   } catch (error) {
     res.validateAuth(error, next, () => {

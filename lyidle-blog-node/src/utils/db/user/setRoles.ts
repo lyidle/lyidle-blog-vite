@@ -11,17 +11,17 @@ export const setRoles = async (roles: string[]) => {
   })
 
   // 找出数据库中没有的角色
-  const existingRoleNames = existingRoles
-    .map((role: any) => role.dataValues?.name)
+  const existingRoleNames = JSON.parse(JSON.stringify(existingRoles))
+    .map((role: any) => role?.name)
     .filter(Boolean)
 
   const newRoleNames = roles.filter(
     (roleName) => !existingRoleNames.includes(roleName)
   )
 
-  let newRoles = []
+  let newRoles
 
-  if (newRoleNames.length > 0) {
+  if (newRoleNames?.length > 0) {
     //  批量创建新的角色（避免一条条 `findOrCreate`）
     newRoles = await Role.bulkCreate(
       newRoleNames.map((name) => ({ name })),
@@ -30,7 +30,10 @@ export const setRoles = async (roles: string[]) => {
   }
 
   //  合并已有角色 + 新创建的角色
-  const roleInstances = [...existingRoles, ...newRoles]
+  let roleInstances = existingRoles
+  if (newRoles?.length) roleInstances = [...existingRoles, ...newRoles]
+  // 没有 长度
+  if (!roleInstances?.length) throw new Error("设置和创建角色时，失败~")
 
   return roleInstances
 }

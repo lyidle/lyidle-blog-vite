@@ -38,14 +38,19 @@ router.put(
         !signer &&
         !nickName &&
         !role
-      )
+      ) {
+        await transaction.rollback() // 回滚事务
         return res.result(void 0, "修改用户失败哦~", false)
+      }
 
       // 查询
       const findUser = await User.findByPk(id)
 
       // 判断有无找到用户
-      if (!findUser) return res.result(void 0, "没有找到对应用户信息~", false)
+      if (!findUser) {
+        await transaction.rollback() // 回滚事务
+        return res.result(void 0, "没有找到对应用户信息~", false)
+      }
 
       // 提取需要的变量
       const { account: userAccount, email: userEmail } = findUser.dataValues
@@ -61,15 +66,11 @@ router.put(
       if (email && email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
       // 通过 判断 是否传递邮箱
       else email && findUser.set("email", email)
-      if (erroArray.length) return res.result(void 0, erroArray, false)
 
       // 存在错误信息返回
-      if (erroArray.length) return res.result(void 0, erroArray, false)
-
-      // 处理 角色信息
-      const roles = role?.length && (await setRoles(role))
-      if (roles.length) {
-        await findUser.setRoles(roles, { transaction })
+      if (erroArray.length) {
+        await transaction.rollback() // 回滚事务
+        return res.result(void 0, erroArray, false)
       }
 
       // 都通过加入更新
@@ -81,7 +82,14 @@ router.put(
       ;(signer == null || signer) && findUser.set("signer", signer)
 
       // 更新数据库
-      const { dataValues } = await findUser.save()
+      const { dataValues } = await findUser.save({ transaction })
+
+      // 处理 角色信息
+      const roles = role?.length && (await setRoles(role))
+      if (roles?.length) {
+        await findUser.setRole(roles, { transaction })
+      }
+
       // 提交事务
       await transaction.commit()
 

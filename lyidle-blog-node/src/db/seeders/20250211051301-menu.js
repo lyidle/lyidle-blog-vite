@@ -1,18 +1,49 @@
 "use strict"
 const menuData = require("../mock/menulist")
+// 引入 模型
+const { Role } = require("../models")
+
+// 引入 去重函数
+const { deduplication } = require("../../utils/array/deduplication/js")
+
+// 生成 的 权限表
+const default_owner = JSON.parse(process.env.default_owner)
+const default_user = JSON.parse(process.env.default_user)
+const seeder_admin = JSON.parse(process.env.seeder_admin)
+
+// 处理 设置 的 role
+const handlerRole = (roles, setRoles) => {
+  return setRoles.map((item) => roles[item])
+}
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    let menuId = 1
+    // 获取所有的 roles 建立映射关系
+    const findRoles = await Role.findAll({
+      attributes: ["id", "name"],
+    })
+
+    // 处理成 名字 对应 id 的形式
+    const roles = findRoles.reduce((pre, cur) => {
+      const item = cur.dataValues
+      pre[item.name] = item.id
+      return pre
+    }, {})
+
+    const adminIds = deduplication(handlerRole(roles, seeder_admin))
+    const userIds = deduplication(handlerRole(roles, default_user))
+    const ownerIds = deduplication(adminIds, handlerRole(roles, default_owner))
+    const test = handlerRole(roles, ["admin"])
+    let currentId = 1
     const menus = []
     const menuRoles = []
 
     function processMenu(menu, parentId = null) {
-      const currentId = menuId++
-      const roles = menu.roles ?? [2] // 默认给 admin 和 环境变量 seeder_roles 对应
+      const menuId = currentId++
+      const roles = test
 
       menus.push({
-        id: currentId,
+        id: menuId,
         name: menu.name,
         icon: menu.icon,
         to: menu.to,
@@ -25,7 +56,7 @@ module.exports = {
 
       roles.forEach((roleId) => {
         menuRoles.push({
-          menuId: currentId,
+          menuId,
           roleId,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -33,7 +64,7 @@ module.exports = {
       })
 
       if (menu.children) {
-        menu.children.forEach((child) => processMenu(child, currentId))
+        menu.children.forEach((child) => processMenu(child, menuId))
       }
     }
 

@@ -35,6 +35,7 @@ module.exports = {
     const adminIds = deduplication(handlerRole(roles, seeder_admin))
     const userIds = deduplication(handlerRole(roles, default_user))
     const ownerIds = deduplication(adminIds, handlerRole(roles, default_owner))
+    const test = handlerRole(roles, ["admin"])
 
     const users = []
     const userRoles = []
@@ -56,10 +57,10 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       })
-      roleIds.forEach((item) => {
+      roleIds.forEach((roleId) => {
         userRoles.push({
           userId,
-          roleId: item,
+          roleId,
           createdAt: new Date(),
           updatedAt: new Date(),
         })

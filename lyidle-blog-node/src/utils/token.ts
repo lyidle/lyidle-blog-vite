@@ -10,6 +10,9 @@ const token_expire = ms(process.env.token_expire)
 export const setToken = async (userInfo: typeof request.auth) => {
   // 整理token
   let tokenData: Partial<typeof request.auth> = {}
+
+  if (!Object.keys(userInfo).length) throw new Error("生成用户token时出错了哦~")
+
   tokenData.id = userInfo.id
   tokenData.account = userInfo.account
   // 可能为 null

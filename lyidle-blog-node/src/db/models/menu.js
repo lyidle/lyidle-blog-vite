@@ -12,8 +12,10 @@ module.exports = (sequelize, DataTypes) => {
 
       // 关联角色 通过 MenuRole 关联 Role
       Menu.belongsToMany(models.Role, {
-        through: "MenuRole",
-        foreignKey: "menuId",
+        through: "MenuRole", // 指定中间表的名称
+        foreignKey: "menuId", // MenuRole 表中的 menuId
+        otherKey: "roleId", // MenuRole 表中的 roleId
+        as: "role", //别名
       })
     }
   }

@@ -10,7 +10,7 @@ export const createUserWithRoles = async (
   roles: string[],
   next: NextFunction
 ) => {
-  // 存储 创建 的 用户
+  // 存储 创建 的 用户 设置role时需要用户存在
   let user: any
   try {
     // 创建用户
@@ -25,7 +25,7 @@ export const createUserWithRoles = async (
     const result = await setRoles(roles)
     if (result.length) {
       //  直接重置用户角色
-      await user.setRoles(result)
+      await user.setRole(result)
     }
 
     return user

@@ -6,14 +6,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // 角色与用户是多对多关系
       Role.belongsToMany(models.User, {
-        through: "UserRole",
-        foreignKey: "roleId",
+        through: "UserRole", // 指定中间表的名称
+        foreignKey: "roleId", // MenuRole 表中的 roleId
+        otherKey: "userId", // MenuRole 表中的 userId
       })
 
       // 角色与菜单是多对多关系
       Role.belongsToMany(models.Menu, {
-        through: "MenuRole",
-        foreignKey: "menuId",
+        through: "MenuRole", // 指定中间表的名称
+        foreignKey: "roleId", // MenuRole 表中的 roleId
+        otherKey: "menuId", // MenuRole 表中的 menuId
       })
     }
   }
