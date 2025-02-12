@@ -64,7 +64,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)
   if (err.name === "PermissionError")
-    return res.result(void 0, "没有权限访问页面~", false, 403)
+    return res.result(void 0, "没有权限访问页面~", false, 404)
   if ((err.name = "otherError"))
     return res.result(void 0, err.message, false, 400)
   // 打印其他错误

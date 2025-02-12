@@ -2,6 +2,8 @@
 import type { NextFunction } from "express"
 // 引入 设置和创建权限 权限没有时才创建
 import { setRoles } from "./setRoles"
+// 自定义错误
+import myError from "@/utils/error/myError"
 
 const { User } = require("@/db/models")
 
@@ -18,11 +20,11 @@ export const createUserWithRoles = async (
 
     // 确保用户和角色都存在
     if (!user) {
-      throw new Error("创建用户时，用户创建后不存在哦~")
+      throw new myError("otherError", "生成用户token时出错了哦~")
     }
 
     // 设置和创建权限
-    const result = await setRoles(roles)
+    const result = await setRoles(roles, next)
     if (result.length) {
       //  直接重置用户角色
       await user.setRole(result)

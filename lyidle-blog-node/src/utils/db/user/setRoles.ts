@@ -1,9 +1,16 @@
 // 引入 模型
 const { Role } = require("@/db/models")
+// 自定义错误
+import myError from "@/utils/error/myError"
+// 引入 类型
+import type { NextFunction } from "express"
 // 设置和创建权限 权限没有时才创建
-export const setRoles = async (roles: string[]) => {
+export const setRoles = async (roles: string[], next: NextFunction) => {
   if (!(roles && Array.isArray(roles))) {
-    throw new Error("设置和创建角色时，roles必须要是一个数组哦~")
+    throw new myError(
+      "otherError",
+      "设置和创建角色时，roles必须要是一个数组哦~"
+    )
   }
   //  先查询数据库中已有的角色
   const existingRoles = await Role.findAll({
@@ -33,7 +40,9 @@ export const setRoles = async (roles: string[]) => {
   let roleInstances = existingRoles
   if (newRoles?.length) roleInstances = [...existingRoles, ...newRoles]
   // 没有 长度
-  if (!roleInstances?.length) throw new Error("设置和创建角色时，失败~")
+  if (!roleInstances?.length) {
+    throw new myError("otherError", "设置和创建角色时，失败~")
+  }
 
   return roleInstances
 }

@@ -27,10 +27,8 @@ router.use(async (req, res, next) => {
   }
   // 数据库验证跳转 错误中间件
   res.validateAuth = (err: any, next: NextFunction, cb: Function) => {
-    if (err.name === "SequelizeValidationError") {
-      next(err)
-      return
-    }
+    if (err.name === "SequelizeValidationError") return next(err)
+    if (err.name === "otherError") return next(err)
     // 打印其他不是验证错误的信息
     console.log(err)
     cb()

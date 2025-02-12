@@ -7,6 +7,8 @@ import { jwtMiddleware } from "@/middleware/auth"
 import search from "@/routes/user/search/search"
 // 引入redis
 import { setKey, getKey } from "@/utils/redis"
+// 自定义错误
+import myError from "@/utils/error/myError"
 const router = express.Router()
 // 获取当前token用户信息
 router.get(
@@ -16,7 +18,8 @@ router.get(
     try {
       // 得到id
       const id = req.auth.id
-      if (!id) throw new Error("获取 jwt 时出错没有id")
+      if (!id)
+        throw new myError("otherError", "获取用户信息时 jwt 出错没有id哦~")
 
       // 缓存用户信息
       const cacheValue = await getKey(`userInfo:${id}`)

@@ -18,7 +18,7 @@ router.put(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    // 开启事务 防止 设置role时 用户更新失败 后可以回滚
+    // 开启事务
     const transaction = await db.sequelize.transaction()
     try {
       const { account, pwd, email, avatar, signer, nickName, role } = req.body
@@ -85,7 +85,7 @@ router.put(
       const { dataValues } = await findUser.save({ transaction })
 
       // 处理 角色信息
-      const roles = role?.length && (await setRoles(role))
+      const roles = role?.length && (await setRoles(role, next))
       if (roles?.length) {
         await findUser.setRole(roles, { transaction })
       }
@@ -98,7 +98,7 @@ router.put(
         //删除token
         await delKey(`token:${id}`)
       // 没有 修改 密码 则不需要重新登录
-      else await setToken(dataValues)
+      else await setToken(dataValues, next)
 
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)
