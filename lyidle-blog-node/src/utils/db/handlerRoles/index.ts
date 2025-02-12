@@ -12,3 +12,11 @@ export const handlerUserRoles = (findUser: any[], cb?: (item: any) => void) => {
     return item
   })
 }
+// 返回 role 的名单
+export const handlerRoles = (menusOrUsers: any[]) => {
+  const data = JSON.parse(JSON.stringify(menusOrUsers))
+  // 把 role 变为 string[]
+  return data.map(
+    (item: any) => (item.role = item.role.map((item: any) => item.name))
+  )
+}

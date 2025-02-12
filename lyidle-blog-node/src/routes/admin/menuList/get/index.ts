@@ -1,3 +1,4 @@
+import { getKey, setKey } from "@/utils/redis"
 import express from "express"
 const { Menu, Role } = require("@/db/models")
 const router = express.Router()
@@ -32,6 +33,13 @@ const handlerMenuRole = ($menus: any[]) => {
 // 获取菜单列表
 router.get("/", async (req, res, next) => {
   const role = req.query?.role || "admin" // 从请求中获取角色名称
+
+  // 保存 redis 的键
+  let cacheKey = `menu:${role}`
+  const cacheValue = await getKey(cacheKey)
+  // 判断有无 缓存
+  if (cacheValue) return res.result(cacheValue, "获取菜单成功~")
+
   try {
     const menus = await Menu.findAll({
       include: [
@@ -66,7 +74,8 @@ router.get("/", async (req, res, next) => {
     if (!menus.length) {
       return res.result(void 0, "暂无权限访问任何菜单哦~", false)
     }
-
+    // 设置 缓存
+    await setKey(cacheKey, result)
     return res.result(result, "获取菜单成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

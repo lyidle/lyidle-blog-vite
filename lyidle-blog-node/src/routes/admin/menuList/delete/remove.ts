@@ -1,19 +1,23 @@
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
 // 清除 菜单 的缓存
-import { delRoles } from "../set"
+import { delMenuRoles } from "@/utils/redis/delMenuRoles"
+// 引入 获取 role 的函数
+import { handlerRoles } from "@/utils/db/handlerRoles"
+// 去重的 函数
+import { deduplication } from "@/utils/array/deduplication"
 // 引入时间转换
 const ms = require("ms")
 
 // 软删除菜单的时间
 const delete_menu = ms(process.env.delete_menu)
 // 引入模型
-const { Menu } = require("@/db/models")
+const { Menu, Role } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicUserRemove = async (role: string[]) => {
   // 清除 菜单 的缓存
-  await delRoles(role)
+  await delMenuRoles(role)
 }
 
 // 彻底删除函数
@@ -42,14 +46,31 @@ const remove = async (
   if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
 
   // 找到提取需要的信息
-  const { id, role } = findMenu.dataValues
+  const { id } = findMenu.dataValues
+
+  //  查询 文章 的角色 清除 menuList 的缓存
+  const existingRoles = await Menu.findAll({
+    include: [
+      {
+        model: Role,
+        as: "role",
+        attributes: ["name"], // 只获取角色名称
+        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+        required: false,
+      },
+    ],
+    where: { id },
+  })
+
+  // 得到 roles
+  const roles = deduplication(handlerRoles(existingRoles))
 
   // 是否 权限 判断
   if (isAuth) {
     // 判断是否是该用户权限的菜单
     if (
       !req.auth.role.find((item: string) =>
-        role.find(($item: string) => item.includes($item))
+        roles.find(($item: string) => item.includes($item))
       )
     ) {
       return res.result(void 0, "没有权限删除当前的菜单哦~", false)
@@ -57,7 +78,7 @@ const remove = async (
   }
 
   // 不管是否删除都要移除的
-  await publicUserRemove(role)
+  await publicUserRemove(roles)
 
   // 回收到垃圾桶
   if (bin) {
@@ -78,7 +99,7 @@ const remove = async (
   }
 
   // 彻底删除
-  await deleted(findMenu, id, role)
+  await deleted(findMenu, id, roles)
   return res.result(void 0, "删除菜单成功~")
 }
 export default remove
