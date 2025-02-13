@@ -12,6 +12,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING(32),
         allowNull: false,
+        unique: true,
       },
       icon: {
         type: Sequelize.TEXT,
@@ -27,6 +28,7 @@ module.exports = {
       },
       isBin: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
       parentId: {
         type: Sequelize.INTEGER,

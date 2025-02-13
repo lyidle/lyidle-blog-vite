@@ -40,9 +40,6 @@ export default async (
         model: Article,
         as: "articles",
         attributes: ["category", "tags", "id"],
-        where: {
-          isBin: null,
-        },
         required: false, // 避免用户没有文章时被过滤掉
       },
       {

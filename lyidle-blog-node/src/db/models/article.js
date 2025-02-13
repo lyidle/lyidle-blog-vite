@@ -106,6 +106,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Article",
+      paranoid: true, // 启用软删除
+      deletedAt: "isBin", // 指定软删除字段名称
     }
   )
   return Article

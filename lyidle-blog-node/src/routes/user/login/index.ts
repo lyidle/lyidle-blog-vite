@@ -31,6 +31,7 @@ router.get("/", async (req, res, next) => {
           email: account,
         },
       },
+      paranoid: false,
       attributes: [
         "id",
         "account",

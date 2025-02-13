@@ -55,6 +55,7 @@ module.exports = {
       },
       isBin: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

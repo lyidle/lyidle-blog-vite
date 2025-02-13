@@ -98,7 +98,12 @@ module.exports = (sequelize, DataTypes) => {
       signer: DataTypes.STRING,
       isBin: DataTypes.DATE,
     },
-    { sequelize, modelName: "User" }
+    {
+      sequelize,
+      modelName: "User",
+      paranoid: true, // 启用软删除
+      deletedAt: "isBin", // 指定软删除字段名称
+    }
   )
 
   return User

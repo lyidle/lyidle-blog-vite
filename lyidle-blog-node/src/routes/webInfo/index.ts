@@ -34,7 +34,6 @@ router.get("/", async (req, res, next) => {
     if (!webTotalWords) {
       // 查询所有文章 统计字数
       const totalWordsData = await Article.findAll({
-        where: { isBin: null },
         order: [
           ["updatedAt", "desc"],
           ["id", "desc"],

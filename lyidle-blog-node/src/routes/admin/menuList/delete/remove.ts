@@ -23,7 +23,7 @@ export const publicUserRemove = async (role: string[]) => {
 // 彻底删除函数
 const deleted = async (delMenu: any, id: number, role: string[]) => {
   // 删除菜单
-  await delMenu.destroy()
+  await delMenu.destroy({ force: true })
   // 删除临时的 userMenusBin
   await delKey(`userMenusBin:${id}`)
   // 不管是否删除都要移除的
@@ -41,7 +41,7 @@ const remove = async (
   if (!menuId) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
 
   // 查找是否有菜单
-  const findMenu = await Menu.findByPk(menuId)
+  const findMenu = await Menu.findByPk(menuId, { paranoid: false })
   // 没有找到菜单
   if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
 
@@ -60,6 +60,7 @@ const remove = async (
       },
     ],
     where: { id },
+    paranoid: false,
   })
 
   // 得到 roles
@@ -87,10 +88,8 @@ const remove = async (
     if (isBin)
       return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
 
-    // 设置数据
-    findMenu.set("isBin", Date.now() + delete_menu)
-    // 更新
-    await findMenu.save()
+    // 软删除
+    await findMenu.destroy()
     // 设置缓存
     await setKey(`userMenusBin:${id}`, true)
 

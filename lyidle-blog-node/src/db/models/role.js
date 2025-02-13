@@ -27,8 +27,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      isBin: DataTypes.DATE,
     },
-    { sequelize, modelName: "Role" }
+    {
+      sequelize,
+      modelName: "Role",
+      paranoid: true, // 启用软删除
+      deletedAt: "isBin", // 指定软删除字段名称
+    }
   )
 
   return Role

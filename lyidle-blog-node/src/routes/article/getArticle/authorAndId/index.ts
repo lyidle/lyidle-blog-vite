@@ -15,7 +15,7 @@ router.get("/", async (req, res, next) => {
   try {
     const result = await Article.findOne({
       attributes: { exclude: ["UserId"] },
-      where: { isBin: null, id, author },
+      where: { id, author },
     })
     if (!result) return res.result(void 0, "没有查找到文章哦~", false, 404)
     if (result.dataValues.isBin)

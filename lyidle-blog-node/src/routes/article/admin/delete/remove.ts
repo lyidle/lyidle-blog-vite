@@ -20,7 +20,7 @@ export const publicUserRemove = async (userId: number) => {
 // 彻底删除函数
 const deleted = async (delArticle: any, id: number, userId: number) => {
   // 删除文章
-  await delArticle.destroy()
+  await delArticle.destroy({ force: true })
   // 删除临时的 userArticleBin
   await delKey(`userArticleBin:${id}`)
   // 不管是否删除都要移除的
@@ -39,7 +39,7 @@ const remove = async (
     return res.result(void 0, "删除文章时，没有找到文章哦~", false)
 
   // 查找是否有文章
-  const findArticle = await Article.findByPk(articleId)
+  const findArticle = await Article.findByPk(articleId, { paranoid: false })
   // 没有找到文章
   if (!findArticle)
     return res.result(void 0, "删除文章时，没有找到文章哦~", false)
@@ -65,10 +65,8 @@ const remove = async (
     if (isBin)
       return res.result(void 0, "文章移动到垃圾桶了，请勿重复操作~", false)
 
-    // 设置数据
-    findArticle.set("isBin", Date.now() + delete_article_expire)
-    // 更新
-    await findArticle.save()
+    // 软删除
+    await findArticle.destroy()
     // 设置缓存
     await setKey(`userArticleBin:${id}`, true)
 

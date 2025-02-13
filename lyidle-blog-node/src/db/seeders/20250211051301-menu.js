@@ -44,7 +44,7 @@ module.exports = {
       const $roles = (menuRole.length ? menuRole : userIds) || userIds
       menus.push({
         id: menuId,
-        name: menu.name,
+        name: menu.name + menuId,
         icon: menu.icon,
         to: menu.to,
         parentId,

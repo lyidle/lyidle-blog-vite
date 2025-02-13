@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING(32),
         allowNull: false,
+        unique: true,
         validate: {
           notNull: { msg: "菜单 title 不能为空" },
           notEmpty: { msg: "菜单 title 不能为空" },
@@ -44,7 +45,12 @@ module.exports = (sequelize, DataTypes) => {
       isBin: DataTypes.DATE,
       parentId: DataTypes.INTEGER,
     },
-    { sequelize, modelName: "Menu" }
+    {
+      sequelize,
+      modelName: "Menu",
+      paranoid: true, // 启用软删除
+      deletedAt: "isBin", // 指定软删除字段名称
+    }
   )
 
   return Menu

@@ -1,5 +1,5 @@
 "use strict"
-
+const { clear } = require("../../utils/redis/js")
 module.exports = {
   async up(queryInterface, Sequelize) {
     // 获取所有用户的 ID，确保 userId 关联正确
@@ -43,7 +43,8 @@ module.exports = {
         updatedAt: new Date(),
       })
     }
-
+    // 清空 缓存
+    await clear()
     await queryInterface.bulkInsert("Articles", articles, {})
   },
 

@@ -20,10 +20,10 @@ export const publicUserRemove = async (userId: number) => {
 }
 // 彻底删除函数
 const deleted = async (findUser: any, userId: number, email: string) => {
+  // 删除文章
+  await Article.destroy({ where: { userId }, force: true })
   // 删除用户
-  await Article.destroy({ where: { userId } })
-  // 删除用户
-  await findUser.destroy()
+  await findUser.destroy({ force: true })
   // 删除时用户数量-1
   const userCounts = await getKey("userCounts")
   let num = +userCounts - 1
@@ -48,7 +48,7 @@ const remove = async (
   const { id } = req.body
 
   // 查找是否有用户
-  const findUser = await User.findByPk(id)
+  const findUser = await User.findByPk(id, { paranoid: false })
   // 没有找到用户
   if (!findUser) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
 
@@ -72,14 +72,12 @@ const remove = async (
     if (isBin)
       return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
 
-    // 设置数据
-    findUser.set("isBin", Date.now() + delete_user_expire)
-    // 更新
-    await findUser.save()
+    // 软删除
+    await findUser.destroy()
 
     await setKey(`userBin:${userId}`, true)
 
-    return res.result(void 0, "用户成功移动到回收站~")
+    return res.result(delete_user_expire, "用户成功移动到回收站~")
   }
 
   // 彻底删除
