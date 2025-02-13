@@ -55,9 +55,6 @@ const remove = async (
     }
   }
 
-  // 不管是否删除都要移除的
-  await publicUserRemove(userId)
-
   // 回收到垃圾桶
   if (bin) {
     // 只能点击移动到一次垃圾桶
@@ -70,6 +67,8 @@ const remove = async (
     // 设置缓存
     await setKey(`userArticleBin:${id}`, true)
 
+    // 不管是否是软删除都要移除的
+    await publicUserRemove(userId)
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_article_expire, "文章成功移到回收站~")
   }

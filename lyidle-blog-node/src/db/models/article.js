@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // 一篇文章属于一个用户
-      Article.belongsTo(models.User)
+      Article.belongsTo(models.User, {
+        foreignKey: "userId", // 指定外键
+      })
     }
   }
   Article.init(

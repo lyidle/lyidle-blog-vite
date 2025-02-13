@@ -19,7 +19,10 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       // 一个用户可以有多篇文章
-      User.hasMany(models.Article, { as: "articles" })
+      User.hasMany(models.Article, {
+        as: "articles",
+        foreignKey: "userId", // 指定外键
+      })
 
       // 关联角色 通过 UserRole 关联 Role
       User.belongsToMany(models.Role, {
@@ -36,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       account: {
         type: DataTypes.STRING(32),
         allowNull: false,
+        unique: true,
         validate: {
           notNull: { msg: "账号不能为空哦~" },
           notEmpty: { msg: "账号不能为空哦~" },
@@ -46,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
           async isUnique(value) {
             const findOne = await sequelize.models.User.findOne({
               where: { account: value },
+              paranoid: false,
             })
             if (findOne) throw new Error("用户已存在哦~")
           },
@@ -79,6 +84,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           notNull: { msg: "邮箱不能为空哦~" },
           notEmpty: { msg: "邮箱不能为空哦~" },
@@ -89,6 +95,7 @@ module.exports = (sequelize, DataTypes) => {
           async isUnique(value) {
             const findOne = await sequelize.models.User.findOne({
               where: { email: value },
+              paranoid: false,
             })
             if (findOne) throw new Error("邮箱已存在~")
           },

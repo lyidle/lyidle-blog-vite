@@ -15,8 +15,10 @@ module.exports = {
     // 生成文章数据
     const articleCounts = 100
     const articles = []
-    const categories = ["科技", "生活", "娱乐", "教育"]
+    const categories = ["前端", "后端", "科技", "生活", "娱乐", "教育"]
     const tagsList = [
+      ["Vue", "JavaScript"],
+      ["nodejs", "java", "python"],
       ["Vue", "JavaScript"],
       ["旅行", "美食"],
       ["电影", "音乐"],

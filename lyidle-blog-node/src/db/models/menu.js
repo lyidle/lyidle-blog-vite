@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
           async isUnique(value) {
             const findOne = await sequelize.models.Menu.findOne({
               where: { name: value },
+              paranoid: false,
             })
             if (findOne) throw new Error("菜单已存在哦~")
           },

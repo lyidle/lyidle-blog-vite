@@ -19,11 +19,10 @@ export const publicUserRemove = async (userId: number) => {
   await delKey(`webTotalWords`)
 }
 // 彻底删除函数
-const deleted = async (findUser: any, userId: number, email: string) => {
-  // 删除文章
-  await Article.destroy({ where: { userId }, force: true })
+const deleted = async (findUser: any, userId: number) => {
   // 删除用户
   await findUser.destroy({ force: true })
+  // 删除文章 自动删除
   // 删除时用户数量-1
   const userCounts = await getKey("userCounts")
   let num = +userCounts - 1
@@ -53,7 +52,7 @@ const remove = async (
   if (!findUser) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
 
   // 找到提取需要的信息
-  const { id: userId, email } = findUser.dataValues
+  const { id: userId } = findUser.dataValues
 
   // 是否 权限 判断
   if (isAuth) {
@@ -62,9 +61,6 @@ const remove = async (
       return res.result(void 0, "删除用户时，不能删除他人的用户哦~", false)
     }
   }
-
-  // 不管是否删除都要移除的
-  await publicUserRemove(userId)
 
   if (bin) {
     // 只能点击移动到一次垃圾桶
@@ -77,11 +73,14 @@ const remove = async (
 
     await setKey(`userBin:${userId}`, true)
 
+    // 不管是否是软删除都要移除的
+    await publicUserRemove(userId)
+
     return res.result(delete_user_expire, "用户成功移动到回收站~")
   }
 
   // 彻底删除
-  await deleted(findUser, userId, email)
+  await deleted(findUser, userId)
   return res.result(void 0, "删除用户成功~")
 }
 export default remove

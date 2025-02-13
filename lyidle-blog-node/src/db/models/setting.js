@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
         validate: {
           async isUnique(value) {
             const find = await Setting.findOne({ where: { name: value } })
