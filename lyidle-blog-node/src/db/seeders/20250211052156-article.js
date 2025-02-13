@@ -1,12 +1,13 @@
 "use strict"
 const { clear } = require("../../utils/redis/js")
+// 引入 模型
+const { User } = require("../models")
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // 获取所有用户的 ID，确保 userId 关联正确
-    const users = await queryInterface.sequelize.query(
-      `SELECT id FROM Users;`,
-      { type: Sequelize.QueryTypes.SELECT }
-    )
+    // 获取所有用户的 ID，确保 用户的 关联正确
+    const users = await User.findAll({
+      attributes: ["id", "account"],
+    })
 
     if (!users.length) {
       throw new Error("Users 表为空，无法插入 Articles")
@@ -26,14 +27,14 @@ module.exports = {
     ]
 
     for (let i = 1; i <= articleCounts; i++) {
-      const randomUser = users[Math.floor(Math.random() * users.length)]
+      const randomUser = users[Math.floor(Math.random() * 5)]
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
 
       articles.push({
         title: `文章的title${i}`,
         content: `这是示例文章${i}的内容，包含一些随机文本。`,
-        author: `test${i}`,
+        author: randomUser.account,
         category: randomCategory,
         tags: JSON.stringify(randomTags),
         carousel: Math.random() > 0.5 ? 1 : 0,

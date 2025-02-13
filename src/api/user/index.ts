@@ -20,7 +20,7 @@ enum API {
   logout = "/user/logout",
   userInfo = "/user/userinfo",
   search = "/user/search",
-  searchCounts = "/user/search/counts",
+  searchCounts = "/user/search/user",
 }
 
 // 引入前缀
@@ -56,7 +56,7 @@ export const searchUser = (data: SearchUserQuery) =>
     server + prefix + API.search + `?${new URLSearchParams(data)}`
   )
 
-// 按照id搜索 且统计个数
+// 搜索用户通过id、account、role 且统计个数
 export const searchCounts = (data: SearchCountsByIdQuery) =>
   request.get<any, SearchCountsById["data"]>(
     server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`

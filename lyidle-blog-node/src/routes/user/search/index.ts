@@ -17,6 +17,24 @@ router.get("/", async (req, res, next) => {
     )
   }
 })
+
+/* 
+  模糊搜索 
+  且计数
+*/
+router.get("/counts", async (req, res, next) => {
+  try {
+    const findUser = await search(req.query, res, false, true)
+    // 不存在
+    if (!findUser) return
+    return res.result(findUser, "查询用户信息成功~")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result({ msg: req.query }, "查询用户信息失败~", false)
+    )
+  }
+})
+
 /* 
   精确搜索 
   nickName
@@ -35,8 +53,27 @@ router.get("/exact", async (req, res, next) => {
   }
 })
 
-// 按照id搜索计数
-router.get("/counts", async (req, res, next) => {
+/* 
+  精确搜索 
+  nickName
+  account
+  且计数
+*/
+router.get("/exact/counts", async (req, res, next) => {
+  try {
+    const findUser = await search(req.query, res, true, true)
+    // 不存在
+    if (!findUser) return
+    return res.result(findUser, "查询用户信息成功~")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result({ msg: req.query }, "查询用户信息失败~", false)
+    )
+  }
+})
+
+// 按照 按照 id、role、account 搜索计数
+router.get("/user", async (req, res, next) => {
   const id = req.query.id
   const role = req.query.role
   const account = req.query.account
@@ -55,7 +92,7 @@ router.get("/counts", async (req, res, next) => {
   }
 
   try {
-    const findUser = await search(req.query, res, true, true)
+    const findUser = await search(req.query, res, true, true, false)
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis

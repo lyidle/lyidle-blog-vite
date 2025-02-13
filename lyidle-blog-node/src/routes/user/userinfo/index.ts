@@ -25,7 +25,7 @@ router.get(
       const cacheValue = await getKey(`userInfo:${id}`)
       if (cacheValue) return res.result(cacheValue, "获取用户信息成功~")
       // 查询对应id的信息
-      const findUser = await search({ id }, res, true, true)
+      const findUser = await search({ id }, res, true, true, false)
       // 不存在
       if (!findUser) return
       // 存储用户信息 到 redis

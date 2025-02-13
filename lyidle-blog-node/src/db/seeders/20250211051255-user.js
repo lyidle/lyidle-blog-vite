@@ -39,7 +39,7 @@ module.exports = {
 
     const users = []
     const userRoles = []
-    const userCounts = 10
+    const userCounts = 100
     for (let i = 1; i <= userCounts; i++) {
       const userId = i
       // 默认 是 user

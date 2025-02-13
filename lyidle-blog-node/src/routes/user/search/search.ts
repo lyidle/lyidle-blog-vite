@@ -14,25 +14,27 @@ interface RequestData {
   email?: string
   role?: string[] // 这里是数组，可能需要调整查询逻辑
   nickName?: string
+  currentPage?: number
+  pageSize?: number
 }
 
 // 搜索函数
 export default async (
   data: RequestData | { [key in string]: any },
   res: Response,
-  exact?: boolean,
-  isCounts: boolean = false
+  exact: boolean = false,
+  isCounts: boolean = false,
+  isPagination: boolean = true
 ) => {
-  const { id, account, email, role, nickName } = data
+  const { id, account, email, role, nickName, currentPage, pageSize } = data
 
-  if (!(id || account || email || role || nickName)) {
-    res.result(
-      void 0,
-      "查询用户，请至少传入id、account、email、role、nickName中的一个参数~",
-      false
-    )
-    return
-  }
+  /**
+   * @pagesize 每页显示条目个数
+   * @currentPage 当前页
+   */
+  let $currentPage
+  let $pageSize
+  let offset
 
   const commend: any = {
     include: [
@@ -54,7 +56,19 @@ export default async (
     attributes: { exclude: ["pwd"] }, //排除密码
   }
 
+  if (isPagination) {
+    $currentPage = Math.abs(Number(currentPage)) || 1
+    $pageSize = Math.abs(Number(pageSize)) || 10
+    offset = ($currentPage - 1) * $pageSize
+    commend.limit = $pageSize
+    commend.offset = offset
+  }
+
   commend.where = {}
+
+  if (!(id || account || email || role || nickName)) {
+    delete commend.where
+  }
 
   // 按照 nickName 查询
   if (nickName) {
@@ -73,14 +87,14 @@ export default async (
   if (id) commend.where.id = id
 
   // 查询用户
-  const findUser = await User.findAll(commend)
-  if (!findUser.length) {
+  const { count, rows } = await User.findAndCountAll(commend)
+  if (!rows.length) {
     res.result(void 0, "查询用户信息失败~", false)
     return
   }
 
   // 调用处理用户权限的 函数
-  return handlerUserRoles(findUser, (item) => {
+  const users = handlerUserRoles(rows, (item) => {
     const articles = item.articles
     // 删除 articles 字段
     delete item.articles
@@ -90,4 +104,20 @@ export default async (
       item.counts = { pages, tags, categories }
     }
   })
+
+  let result = users
+
+  if (isPagination) {
+    result = {
+      pagination: {
+        total: count,
+        currentPage: $currentPage,
+        pageSize: $pageSize,
+      },
+      users,
+    }
+  }
+
+  // 调用处理用户权限的 函数
+  return result
 }
