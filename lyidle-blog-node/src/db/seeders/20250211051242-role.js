@@ -2,7 +2,7 @@
 
 // 导入环境变量
 require("dotenv").config()
-// 生成 的 权限表
+// 生成的角色表
 const seeder_roles = JSON.parse(process.env.seeder_roles)
 
 module.exports = {
