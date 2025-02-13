@@ -42,7 +42,6 @@ export default async (
         model: Article,
         as: "articles",
         attributes: ["category", "tags", "id"],
-        required: false, // 避免用户没有文章时被过滤掉
       },
       {
         model: Role,
@@ -50,13 +49,12 @@ export default async (
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
         where: role ? { name: role } : {}, // 传入 role 时查询对于的 role 没有时 查询全部
-        required: Boolean(role), // 没有 role 时 防止被过滤 有 role时过滤
+        required: Boolean(role), //按照 role时 过滤 User 的数据
         include: [
           {
             model: Permission,
             as: "permissions",
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-            required: false,
           },
         ],
       },

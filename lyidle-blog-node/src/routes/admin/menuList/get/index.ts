@@ -1,5 +1,5 @@
 import { getKey, setKey } from "@/utils/redis"
-import express from "express"
+import express, { NextFunction, Request, Response } from "express"
 import { Op } from "sequelize"
 const { Menu, Role } = require("@/db/models")
 const router = express.Router()
@@ -45,11 +45,19 @@ const buildMenuTree = ($menus: any[]) => {
 
 // 用户角色用户组
 const default_user = JSON.parse(process.env.default_user!)
-// 获取菜单列表
-router.get("/", async (req, res, next) => {
+
+// 查询 菜单的回调
+const getMenuList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  isAll: boolean = false
+) => {
   try {
-    const role =
+    let role =
       (req.query?.role && JSON.parse(req.query.role as string)) || default_user // 从请求中获取角色名称
+    // 判断 是否查询所有菜单
+    if (isAll) role = "*"
     // 保存 redis 的键
     let cacheKey = `menu:${role}`
     const cacheValue = await getKey(cacheKey)
@@ -62,8 +70,8 @@ router.get("/", async (req, res, next) => {
           as: "role",
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-          where: { name: { [Op.in]: role } }, // 根据角色名称过滤菜单
-          required: true, // 只返回与指定角色关联的菜单
+          where: isAll ? {} : { name: { [Op.in]: role } }, // 根据角色名称过滤菜单
+          required: isAll ? false : Boolean(role), // isAll 时不过滤 Menu 否则 当有 role 时需要过滤
         },
       ],
     })
@@ -81,6 +89,15 @@ router.get("/", async (req, res, next) => {
       res.result(void 0, "获取菜单失败~", false)
     )
   }
+}
+
+// 获取菜单列表
+router.get("/", async (req, res, next) => {
+  await getMenuList(req, res, next)
 })
 
+// 获取菜单列表
+router.get("/*", async (req, res, next) => {
+  await getMenuList(req, res, next, true)
+})
 export default router

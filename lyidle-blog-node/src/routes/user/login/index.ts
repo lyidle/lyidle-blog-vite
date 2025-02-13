@@ -47,13 +47,11 @@ router.get("/", async (req, res, next) => {
           as: "role",
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不获取中间表数据
-          required: true,
           include: [
             {
               model: Permission,
               as: "permissions",
               through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-              required: false,
             },
           ],
         },

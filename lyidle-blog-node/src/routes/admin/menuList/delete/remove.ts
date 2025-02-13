@@ -56,7 +56,6 @@ const remove = async (
         as: "role",
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        required: false,
       },
     ],
     where: { id },
