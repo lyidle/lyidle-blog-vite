@@ -32,10 +32,17 @@ module.exports = {
       return pre
     }, {})
 
-    const adminIds = deduplication(handlerRole(roles, seeder_admin))
-    const userIds = deduplication(handlerRole(roles, default_user))
-    const ownerIds = deduplication(adminIds, handlerRole(roles, default_owner))
-    const test = handlerRole(roles, ["admin"])
+    const adminIds = deduplication(handlerRole(roles, seeder_admin)).filter(
+      Boolean
+    )
+    const userIds = deduplication(handlerRole(roles, default_user)).filter(
+      Boolean
+    )
+    const ownerIds = deduplication(
+      adminIds,
+      handlerRole(roles, default_owner)
+    ).filter(Boolean)
+    const test = handlerRole(roles, ["admin"]).filter(Boolean)
 
     const users = []
     const userRoles = []

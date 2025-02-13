@@ -21,14 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       // 一个用户可以有多篇文章
       User.hasMany(models.Article, {
         as: "articles",
-        foreignKey: "userId", // 指定外键
       })
 
       // 关联角色 通过 UserRole 关联 Role
       User.belongsToMany(models.Role, {
         through: "UserRole", // 指定中间表的名称
-        foreignKey: "userId", // UserRole 表中的 userId
-        otherKey: "roleId", // UserRole 表中的 roleId
         as: "role",
       })
     }

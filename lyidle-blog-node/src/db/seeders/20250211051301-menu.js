@@ -30,9 +30,16 @@ module.exports = {
       return pre
     }, {})
 
-    const adminIds = deduplication(handlerRole(roles, seeder_admin))
-    const userIds = deduplication(handlerRole(roles, default_user))
-    const ownerIds = deduplication(adminIds, handlerRole(roles, default_owner))
+    const adminIds = deduplication(handlerRole(roles, seeder_admin)).filter(
+      Boolean
+    )
+    const userIds = deduplication(handlerRole(roles, default_user)).filter(
+      Boolean
+    )
+    const ownerIds = deduplication(
+      adminIds,
+      handlerRole(roles, default_owner)
+    ).filter(Boolean)
 
     let currentId = 1
     const menus = []
@@ -40,7 +47,7 @@ module.exports = {
 
     function processMenu(menu, parentId = null) {
       const menuId = currentId++
-      const menuRole = handlerRole(roles, menu.role)
+      const menuRole = handlerRole(roles, menu.role).filter(Boolean)
       const $roles = (menuRole.length ? menuRole : userIds) || userIds
       menus.push({
         id: menuId,

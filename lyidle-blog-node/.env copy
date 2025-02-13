@@ -1,29 +1,49 @@
-# 用于控制是否是开发模式 验证码发送邮箱 
+# 用于控制是否是生产模式 验证码 apifox 发送邮箱的验证码方便提取 访客信息模拟 设置信息的模拟 redis 的连接有无密码
 is_production=false
+# api  的前缀
+api_prefix='/api'
 # api 端口
-api_port=3000
+api_port=3594
 # web 端口
-web_port=3579
-# 默认用户组
+web_port=3598
+# 默认用户
 default_user='["user"]'
-# admin 用户组
-Admin='["admin"]'
+# 默认网站拥有者
+default_owner='["owner"]'
+# 默认管理员
+default_admin='["admin"]'
+# 初始化生成权限 的种子文件需要的权限
+seeder_roles='["owner","admin", "user"]'
+# 初始化 的 admin 用户组
+seeder_admin='["admin","user","doc:publish"]'
 # 生成jwt 的 hash
-jwt_hash=参与hash的值
+jwt_hash=9&fQkK$a^o!rNq*8ra&F2ot!S@b@3ekw72q
 # 邮箱服务
+email_send=false
 email_host=smtp.office365.com
 email_port=587
 email_secure=false
 email_requireTLS=true
-email_user=账号
-email_pwd=密码
+email_user=
+email_pwd=
 # 注册邮箱的平台
-email_reg_stage=注册邮箱发送的邮件中的平台名字
+email_reg_stage=Lyのblog
+# redis 
+redis_pwd=redis_bXwWeD
+redis_host=154.9.253.229
+# 使用 ms 库进行转换成对应的毫秒
+# 时间的单位 h、m、s、y、d对应时、分、秒、年、日
 # 验证码有效期
-code_expire=10s
+code_expire=1m #按照秒
 # 软删除文章的时间
-delete_article_expire=10s
+delete_article_expire=5s
 # 软删除用户的时间
 delete_user_expire=10s
+# 软删除菜单的时间
+delete_menu=10s
 # token过期时间
-token_expire=10s
+token_expire=5h
+# 实时性不强的数据 的缓存时间 如短诗 第三方接口
+default_expire=1d
+# 压缩
+gifsicle_route_window='C:\\My_Program_Folder\\Environments\\gifsicle-1.95-win64\\gifsicle.exe'
