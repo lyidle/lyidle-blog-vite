@@ -4,6 +4,10 @@ export interface SearchUserQuery {
    */
   account?: string
   /**
+   * 当前页默认值1
+   */
+  currentPage?: number
+  /**
    * 按照email查詢
    */
   email?: string
@@ -15,6 +19,10 @@ export interface SearchUserQuery {
    * 按照nickNam查詢
    */
   nickName?: string
+  /**
+   * 一页显示的数量10
+   */
+  pageSize?: number
   /**
    * 按照role查詢
    */

@@ -6,11 +6,7 @@
         <my-button>添加用户</my-button>
         <my-button>批量删除</my-button>
       </div>
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        :row-class-name="tableRowClassName"
-      >
+      <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="date" label="Date" width="width" />
         <el-table-column prop="name" label="Name" width="width" />
         <el-table-column prop="address" label="Address" width="width" />
@@ -25,6 +21,7 @@
 </template>
 
 <script setup lang="ts" name="AdminAccessRoles">
+const tableData = ref([])
 // 搜索回调
 const handlerSearch = () => {
   ElMessage("test11")

@@ -1,10 +1,12 @@
 <template>
-  <my-context-menu>
-    <global-theme></global-theme>
-    <router-view v-slot="{ Component, route }">
-      <component :is="Component" :key="route.path" />
-    </router-view>
-  </my-context-menu>
+  <el-config-provider :locale="zhCn">
+    <my-context-menu>
+      <global-theme></global-theme>
+      <router-view v-slot="{ Component, route }">
+        <component :is="Component" :key="route.path" />
+      </router-view>
+    </my-context-menu>
+  </el-config-provider>
 </template>
 
 <script setup lang="ts" name="App">
@@ -14,6 +16,8 @@ import { setTitleTip } from "@/utils/effect"
 import { useGlobalEmitter } from "@/hooks/globalEmitter"
 // 引入 api
 import { useOwnerStore } from "@/store/owner"
+// 中文化
+import zhCn from "element-plus/es/locale/lang/zh-cn"
 // 获取admin的信息 用于展示 网页拥有者的一些信息
 const { getAdminUserInfo, getOwnerInfo } = useOwnerStore()
 // 全局的 监听事件 使用 mitt 管理

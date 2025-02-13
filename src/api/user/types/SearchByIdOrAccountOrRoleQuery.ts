@@ -1,4 +1,4 @@
-export interface SearchCountsByIdQuery {
+export interface SearchByIdOrAccountOrRoleQuery {
   /**
    * 按照account查詢
    */

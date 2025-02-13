@@ -1,9 +1,11 @@
 <template>
-  <my-menu-instance
-    :data="item"
-    :name="item.name"
-    v-for="item in data"
-  ></my-menu-instance>
+  <template v-if="data.length">
+    <my-menu-instance
+      :data="item"
+      :name="item.name"
+      v-for="item in data"
+    ></my-menu-instance>
+  </template>
 </template>
 
 <script setup lang="ts" name="HeaderNotes">

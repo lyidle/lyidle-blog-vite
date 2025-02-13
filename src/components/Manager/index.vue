@@ -60,7 +60,7 @@ document.body.setAttribute("banner-fixed", "")
       height: calc(100% - $manager-header-height);
       padding: var(--admin-content-pd);
       padding-top: var(--admin-content-card-gap);
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
       z-index: $manager-content-index;
     }
