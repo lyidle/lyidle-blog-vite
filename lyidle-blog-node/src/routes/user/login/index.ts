@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs")
 // 引入正则判断
 import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 // 引入模型
-const { User, Role } = require("@/db/models")
+const { User, Role, Permission } = require("@/db/models")
 // 引入 redis 设置缓存
 import { delKey } from "@/utils/redis"
 // 引入 处理 用户的role 的函数
@@ -48,6 +48,14 @@ router.get("/", async (req, res, next) => {
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不获取中间表数据
           required: true,
+          include: [
+            {
+              model: Permission,
+              as: "permissions",
+              through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+              required: false,
+            },
+          ],
         },
       ],
     })

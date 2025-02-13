@@ -24,10 +24,6 @@ declare global {
       auth: {
         id: number | string
         account: string
-        nickName: string
-        avater?: string | null
-        signer?: string | null
-        email: string
         role: string
         iat?: Date
         exp?: Date

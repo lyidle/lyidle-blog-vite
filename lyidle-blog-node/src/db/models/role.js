@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       Role.belongsToMany(models.Menu, {
         through: "MenuRole", // 指定中间表的名称
       })
+
+      // 角色和权限是多对多关系
+      Role.belongsToMany(models.Permission, {
+        through: "RolePermission",
+        as: "permissions",
+      })
     }
   }
 

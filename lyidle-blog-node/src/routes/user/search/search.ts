@@ -6,7 +6,7 @@ import { tinyUserDocsCounts } from "@/utils/db/doc"
 // 引入 处理 用户的role 的函数
 import { handlerUserRoles } from "@/utils/db/handlerRoles"
 // 导入模型
-const { Article, User, Role } = require("@/db/models")
+const { Article, User, Role, Permission } = require("@/db/models")
 
 interface RequestData {
   id?: string
@@ -51,6 +51,14 @@ export default async (
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
         where: role ? { name: role } : {}, // 传入 role 时查询对于的 role 没有时 查询全部
         required: Boolean(role), // 没有 role 时 防止被过滤 有 role时过滤
+        include: [
+          {
+            model: Permission,
+            as: "permissions",
+            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            required: false,
+          },
+        ],
       },
     ],
     attributes: { exclude: ["pwd"] }, //排除密码

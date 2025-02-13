@@ -24,11 +24,6 @@ export const setToken = async (
 
   tokenData.id = userInfo.id
   tokenData.account = userInfo.account
-  // 可能为 null
-  tokenData.avater = userInfo.avater ?? null
-  tokenData.signer = userInfo.signer ?? null
-  tokenData.email = userInfo.email
-  tokenData.nickName = userInfo.nickName
   tokenData.role = userInfo.role
   // jwt.sign(数据, 加密字符串, 配置对象)
   const token = jwt.sign(tokenData, process.env.jwt_hash, {
