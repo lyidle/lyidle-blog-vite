@@ -67,7 +67,7 @@ router.get("/", async (req, res, next) => {
         },
       ],
     })
-    // 处理菜单中的 role 为 string[]
+    // 处理菜单中的 递归 菜单 从而形成 树状结构
     const result = buildMenuTree(menus)
 
     if (!menus.length) {

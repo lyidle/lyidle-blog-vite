@@ -1,18 +1,26 @@
 <template>
   <my-card class="admin-search card_style" bg="var(--manager-card-bg)">
-    <el-form inline @submit.prevent="submit">
+    <el-form inline @submit.prevent="submit(searchKey)">
       <el-form-item :label="searchLabel">
         <div class="searchContainer">
-          <el-input :placeholder class="search" v-model="searchKey" />
+          <el-input
+            :placeholder
+            :size
+            class="search"
+            :style="{ width: inputSize }"
+            v-model="searchKey"
+          />
           <div class="btns">
             <my-button
               native-type="submit"
               class="ml-[var(--admin-content-header-gap)]"
+              :size
               >搜索</my-button
             >
             <my-button
               class="!ml-[var(--admin-content-header-gap)]"
               @click="searchKey = ''"
+              :size
               plain
               >重置</my-button
             >
@@ -24,23 +32,64 @@
 </template>
 
 <script setup lang="ts" name="SearchAdmin">
-const searchKey = ref()
+import { mitt } from "@/utils/emitter"
+
 withDefaults(
   defineProps<{
     searchLabel?: string
     placeholder?: string
-    submit?: () => void
+    submit?: (key: string) => void
   }>(),
   {
     searchLabel: "搜索key：",
     placeholder: "搜索placeholder",
-    submit: () => {
-      ElMessage("test")
+    submit: (key: string) => {
+      ElMessage(key)
     },
   }
 )
+
+// 搜索的关键字
+const searchKey = ref()
+// input和button的大小
+const size = ref()
+// input 的宽度
+const inputSize = ref()
+
+// 处理 窗口变化 的事件
+const handlerResize = () => {
+  if (window.innerWidth > 870) {
+    // input和button的大小
+    size.value = "default"
+    inputSize.value = "200px"
+    return
+  }
+  // input和button的大小
+  size.value = "small"
+  inputSize.value = "100px"
+}
+
+// 监听窗口变化
+mitt.on("window:resize", handlerResize)
+
+onMounted(async () => {
+  // 处理 窗口变化 的事件
+  handlerResize()
+})
+
+onBeforeUnmount(() => {
+  // 卸载监听窗口变化
+  mitt.off("window:resize", handlerResize)
+})
 </script>
 
+<style lang="scss">
+.admin-search {
+  .el-form-item__label {
+    font-size: 1rem;
+  }
+}
+</style>
 <style scoped lang="scss">
 .admin-search {
   padding: var(--admin-content-card-pd);

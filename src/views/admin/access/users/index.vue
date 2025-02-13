@@ -18,9 +18,11 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        max-height="250"
+        max-height="40vh"
         show-overflow-tooltip
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column type="selection" width="30" />
         <el-table-column
           width="40"
           prop="id"
@@ -105,8 +107,8 @@ const headerBtnsSize = ref("default")
 const accountsWidth = ref(130)
 
 // 搜索回调
-const handlerSearch = () => {
-  ElMessage("test11")
+const handlerSearch = (key: string) => {
+  ElMessage(key)
 }
 
 // 处理 窗口变化 的事件
@@ -125,8 +127,16 @@ const handlerResize = () => {
 // 监听窗口变化
 mitt.on("window:resize", handlerResize)
 
+// 选中的 userId
+const userIds = ref<number[]>([])
+// 处理 多选框 变化问题
+const handleSelectionChange = (user: searchData["users"]) => {
+  // 得到 选张的user的id
+  userIds.value = user.map((item) => item.id)
+}
+
 // pagination  的回调
-// 获取文章
+// 获取用户
 const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
   try {
     const result = await searchExactUser({ currentPage, pageSize })
@@ -136,9 +146,9 @@ const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
 }
 
 onMounted(async () => {
-  const result = await searchExactUser()
-  tableData.value = result?.users || []
-  pagination.value = result?.pagination
+  // 得到 用户
+  await reqUsers()
+  // 处理 窗口变化 的事件
   handlerResize()
 })
 
