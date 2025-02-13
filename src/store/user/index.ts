@@ -38,9 +38,7 @@ export const useUserStore = defineStore(
           userStoreRoutesFilter(result, userRole)
 
         // 过滤掉后台管理的菜单
-        userMenuList.value = _userMenuList?.filter(
-          (item) => item.name !== "Admin"
-        )
+        userMenuList.value = _userMenuList
 
         userBannerImg.value = _userBannerImg
         whitelist.value = _whitelist

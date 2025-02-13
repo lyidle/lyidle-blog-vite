@@ -39,7 +39,7 @@ export const userStoreRoutesFilter = (
   // 过滤出 需要的异步路由信息 并添加白名单
   const { _whitelist, _routes } = filterRoutes(result)
   // 过滤出用户的菜单信息
-  const _userMenuList = filterUserMenuList(result, role, _whitelist)
+  const _userMenuList = filterUserMenuList(result, _whitelist)
   // 过滤出用户的 banner 信息设置
   const _userBannerImg = filterBanner(result, _whitelist)
   // 返回处理完毕的信息
