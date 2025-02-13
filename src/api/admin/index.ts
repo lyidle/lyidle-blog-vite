@@ -28,9 +28,9 @@ const prefix = import.meta.env.VITE_API
 const server = import.meta.env.VITE_SERVE
 
 // 获取菜单
-export const getMenuList = (role: string = "user") =>
+export const getMenuList = (role: string[] = ["user"]) =>
   request.get<any, GetMenuList["data"]>(
-    server + prefix + API.menuList + `/?role=${role}`
+    server + prefix + API.menuList + `/?role=${JSON.stringify(role)}`
   )
 // 设置菜单
 export const setMenuList = (data: SetMenuListBody) =>

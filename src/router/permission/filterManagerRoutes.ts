@@ -29,20 +29,20 @@ const filterRoutes = (routes: RouteRecordRaw[], whitelist: string[]) => {
 }
 
 export const filterManagerRoutes = () => {
+  // 找到本地 名字 为 Admin 的路由
   const findManager = asyncRoute?.find((item) =>
     (item.name as string).includes("Admin")
   )?.children
-  // 是否存在
-  const isExist = findManager?.length ? findManager : []
+  const routes = findManager?.length ? findManager : []
   // 返回结果
   let result: RouteRecordRaw[] = []
 
   // 存在 过滤
-  if (isExist.length) {
+  if (routes.length) {
     // 提取变量
     const { whitelist } = storeToRefs(useUserStore())
     // 过滤出在白名单中的路由
-    result = filterRoutes(isExist, whitelist.value)
+    result = filterRoutes(routes, whitelist.value)
   }
   return result
 }
