@@ -6,7 +6,16 @@ export const handlerUserRoles = (findUser: any[], cb?: (item: any) => void) => {
     const role = item.role
     item.role = role.map(($item: any) => {
       // 处理权限为 对应的 权限 string[]
-      item.permissions = $item.permissions.map((item: any) => item.name)
+      if (Array.isArray(item.permissions)) {
+        item.permissions = [
+          ...new Set(
+            [
+              item.permissions,
+              $item.permissions.map((item: any) => item.name),
+            ].flat(Infinity)
+          ),
+        ]
+      } else item.permissions = $item.permissions.map((item: any) => item.name)
       return $item.name
     })
     // 回调函数 把item 传入

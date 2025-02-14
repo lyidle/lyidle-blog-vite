@@ -1,6 +1,6 @@
-import { Op, literal } from "sequelize"
+import { Op } from "sequelize"
 // 引入类型
-import { Request, Response } from "express"
+import { Response } from "express"
 // 引入 整理 个数的函数
 import { tinyUserDocsCounts } from "@/utils/db/doc"
 // 引入 处理 用户的role 的函数

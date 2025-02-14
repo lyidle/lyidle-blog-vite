@@ -2,22 +2,23 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // 初始化权限数据
     const permissions = [
-      { name: "create:user", description: "允许创建用户" },
-      { name: "delete:user", description: "允许删除用户" },
-      { name: "update:user", description: "允许更新用户" },
-      { name: "read:user", description: "允许查看用户" },
-      { name: "create:menu", description: "允许创建菜单" },
-      { name: "delete:menu", description: "允许删除菜单" },
-      { name: "update:menu", description: "允许更新菜单" },
-      { name: "read:menu", description: "允许查看菜单" },
+      { id: 1, name: "user", description: "用户管理", parentId: null },
+      { id: 2, name: "user:create", description: "允许创建用户", parentId: 1 },
+      { id: 3, name: "user:delete", description: "允许删除用户", parentId: 1 },
+      { id: 4, name: "user:update", description: "允许更新用户", parentId: 1 },
+      { id: 5, name: "user:read", description: "允许查看用户", parentId: 1 },
+
+      { id: 6, name: "menu", description: "菜单管理", parentId: null },
+      { id: 7, name: "menu:create", description: "允许创建菜单", parentId: 6 },
+      { id: 8, name: "menu:delete", description: "允许删除菜单", parentId: 6 },
+      { id: 9, name: "menu:update", description: "允许更新菜单", parentId: 6 },
+      { id: 10, name: "menu:read", description: "允许查看菜单", parentId: 6 },
     ]
 
-    const setPermissions = permissions.map((item, id) => ({
-      id: id + 1,
-      name: item.name,
-      description: item.description,
+    // 添加时间戳
+    const setPermissions = permissions.map((item) => ({
+      ...item,
       createdAt: new Date(),
       updatedAt: new Date(),
     }))

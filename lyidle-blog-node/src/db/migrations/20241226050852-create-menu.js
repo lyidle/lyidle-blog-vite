@@ -43,8 +43,21 @@ module.exports = {
         type: Sequelize.DATE,
       },
     })
+    // 手动添加外键，确保 ON DELETE CASCADE 生效
+    await queryInterface.addConstraint("Menus", {
+      fields: ["parentId"],
+      type: "foreign key",
+      name: "fk_menus_parent",
+      references: {
+        table: "Menus",
+        field: "id",
+      },
+      onDelete: "CASCADE", // 级联删除
+      onUpdate: "CASCADE",
+    })
   },
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeConstraint("Menus", "fk_menus_parent")
     await queryInterface.dropTable("Menus")
   },
 }

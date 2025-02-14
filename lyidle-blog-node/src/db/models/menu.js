@@ -5,10 +5,16 @@ module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     static associate(models) {
       // 递归关联：一个菜单可以有多个子菜单
-      Menu.hasMany(models.Menu, { foreignKey: "parentId", as: "children" })
+      Menu.hasMany(models.Menu, {
+        foreignKey: "parentId",
+        as: "children",
+      })
 
       // 递归关联：一个菜单也可能是某个菜单的子级
-      Menu.belongsTo(models.Menu, { foreignKey: "parentId", as: "parent" })
+      Menu.belongsTo(models.Menu, {
+        foreignKey: "parentId",
+        as: "parent",
+      })
 
       // 关联角色 通过 MenuRole 关联 Role
       Menu.belongsToMany(models.Role, {

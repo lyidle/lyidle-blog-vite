@@ -8,6 +8,18 @@ module.exports = (sequelize, DataTypes) => {
       Permission.belongsToMany(models.Role, {
         through: "RolePermission", // 指定中间表的名称
       })
+
+      // 递归关联：一个菜单也可能是某个菜单的子级
+      Permission.belongsTo(models.Permission, {
+        foreignKey: "parentId",
+        as: "parent",
+      })
+
+      // 递归关联：一个菜单可以有多个子菜单
+      Permission.hasMany(models.Permission, {
+        foreignKey: "parentId",
+        as: "children",
+      })
     }
   }
 
@@ -23,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       isBin: DataTypes.DATE,
+      parentId: DataTypes.INTEGER,
     },
     {
       sequelize,
