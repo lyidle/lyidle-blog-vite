@@ -1,12 +1,14 @@
-"use strict"
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("UserRoles", {
-      userId: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+      id: {
         allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      UserId: {
+        type: Sequelize.INTEGER,
         references: {
           model: "Users",
           key: "id",
@@ -14,10 +16,8 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      roleId: {
+      RoleId: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
-        allowNull: false,
         references: {
           model: "Roles",
           key: "id",
@@ -35,7 +35,7 @@ module.exports = {
       },
     })
   },
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("UserRoles")
   },
 }

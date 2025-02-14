@@ -1,15 +1,13 @@
-"use strict"
-
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("RolePermissions", {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("RolePermissionGroups", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      roleId: {
+      RoleId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Roles",
@@ -18,10 +16,10 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      permissionId: {
+      PermissionGroupId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Permissions",
+          model: "PermissionGroups",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -37,8 +35,7 @@ module.exports = {
       },
     })
   },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("RolePermissions")
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("RolePermissionGroups")
   },
 }

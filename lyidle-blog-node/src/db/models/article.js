@@ -4,14 +4,9 @@ const { Model } = require("sequelize")
 const setDbError = require("../../utils/error/setDbError/js")
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // 一篇文章属于一个用户
-      Article.belongsTo(models.User, {
+      this.belongsTo(models.User, {
         foreignKey: "userId", // 指定外键
       })
     }

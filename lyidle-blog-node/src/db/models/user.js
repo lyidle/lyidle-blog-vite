@@ -19,15 +19,12 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       // 一个用户可以有多篇文章
-      User.hasMany(models.Article, {
+      this.hasMany(models.Article, {
         as: "articles",
       })
 
       // 关联角色 通过 UserRole 关联 Role
-      User.belongsToMany(models.Role, {
-        through: "UserRole", // 指定中间表的名称
-        as: "role",
-      })
+      this.belongsToMany(models.Role, { through: "UserRoles" })
     }
   }
 

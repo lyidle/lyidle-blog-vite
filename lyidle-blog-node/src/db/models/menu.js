@@ -4,23 +4,20 @@ const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class Menu extends Model {
     static associate(models) {
-      // 递归关联：一个菜单可以有多个子菜单
-      Menu.hasMany(models.Menu, {
+      // 自关联：一个菜单可以有多个子菜单
+      this.hasMany(models.Menu, {
         foreignKey: "parentId",
         as: "children",
       })
 
-      // 递归关联：一个菜单也可能是某个菜单的子级
-      Menu.belongsTo(models.Menu, {
+      // 自关联：一个菜单属于一个父菜单
+      this.belongsTo(models.Menu, {
         foreignKey: "parentId",
         as: "parent",
       })
 
       // 关联角色 通过 MenuRole 关联 Role
-      Menu.belongsToMany(models.Role, {
-        through: "MenuRole", // 指定中间表的名称
-        as: "role", //别名
-      })
+      this.belongsToMany(models.Role, { through: "MenuRoles" })
     }
   }
 

@@ -10,11 +10,10 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING(64),
+        type: Sequelize.STRING,
       },
-      isBin: {
-        type: Sequelize.DATE,
-        allowNull: true,
+      desc: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

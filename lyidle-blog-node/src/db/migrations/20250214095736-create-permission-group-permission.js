@@ -1,23 +1,25 @@
-"use strict"
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("MenuRoles", {
-      menuId: {
-        type: Sequelize.INTEGER,
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("PermissionGroupPermissions", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      PermissionGroupId: {
+        type: Sequelize.INTEGER,
         references: {
-          model: "Menus",
+          model: "PermissionGroups",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      roleId: {
+      PermissionId: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         references: {
-          model: "Roles",
+          model: "Permissions",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -33,7 +35,7 @@ module.exports = {
       },
     })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("MenuRoles")
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("PermissionGroupPermissions")
   },
 }

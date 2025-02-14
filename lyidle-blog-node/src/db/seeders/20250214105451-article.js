@@ -1,14 +1,13 @@
 "use strict"
+
+// 引入 清除 redids 缓存的 函数
 const { clear } = require("../../utils/redis/js")
-// 引入 模型
-const { User } = require("../models")
+
+// 引入 处理好的信息
+const { users } = require("../mock/handlerUsers")
+
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // 获取所有用户的 ID，确保 用户的 关联正确
-    const users = await User.findAll({
-      attributes: ["id", "account"],
-    })
-
     if (!users.length) {
       throw new Error("Users 表为空，无法插入 Articles")
     }
@@ -27,6 +26,7 @@ module.exports = {
     ]
 
     for (let i = 1; i <= articleCounts; i++) {
+      // 只随机出 前 5 个 的用户生成数据
       const randomUser = users[Math.floor(Math.random() * 5)]
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
@@ -46,6 +46,7 @@ module.exports = {
         updatedAt: new Date(),
       })
     }
+
     // 清空 缓存
     await clear()
     await queryInterface.bulkInsert("Articles", articles, {})
