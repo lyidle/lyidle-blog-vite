@@ -98,7 +98,7 @@ router.put(
         //删除token
         await delKey(`token:${id}`)
       // 没有 修改 密码 则不需要重新登录
-      else await setToken(dataValues, next)
+      else await setToken(dataValues)
 
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)

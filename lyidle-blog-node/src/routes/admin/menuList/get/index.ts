@@ -39,7 +39,7 @@ const buildMenuTree = ($menus: any[]) => {
       menuTree.push(item)
     }
   })
-
+  menuMap.clear()
   return menuTree
 }
 

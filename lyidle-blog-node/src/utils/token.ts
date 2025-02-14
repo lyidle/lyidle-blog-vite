@@ -11,10 +11,7 @@ const jwt = require("jsonwebtoken")
 import myError from "@/utils/error/myError"
 // token过期时间
 const token_expire = ms(process.env.token_expire)
-export const setToken = async (
-  userInfo: typeof request.auth,
-  next: NextFunction
-) => {
+export const setToken = async (userInfo: typeof request.auth) => {
   // 整理token
   let tokenData: Partial<typeof request.auth> = {}
 

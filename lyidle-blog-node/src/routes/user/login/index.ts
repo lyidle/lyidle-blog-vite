@@ -72,7 +72,7 @@ router.get("/", async (req, res, next) => {
     const user = handlerUserRoles([findUser])
 
     // 登录验证成功后创建 token
-    const token = await setToken(user?.[0], next)
+    const token = await setToken(user?.[0])
     await delKey(`userInfo:${user.id}`)
     return res.result({ token }, "登录成功~")
   } catch (error) {

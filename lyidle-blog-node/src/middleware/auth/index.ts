@@ -43,7 +43,9 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { role: userRole } = req.auth
   // 判断是否有权限
   if (!adminData.some((item) => userRole.includes(item)))
-    return next(new myError("UnauthorizedError"))
+    return next(
+      new myError("otherError", `无权限访问该接口: ${req.originalUrl}`)
+    )
 
   next()
 }
