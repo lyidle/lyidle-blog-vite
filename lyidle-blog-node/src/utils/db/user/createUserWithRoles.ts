@@ -7,11 +7,7 @@ import myError from "@/utils/error/myError"
 
 const { User } = require("@/db/models")
 
-export const createUserWithRoles = async (
-  userData: any,
-  roles: string[],
-  next: NextFunction
-) => {
+export const createUserWithRoles = async (userData: any, roles: string[]) => {
   // 存储 创建 的 用户 设置role时需要用户存在
   let user: any
   try {
@@ -24,10 +20,10 @@ export const createUserWithRoles = async (
     }
 
     // 设置和创建权限
-    const result = await setRoles(roles, next)
+    const result = await setRoles(roles)
     if (result.length) {
       //  直接重置用户角色
-      await user.setRole(result)
+      await user.setRoles(result)
     }
 
     return user

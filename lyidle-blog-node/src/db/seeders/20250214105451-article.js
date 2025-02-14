@@ -27,7 +27,7 @@ module.exports = {
 
     for (let i = 1; i <= articleCounts; i++) {
       // 只随机出 前 5 个 的用户生成数据
-      const randomUser = users[Math.floor(Math.random() * 5)]
+      const randomUser = users[Math.floor(Math.random() * users.length)]
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
 

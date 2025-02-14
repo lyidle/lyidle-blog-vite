@@ -22,12 +22,16 @@ export const publicUserRemove = async (userId: number) => {
 const deleted = async (findUser: any, userId: number) => {
   // 删除用户
   await findUser.destroy({ force: true })
-  // 删除文章 自动删除
+  // 删除文章 和 权限等信息 会 自动删除
   // 删除时用户数量-1
   const userCounts = await getKey("userCounts")
   let num = +userCounts - 1
   // 越界判断
-  if (num < 0) num = 0
+  if (num < 0) {
+    num = 0
+    console.warn("删除用户时,redis的缓存出现负数的情况哦~")
+  }
+
   // 设置用户数量
   await setKey("userCounts", +userCounts - 1)
   // 删除临时的userBin

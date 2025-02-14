@@ -54,7 +54,7 @@ router.post("/", async (req, res, next) => {
       email,
     }
 
-    const result = await createUserWithRoles(user, default_user, next)
+    const result = await createUserWithRoles(user, default_user)
 
     // 注册成功后删除缓存
     await delKey(`regCode:${email}`)

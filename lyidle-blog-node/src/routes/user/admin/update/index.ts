@@ -44,7 +44,7 @@ router.put(
       }
 
       // 查询
-      const findUser = await User.findByPk(id)
+      const findUser = await User.findByPk(id, { paranoid: false })
 
       // 判断有无找到用户
       if (!findUser) {
@@ -85,9 +85,9 @@ router.put(
       const { dataValues } = await findUser.save({ transaction })
 
       // 处理 角色信息
-      const roles = role?.length && (await setRoles(role, next))
+      const roles = role?.length && (await setRoles(role))
       if (roles?.length) {
-        await findUser.setRole(roles, { transaction })
+        await findUser.setRoles(roles, { transaction })
       }
 
       // 提交事务

@@ -58,15 +58,15 @@ export default async (
         include: [
           {
             model: PermissionGroup,
+            attributes: ["name"], // 只返回权限组的名称
             through: { attributes: [] }, // 排除中间表字段
             include: [
               {
                 model: Permission,
-                through: { attributes: [] }, // 排除中间表字段
                 attributes: ["name"], // 只返回权限的名称
+                through: { attributes: [] }, // 排除中间表字段
               },
             ],
-            attributes: ["name"], // 只返回权限组的名称
           },
         ],
       },

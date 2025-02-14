@@ -40,11 +40,11 @@ router.post(
       // 得到 roles
       const roles = role?.length ? role : default_user
       // 处理 role
-      const $roles = await setRoles(roles, next)
+      const $roles = await setRoles(roles)
 
       if ($roles?.length) {
         // 设置 role
-        await newMenu.setRole($roles, { transaction })
+        await newMenu.setRoles($roles, { transaction })
         // 清除 菜单 的缓存
         await delMenuRoles(roles)
       }
