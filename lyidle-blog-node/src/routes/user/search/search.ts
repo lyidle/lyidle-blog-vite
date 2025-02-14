@@ -6,7 +6,13 @@ import { tinyUserDocsCounts } from "@/utils/db/doc"
 // 引入 处理 用户的role 的函数
 import { handlerUserRoles } from "@/utils/db/handlerRoles"
 // 导入模型
-const { Article, User, Role, Permission } = require("@/db/models")
+const {
+  Article,
+  User,
+  Role,
+  Permission,
+  PermissionGroup,
+} = require("@/db/models")
 
 interface RequestData {
   id?: string
@@ -45,16 +51,22 @@ export default async (
       },
       {
         model: Role,
-        as: "role",
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
         where: role ? { name: role } : {}, // 传入 role 时查询对于的 role 没有时 查询全部
         required: Boolean(role), //按照 role时 过滤 User 的数据
         include: [
           {
-            model: Permission,
-            as: "permissions",
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            model: PermissionGroup,
+            through: { attributes: [] }, // 排除中间表字段
+            include: [
+              {
+                model: Permission,
+                through: { attributes: [] }, // 排除中间表字段
+                attributes: ["name"], // 只返回权限的名称
+              },
+            ],
+            attributes: ["name"], // 只返回权限组的名称
           },
         ],
       },
@@ -101,18 +113,21 @@ export default async (
   }
 
   // 调用处理用户权限的 函数
-  const users = handlerUserRoles(rows, (item) => {
-    const articles = item.articles
-    // 删除 articles 字段
-    delete item.articles
-    // 整理个数
-    if (isCounts) {
-      const { pages, tags, categories } = tinyUserDocsCounts(articles)
-      item.counts = { pages, tags, categories }
-    }
+  const users = handlerUserRoles(rows, {
+    cb: (item) => {
+      const articles = item.articles
+      // 删除 articles 字段
+      delete item.articles
+      // 整理个数
+      if (isCounts) {
+        const { pages, tags, categories } = tinyUserDocsCounts(articles)
+        item.counts = { pages, tags, categories }
+      }
+    },
+    isPermission: true,
   })
 
-  let result = users
+  let result: any = users
 
   if (isPagination) {
     result = {
