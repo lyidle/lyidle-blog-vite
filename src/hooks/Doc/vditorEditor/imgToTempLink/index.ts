@@ -33,28 +33,34 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
       const arr = Array.from(urls)
 
       urls.clear()
-      // 保存 处理好的图片
-      let result = []
 
-      // 存在 且 为1 发起请求 处理图片
+      // 如果数组为空，直接返回警告
       if (!arr.length) return ElMessage.warning("没有需要处理的图片哦~")
-      // 遍历添加 处理结果
-      for (const item of arr) {
-        try {
-          const handler = await postTempImgUrl(item)
-          if (handler?.url) {
-            result.push({
-              url: handler?.url,
-              origin: handler?.origin,
-            })
-          }
-        } catch (error) {}
-        // 处理 url
+
+      // 使用 map 和 Promise.all 并发处理图片请求
+      try {
+        const handlers = await Promise.all(
+          arr.map(async (item) => {
+            const handler = await postTempImgUrl(item)
+            if (handler?.url) {
+              return {
+                url: handler.url,
+                origin: handler.origin,
+              }
+            }
+            return null
+          })
+        )
+
+        // 过滤掉 null 值
+        let result = handlers.filter((item) => item !== null)
+
+        // 处理 URL
         const Origins = result
           .map((item) => escapeUrlForRegExp(item.origin))
           .join("|")
 
-        // 没有需要处理的则退出
+        // 如果没有需要处理的图片，则退出
         if (!Origins) return ElMessage.warning("没有需要处理的图片哦~")
 
         // 构造正则表达式匹配多个 origin
@@ -66,10 +72,11 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
           const index = result.findIndex((item) => item.origin === matched)
           return result[index]?.url || matched // 替换为对应 url 或保持原值
         })
-        // 处理完后 替换 内容
+
+        // 处理完后替换内容
         vditor.value?.setValue(contentValue)
         ElMessage.success("图片链接替换成功~")
-      }
+      } catch (error) {}
     }, 1000),
   }
 }
