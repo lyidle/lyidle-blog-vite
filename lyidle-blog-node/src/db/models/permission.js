@@ -17,10 +17,13 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       desc: DataTypes.STRING,
+      isBin: DataTypes.DATE,
     },
     {
       sequelize,
       modelName: "Permission",
+      paranoid: true, // 启用软删除
+      deletedAt: "isBin", // 指定软删除字段名称
     }
   )
   return Permission

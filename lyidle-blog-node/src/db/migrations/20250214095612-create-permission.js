@@ -17,6 +17,10 @@ module.exports = {
       desc: {
         type: Sequelize.STRING,
       },
+      isBin: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

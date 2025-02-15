@@ -89,7 +89,7 @@ const delKeys = async (
   // 获取所有以 prefix 开头的 key
   const keys = await getKeys(prefix)
 
-  if (keys.length === 0) {
+  if (!keys?.length) {
     console.log(prefix, "没有匹配的 key 需要删除")
     return 0
   }
@@ -98,13 +98,13 @@ const delKeys = async (
   let filteredKeys = keys
   if (callback) {
     filteredKeys = callback(keys, patterns)
-  } else if (patterns && patterns.length) {
+  } else if (patterns && patterns?.length) {
     // 如果没有 callback，使用默认的 patterns 过滤逻辑
     const patternsString = patterns.join(",") // 将 patterns 拼接成逗号分隔的字符串
     filteredKeys = keys.filter((key) => key.includes(patternsString))
   }
 
-  if (filteredKeys.length === 0) {
+  if (!filteredKeys?.length) {
     console.log(filteredKeys, "过滤后没有匹配的 key 需要删除")
     return 0
   }
@@ -208,7 +208,6 @@ const getKeys = async (prefix: string): Promise<string[]> => {
 
   // 去掉 redis_prefix 部分
   const prefixToRemove = `${redis_prefix}:${prefix}`
-  console.log(prefixToRemove)
 
   return keys.map((key) => key.slice(prefixToRemove.length))
 }

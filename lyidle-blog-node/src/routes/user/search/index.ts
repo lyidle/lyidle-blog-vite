@@ -76,15 +76,14 @@ router.get("/exact/counts", async (req, res, next) => {
 router.get("/user", async (req, res, next) => {
   const id = req.query.id
   const role = req.query.role
-  const account = req.query.account
-  if (!id && !role && !account)
+  if (!id && !role)
     return res.result(
       void 0,
       "查询用户，至少要传入id、role、author中的一个参数~",
       false
     )
 
-  const cacheKey = id || (role === "owner" && role) || account
+  const cacheKey = id || (role === "owner" && role)
   if (cacheKey) {
     // 缓存用户信息
     const cacheValue = await getKey(`userInfo:${cacheKey}`)
@@ -92,7 +91,7 @@ router.get("/user", async (req, res, next) => {
   }
 
   try {
-    const findUser = await search(req.query, res, true, true, false)
+    const findUser = await search({ id, role }, res, true, true, false)
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis
