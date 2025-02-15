@@ -3,6 +3,7 @@ import express from "express"
 import { Request, Response, NextFunction } from "express"
 // 引入验证
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+import { delKey } from "@/utils/redis"
 // 引入 模型
 const { Permission } = require("@/db/models")
 const db = require("@/db/models")
@@ -14,6 +15,8 @@ router.put(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
+    // 保存 redis 的键
+    let cacheKey = `permissions:*`
     // 删除缓存 redis 的键
     const { id, name, desc } = req.body
 
@@ -43,6 +46,8 @@ router.put(
       // 提交事务
       await transaction.commit()
 
+      // 删除 缓存
+      await delKey(cacheKey)
       res.result(void 0, "更新权限菜单成功~")
     } catch (error) {
       await transaction.rollback() // 回滚事务

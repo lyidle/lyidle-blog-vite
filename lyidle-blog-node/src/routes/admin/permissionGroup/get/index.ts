@@ -21,7 +21,7 @@ const getMenuList = async (req: Request, res: Response, next: NextFunction) => {
     })
 
     if (!permissionGroup.length) {
-      return res.result(void 0, "暂无权限访问任何权限菜单哦~", false)
+      return res.result(void 0, "权限菜单未初始化哦~", false)
     }
 
     // 设置 缓存
