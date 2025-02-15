@@ -3,7 +3,7 @@ import { delKey, setKey, getKey } from "@/utils/redis"
 // 清除 菜单 的缓存
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 获取 role 的函数
-import { handlerRoles } from "@/utils/db/handlerRoles"
+import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 去重的 函数
 import { deduplication } from "@/utils/array/deduplication"
 // 引入时间转换
@@ -53,7 +53,6 @@ const remove = async (
     include: [
       {
         model: Role,
-        as: "role",
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
       },
@@ -63,7 +62,7 @@ const remove = async (
   })
 
   // 得到 roles
-  const roles = deduplication(handlerRoles(existingRoles))
+  const roles = deduplication(ReturnRoles(existingRoles))
 
   // 是否 权限 判断
   if (isAuth) {

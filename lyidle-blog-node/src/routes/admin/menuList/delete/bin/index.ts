@@ -4,14 +4,14 @@ import remove from "@/routes/admin/menuList/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入redis
 import { getKey } from "@/utils/redis"
 const router = express.Router()
 // 彻底删除
 router.delete(
   "/",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id: articleId } = req.body

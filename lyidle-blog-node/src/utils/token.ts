@@ -1,6 +1,4 @@
 import { request } from "express"
-// 引入 类型
-import type { NextFunction } from "express"
 // 引入redis
 import { setKey } from "@/utils/redis"
 // 引入时间转换
@@ -28,6 +26,7 @@ export const setToken = async (userInfo: typeof request.auth) => {
     algorithm: "HS256",
     expiresIn: `${token_expire}`, //字符串单位是毫秒
   })
+
   // 得到 id
   const { id } = userInfo
   // 存储token到redis中

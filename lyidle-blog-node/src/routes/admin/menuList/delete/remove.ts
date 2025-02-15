@@ -3,7 +3,7 @@ import { delKey, setKey, getKey } from "@/utils/redis"
 // 清除 菜单 的缓存
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 获取 role 的函数
-import { handlerRoles } from "@/utils/db/handlerRoles"
+import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 去重的 函数
 import { deduplication } from "@/utils/array/deduplication"
 // 引入时间转换
@@ -15,7 +15,7 @@ const delete_menu = ms(process.env.delete_menu)
 const { Menu, Role } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (role: string[]) => {
+export const publicMenusRemove = async (role: string[]) => {
   // 清除 菜单 的缓存
   await delMenuRoles(role)
 }
@@ -27,7 +27,7 @@ const deleted = async (delMenu: any, id: number, role: string[]) => {
   // 删除临时的 userMenusBin
   await delKey(`userMenusBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(role)
+  await publicMenusRemove(role)
 }
 // 删除函数
 const remove = async (
@@ -53,7 +53,6 @@ const remove = async (
     include: [
       {
         model: Role,
-        as: "role",
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
       },
@@ -62,14 +61,30 @@ const remove = async (
     paranoid: false,
   })
 
+  // 查询子菜单的 parentId 数组集合
+  const ids = JSON.parse(JSON.stringify(existingRoles)).map(
+    (item: any) => item.id
+  )
+
+  // 查询子菜单的个数
+  const counts = await Menu.count({ where: { parentId: ids } })
+
+  // 有个数 不允许删除  因为单个删除 后 处理缓存很麻烦 需要获得子集的所有roles集合 删除缓存 或者直接清除menu的所有缓存
+  if (counts) {
+    return res.result(
+      void 0,
+      `子菜单个数${counts},需要接触子菜单的关联后才能够删除哦~`
+    )
+  }
+
   // 得到 roles
-  const roles = deduplication(handlerRoles(existingRoles))
+  const roles = deduplication(ReturnRoles(existingRoles))
 
   // 是否 权限 判断
   if (isAuth) {
     // 判断是否是该用户权限的菜单
     if (
-      !req.auth.role.find((item: string) =>
+      !req.auth.roles.find((item: string) =>
         roles.find(($item: string) => item.includes($item))
       )
     ) {
@@ -90,7 +105,7 @@ const remove = async (
     await setKey(`userMenusBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(roles)
+    await publicMenusRemove(roles)
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_menu, "菜单成功移到回收站~")
   }

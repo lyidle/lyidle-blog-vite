@@ -9,9 +9,10 @@ import { delKey } from "@/utils/redis"
 import { setToken } from "@/utils/token"
 // 设置用户角色
 import { setRoles } from "@/utils/db/user/setRoles"
+import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
 
 // 引入 模型
-const { User } = require("@/db/models")
+const { User, Role } = require("@/db/models")
 const db = require("@/db/models")
 const router = express.Router()
 router.put(
@@ -21,7 +22,7 @@ router.put(
     // 开启事务
     const transaction = await db.sequelize.transaction()
     try {
-      const { account, pwd, email, avatar, signer, nickName, role } = req.body
+      const { account, pwd, email, avatar, signer, nickName, roles } = req.body
 
       const id = req.auth.id
 
@@ -37,14 +38,23 @@ router.put(
         signer !== null &&
         !signer &&
         !nickName &&
-        !role
+        !roles
       ) {
         await transaction.rollback() // 回滚事务
         return res.result(void 0, "修改用户失败哦~", false)
       }
 
       // 查询
-      const findUser = await User.findByPk(id, { paranoid: false })
+      const findUser = await User.findByPk(id, {
+        paranoid: false,
+        include: [
+          {
+            model: Role,
+            attributes: ["name"], // 只获取角色名称
+            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          },
+        ],
+      })
 
       // 判断有无找到用户
       if (!findUser) {
@@ -85,25 +95,33 @@ router.put(
       const { dataValues } = await findUser.save({ transaction })
 
       // 处理 角色信息
-      const roles = role?.length && (await setRoles(role))
-      if (roles?.length) {
-        await findUser.setRoles(roles, { transaction })
+      const _roles = roles?.length && (await setRoles(roles))
+
+      if (_roles?.length) {
+        await findUser.setRoles(_roles, { transaction })
       }
 
       // 提交事务
       await transaction.commit()
+
+      let token = null
+      // 处理 token 字段 的roles
+      const tokenSetRoles = _roles?.length
+        ? _handlerRoles(_roles)
+        : ReturnRoles([findUser])
 
       // 改变了pwd 需要重新登录
       if (pwd)
         //删除token
         await delKey(`token:${id}`)
       // 没有 修改 密码 则不需要重新登录
-      else await setToken({ ...dataValues, roles: role })
-
+      else {
+        token = await setToken({ ...dataValues, roles: tokenSetRoles })
+      }
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)
 
-      return res.result(void 0, "修改用户信息成功~")
+      return res.result({ token }, "修改用户信息成功~")
     } catch (error) {
       // 如果出现错误，回滚事务
       await transaction.rollback()

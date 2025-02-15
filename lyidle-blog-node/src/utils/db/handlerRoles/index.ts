@@ -5,6 +5,7 @@ type callbackType = (item: any) => void
 
 type handlerUserRolesOptions = { cb?: callbackType; isPermission?: boolean }
 
+// 处理 用户的Roles
 export const handlerUserRoles = (
   findUser: any[],
   options?: handlerUserRolesOptions
@@ -40,6 +41,7 @@ export const _handlerRoles = (Roles: rolesType) => {
 
 // 把 权限 处理 成功 string[] 的形式
 export const handlerPermissions = (Roles: rolesType) => {
+  // 去重 加 过滤
   return deduplication(
     Roles.reduce((acc, role) => {
       role.PermissionGroups.forEach((group: any) => {
@@ -55,15 +57,15 @@ export const handlerPermissions = (Roles: rolesType) => {
         })
       })
       return acc
-    }, [])
+    }, []) as string[]
   ).filter(Boolean)
 }
 
-// 返回 role 的名单
-export const handlerRoles = (menusOrUsers: any[]) => {
-  const data = JSON.parse(JSON.stringify(menusOrUsers))
+// 返回 处理好的 role 的名单 string[]
+export const ReturnRoles = (includeRolesModel: any[]) => {
+  const data = JSON.parse(JSON.stringify(includeRolesModel))
   // 把 role 变为 string[]
-  return data.map(
-    (item: any) => (item.role = item.role.map((item: any) => item.name))
-  )
+  return deduplication(
+    data.map((item: any) => item.Roles.map((item: any) => item.name))
+  ).filter(Boolean)
 }
