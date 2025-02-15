@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface MdToLinkPermanent {
+export interface PostImgPermanent {
   code: number
   data?: Data
   message: string[] | string
@@ -10,17 +10,11 @@ export interface MdToLinkPermanent {
 
 export interface Data {
   successImg: SuccessImg[]
-  tempImgNull: TempImgNull[]
+  tempImgNull: string[]
   [property: string]: any
 }
 
 export interface SuccessImg {
-  origin: string
-  url: string
-  [property: string]: any
-}
-
-export interface TempImgNull {
   origin: string
   url: string
   [property: string]: any

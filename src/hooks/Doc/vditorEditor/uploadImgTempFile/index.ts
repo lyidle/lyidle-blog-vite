@@ -33,7 +33,7 @@ export const uploadImgTempFile = () => {
       if (res.code !== 200 && res.code !== 401) {
         result.code = 1 //失败
         result.msg = "上传图片失败"
-        ElMessage.error("上传图片失败~")
+        ElMessage.error("上传图片失败哦~")
       }
 
       if (result.code === 200)
@@ -51,7 +51,6 @@ export const uploadImgTempFile = () => {
     format: (files, $res) => {
       // 解析后端返回的数据
       const res = typeof $res === "string" ? JSON.parse($res) : $res
-
       const result = {
         code: 0, // Vditor 成功状态码
         msg: res.message || "上传成功",
@@ -64,7 +63,7 @@ export const uploadImgTempFile = () => {
       // 成功
       if (res.code === 200) {
         res.data?.errFiles?.forEach((item: string) =>
-          ElMessage.error(`${item}上传失败~`)
+          ElMessage.error(`${item}上传失败哦~`)
         )
         for (const msg in res.data?.succMap) {
           ElMessage.success(`${msg}上传成功~`)
@@ -74,16 +73,20 @@ export const uploadImgTempFile = () => {
 
       // 处理后端返回失败的情况
       const errorResult = {
-        code: 1, // Vditor 失败状态码
-        msg: res.message || "上传失败",
+        code: 0, // Vditor 失败状态码
+        msg: "",
         data: {
-          errFiles: files?.map((file) => file.name), // 全部作为失败文件
+          errFiles: [], // 全部作为失败文件
           succMap: {},
         },
       }
 
+      res.data?.errFiles?.map((item: string) => {
+        ElMessage.error(`${item}上传失败哦~`)
+      })
+
       errorResult.data.errFiles?.forEach((item) =>
-        ElMessage.error(`${item}上传失败~`)
+        ElMessage.error(`${item}上传失败哦~`)
       )
       return JSON.stringify(errorResult)
     },

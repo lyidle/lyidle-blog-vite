@@ -42,7 +42,7 @@ const multerPath = async (req: Request, res: Response, next: NextFunction) => {
 
   upload(req, res, (err: any) => {
     if (err) {
-      return res.result(err, "文件上传失败", false)
+      return res.result(err, "文件上传失败哦", false)
     }
     next()
   })
@@ -61,7 +61,7 @@ router.post(
       if (!files || files.length === 0) {
         return res.result(
           { errFiles: [], succMap: {} },
-          "上传失败，没有文件~",
+          "上传失败，没有文件哦~",
           false
         )
       }
@@ -85,13 +85,24 @@ router.post(
         }
       })
 
+      // 成功的为零
+      if (errFiles.length > 0 && !succMap.length)
+        // 返回失败结果
+        return res.result(
+          {
+            errFiles,
+            succMap,
+          },
+          "文件上传失败哦~",
+          false
+        )
       // 返回结果
       res.result(
         {
           errFiles,
           succMap,
         },
-        errFiles.length > 0 ? "部分文件上传失败~" : "上传文件成功~"
+        errFiles.length > 0 ? "部分文件上传失败哦~" : "上传文件成功~"
       )
     } catch (error) {
       console.error("文件上传错误", error)

@@ -10,11 +10,6 @@ export interface PostTempImgFiles {
 
 export interface Data {
   errFiles: string[]
-  succMap: SuccMap
-  [property: string]: any
-}
-
-export interface SuccMap {
-  "头像.jpg": string
+  succMap: { [key: string]: any }
   [property: string]: any
 }

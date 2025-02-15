@@ -4,9 +4,9 @@ import request from "@/utils/request"
   set的最后是携带的参数类型
 */
 import { PostTempImg } from "./types/postTempImg"
-import { MdToLinkPermanent } from "./types/mdToLinkPermanent"
 import { PostTempImgFiles } from "./types/postTempImgFiles"
 import { PostImgPermanentBody } from "./types/postImgPermanentBody"
+import { PostImgPermanent } from "./types/postImgPermanent"
 
 // 统一管理 api
 export enum API {
@@ -51,7 +51,7 @@ export const postTempImgFiles = (files: File[]) => {
 
 // 上传  图片 临时转 永久  的接口 需要传入 临时图片路径、作者 和 路径
 export const postImgPermanent = (data: PostImgPermanentBody) =>
-  request.post<any, MdToLinkPermanent["data"]>(
+  request.post<any, PostImgPermanent["data"]>(
     server + prefix + API.tempTOPermanent,
     data
   )
