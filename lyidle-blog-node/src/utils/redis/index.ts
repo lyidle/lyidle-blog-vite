@@ -120,6 +120,38 @@ const delKeys = async (
 }
 
 /**
+ * 删除以指定前缀开头的所有键
+ * @param prefix 键的前缀（例如 "menu:"）
+ * @returns {Promise<void>}
+ */
+// const delAllKeys = async (prefix: string): Promise<void> => {
+//   if (!client) await redisClient(); // 确保客户端已初始化
+
+//   try {
+//     let cursor = '0'; // 游标初始值
+//     let keys: string[] = [];
+
+//     // 使用 SCAN 遍历所有匹配的键
+//     do {
+//       const reply = await client!.scan(cursor, 'MATCH', `${redis_prefix}:${prefix}*`);
+//       cursor = reply[0]; // 更新游标
+//       keys = keys.concat(reply[1]); // 收集匹配的键
+//     } while (cursor !== '0'); // 游标为 '0' 时表示遍历完成
+
+//     // 如果有匹配的键，则批量删除
+//     if (keys.length > 0) {
+//       await client!.del(keys);
+//       console.log(`已删除 ${keys.length} 个以 "${prefix}" 开头的键`);
+//     } else {
+//       console.log(`未找到以 "${prefix}" 开头的键`);
+//     }
+//   } catch (error) {
+//     console.error(`删除以 "${prefix}" 开头的键时出错:`, error);
+//     throw error; // 抛出错误以便调用方处理
+//   }
+// };
+
+/**
  * 生成缓存 key
  * @param prefix 前缀（如 "menu:"）
  * @param items 字符串数组（如角色数组）
@@ -176,6 +208,8 @@ const getKeys = async (prefix: string): Promise<string[]> => {
 
   // 去掉 redis_prefix 部分
   const prefixToRemove = `${redis_prefix}:${prefix}`
+  console.log(prefixToRemove)
+
   return keys.map((key) => key.slice(prefixToRemove.length))
 }
 

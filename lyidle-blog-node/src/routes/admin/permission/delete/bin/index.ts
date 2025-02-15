@@ -1,6 +1,6 @@
 import express from "express"
 // 引入移除函数
-import remove from "@/routes/admin/menuList/delete/remove"
+import remove from "@/routes/admin/permission/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
@@ -16,7 +16,7 @@ router.delete(
     try {
       const { id: articleId } = req.body
       // 判断是否 移动到垃圾桶
-      const isBin = await getKey(`userMenusBin:${articleId}`)
+      const isBin = await getKey(`permissionsBin:${articleId}`)
       if (isBin)
         return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
 

@@ -22,8 +22,8 @@ router.get(
         throw new myError("otherError", "获取用户信息时 jwt 出错没有id哦~")
 
       // 缓存用户信息
-      // const cacheValue = await getKey(`userInfo:${id}`)
-      // if (cacheValue) return res.result(cacheValue, "获取用户信息成功~")
+      const cacheValue = await getKey(`userInfo:${id}`)
+      if (cacheValue) return res.result(cacheValue, "获取用户信息成功~")
       // 查询对应id的信息
       const findUser = await search({ id }, res, true, true, false)
       // 不存在

@@ -14,7 +14,6 @@ module.exports = {
           key: "id",
         },
         onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       PermissionId: {
         type: Sequelize.INTEGER,

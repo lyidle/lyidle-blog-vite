@@ -3,12 +3,23 @@ import { deduplication } from "@/utils/array/deduplication"
 // 直接修改 user的dataValues添加role 移除 Roles 需要是一个数组 哦 findOne 单个结果的 需要[findUser]
 type callbackType = (item: any) => void
 
-type handlerUserRolesOptions = { cb?: callbackType; isPermission?: boolean }
+// 定义 options 参数的类型
+type handlerUserRolesOptions = {
+  cb?: callbackType // 可选的回调函数，用于自定义处理逻辑
+  isPermission?: boolean // 可选的布尔值，表示是否需要处理权限
+}
 
-// 处理 用户的Roles
+/**
+ * 处理用户的 Roles
+ * @param findUser 用户数据数组，通常是查询到的用户数据
+ * @param options 可选的配置对象，包含回调函数和权限处理标志
+ * @property options.cb 回调函数，用于自定义处理用户数据
+ * @property options.isPermission 是否处理权限的标志 当处理权限时 查询的 Permission 需要使用 permissions的别名
+ * @returns 根据 options 的配置返回处理后的结果
+ */
 export const handlerUserRoles = (
-  findUser: any[],
-  options?: handlerUserRolesOptions
+  findUser: any[], // 用户数据数组，类型为 any[]，可以根据实际情况替换为具体的类型
+  options?: handlerUserRolesOptions // 可选的配置对象
 ) => {
   const user = JSON.parse(JSON.stringify(findUser))
   const result = user.map((item: any) => {
@@ -50,7 +61,7 @@ export const handlerPermissions = (Roles: rolesType) => {
           acc.push(group.name)
         }
         // 将权限名称添加到 permissions 数组中
-        group.Permissions.forEach((permission: any) => {
+        group.permissions.forEach((permission: any) => {
           if (!acc.includes(permission.name)) {
             acc.push(permission.name)
           }

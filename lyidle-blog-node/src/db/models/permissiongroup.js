@@ -6,13 +6,22 @@ module.exports = (sequelize, DataTypes) => {
       // PermissionGroup 通过 对应中间表 关联 Role、Permission
       this.belongsToMany(models.Role, { through: "RolePermissionGroups" })
       this.belongsToMany(models.Permission, {
-        through: "PermissionGroupPermissions",
+        through: "PermissionGroupPermissions", // 中间表
+        as: "children", // 第一个别名
+      })
+      this.belongsToMany(models.Permission, {
+        through: "PermissionGroupPermissions", // 中间表
+        as: "permissions", // 第一个别名
       })
     }
   }
   PermissionGroup.init(
     {
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       desc: DataTypes.STRING,
     },
     {

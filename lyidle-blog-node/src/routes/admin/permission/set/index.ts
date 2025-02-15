@@ -3,8 +3,9 @@ import express from "express"
 import { Request, Response, NextFunction } from "express"
 // 引入验证
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+import { delKey } from "@/utils/redis"
 // 引入 模型
-const { Permission } = require("@/db/models")
+const { PermissionGroup } = require("@/db/models")
 const db = require("@/db/models")
 const router = express.Router()
 // 创建权限菜单
@@ -12,7 +13,10 @@ router.post(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, description, parentId } = req.body
+    const { name, description } = req.body
+
+    // 保存 redis 的键
+    let cacheKey = `permission:*`
 
     if (!name)
       return res.result(void 0, "创建权限菜单name是必须要有的哦~", false)
@@ -24,16 +28,19 @@ router.post(
       const setData = {
         name,
         description,
-        parentId,
       }
 
       // 创建权限菜单
-      const newPermission = await Permission.create(setData, { transaction })
+      const newPermissionGroup = await PermissionGroup.create(setData, {
+        transaction,
+      })
 
       // 提交事务
       await transaction.commit()
 
-      res.result(newPermission, "创建权限菜单成功~")
+      // 删除 缓存
+      await delKey(cacheKey)
+      res.result(newPermissionGroup, "创建权限菜单成功~")
     } catch (error) {
       await transaction.rollback() // 回滚事务
       res.validateAuth(error, next, () =>

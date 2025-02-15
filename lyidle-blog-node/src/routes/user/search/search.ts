@@ -63,6 +63,7 @@ export default async (
             include: [
               {
                 model: Permission,
+                as: "permissions",
                 attributes: ["name"], // 只返回权限的名称
                 through: { attributes: [] }, // 排除中间表字段
               },
