@@ -23,15 +23,19 @@ const roles = Roles.reduce((pre, cur) => {
   return pre
 }, {})
 
-// admin 用户的 角色
+// doc  角色id
+const docIds = deduplication(handlerRoleId(roles, ["doc"])).filter(Boolean)
+
+// admin 角色id
 const adminIds = deduplication(handlerRoleId(roles, default_admin)).filter(
   Boolean
 )
-// user 用户的 角色
+// user 角色id
 const userIds = deduplication(handlerRoleId(roles, default_user)).filter(
   Boolean
 )
-// owner 用户的 角色
+
+// owner 角色id
 const ownerIds = deduplication(
   adminIds,
   handlerRoleId(roles, default_owner)
@@ -41,6 +45,7 @@ module.exports = {
   adminIds,
   userIds,
   ownerIds,
+  docIds,
   handlerRoleId,
   roles,
 }

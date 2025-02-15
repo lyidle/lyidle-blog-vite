@@ -11,7 +11,8 @@ import { RouteRecordRaw } from "vue-router"
  * bannerWel 欢迎词的文本信息
  * bannerWelTextShadowHidden Boolean 欢迎词的阴影是否隐藏
  * bannerPoetry 古诗信息
- * role [""] 权限判断
+ * roles [""] 角色判断
+ * permissions [""] 权限判断
  */
 
 // 常量路由
@@ -54,7 +55,7 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/doc/publish",
         name: "DocumentPublish",
-        meta: { title: "发表文章", role: ["doc:publish"] },
+        meta: { title: "发表文章", permissions: ["doc:publish"] },
         component: () => import("@/views/doc/publish/index.vue"),
       },
       // 修改文章 需要有对应的权限 账号要一致
@@ -180,39 +181,39 @@ export const asyncRoute: RouteRecordRaw[] = [
   {
     name: "Admin",
     path: "/admin",
-    meta: { title: "管理", role: ["admin"] },
+    meta: { title: "管理", roles: ["admin"] },
     component: () => import("@/components/manager/index.vue"),
     redirect: "/admin/dashboard",
     children: [
       {
         name: "Dashboard",
         path: "/admin/dashboard",
-        meta: { title: "仪表盘", role: ["admin"] },
+        meta: { title: "仪表盘", roles: ["admin"] },
         component: () => import("@/views/admin/dashboard/index.vue"),
       },
       {
         name: "ArticleManagement",
         path: "/admin/articles",
-        meta: { title: "文章管理", role: ["admin"] },
+        meta: { title: "文章管理", roles: ["admin"] },
         redirect: "/admin/articles/list",
         children: [
           {
             name: "ArticleList",
             path: "/admin/articles/list",
-            meta: { title: "文章列表", role: ["admin"] },
+            meta: { title: "文章列表", roles: ["admin"] },
             component: () => import("@/views/admin/articles/list/index.vue"),
           },
           {
             name: "CategoryManagement",
             path: "/admin/articles/category",
-            meta: { title: "分类管理", role: ["admin"] },
+            meta: { title: "分类管理", roles: ["admin"] },
             component: () =>
               import("@/views/admin/articles/category/index.vue"),
           },
           {
             name: "TagManagement",
             path: "/admin/articles/tag",
-            meta: { title: "标签管理", role: ["admin"] },
+            meta: { title: "标签管理", roles: ["admin"] },
             component: () => import("@/views/admin/articles/tag/index.vue"),
           },
         ],
@@ -220,25 +221,25 @@ export const asyncRoute: RouteRecordRaw[] = [
       {
         name: "AccessManagement",
         path: "/admin/access",
-        meta: { title: "权限管理", role: ["admin"] },
+        meta: { title: "权限管理", roles: ["admin"] },
         redirect: "/admin/access/users",
         children: [
           {
             name: "UserManagement",
             path: "/admin/access/users",
-            meta: { title: "用户管理", role: ["admin"] },
+            meta: { title: "用户管理", roles: ["admin"] },
             component: () => import("@/views/admin/access/users/index.vue"),
           },
           {
             name: "RoleManagement",
             path: "/admin/access/roles",
-            meta: { title: "角色管理", role: ["admin"] },
+            meta: { title: "角色管理", roles: ["admin"] },
             component: () => import("@/views/admin/access/roles/index.vue"),
           },
           {
             name: "MenuManagement",
             path: "/admin/access/menus",
-            meta: { title: "菜单管理", role: ["admin"] },
+            meta: { title: "菜单管理", roles: ["admin"] },
             component: () => import("@/views/admin/access/menus/index.vue"),
           },
         ],

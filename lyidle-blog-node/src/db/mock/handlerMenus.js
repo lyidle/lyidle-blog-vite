@@ -20,10 +20,9 @@ const processMenu = (menu, parentId = null) => {
   )
   // 判断 处理后 优先使用 的role 是否有数据 没有使用 user权限
   const $roles = menuRole.length ? menuRole : userIds
-
   menus.push({
     id: menuId,
-    name: menu.name + menuId,
+    name: menu.name,
     icon: menu.icon,
     to: menu.to,
     parentId,

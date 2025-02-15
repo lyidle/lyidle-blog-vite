@@ -12,7 +12,6 @@ import { PostImgPermanentBody } from "./types/postImgPermanentBody"
 export enum API {
   urlImgTemp = "/upload/img/temp",
   fileImgTemp = "/upload/files/img/temp",
-  mdTempTOPermanent = "/upload/img/mdToLinkPermanent",
   tempTOPermanent = "/upload/img/tempImgToPermanet",
   remove = "/upload/remove",
 }

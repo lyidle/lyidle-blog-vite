@@ -15,7 +15,7 @@ export type headerItemReturnType = ComputedRef<ReturnType>
 export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const { showAccount } = useShowUserinfo({ showAccount: true })
   // 提取 数据
-  const { userToken, userRole } = storeToRefs(useUserStore())
+  const { userToken, userRoles, userPermissions } = storeToRefs(useUserStore())
   // 提取 函数
   const { userStoreReset } = useUserStore()
   // 默认的数据
@@ -93,19 +93,23 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const PersonData = computed(() => {
     if (!userToken.value) {
       return { data: unLoginData, style: unLoginStyle }
-    } else if (userRole.value.length) {
+    }
+    // 没有权限的
+    if (!userRoles.value.length) {
+      return { data: loginData, style: loginStyle }
+    }
+    if (userRoles.value.length) {
       const data = new Set([loginData])
       // 有 发布的文章的 权限 则添加
-      if (userRole.value.includes("doc:publish")) data.add(docs)
-      // 有 admin 权限 则添加
-      if (userRole.value.includes("admin")) data.add(manager)
-
+      if (userPermissions.value.includes("doc:publish")) data.add(docs)
+      // 有 admin 角色 则添加
+      if (userRoles.value.includes("admin")) data.add(manager)
       const result = [...data].flat(Infinity)
-
       // 清除 set
       data.clear()
       return { data: result, style: loginStyle }
     }
   })
+
   return PersonData as headerItemReturnType
 }

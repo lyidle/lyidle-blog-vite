@@ -38,6 +38,7 @@ export const userStoreRoutesFilter = (
 ): routesFilterReturn => {
   // 过滤出 需要的异步路由信息 并添加白名单
   const { _whitelist, _routes } = filterRoutes(result)
+
   // 过滤出用户的菜单信息
   const _userMenuList = filterUserMenuList(result, _whitelist)
   // 过滤出用户的 banner 信息设置

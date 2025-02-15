@@ -1,11 +1,14 @@
 // 导入环境变量
 require("dotenv").config()
 
+// 引入 去重函数
+const { deduplication } = require("../../utils/array/deduplication/js")
+
 // 加密
 const bcrypt = require("bcryptjs")
 
 // 引入 处理好的信息
-const { adminIds, userIds, ownerIds } = require("./handlerRoleIds")
+const { adminIds, userIds, ownerIds, docIds } = require("./handlerRoleIds")
 
 // 插入用户信息
 const users = []
@@ -17,9 +20,9 @@ for (let i = 1; i <= userCounts; i++) {
   // 默认 是 user
   let roleIds = userIds
   // 第一个是 owner
-  if (i === 1) roleIds = ownerIds
+  if (i === 1) roleIds = deduplication(userIds, ownerIds, docIds)
   // 第二个是 admin
-  if (i === 2) roleIds = adminIds
+  if (i === 2) roleIds = deduplication(userIds, ownerIds, docIds)
   users.push({
     id: userId,
     account: `test${i}`,

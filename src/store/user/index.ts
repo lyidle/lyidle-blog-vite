@@ -10,8 +10,9 @@ import { RouteRecordRaw } from "vue-router"
 
 // 引入 路由过滤函数
 import { userStoreRoutesFilter } from "@/utils/routerFilter"
-import { mitt } from "@/utils/emitter"
 import { filterManagerRoutes } from "@/router/permission/filterManagerRoutes"
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
 
 export const useUserStore = defineStore(
   "User",
@@ -30,12 +31,12 @@ export const useUserStore = defineStore(
     const reqUserMenuList = async () => {
       try {
         const result = await getMenuList(
-          userRole.value?.length ? toRaw(userRole.value) : ["user"]
+          userRoles.value?.length ? toRaw(userRoles.value) : ["user"]
         )
 
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
-          userStoreRoutesFilter(result, userRole)
+          userStoreRoutesFilter(result, userRoles)
 
         // 过滤掉后台管理的菜单
         userMenuList.value =
@@ -63,7 +64,8 @@ export const useUserStore = defineStore(
     const userEmail = ref<string>()
     const userAvatar = ref<string | null>()
     const userSigner = ref<string | null>()
-    const userRole = ref<string[]>([])
+    const userRoles = ref<string[]>([])
+    const userPermissions = ref<string[]>([])
     const userToken = ref<string>()
     const userPages = ref<number>()
     const userTags = ref<number>()
@@ -73,7 +75,8 @@ export const useUserStore = defineStore(
         const result = await getUserInfo()
         // 有用户信息 赋值
         if (result) {
-          userRole.value = result?.[0]?.role || []
+          userPermissions.value = result?.[0]?.permissions
+          userRoles.value = result?.[0]?.roles || []
           userAccount.value = result?.[0]?.account
           userNickName.value = result?.[0]?.nickName
           userEmail.value = result?.[0]?.email
@@ -83,7 +86,6 @@ export const useUserStore = defineStore(
           userPages.value = result?.[0].counts.pages
           userTags.value = result?.[0].counts.tags
           userCategories.value = result?.[0].counts.categories
-
           // 重新加载路由
           mitt.emit("route:reload")
           return
@@ -110,7 +112,8 @@ export const useUserStore = defineStore(
         userEmail.value = ""
         userAvatar.value = ""
         userSigner.value = ""
-        userRole.value = []
+        userRoles.value = []
+        userPermissions.value = []
         userToken.value = ""
         userPages.value = 0
         userTags.value = 0
@@ -141,7 +144,8 @@ export const useUserStore = defineStore(
       userEmail,
       userAvatar,
       userSigner,
-      userRole,
+      userRoles,
+      userPermissions,
       userPages,
       userTags,
       userCategories,
@@ -161,7 +165,7 @@ export const useUserStore = defineStore(
         "userEmail",
         "userAvatar",
         "userSigner",
-        "userRole",
+        "userRoles",
         "userToken",
       ],
     },

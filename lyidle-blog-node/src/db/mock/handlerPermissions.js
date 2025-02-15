@@ -44,29 +44,47 @@ const Permissions = seeder_permissions.map((item, id) => ({
 // 设置中间表信息，建立角色和权限组的关联
 const setRolePermissionGroups = []
 
-// 定义权限组和权限的映射关系
-const permissionGroupPermissions = {
-  user: ["user:read", "user:write"], // user 权限组包含的权限
-  menu: ["menu:read", "menu:write"], // menu 权限组包含的权限
-}
+// 动态生成权限组和权限的映射关系
+const permissionGroupPermissions = {}
+
+seeder_permissions.forEach((permission) => {
+  // 解析权限名称，获取权限组名称（例如 "user:read" 中的 "user"）
+  const [groupName] = permission.split(":")
+
+  // 如果权限组不存在，则初始化一个空数组
+  if (!permissionGroupPermissions[groupName]) {
+    permissionGroupPermissions[groupName] = []
+  }
+
+  // 将权限添加到对应的权限组中
+  permissionGroupPermissions[groupName].push(permission)
+})
 
 // 遍历角色，动态生成 RolePermissionGroups 数据
+// 角色与权限组的关联信息处理
 Roles.forEach((role) => {
+  // 获取当前角色的名称
   const roleName = role.name
-  const permissionGroups = rolePermissionGroups[roleName]
+  // 根据角色名称获取该角色对应的权限组列表
+  let permissionGroups = rolePermissionGroups[roleName]
 
+  // 如果该角色有对应的权限组
   if (permissionGroups) {
+    // 遍历该角色的权限组列表
     permissionGroups.forEach((groupName) => {
+      // 在 PermissionGroups 中查找与当前权限组名称匹配的权限组对象
       const permissionGroup = PermissionGroups.find(
         (pg) => pg.name === groupName
       )
 
+      // 如果找到了对应的权限组
       if (permissionGroup) {
+        // 将角色与权限组的关联信息推入 setRolePermissionGroups 数组
         setRolePermissionGroups.push({
-          RoleId: role.id,
-          PermissionGroupId: permissionGroup.id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          RoleId: role.id, // 角色 ID
+          PermissionGroupId: permissionGroup.id, // 权限组 ID
+          createdAt: new Date(), // 创建时间
+          updatedAt: new Date(), // 更新时间
         })
       }
     })
@@ -78,18 +96,24 @@ const setPermissionGroupPermissions = []
 
 Object.entries(permissionGroupPermissions).forEach(
   ([groupName, permissionNames]) => {
+    // 在 PermissionGroups 中查找与当前权限组名称匹配的权限组对象
     const permissionGroup = PermissionGroups.find((pg) => pg.name === groupName)
 
+    // 如果找到了对应的权限组
     if (permissionGroup) {
+      // 遍历该权限组对应的权限名称列表
       permissionNames.forEach((permissionName) => {
+        // 在 Permissions 中查找与当前权限名称匹配的权限对象
         const permission = Permissions.find((p) => p.name === permissionName)
 
+        // 如果找到了对应的权限
         if (permission) {
+          // 将权限组与权限的关联信息推入 setPermissionGroupPermissions 数组
           setPermissionGroupPermissions.push({
-            PermissionGroupId: permissionGroup.id,
-            PermissionId: permission.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            PermissionGroupId: permissionGroup.id, // 权限组 ID
+            PermissionId: permission.id, // 权限 ID
+            createdAt: new Date(), // 创建时间
+            updatedAt: new Date(), // 更新时间
           })
         }
       })
