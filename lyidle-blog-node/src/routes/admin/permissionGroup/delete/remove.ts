@@ -56,6 +56,7 @@ const remove = async (
       {
         // 得到 父级 的Roles
         model: Role,
+        paranoid: false,
       },
     ],
   })
@@ -70,9 +71,11 @@ const remove = async (
   const roles = ReturnRoles([findGroup])
   const users = await User.findAll({
     attributes: ["id"], // 只获取角色名称
+    paranoid: false,
     include: [
       {
         model: Role,
+        paranoid: false,
         attributes: ["id", "name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
         where: { name: roles }, // 传入 role 时查询对于的 role 没有时 查询全部
