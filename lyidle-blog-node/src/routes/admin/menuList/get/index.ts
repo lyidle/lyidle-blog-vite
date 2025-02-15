@@ -1,13 +1,13 @@
 import { getKey, setKey } from "@/utils/redis"
 import express, { NextFunction, Request, Response } from "express"
 import { Op } from "sequelize"
+// 处理 Roles 为 string[]
+import { _handlerRoles } from "@/utils/db/handlerRoles"
+// 保存 redis 的键 确保 顺序和删除的 缓存时的顺序一致
+import { saveMenuCache } from "@/utils/redis/delMenuRoles"
+// 引入 模型
 const { Menu, Role } = require("@/db/models")
 const router = express.Router()
-
-// 将角色对象数组转换为角色名称数组 string[]
-const returnRoles = (role: any) => {
-  return role.map((item: any) => item.name)
-}
 
 // 构建菜单树
 const buildMenuTree = ($menus: any[]) => {
@@ -19,9 +19,11 @@ const buildMenuTree = ($menus: any[]) => {
 
   // 将每一项存入 Map
   menu.forEach((item: any) => {
+    const roles = _handlerRoles(item.Roles)
+    delete item.Roles
     menuMap.set(item.id, {
       ...item,
-      role: returnRoles(item.role), //处理 role 为 string[]
+      roles, //处理 role 为 string[]
       children: [],
     })
   })
@@ -55,11 +57,12 @@ const getMenuList = async (
 ) => {
   try {
     let role =
-      (req.query?.role && JSON.parse(req.query.role as string)) || default_user // 从请求中获取角色名称
+      (req.query?.roles && JSON.parse(req.query.roles as string)) ||
+      default_user // 从请求中获取角色名称
     // 判断 是否查询所有菜单
     if (isAll) role = "*"
-    // 保存 redis 的键
-    let cacheKey = `menu:${role}`
+    // 保存 redis 的键 确保 缓存时的顺序一致 避免重复缓存
+    let cacheKey = saveMenuCache(role) || ""
     const cacheValue = await getKey(cacheKey)
     // 判断有无 缓存
     if (cacheValue) return res.result(cacheValue, "获取菜单成功~")
@@ -67,7 +70,6 @@ const getMenuList = async (
       include: [
         {
           model: Role,
-          as: "role",
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
           where: isAll ? {} : { name: { [Op.in]: role } }, // 根据角色名称过滤菜单

@@ -24,7 +24,7 @@ declare global {
       auth: {
         id: number | string
         account: string
-        role: string
+        roles: string[]
         iat?: Date
         exp?: Date
       }

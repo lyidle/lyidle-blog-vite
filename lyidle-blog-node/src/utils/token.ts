@@ -21,7 +21,8 @@ export const setToken = async (userInfo: typeof request.auth) => {
 
   tokenData.id = userInfo.id
   tokenData.account = userInfo.account
-  tokenData.role = userInfo.role
+  tokenData.roles = userInfo.roles
+
   // jwt.sign(数据, 加密字符串, 配置对象)
   const token = jwt.sign(tokenData, process.env.jwt_hash, {
     algorithm: "HS256",

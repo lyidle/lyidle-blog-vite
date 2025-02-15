@@ -40,7 +40,7 @@ export const jwtMiddleware = async (
 const adminData: string[] = JSON.parse(process.env.default_admin!)
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const { role: userRole } = req.auth
+  const { roles: userRole } = req.auth
   // 判断是否有权限
   if (!adminData.some((item) => userRole.includes(item)))
     return next(

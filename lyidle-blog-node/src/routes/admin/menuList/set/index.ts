@@ -18,7 +18,7 @@ router.post(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, icon, to, layout, bannerImg, role, parentId } = req.body
+    const { name, icon, to, layout, bannerImg, roles, parentId } = req.body
 
     if (!name) return res.result(void 0, "创建菜单name是必须要有的哦~", false)
 
@@ -38,15 +38,15 @@ router.post(
       const newMenu = await Menu.create(setData, { transaction })
 
       // 得到 roles
-      const roles = role?.length ? role : default_user
+      const _roles = roles?.length ? roles : default_user
       // 处理 role
-      const $roles = await setRoles(roles)
+      const $roles = await setRoles(_roles)
 
       if ($roles?.length) {
         // 设置 role
         await newMenu.setRoles($roles, { transaction })
         // 清除 菜单 的缓存
-        await delMenuRoles(roles)
+        await delMenuRoles(_roles)
       }
 
       // 提交事务

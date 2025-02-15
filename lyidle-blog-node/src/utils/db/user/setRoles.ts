@@ -44,7 +44,7 @@ export const setRoles = async (roles: string[]) => {
   }
 
   //  合并已有角色 + 新创建的角色
-  let roleInstances = existingRoles
+  let roleInstances: string[] = existingRoles
   if (newRoles?.length) roleInstances = [...existingRoles, ...newRoles]
   // 没有 长度
   if (!roleInstances?.length) {
