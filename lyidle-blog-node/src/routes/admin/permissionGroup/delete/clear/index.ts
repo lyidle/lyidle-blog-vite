@@ -1,6 +1,6 @@
 import express from "express"
 // 引入移除函数
-import remove from "@/routes/admin/permission/delete/remove"
+import remove from "@/routes/admin/permissionGroup/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
