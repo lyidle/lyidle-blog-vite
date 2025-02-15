@@ -14,9 +14,9 @@ router.delete(
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id: articleId } = req.body
+      const { id: menuListId } = req.body
       // 判断是否 移动到垃圾桶
-      const isBin = await getKey(`userMenusBin:${articleId}`)
+      const isBin = await getKey(`userMenusBin:${menuListId}`)
       if (isBin)
         return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
 

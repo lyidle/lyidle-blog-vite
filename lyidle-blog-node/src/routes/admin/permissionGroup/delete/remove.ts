@@ -14,11 +14,10 @@ const { PermissionGroup, Role, User } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicUserRemove = async (roles: string[], users: any[]) => {
-  // 保存 redis 的键
-  let cacheKey = `permission:*`
+  // 获取全部时保存 redis 的键
+  let cacheKey = `permissionGroup:*`
   // 删除 缓存
   await delKey(cacheKey)
-  // 重置菜单缓存 因为 菜单 关联 的 role 表
   // 重置 用户的信息缓存
   await resetUserInfo(users)
 }
@@ -32,8 +31,8 @@ const deleted = async (
 ) => {
   // 删除权限菜单
   await model.destroy({ force: true })
-  // 删除临时的 permissionsBin
-  await delKey(`permissionsBin:${id}`)
+  // 删除临时的 permissionGroupBin
+  await delKey(`permissionGroupBin:${id}`)
   // 不管是否删除都要移除的
   await publicUserRemove(role, users)
 }
@@ -97,14 +96,14 @@ const remove = async (
   // 回收到垃圾桶
   if (bin) {
     // 只能点击移动到一次垃圾桶
-    const isBin = await getKey(`permissionsBin:${id}`)
+    const isBin = await getKey(`permissionGroupBin:${id}`)
     if (isBin)
       return res.result(void 0, "权限菜单移动到垃圾桶了，请勿重复操作~", false)
 
     // 软删除
     await findGroup.destroy()
     // 设置缓存
-    await setKey(`permissionsBin:${id}`, true)
+    await setKey(`permissionGroupBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
     await publicUserRemove(roles, users)

@@ -16,7 +16,7 @@ router.post(
     const { name, description } = req.body
 
     // 保存 redis 的键
-    let cacheKey = `permission:*`
+    let cacheKey = `permissionGroup:*`
 
     if (!name)
       return res.result(void 0, "创建权限菜单name是必须要有的哦~", false)

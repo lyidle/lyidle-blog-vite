@@ -14,16 +14,20 @@ router.delete(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id: articleId } = req.body
+      const { id: permissionGroupId } = req.body
       // 判断是否 移动到垃圾桶
-      const isBin = await getKey(`permissionsBin:${articleId}`)
+      const isBin = await getKey(`permissionsGroupBin:${permissionGroupId}`)
       if (isBin)
-        return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
+        return res.result(
+          void 0,
+          "权限菜单移动到垃圾桶了，请勿重复操作~",
+          false
+        )
 
       await remove(req, res, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "菜单移动到回收站失败~", false)
+        res.result(void 0, "权限菜单移动到回收站失败~", false)
       )
     }
   }

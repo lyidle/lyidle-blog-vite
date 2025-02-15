@@ -17,7 +17,7 @@ router.put(
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     // 删除缓存 redis 的键
-    let cacheKey = `permission:*`
+    let cacheKey = `permissionGroup:*`
     const { id, name, desc } = req.body
 
     // 没有 id、name 返回失败

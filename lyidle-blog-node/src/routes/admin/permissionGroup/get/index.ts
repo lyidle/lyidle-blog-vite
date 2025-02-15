@@ -6,7 +6,7 @@ const router = express.Router()
 const getMenuList = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 保存 redis 的键
-    let cacheKey = `permission:*`
+    let cacheKey = `permissionGroup:*`
     const cacheValue = await getKey(cacheKey)
     // 判断有无 缓存
     if (cacheValue) return res.result(cacheValue, "获取权限菜单成功~")

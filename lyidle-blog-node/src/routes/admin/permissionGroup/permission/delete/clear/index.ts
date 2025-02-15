@@ -15,7 +15,7 @@ router.delete(
       await remove(req, res)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "删除菜单失败~", false)
+        res.result(void 0, "删除权限子菜单失败~", false)
       )
     }
   }
