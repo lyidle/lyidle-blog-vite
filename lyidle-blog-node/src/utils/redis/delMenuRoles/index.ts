@@ -1,8 +1,9 @@
 import myError from "@/utils/error/myError"
-import { delKeys, delKey } from "@/utils/redis"
+import { delKeys, delKey, genCacheKey } from "@/utils/redis"
 
 // 清除菜单缓存
 export const delMenuRoles = async (roles: string[]) => {
+  // 获取所有菜单的缓存 无论如何都要删除
   await delKey("menu:*")
   if (roles && roles.length) {
     await delKeys("menu:", roles)
@@ -21,8 +22,5 @@ export const saveMenuCache = (role: string[] | string) => {
   if (typeof role === "string") {
     throw new myError("otherError", `缓存menu时出错,保存的键是预期之外的键哦~`)
   }
-  // 对 role 进行排序（如果是多个角色，用逗号分隔）
-  const sortedRoles = role.sort().join(",")
-  const cacheKey = `menu:${sortedRoles}`
-  return cacheKey
+  return genCacheKey("menu:", role)
 }

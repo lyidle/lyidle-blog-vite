@@ -118,6 +118,25 @@ const delKeys = async (
 
   return deletedCount
 }
+
+/**
+ * 生成缓存 key
+ * @param prefix 前缀（如 "menu:"）
+ * @param items 字符串数组（如角色数组）
+ * @returns 格式化后的缓存 key sort排序+join使用,分割
+ */
+const genCacheKey = (prefix: string, items: string[]): string => {
+  if (!items || !items?.length) {
+    throw new Error("items 不能为空")
+  }
+
+  // 对数组进行排序并用逗号分隔
+  const sortedItems = items.sort().join(",")
+
+  // 返回格式化后的缓存 key
+  return `${prefix}${sortedItems}`
+}
+
 /**
  * 清空当前 Redis 数据库。
  * @returns {Promise<void>}
@@ -160,4 +179,13 @@ const getKeys = async (prefix: string): Promise<string[]> => {
   return keys.map((key) => key.slice(prefixToRemove.length))
 }
 
-export { redisClient, setKey, getKey, delKey, clear, getKeys, delKeys }
+export {
+  redisClient,
+  setKey,
+  getKey,
+  delKey,
+  clear,
+  getKeys,
+  delKeys,
+  genCacheKey,
+}
