@@ -26,6 +26,6 @@ export interface SearchUserQuery {
   /**
    * 按照role查詢
    */
-  role?: string
+  roles?: string
   [property: string]: any
 }

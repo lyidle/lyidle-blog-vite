@@ -67,7 +67,7 @@ export const searchUser = searchUserCallback("search")
 // 精确搜索用户信息
 export const searchExactUser = searchUserCallback("exactSearch")
 
-// 搜索用户通过id、account、role 且统计个数
+// 搜索用户通过id、account、roles 且统计个数
 export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
   request.get<any, SearchCountsById["data"]>(
     server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`

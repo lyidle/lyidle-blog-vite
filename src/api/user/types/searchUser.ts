@@ -16,7 +16,7 @@ export interface Datum {
   id: number
   isBin: number
   nickName: string
-  role: string[]
+  roles: string[]
   signer: null | string
   updatedAt: string
   [property: string]: any
@@ -32,6 +32,6 @@ export interface Msg {
   email?: string
   id?: number
   nickName?: string
-  role?: string
+  roles?: string
   [property: string]: any
 }

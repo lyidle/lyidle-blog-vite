@@ -14,8 +14,8 @@ const menuRoles = []
 // 把 树形结构转为 菜单结构
 const processMenu = (menu, parentId = null) => {
   const menuId = currentId++
-  // 优先使用 数据里 的 role
-  const menuRole = deduplication(handlerRoleId(roles, menu.role)).filter(
+  // 优先使用 数据里 的 roles
+  const menuRole = deduplication(handlerRoleId(roles, menu.roles)).filter(
     Boolean
   )
   // 判断 处理后 优先使用 的role 是否有数据 没有使用 user权限

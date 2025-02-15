@@ -72,18 +72,18 @@ router.get("/exact/counts", async (req, res, next) => {
   }
 })
 
-// 按照 按照 id、role、account 搜索计数
+// 按照 按照 id、roles、account 搜索计数
 router.get("/user", async (req, res, next) => {
   const id = req.query.id
-  const role = req.query.role
-  if (!id && !role)
+  const roles = req.query.roles
+  if (!id && !roles)
     return res.result(
       void 0,
-      "查询用户，至少要传入id、role、author中的一个参数~",
+      "查询用户，至少要传入id、roles、author中的一个参数~",
       false
     )
 
-  const cacheKey = id || (role === "owner" && role)
+  const cacheKey = id || (roles === "owner" && roles)
   if (cacheKey) {
     // 缓存用户信息
     const cacheValue = await getKey(`userInfo:${cacheKey}`)
@@ -91,7 +91,7 @@ router.get("/user", async (req, res, next) => {
   }
 
   try {
-    const findUser = await search({ id, role }, res, true, true, false)
+    const findUser = await search({ id, roles }, res, true, true, false)
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis

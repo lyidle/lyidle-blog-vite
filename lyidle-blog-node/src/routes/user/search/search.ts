@@ -18,7 +18,7 @@ interface RequestData {
   id?: string
   account?: string
   email?: string
-  role?: string[] // 这里是数组，可能需要调整查询逻辑
+  roles?: string[] // 这里是数组，可能需要调整查询逻辑
   nickName?: string
   currentPage?: number
   pageSize?: number
@@ -32,7 +32,7 @@ export default async (
   isCounts: boolean = false,
   isPagination: boolean = true
 ) => {
-  const { id, account, email, role, nickName, currentPage, pageSize } = data
+  const { id, account, email, roles, nickName, currentPage, pageSize } = data
 
   /**
    * @pagesize 每页显示条目个数
@@ -53,8 +53,8 @@ export default async (
         model: Role,
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: role ? { name: role } : {}, // 传入 role 时查询对于的 role 没有时 查询全部
-        required: Boolean(role), //按照 role时 过滤 User 的数据
+        where: roles ? { name: roles } : {}, // 传入 roles 时查询对于的 roles 没有时 查询全部
+        required: Boolean(roles), //按照 role时 过滤 User 的数据
         include: [
           {
             model: PermissionGroup,
@@ -86,7 +86,7 @@ export default async (
 
   commend.where = {}
 
-  if (!(id || account || email || role || nickName)) {
+  if (!(id || account || email || roles || nickName)) {
     delete commend.where
   }
 

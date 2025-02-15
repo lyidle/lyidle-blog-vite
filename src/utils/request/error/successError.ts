@@ -52,7 +52,7 @@ export const handlerSuccessErrorMessage = (response: {
       : [response.data?.message || "发生未知错误，请稍后再试~"]
 
     if (
-      response.data?.data?.msg?.role === "admin" &&
+      response.data?.data?.msg?.roles === "admin" &&
       response.data?.message?.[0] === "查询用户信息失败~"
     ) {
       mitt.emit("handler request error", {

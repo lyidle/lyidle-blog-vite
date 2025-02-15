@@ -2,7 +2,7 @@
 import { delKey, setKey, getKey } from "@/utils/redis"
 // 清除 菜单 的缓存
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
-// 引入 获取 role 的函数
+// 引入 获取 roles 的函数
 import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 去重的 函数
 import { deduplication } from "@/utils/array/deduplication"
@@ -15,19 +15,19 @@ const delete_menu = ms(process.env.delete_menu)
 const { Menu, Role } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicMenusRemove = async (role: string[]) => {
+export const publicMenusRemove = async (roles: string[]) => {
   // 清除 菜单 的缓存
-  await delMenuRoles(role)
+  await delMenuRoles(roles)
 }
 
 // 彻底删除函数
-const deleted = async (delMenu: any, id: number, role: string[]) => {
+const deleted = async (delMenu: any, id: number, roles: string[]) => {
   // 删除菜单
   await delMenu.destroy({ force: true })
   // 删除临时的 userMenusBin
   await delKey(`userMenusBin:${id}`)
   // 不管是否删除都要移除的
-  await publicMenusRemove(role)
+  await publicMenusRemove(roles)
 }
 // 删除函数
 const remove = async (

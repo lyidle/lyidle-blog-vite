@@ -20,7 +20,7 @@ export const useOwnerStore = defineStore("Owner", () => {
   // 发起请求
   const getAdminUserInfo = async () => {
     try {
-      const adminResult = await searchCounts({ role: "owner" })
+      const adminResult = await searchCounts({ roles: "owner" })
       if (Array.isArray(adminResult)) {
         adminAccount.value = adminResult?.[0]?.account
         adminNickName.value = adminResult?.[0]?.nickName

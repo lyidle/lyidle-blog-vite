@@ -25,7 +25,7 @@ export const publicUserRemove = async (roles: string[], users: any[]) => {
 const deleted = async (
   model: any,
   id: number,
-  role: string[],
+  roles: string[],
   users: any[]
 ) => {
   // 删除权限子菜单
@@ -33,7 +33,7 @@ const deleted = async (
   // 删除临时的 permissionsBin
   await delKey(`permissionsBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(role, users)
+  await publicUserRemove(roles, users)
 }
 
 // 删除函数
@@ -92,7 +92,7 @@ const remove = async (
         paranoid: false,
         attributes: ["id", "name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: { name: roles }, // 传入 role 时查询对于的 role 没有时 查询全部
+        where: { name: roles }, // 传入 roles 时查询对于的 roles 没有时 查询全部
         required: true, //按照 role时 过滤 User 的数据
       },
     ],

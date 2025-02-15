@@ -33,8 +33,7 @@ type routesFilterReturn = {
  * 3. 根据路由生成对应的横幅图片数据并存储在 userBannerImg 中。
  */
 export const userStoreRoutesFilter = (
-  result: GetMenuList["data"],
-  role: Ref<string[]>
+  result: GetMenuList["data"]
 ): routesFilterReturn => {
   // 过滤出 需要的异步路由信息 并添加白名单
   const { _whitelist, _routes } = filterRoutes(result)

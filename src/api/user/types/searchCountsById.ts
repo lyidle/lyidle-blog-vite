@@ -17,7 +17,7 @@ export interface Datum {
   id: number
   isBin: number
   nickName: string
-  role: string[]
+  roles: string[]
   signer: null | string
   updatedAt: string
   [property: string]: any

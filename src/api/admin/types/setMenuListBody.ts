@@ -6,7 +6,7 @@ export interface SetMenuListBody {
   icon?: string
   layout?: Layout
   name: string
-  role?: string[]
+  roles?: string[]
   to: string
   [property: string]: any
 }

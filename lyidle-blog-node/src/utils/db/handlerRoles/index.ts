@@ -72,10 +72,10 @@ export const handlerPermissions = (Roles: rolesType) => {
   ).filter(Boolean)
 }
 
-// 返回 处理好的 role 的名单 string[]
+// 返回 处理好的 roles 的名单 string[]
 export const ReturnRoles = (includeRolesModel: any[]) => {
   const data = JSON.parse(JSON.stringify(includeRolesModel))
-  // 把 role 变为 string[]
+  // 把 roles 变为 string[]
   return deduplication(
     data.map((item: any) => item.Roles.map((item: any) => item.name))
   ).filter(Boolean)

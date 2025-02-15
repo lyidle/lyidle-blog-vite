@@ -7,7 +7,7 @@ const test = [
   {
     name: "Home12",
     to: "/note",
-    role: ["user"],
+    roles: ["user"],
     layout: { topnavWidth: "100px", topnavDirection: "right" },
     bannerImg: { height: "50vh" },
     // #region
@@ -17,41 +17,41 @@ const test = [
       {
         name: "Dashboard12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         icon: `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenodd" d="M6 1v4.48c0 .168 0 .338-.023.51q-.032.227-.103.444c-.055.165-.13.317-.204.47l-1.52 3.09h7.7l-1.5-3.06l-.018-.036c-.074-.152-.15-.304-.204-.469a2.5 2.5 0 0 1-.103-.444c-.023-.172-.023-.342-.023-.511V.994h-4zm6.35 10H3.66l-.974 1.98c-.29.59-.476.972-.588 1.26c-.09.233-.093.32-.094.332a.5.5 0 0 0 .205.329c.012.005.091.04.34.062c.311.029.736.03 1.39.03h8.12c.658 0 1.08-.001 1.39-.03c.25-.022.33-.057.34-.062a.5.5 0 0 0 .205-.33v.003v-.002l.001-.004v.004c0-.012-.005-.1-.094-.332c-.112-.292-.298-.673-.588-1.26L12.339 11zm-1.34-5.56V1h.499a.5.5 0 0 0 0-1h-7a.5.5 0 0 0 0 1h.495v4.44c0 .208 0 .312-.014.413q-.018.136-.062.266a3 3 0 0 1-.17.377l-2.97 6.04c-.563 1.15-.844 1.72-.772 2.18c.062.406.29.769.626 1c.387.269 1.03.269 2.3.269h8.12c1.28 0 1.92 0 2.3-.269c.338-.235.564-.598.626-1c.071-.465-.21-1.04-.774-2.18l-2.97-6.04c-.092-.187-.138-.28-.17-.378a1.5 1.5 0 0 1-.062-.266c-.014-.102-.014-.206-.014-.414z" clip-rule="evenodd"/></svg>`,
         layout: { topnavWidth: "180px" },
       },
       {
         name: "Profile12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px", topnavDirection: "right" },
         bannerImg: { height: "80vh" },
         children: [
           {
             name: "Edit12 Profile",
             to: "/piece/piece1",
-            role: ["user"],
+            roles: ["user"],
             bannerImg: { height: "90vh" },
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Change12 Password",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Privacy12 Settings",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             bannerImg: { height: "100vh" },
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Notifications12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
         ],
@@ -59,20 +59,20 @@ const test = [
       {
         name: "Settings12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px", topnavDirection: "right" },
 
         children: [
           {
             name: "Account12 Settings",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Security12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
         ],
@@ -82,44 +82,44 @@ const test = [
   {
     name: "Products12",
     to: "/note",
-    role: ["user"],
+    roles: ["user"],
     layout: { topnavWidth: "200px", topnavDirection: "left" },
     icon: "i-uil:message",
     children: [
       {
         name: "Electronics12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px", topnavDirection: "left" },
         children: [
           {
             name: "Smartphones12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Laptops12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px", topnavDirection: "right" },
             children: [
               {
                 name: "Gaming12 Laptops",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
               {
                 name: "Ultrabooks12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
               {
                 name: "Workstations12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
             ],
@@ -127,25 +127,25 @@ const test = [
           {
             name: "Tablets12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Accessories12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px", topnavDirection: "left" },
             children: [
               {
                 name: "Chargers12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
               {
                 name: "Headphones12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
             ],
@@ -155,43 +155,43 @@ const test = [
       {
         name: "Clothing12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "200px", topnavDirection: "left" },
         children: [
           {
             name: "Men12's Clothing",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Women12's Clothing",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Kids12' Clothing",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Accessories12s",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px", topnavDirection: "left" },
             children: [
               {
                 name: "Belts12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
               {
                 name: "Hats12",
                 to: "/note",
-                role: ["user"],
+                roles: ["user"],
                 layout: { topnavWidth: "140px" },
               },
             ],
@@ -201,19 +201,19 @@ const test = [
       {
         name: "Furniture12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "300px", topnavDirection: "left" },
         children: [
           {
             name: "Living12 Room",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Bedroom12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
         ],
@@ -223,37 +223,37 @@ const test = [
   {
     name: "About12",
     to: "/note",
-    role: ["user"],
+    roles: ["user"],
     layout: { topnavWidth: "200px", topnavDirection: "right" },
     children: [
       {
         name: "Team12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px" },
       },
       {
         name: "Mission12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px", topnavDirection: "left" },
         children: [
           {
             name: "History12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Values12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Goals12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
         ],
@@ -261,19 +261,19 @@ const test = [
       {
         name: "Careers12",
         to: "/note",
-        role: ["user"],
+        roles: ["user"],
         layout: { topnavWidth: "180px", topnavDirection: "left" },
         children: [
           {
             name: "Job12 Openings",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
           {
             name: "Internships12",
             to: "/note",
-            role: ["user"],
+            roles: ["user"],
             layout: { topnavWidth: "160px" },
           },
         ],
@@ -283,33 +283,33 @@ const test = [
   {
     name: "Support12",
     to: "/note",
-    role: ["test"],
+    roles: ["test"],
     layout: { topnavWidth: "200px", topnavDirection: "left" },
     children: [
       {
         name: "Help12 Center",
         to: "/note",
-        role: ["test"],
+        roles: ["test"],
         layout: { topnavWidth: "180px" },
       },
       {
         name: "Contact12 Us",
         to: "/comments",
-        role: ["test"],
+        roles: ["test"],
         bannerImg: { height: "50vh" },
         layout: { topnavWidth: "180px" },
       },
       {
         name: "Contact12 Ussf",
         to: "/tes/1",
-        role: ["test"],
+        roles: ["test"],
         bannerImg: { height: "50vh" },
         layout: { topnavWidth: "180px" },
       },
       {
         name: "FAQs12",
         to: "/FAQs/1",
-        role: ["test"],
+        roles: ["test"],
         layout: { topnavWidth: "180px" },
       },
     ],

@@ -4,7 +4,7 @@ import type {
   _RouteLocationBase,
   Router,
 } from "vue-router"
-// 引入 仓库 role
+// 引入 仓库 roles
 import { useUserStore } from "@/store/user"
 export const handlerConstRoutes = (
   to: RouteLocationNormalized,

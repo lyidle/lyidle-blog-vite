@@ -14,7 +14,7 @@ export interface Datum {
   id?: number
   isBin?: number
   parentId?: number | null
-  role?: string[]
+  roles?: string[]
   layout?: null | Layout
   name: string
   to: null | string
@@ -35,7 +35,7 @@ export interface Child {
   id?: number
   isBin?: number
   parentId?: number | null
-  role?: string[]
+  roles?: string[]
   layout?: null | Layout
   name: string
   to: null | string

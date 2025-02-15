@@ -1,6 +1,6 @@
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
-// 引入 获取 role 的函数
+// 引入 获取 roles 的函数
 import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
@@ -26,7 +26,7 @@ export const publicUserRemove = async (roles: string[], users: any[]) => {
 const deleted = async (
   model: any,
   id: number,
-  role: string[],
+  roles: string[],
   users: any[]
 ) => {
   // 删除权限菜单
@@ -34,7 +34,7 @@ const deleted = async (
   // 删除临时的 permissionGroupBin
   await delKey(`permissionGroupBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(role, users)
+  await publicUserRemove(roles, users)
 }
 
 // 删除函数
@@ -78,7 +78,7 @@ const remove = async (
         paranoid: false,
         attributes: ["id", "name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: { name: roles }, // 传入 role 时查询对于的 role 没有时 查询全部
+        where: { name: roles }, // 传入 roles 时查询对于的 roles 没有时 查询全部
         required: true, //按照 role时 过滤 User 的数据
       },
     ],

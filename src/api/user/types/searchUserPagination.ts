@@ -35,7 +35,7 @@ export interface User {
   id: number
   isBin: null
   nickName: string
-  role: string[]
+  roles: string[]
   signer: null
   updatedAt: string
   [property: string]: any

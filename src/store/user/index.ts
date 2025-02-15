@@ -36,13 +36,13 @@ export const useUserStore = defineStore(
 
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
-          userStoreRoutesFilter(result, userRoles)
+          userStoreRoutesFilter(result)
 
         // 过滤掉后台管理的菜单
         userMenuList.value =
           (_userMenuList
             ?.map((item) => {
-              if (!item.role?.includes("admin")) return item
+              if (!item.roles?.includes("admin")) return item
             })
             .filter(Boolean) as GetMenuList["data"]) || []
 

@@ -23,7 +23,7 @@ const buildMenuTree = ($menus: any[]) => {
     delete item.Roles
     menuMap.set(item.id, {
       ...item,
-      roles, //处理 role 为 string[]
+      roles, //处理 roles 为 string[]
       children: [],
     })
   })
@@ -56,13 +56,13 @@ const getMenuList = async (
   isAll: boolean = false
 ) => {
   try {
-    let role =
+    let roles =
       (req.query?.roles && JSON.parse(req.query.roles as string)) ||
       default_user // 从请求中获取角色名称
     // 判断 是否查询所有菜单
-    if (isAll) role = "*"
+    if (isAll) roles = "*"
     // 保存 redis 的键 确保 缓存时的顺序一致 避免重复缓存
-    let cacheKey = saveMenuCache(role) || ""
+    let cacheKey = saveMenuCache(roles) || ""
     const cacheValue = await getKey(cacheKey)
     // 判断有无 缓存
     if (cacheValue) return res.result(cacheValue, "获取菜单成功~")
@@ -72,8 +72,8 @@ const getMenuList = async (
           model: Role,
           attributes: ["name"], // 只获取角色名称
           through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-          where: isAll ? {} : { name: { [Op.in]: role } }, // 根据角色名称过滤菜单
-          required: isAll ? false : Boolean(role), // isAll 时不过滤 Menu 否则 当有 role 时需要过滤
+          where: isAll ? {} : { name: { [Op.in]: roles } }, // 根据角色名称过滤菜单
+          required: isAll ? false : Boolean(roles), // isAll 时不过滤 Menu 否则 当有 roles 时需要过滤
         },
       ],
     })
