@@ -13,7 +13,7 @@ router.post(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, description } = req.body
+    const { name, desc } = req.body
 
     // 保存 redis 的键
     let cacheKey = `permissions:*`
@@ -21,28 +21,19 @@ router.post(
     if (!name)
       return res.result(void 0, "创建权限子菜单name是必须要有的哦~", false)
 
-    // 开启事务
-    const transaction = await db.sequelize.transaction()
-
     try {
       const setData = {
         name,
-        description,
+        desc,
       }
 
       // 创建权限子菜单
-      const newPermission = await Permission.create(setData, {
-        transaction,
-      })
-
-      // 提交事务
-      await transaction.commit()
+      const newPermission = await Permission.create(setData)
 
       // 删除 缓存
       await delKey(cacheKey)
       res.result(newPermission, "创建权限子菜单成功~")
     } catch (error) {
-      await transaction.rollback() // 回滚事务
       res.validateAuth(error, next, () =>
         res.result(void 0, "创建权限子菜单失败~", false)
       )

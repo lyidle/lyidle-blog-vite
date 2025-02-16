@@ -3,6 +3,8 @@ import express from "express"
 import menuList from "@/routes/admin/menuList"
 // 引入 api/admin/permissionGroup
 import permissionGroup from "@/routes/admin/permissionGroup"
+// 引入 api/admin/role
+import role from "@/routes/admin/role"
 // 引入 api/admin/announce
 import announce from "@/routes/admin/announce"
 // 引入 api/admin/poetry
@@ -14,6 +16,7 @@ import initials from "@/routes/admin/initial"
 const router = express.Router()
 // 挂载路由
 router.use("/announce", announce)
+router.use("/role", role)
 router.use("/menuList", menuList)
 router.use("/permissionGroup", permissionGroup)
 router.use("/settings", settings)

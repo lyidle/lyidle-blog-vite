@@ -24,8 +24,8 @@ export const publicMenusRemove = async (roles: string[]) => {
 const deleted = async (delMenu: any, id: number, roles: string[]) => {
   // 删除菜单
   await delMenu.destroy({ force: true })
-  // 删除临时的 userMenusBin
-  await delKey(`userMenusBin:${id}`)
+  // 删除临时的 menuBin
+  await delKey(`menuBin:${id}`)
   // 不管是否删除都要移除的
   await publicMenusRemove(roles)
 }
@@ -96,14 +96,14 @@ const remove = async (
   // 回收到垃圾桶
   if (bin) {
     // 只能点击移动到一次垃圾桶
-    const isBin = await getKey(`userMenusBin:${id}`)
+    const isBin = await getKey(`menuBin:${id}`)
     if (isBin)
       return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
 
     // 软删除
     await findMenu.destroy()
     // 设置缓存
-    await setKey(`userMenusBin:${id}`, true)
+    await setKey(`menuBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
     await publicMenusRemove(roles)
