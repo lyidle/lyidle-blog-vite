@@ -5,6 +5,9 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // redis
 import { delKey } from "@/utils/redis"
+import { deduplication } from "@/utils/array/deduplication"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 模型
 const { Role, User } = require("@/db/models")
 const db = require("@/db/models")
@@ -43,6 +46,7 @@ router.put(
 
       const result = await findRole.save({ transaction })
       const roleId = JSON.parse(JSON.stringify(result)).id
+
       // 逐级查询到缓存 的 Users
       const findUsers = await Role.findByPk(roleId, {
         paranoid: false,
@@ -67,7 +71,18 @@ router.put(
         ],
       })
 
-      throw new Error("")
+      const Users = JSON.parse(JSON.stringify(findUsers))
+      // 处理找到的users
+      const users = deduplication(Users.Users)
+      // 处理找到的roles
+      const roles = Users.Users?.map((item: any) =>
+        item.Roles?.map((item: any) => item.name)
+      )
+
+      // 删除 找到 的Menu用到的缓存
+      await delMenuRoles(roles)
+      // 删除找到的users的缓存
+      await resetUserInfo(users)
 
       // 提交事务
       await transaction.commit()
