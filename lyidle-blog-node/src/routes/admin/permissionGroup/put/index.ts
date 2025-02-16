@@ -5,8 +5,10 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // redis
 import { delKey } from "@/utils/redis"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { deduplication } from "@/utils/array/deduplication"
 // 引入 模型
-const { PermissionGroup } = require("@/db/models")
+const { PermissionGroup, Role, User } = require("@/db/models")
 const db = require("@/db/models")
 
 const router = express.Router()
@@ -41,7 +43,48 @@ router.put(
       name && findPermissionGroup.set("name", name)
       findPermissionGroup.set("desc", desc ? desc : null)
 
-      await findPermissionGroup.save({ transaction })
+      const result = await findPermissionGroup.save({ transaction })
+      const groupId = JSON.parse(JSON.stringify(result)).id
+
+      // 逐级查询到缓存 的 Users
+      const findUsers = await PermissionGroup.findByPk(groupId, {
+        paranoid: false,
+        attributes: ["id"],
+        include: [
+          {
+            model: Role,
+            paranoid: false,
+            attributes: ["id"],
+            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            include: [
+              {
+                model: User,
+                paranoid: false,
+                attributes: ["id"],
+                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                include: [
+                  {
+                    model: Role,
+                    paranoid: false,
+                    attributes: ["id", "name"], // 只获取角色名称
+                    through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                    required: true, //按照 role时 过滤 User 的数据
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      })
+
+      // 处理找到的users
+      const users = deduplication(
+        JSON.parse(JSON.stringify(findUsers)).Roles?.map(
+          (item: any) => item.Users
+        )
+      )
+      // 删除找到的users的缓存
+      await resetUserInfo(users)
 
       // 提交事务
       await transaction.commit()

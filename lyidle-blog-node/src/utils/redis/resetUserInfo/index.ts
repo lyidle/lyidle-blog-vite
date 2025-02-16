@@ -23,6 +23,8 @@ export const resetUserInfo = async (findUsers: string[]) => {
       if (!isOwnerRole) {
         _keys = keys.filter((item) => item !== "owner")
       }
+      console.log({ _keys })
+
       return _keys
     })
   }

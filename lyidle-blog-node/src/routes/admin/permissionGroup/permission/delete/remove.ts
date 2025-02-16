@@ -49,17 +49,36 @@ const remove = async (
     return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单哦~", false)
 
   // 查找是否有权限子菜单
+  // 逐级查询到缓存 的 Users
   const findPermission = await Permission.findByPk(permissionId, {
     paranoid: false,
     include: [
       {
-        // 得到 父级 的Roles
         model: PermissionGroup,
+        attributes: ["id"],
         paranoid: false,
         include: [
           {
             model: Role,
+            attributes: ["id", "name"],
             paranoid: false,
+            include: [
+              {
+                model: User,
+                paranoid: false,
+                attributes: ["id"],
+                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                include: [
+                  {
+                    model: Role,
+                    paranoid: false,
+                    attributes: ["id", "name"], // 只获取角色名称
+                    through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                    required: true, //按照 role时 过滤 User 的数据
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -69,34 +88,26 @@ const remove = async (
   // 去除联系
   const permissions = JSON.parse(JSON.stringify(findPermission))
 
+  // 处理得到users
+  const users = deduplication(
+    permissions.PermissionGroups?.map((item: any) =>
+      item.Roles?.map((item: any) => item.Users)
+    )
+  )
+
+  // 处理得到 roles
+  const roles = deduplication(
+    permissions.PermissionGroups?.map((item: any) =>
+      item.Roles?.map((item: any) => item.name)
+    )
+  )
+
   // 没有找到权限子菜单
   if (!findPermission)
     return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单哦~", false)
 
   // 找到提取需要的信息
   const { id } = findPermission.dataValues
-
-  // 得到 roles
-  const roles = deduplication(
-    permissions.PermissionGroups.map((item: any) =>
-      item.Roles.map((item: any) => item.name)
-    )
-  ).filter(Boolean)
-
-  const users = await User.findAll({
-    paranoid: false,
-    attributes: ["id"], // 只获取角色名称
-    include: [
-      {
-        model: Role,
-        paranoid: false,
-        attributes: ["id", "name"], // 只获取角色名称
-        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: { name: roles }, // 传入 roles 时查询对于的 roles 没有时 查询全部
-        required: true, //按照 role时 过滤 User 的数据
-      },
-    ],
-  })
 
   // 是否 权限 判断
   if (isAuth) {
