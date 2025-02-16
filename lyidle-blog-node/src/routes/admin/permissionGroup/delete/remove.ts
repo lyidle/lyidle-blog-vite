@@ -4,6 +4,7 @@ import { delKey, setKey, getKey } from "@/utils/redis"
 import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { deduplication } from "@/utils/array/deduplication"
 // 引入时间转换
 const ms = require("ms")
 
@@ -50,13 +51,31 @@ const remove = async (
     return res.result(void 0, "删除权限菜单时，没有找到权限菜单哦~", false)
 
   // 查找是否有权限菜单
+  // 逐级查询到缓存 的 Users
   const findGroup = await PermissionGroup.findByPk(groupId, {
     paranoid: false,
     include: [
       {
-        // 得到 父级 的Roles
         model: Role,
+        attributes: ["id", "name"],
         paranoid: false,
+        include: [
+          {
+            model: User,
+            paranoid: false,
+            attributes: ["id"],
+            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            include: [
+              {
+                model: Role,
+                paranoid: false,
+                attributes: ["id", "name"], // 只获取角色名称
+                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                required: true, //按照 role时 过滤 User 的数据
+              },
+            ],
+          },
+        ],
       },
     ],
   })
@@ -67,22 +86,11 @@ const remove = async (
   // 找到提取需要的信息
   const { id } = findGroup.dataValues
 
-  // 得到 roles
-  const roles = ReturnRoles([findGroup])
-  const users = await User.findAll({
-    attributes: ["id"], // 只获取角色名称
-    paranoid: false,
-    include: [
-      {
-        model: Role,
-        paranoid: false,
-        attributes: ["id", "name"], // 只获取角色名称
-        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: { name: roles }, // 传入 roles 时查询对于的 roles 没有时 查询全部
-        required: true, //按照 role时 过滤 User 的数据
-      },
-    ],
-  })
+  const groups = JSON.parse(JSON.stringify(findGroup))
+  // 处理得到 users
+  const users = deduplication(groups.Roles?.map((item: any) => item.Users))
+  // 处理得到 roles
+  const roles = deduplication(groups.Roles?.map((item: any) => item.name))
 
   // 是否 权限 判断
   if (isAuth) {

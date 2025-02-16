@@ -6,7 +6,7 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // redis
 import { delKey } from "@/utils/redis"
 // 引入 模型
-const { Role } = require("@/db/models")
+const { Role, User } = require("@/db/models")
 const db = require("@/db/models")
 
 const router = express.Router()
@@ -41,7 +41,33 @@ router.put(
       name && findRole.set("name", name)
       findRole.set("desc", desc ? desc : null)
 
-      await findRole.save({ transaction })
+      const result = await findRole.save({ transaction })
+      const roleId = JSON.parse(JSON.stringify(result)).id
+      // 逐级查询到缓存 的 Users
+      const findUsers = await Role.findByPk(roleId, {
+        paranoid: false,
+        attributes: ["id"],
+        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+        include: [
+          {
+            model: User,
+            paranoid: false,
+            attributes: ["id"],
+            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            include: [
+              {
+                model: Role,
+                paranoid: false,
+                attributes: ["id", "name"], // 只获取角色名称
+                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                required: true, //按照 role时 过滤 User 的数据
+              },
+            ],
+          },
+        ],
+      })
+
+      throw new Error("")
 
       // 提交事务
       await transaction.commit()
