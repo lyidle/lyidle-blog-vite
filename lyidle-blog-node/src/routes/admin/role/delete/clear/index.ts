@@ -1,6 +1,6 @@
 import express from "express"
 // 引入移除函数
-import remove from "@/routes/admin/permissionGroup/delete/remove"
+import remove from "@/routes/admin/role/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
@@ -15,7 +15,7 @@ router.delete(
       await remove(req, res)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "删除权限菜单失败~", false)
+        res.result(void 0, "删除角色失败~", false)
       )
     }
   }

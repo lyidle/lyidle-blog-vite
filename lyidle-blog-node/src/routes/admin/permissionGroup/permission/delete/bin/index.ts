@@ -16,7 +16,7 @@ router.delete(
     try {
       const { id: articleId } = req.body
       // 判断是否 移动到垃圾桶
-      const isBin = await getKey(`permissionsGroupBin:${articleId}`)
+      const isBin = await getKey(`permissionsBin:${articleId}`)
       if (isBin)
         return res.result(
           void 0,

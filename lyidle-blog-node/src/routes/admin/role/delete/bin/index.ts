@@ -1,6 +1,6 @@
 import express from "express"
 // 引入移除函数
-import remove from "@/routes/admin/permissionGroup/delete/remove"
+import remove from "@/routes/admin/role/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
@@ -18,16 +18,12 @@ router.delete(
       // 判断是否 移动到垃圾桶
       const isBin = await getKey(`permissionsGroupBin:${permissionGroupId}`)
       if (isBin)
-        return res.result(
-          void 0,
-          "权限菜单移动到垃圾桶了，请勿重复操作~",
-          false
-        )
+        return res.result(void 0, "角色移动到垃圾桶了，请勿重复操作~", false)
 
       await remove(req, res, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "权限菜单移动到回收站失败~", false)
+        res.result(void 0, "角色移动到回收站失败~", false)
       )
     }
   }

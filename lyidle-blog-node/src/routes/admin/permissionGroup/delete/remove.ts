@@ -50,7 +50,7 @@ const remove = async (
   if (!groupId)
     return res.result(void 0, "删除权限菜单时，没有找到权限菜单哦~", false)
 
-  // 查找是否有权限菜单
+  // 查找是否有权限组菜单
   // 逐级查询到缓存 的 Users
   const findGroup = await PermissionGroup.findByPk(groupId, {
     paranoid: false,
