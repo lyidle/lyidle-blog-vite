@@ -28,6 +28,24 @@ document.body.setAttribute("banner-fixed", "")
 <style lang="scss">
 // 设置 卡片 样式
 @include setManagerCardStyle;
+// 抽屉
+.mini-header-drawer {
+  // 设置drawer 的层级
+  .drawer-mask {
+    z-index: $header-mini-drawer-mask-index;
+    background-color: var(--header-drawer-mask);
+  }
+  .drawer-content {
+    color: var(--primary-color);
+    padding: 20px;
+    width: clamp(30%, 400px, 60%);
+    z-index: $header-mini-drawer-mask-index + 1;
+    background-color: var(--header-drawer-bg);
+    .el-form-item__label {
+      color: inherit;
+    }
+  }
+}
 // 容器 占满屏幕
 .manager-container {
   color: var(--primary-color);

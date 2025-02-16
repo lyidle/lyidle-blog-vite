@@ -67,9 +67,17 @@
         </el-table-column>
         <!-- 工具栏 -->
         <el-table-column width="245" label="工具栏" align="center">
-          <my-button size="small" class="w-80px">分配角色</my-button>
-          <my-button size="small" class="w-50px" type="warning">编辑</my-button>
-          <my-button size="small" class="w-50px" type="danger">删除</my-button>
+          <template #="{ row }">
+            <my-button size="small" class="w-80px" @click="AssignRoles(row)"
+              >分配角色</my-button
+            >
+            <my-button size="small" class="w-50px" type="warning"
+              >编辑</my-button
+            >
+            <my-button size="small" class="w-50px" type="danger"
+              >删除</my-button
+            >
+          </template>
         </el-table-column>
         <template #empty>
           <div class="flex items-center justify-center h-100%">
@@ -88,6 +96,44 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
     </my-card>
+
+    <my-drawer
+      v-model="drawer"
+      width="250px"
+      @close="handlerClose"
+      name="mini-header-drawer"
+    >
+      <template #body>
+        <div class="text-[20px]">分配角色</div>
+        <el-form class="mt-20px">
+          <el-form-item class="!mb-10px" label="用户姓名">
+            <my-input placeholder="用户姓名"></my-input>
+          </el-form-item>
+          <el-form-item class="!mb-10px" label="用户列表">
+            <el-checkbox
+              v-model="checkAll"
+              :indeterminate="isIndeterminate"
+              @change="handleCheckAllChange"
+            >
+              Check all
+            </el-checkbox>
+            <el-checkbox-group
+              v-model="checkedCities"
+              @change="handleCheckedCitiesChange"
+            >
+              <el-checkbox
+                v-for="city in cities"
+                :key="city"
+                :label="city"
+                :value="city"
+              >
+                {{ city }}
+              </el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+      </template>
+    </my-drawer>
   </div>
 </template>
 
@@ -97,8 +143,35 @@ import type { searchData } from "@/api/user/types/searchUserPagination"
 import { mitt } from "@/utils/emitter"
 import moment from "@/utils/moment"
 
-const tableData = ref<searchData["users"]>([])
+// 抽屉
+const drawer = ref(true)
+const handlerClose = () => {}
 
+import type { CheckboxValueType } from "element-plus"
+
+const checkAll = ref(false)
+const isIndeterminate = ref(true)
+const checkedCities = ref(["Shanghai", "Beijing"])
+const cities = ["Shanghai", "Beijing", "Guangzhou", "Shenzhen"]
+
+const handleCheckAllChange = (val: CheckboxValueType) => {
+  checkedCities.value = val ? cities : []
+  isIndeterminate.value = false
+}
+
+const handleCheckedCitiesChange = (value: CheckboxValueType[]) => {
+  const checkedCount = value.length
+  checkAll.value = checkedCount === cities.length
+  isIndeterminate.value = checkedCount > 0 && checkedCount < cities.length
+}
+
+const AssignRoles = (row: any) => {
+  console.log(row)
+}
+
+// 表格
+const tableData = ref<searchData["users"]>([])
+// 分页器
 const pagination = ref<searchData["pagination"]>()
 
 // 头部 搜索 按钮大小
