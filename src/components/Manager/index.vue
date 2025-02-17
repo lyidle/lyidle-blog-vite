@@ -21,7 +21,6 @@
 import { useManagerStore } from "@/store/manager"
 // 提取变量
 const { isFold } = storeToRefs(useManagerStore())
-
 // 无banner固定 banner
 document.body.setAttribute("banner-fixed", "")
 </script>
@@ -29,18 +28,18 @@ document.body.setAttribute("banner-fixed", "")
 // 设置 卡片 样式
 @include setManagerCardStyle;
 // 抽屉
-.mini-header-drawer {
+.manager-drawer {
   // 设置drawer 的层级
   .drawer-mask {
-    z-index: $header-mini-drawer-mask-index;
-    background-color: var(--header-drawer-mask);
+    z-index: $my-drawer-content;
+    background-color: var(--drawer-mask);
   }
   .drawer-content {
     color: var(--primary-color);
     padding: 20px;
     width: clamp(30%, 400px, 60%);
-    z-index: $header-mini-drawer-mask-index + 1;
-    background-color: var(--header-drawer-bg);
+    z-index: $my-drawer-content + 1;
+    background-color: var(--drawer-bg);
     .el-form-item__label {
       color: inherit;
     }

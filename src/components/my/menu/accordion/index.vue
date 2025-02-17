@@ -1,5 +1,5 @@
 <template>
-  <div class="generate-container">
+  <div class="generate-container my-accordion">
     <my-menu-accordion-recursive v-bind="$attrs">
       <!-- 把 item的 插槽 放到父级 方便使用 -->
       <template v-for="(_, name) in slots" #[name]="scopedData">

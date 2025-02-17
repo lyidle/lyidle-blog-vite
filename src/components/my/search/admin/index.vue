@@ -1,7 +1,7 @@
 <template>
   <my-card class="admin-search card_style" bg="var(--manager-card-bg)">
-    <el-form inline @submit.prevent="submit(searchKey)">
-      <el-form-item :label="searchLabel">
+    <el-form inline @submit.prevent="submit && submit(searchKey)">
+      <el-form-item :label="label">
         <div class="searchContainer">
           <el-input
             :placeholder
@@ -19,9 +19,9 @@
             >
             <my-button
               class="!ml-[var(--admin-content-header-gap)]"
-              @click="searchKey = ''"
               :size
               plain
+              @click="handlerRest"
               >重置</my-button
             >
           </div>
@@ -34,18 +34,16 @@
 <script setup lang="ts" name="SearchAdmin">
 import { mitt } from "@/utils/emitter"
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    searchLabel?: string
+    label?: string
     placeholder?: string
     submit?: (key: string) => void
+    reset?: () => void
   }>(),
   {
-    searchLabel: "搜索key：",
+    label: "搜索key：",
     placeholder: "搜索placeholder",
-    submit: (key: string) => {
-      ElMessage(key)
-    },
   }
 )
 
@@ -56,6 +54,11 @@ const size = ref()
 // input 的宽度
 const inputSize = ref()
 
+// 重置
+const handlerRest = () => {
+  searchKey.value = ""
+  props.reset?.()
+}
 // 处理 窗口变化 的事件
 const handlerResize = () => {
   if (window.innerWidth > 870) {
@@ -87,6 +90,7 @@ onBeforeUnmount(() => {
 .admin-search {
   .el-form-item__label {
     font-size: 1rem;
+    color: inherit;
   }
 }
 </style>

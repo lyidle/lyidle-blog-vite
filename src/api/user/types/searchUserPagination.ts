@@ -29,14 +29,14 @@ export interface Pagination {
  */
 export interface User {
   account: string
-  avatar: null
+  avatar: null | string
   createdAt: string
   email: string
   id: number
-  isBin: null
+  isBin: null | string
   nickName: string
   roles: string[]
-  signer: null
+  signer: null | string
   updatedAt: string
   [property: string]: any
 }

@@ -15,14 +15,22 @@
             <div
               v-if="item.children?.length"
               class="toggle"
-              @click="toggle($event)"
+              @click="
+                toggleCallback($event, $route.path.startsWith(item.path!))
+              "
             >
-              <i :class="icon.plus"></i>
+              <i
+                :class="($route.path.startsWith(item.path!)&&icon.minus)||icon.plus"
+              ></i>
             </div>
           </div>
         </div>
         <!-- 判断 有无子集 -->
-        <ul v-if="item.children?.length" class="submenu">
+        <ul
+          v-if="item.children?.length"
+          class="submenu"
+          :style="{ height: `${$route.path.startsWith(item.path!)&&'auto !important'}` }"
+        >
           <!-- 递归调用 修改 props中的 data 为 children -->
           <AccordionRecursive v-bind="{ ...props, data: item.children }">
             <!-- 插槽传递 -->
@@ -92,18 +100,23 @@ const parentSubMenuCallback = (el: Element): void => {
   parent && parentSubMenuCallback(parent) // **确保返回值**
 }
 
+let onlyOne = false
 // 切换按钮
-const toggle = (e: MouseEvent) => {
+const toggleCallback = (e: MouseEvent, path: boolean) => {
   // 点击的 项目 的父级 menu-item
-  const parent = (e.target as HTMLLIElement)?.parentElement
+  let parent = ((e as MouseEvent).target as HTMLLIElement)?.parentElement
     ?.parentElement as HTMLDivElement
+
   if (!parent) return
   const cache = openMenus.get(parent)
   if (cache) {
     // 打开的情况
     if (cache.open) {
       // 关闭
-      const defaultValue = { ...cache, open: false }
+      const defaultValue = {
+        ...cache,
+        open: false,
+      }
       // 往上递归 得到 parentSubMenu
       parentSubMenuCallback(parent)
       // 恢复 高度
@@ -119,7 +132,6 @@ const toggle = (e: MouseEvent) => {
     // 关闭的情况
     // 展开
     const defaultValue = { ...cache, open: true }
-
     // 往上递归 得到 parentSubMenu
     parentSubMenuCallback(parent)
     cache.toggle.classList.add(props.icon.minus || "")
@@ -129,7 +141,7 @@ const toggle = (e: MouseEvent) => {
     return
   }
   // 得到所有 ul的 集合
-  const ulCollactions = document.querySelectorAll<HTMLUListElement>("ul")
+  const ulCollactions = parent.querySelectorAll<HTMLUListElement>("ul")
   if (!ulCollactions) return
   // 得到 按钮
   const toggle = parent.querySelector(".toggle i")
@@ -148,6 +160,12 @@ const toggle = (e: MouseEvent) => {
     submenu,
   } as MapType
 
+  if (!onlyOne && path) {
+    onlyOne = true
+    openMenus.set(parent, defaultValue)
+    toggleCallback(e, false)
+    return
+  }
   submenu.style.height = "0"
   // 强制回流
   submenu.getBoundingClientRect()

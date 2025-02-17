@@ -21,6 +21,7 @@ import { useUserStore } from "@/store/user"
 const { adminMenuList } = storeToRefs(useUserStore())
 // 提取处理路由的函数
 const { reqAdminMenuList } = useUserStore()
+
 onMounted(() => {
   reqAdminMenuList()
 })

@@ -101,7 +101,7 @@ const close = () => {
   document.documentElement.style.overflow = "unset"
   // 解绑事件
   const tar = title.value as HTMLDivElement
-  tar.removeEventListener("mousedown", handlerMousedown)
+  tar?.removeEventListener("mousedown", handlerMousedown)
 }
 
 // 订阅 面板显示与否 的事件
@@ -128,6 +128,7 @@ let wrapLeft = 0
 // 鼠标 按下
 const handlerMousedown = ($e: Event) => {
   const e = $e as MouseEvent
+  ElMessage("test")
   // 判断是否是鼠标左键 与 只有 头部时才能移动 关闭等功能按下时不移动
   if (
     e.button !== 0 ||

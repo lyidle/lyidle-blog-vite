@@ -12,8 +12,6 @@ html[themes="#{$theme}"] {
     // 头部区域的颜色
     --scissors-color: #{$header-color};
     // 头部小屏drawer
-    --header-drawer-bg: #{$header-primary-bg};
-    --header-drawer-mask: #0000005a;
     --header-drawer-title-color: #{$header-color};
     --mini-drawer-pin-bg: #36759f;
     --mini-drawer-pin-color: #dbf1ff;

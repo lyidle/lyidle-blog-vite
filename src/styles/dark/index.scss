@@ -101,4 +101,7 @@ html[themes="#{$theme}"] {
     )};
   --accordion-subtitle-color: var(--primary-color);
   --accordion-subtitle-color-hover: #{$accordion-color-hover};
+  // drawer
+  --drawer-bg: #3d5b6e;
+  --drawer-mask: #0000005a;
 }

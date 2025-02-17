@@ -15,11 +15,11 @@ export const useContextMenu = (
   const menuWidth = ref()
   // 打开菜单
   const open = async (e: MouseEvent) => {
-    // 重置高度
-    menu.value.style.height = "0"
     // 阻止默认事件 和  冒泡
     e.preventDefault()
     e.stopPropagation()
+    // 重置高度
+    menu.value.style.height = "0"
     // 判断有无选中文本
     const text = await getSelectedText()
 

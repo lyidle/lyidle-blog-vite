@@ -1,11 +1,18 @@
 <template>
   <div class="admin-container">
-    <my-search-admin :submit="handlerSearch"> </my-search-admin>
+    <my-search-admin
+      :submit="handlerSearch"
+      label="用户名"
+      :reset="handlerReset"
+      placeholder="请输入用户名"
+    >
+    </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="create.initCreate()"
           >添加用户</my-button
         >
         <my-button
@@ -66,17 +73,62 @@
           </template>
         </el-table-column>
         <!-- 工具栏 -->
-        <el-table-column width="245" label="工具栏" align="center">
+        <el-table-column width="295" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button size="small" class="w-80px" @click="AssignRoles(row)"
+            <my-button
+              size="small"
+              class="w-80px"
+              @click="assignRole.initDrawer(row)"
               >分配角色</my-button
             >
-            <my-button size="small" class="w-50px" type="warning"
+            <my-button
+              size="small"
+              class="w-50px"
+              type="warning"
+              @click="editor.initEditor(row)"
               >编辑</my-button
             >
-            <my-button size="small" class="w-50px" type="danger"
-              >删除</my-button
+
+            <!-- 软删除 -->
+            <el-popconfirm
+              width="220"
+              icon-color="#F56C6C"
+              :title="`确认要把《${row.account}》回收到垃圾桶么?`"
+              placement="top"
+              @confirm="handlerRemove(row.id)"
             >
+              <template #reference>
+                <my-button class="w-50px" size="small" type="danger"
+                  >软删除</my-button
+                >
+              </template>
+              <template #actions="{ confirm, cancel }">
+                <el-button size="small" @click="cancel">否</el-button>
+                <el-button type="danger" size="small" @click="confirm">
+                  是
+                </el-button>
+              </template>
+            </el-popconfirm>
+            <!-- 删除 -->
+            <el-popconfirm
+              width="220"
+              icon-color="#F56C6C"
+              :title="`确认要彻底删除《${row.account}》么?`"
+              placement="top"
+              @confirm="handlerDelete(row.id)"
+            >
+              <template #reference>
+                <my-button class="w-50px" size="small" type="danger"
+                  >删除</my-button
+                >
+              </template>
+              <template #actions="{ confirm, cancel }">
+                <el-button size="small" @click="cancel">否</el-button>
+                <el-button type="danger" size="small" @click="confirm">
+                  是
+                </el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
         <template #empty>
@@ -96,139 +148,42 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
     </my-card>
-
-    <my-drawer
-      v-model="drawer"
-      width="250px"
-      @close="handlerClose"
-      name="mini-header-drawer"
-    >
-      <template #body>
-        <div class="text-[20px]">分配角色</div>
-        <el-form class="mt-20px">
-          <el-form-item class="!mb-10px" label="用户姓名">
-            <my-input placeholder="用户姓名"></my-input>
-          </el-form-item>
-          <el-form-item class="!mb-10px" label="用户列表">
-            <el-checkbox
-              v-model="checkAll"
-              :indeterminate="isIndeterminate"
-              @change="handleCheckAllChange"
-            >
-              Check all
-            </el-checkbox>
-            <el-checkbox-group
-              v-model="checkedCities"
-              @change="handleCheckedCitiesChange"
-            >
-              <el-checkbox
-                v-for="city in cities"
-                :key="city"
-                :label="city"
-                :value="city"
-              >
-                {{ city }}
-              </el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-        </el-form>
-      </template>
-    </my-drawer>
+    <manager-com-user-assign-roles
+      ref="assignRole"
+    ></manager-com-user-assign-roles>
+    <manager-com-user-editor ref="editor"></manager-com-user-editor>
+    <manager-com-user-create ref="create"></manager-com-user-create>
   </div>
 </template>
 
 <script setup lang="ts" name="AdminAccessUsers">
-import { searchExactUser } from "@/api/user"
-import type { searchData } from "@/api/user/types/searchUserPagination"
-import { mitt } from "@/utils/emitter"
 import moment from "@/utils/moment"
+// 引入 hooks
+import { useManagerUserBase } from "@/hooks/manager/access/user/useManagerUserBase"
 
-// 抽屉
-const drawer = ref(true)
-const handlerClose = () => {}
+// 表格的信息 和 搜索
+const {
+  tableData,
+  pagination,
+  headerBtnsSize,
+  accountsWidth,
+  handlerSearch,
+  handleSelectionChange,
+  reqUsers,
+  handlerReset,
+} = useManagerUserBase()
 
-import type { CheckboxValueType } from "element-plus"
-
-const checkAll = ref(false)
-const isIndeterminate = ref(true)
-const checkedCities = ref(["Shanghai", "Beijing"])
-const cities = ["Shanghai", "Beijing", "Guangzhou", "Shenzhen"]
-
-const handleCheckAllChange = (val: CheckboxValueType) => {
-  checkedCities.value = val ? cities : []
-  isIndeterminate.value = false
-}
-
-const handleCheckedCitiesChange = (value: CheckboxValueType[]) => {
-  const checkedCount = value.length
-  checkAll.value = checkedCount === cities.length
-  isIndeterminate.value = checkedCount > 0 && checkedCount < cities.length
-}
-
-const AssignRoles = (row: any) => {
-  console.log(row)
-}
-
-// 表格
-const tableData = ref<searchData["users"]>([])
-// 分页器
-const pagination = ref<searchData["pagination"]>()
-
-// 头部 搜索 按钮大小
-const headerBtnsSize = ref("default")
-// 账号和用户名的 宽度
-const accountsWidth = ref(130)
-
-// 搜索回调
-const handlerSearch = (key: string) => {
-  ElMessage(key)
-}
-
-// 处理 窗口变化 的事件
-const handlerResize = () => {
-  if (window.innerWidth > 870) {
-    // 账号和用户名的 宽度
-    accountsWidth.value = 130
-    headerBtnsSize.value = "default"
-    return
-  }
-  // 账号和用户名的 宽度
-  accountsWidth.value = 70
-  headerBtnsSize.value = "small"
-}
-
-// 监听窗口变化
-mitt.on("window:resize", handlerResize)
-
-// 选中的 userId
-const userIds = ref<number[]>([])
-// 处理 多选框 变化问题
-const handleSelectionChange = (user: searchData["users"]) => {
-  // 得到 选张的user的id
-  userIds.value = user.map((item) => item.id)
-}
-
-// pagination  的回调
-// 获取用户
-const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
-  try {
-    const result = await searchExactUser({ currentPage, pageSize })
-    tableData.value = result?.users || []
-    pagination.value = result?.pagination
-  } catch (error) {}
-}
-
-onMounted(async () => {
-  // 得到 用户
-  await reqUsers()
-  // 处理 窗口变化 的事件
-  handlerResize()
-})
-
-onBeforeUnmount(() => {
-  // 卸载监听窗口变化
-  mitt.off("window:resize", handlerResize)
-})
+// 获取子组件示例 用于分配角色按钮的点击事件
+const assignRole = ref()
+// 编辑用户
+const editor = ref()
+// 创建用户
+const create = ref()
+// 删除
+const handlerDelete = (id: number) => {}
+// 软删除
+const handlerRemove = (id: number) => {}
+onMounted(() => {})
 </script>
 
 <style scoped lang="scss">

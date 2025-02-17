@@ -97,12 +97,12 @@ $header-content-pd: 20px;
 .mini-header-drawer {
   // 设置drawer 的层级
   .drawer-mask {
-    z-index: $header-mini-drawer-mask-index;
-    background-color: var(--header-drawer-mask);
+    z-index: $my-drawer-content;
+    background-color: var(--drawer-mask);
   }
   .drawer-content {
-    z-index: $header-mini-drawer-mask-index + 1;
-    background-color: var(--header-drawer-bg);
+    z-index: $my-drawer-content + 1;
+    background-color: var(--drawer-bg);
   }
   .mini-nav-avater-container {
     $gap: 15px;
