@@ -11,6 +11,7 @@ import userinfo from "@/routes/user/userinfo"
 import search from "@/routes/user/search"
 // 引入 api/user/admin
 import admin from "@/routes/user/admin"
+
 const router = express.Router()
 // 挂载路由
 router.use("/reg", reg)

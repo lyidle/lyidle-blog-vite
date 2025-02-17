@@ -4,7 +4,6 @@ import type { RegEmail } from "./types/regEmail"
 import type { RegEmailBody } from "./types/regEmailBody"
 import type { Login } from "./types/login"
 import type { LoginQuery } from "./types/loginQuery"
-import type { Reg } from "./types/reg"
 import type { RegBody } from "./types/regBody"
 import type { GetUserInfo } from "./types/getUserInfo"
 import { SearchUserQuery } from "./types/searchUserQuery"
@@ -12,6 +11,10 @@ import { SearchCountsById } from "./types/searchCountsById"
 import { SearchByIdOrAccountOrRoleQuery } from "./types/SearchByIdOrAccountOrRoleQuery"
 import { Logout } from "./types/logout"
 import { SearchUserPagination } from "./types/searchUserPagination"
+import { UpdateUserBody } from "./types/updateUserBody"
+import { ManagerUpdateUserBody } from "./types/managerUpdateUserBody"
+import { UpdateUser } from "./types/updateUser"
+import { CreateUserBody } from "./types/createUserBody"
 // 统一管理 api
 enum API {
   regEmail = "/user/reg/email",
@@ -26,6 +29,9 @@ enum API {
   deleteUser = "/user/admin/clear",
   managerRemoveUser = "/user/admin/bin/manager",
   managerDeleteUser = "/user/admin/clear/manager",
+  managerUpdateUser = "/user/admin/update/manager",
+  updateUser = "/user/admin/update",
+  create = "/user/admin/create",
 }
 
 // API 的 key 的类型
@@ -42,7 +48,7 @@ export const reqRegEmail = (data?: RegEmailBody) =>
 
 // 注册
 export const reqReg = (data: RegBody) =>
-  request.post<any, Reg>(server + prefix + API.reg, data)
+  request.post<any, void>(server + prefix + API.reg, data)
 
 // 登录
 export const reqLogin = (data: LoginQuery) =>
@@ -75,19 +81,39 @@ export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
     server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`
   )
 
+// 删除的回调
 const removeCallbackUser = (api: APIKeysType) => (id: number) =>
   request.delete<any, void>(server + prefix + API[api], {
     data: { id },
   })
 
-// 软删除 用户 需要 是本用户拥有权限
+// 软删除 用户 需要 是本用户的id
 export const removeUser = removeCallbackUser("removeUser")
 
-// 彻底删除 用户 需要 是本用户的
+// 彻底删除 用户 需要 是本用户的id
 export const deleteUser = removeCallbackUser("deleteUser")
 
-// 不需要验证 登录用户拥有权限
+// 不需要验证是本用户的id
+// 登录用户需要拥有权限
 // 软删除
 export const managerRemoveUser = removeCallbackUser("managerRemoveUser")
 // 彻底删除
 export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
+
+// 修改用户 需要 是本用户的id 不需要传入id 从jwt中获取的 redis缓存
+export const updateUser = (data: UpdateUserBody) =>
+  request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, {
+    data,
+  })
+
+// 不需要验证是本用户的id 需要传入 id
+// 登录用户需要拥有权限
+export const managerUpdateUser = (data: ManagerUpdateUserBody) =>
+  request.put<any, UpdateUser["data"]>(
+    server + prefix + API.managerUpdateUser,
+    data
+  )
+
+// 创建用户  登录用户需要拥有权限
+export const createUser = (data: CreateUserBody) =>
+  request.post<any, void>(server + prefix + API.create, data)

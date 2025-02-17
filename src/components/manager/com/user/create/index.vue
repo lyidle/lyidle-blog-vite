@@ -59,13 +59,15 @@
 </template>
 
 <script setup lang="ts" name="UserEditor">
-// 引入 api
-import { reqReg } from "@/api/user"
+// 引入接口
+import { createUser } from "@/api/user"
+// 引入 类型
+import { CreateUserBody } from "@/api/user/types/createUserBody"
 // 引入 正则
 import { accountReg, emailReg, nickNameReg, pwdReg } from "@/RegExp/loginOrReg"
 const centerDialogVisible = ref(false)
 
-const editorData = reactive<any>({
+const editorData = reactive<CreateUserBody>({
   account: "",
   nickName: "",
   email: "",
@@ -131,10 +133,22 @@ const handlerClose = () => {
   formInstance.value.resetFields()
 }
 
+// 夫组件的自定义事件
+const emit = defineEmits<{
+  req: []
+}>()
+
 // 确认
-const handlerConfirm = () => {
-  centerDialogVisible.value = false
-  ElMessage("test")
+const handlerConfirm = async () => {
+  try {
+    // 表单校验
+    await formInstance.value.validate()
+    await createUser(editorData)
+    ElMessage.success(`创建用户成功~`)
+    centerDialogVisible.value = false
+    // 重新请求
+    await emit("req")
+  } catch (error) {}
 }
 
 // 暴露

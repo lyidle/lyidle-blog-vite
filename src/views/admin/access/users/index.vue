@@ -19,6 +19,14 @@
           :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="handlerAllRemove"
+          >批量软删除</my-button
+        >
+        <my-button
+          :size="headerBtnsSize"
+          type="danger"
+          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="handlerAllDelete"
           >批量删除</my-button
         >
       </div>
@@ -95,7 +103,7 @@
               icon-color="#F56C6C"
               :title="`确认要把《${row.account}》回收到垃圾桶么?`"
               placement="top"
-              @confirm="handlerRemove(row.id)"
+              @confirm="handlerRemove(row)"
             >
               <template #reference>
                 <my-button class="w-50px" size="small" type="danger"
@@ -115,7 +123,7 @@
               icon-color="#F56C6C"
               :title="`确认要彻底删除《${row.account}》么?`"
               placement="top"
-              @confirm="handlerDelete(row.id)"
+              @confirm="handlerDelete(row)"
             >
               <template #reference>
                 <my-button class="w-50px" size="small" type="danger"
@@ -144,6 +152,10 @@
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
         @change="reqUsers"
+        @current-change="handlerCurrentPage"
+        @size-change="handlerSizeChange"
+        :default-current-page="currentPage"
+        :default-page-size="pageSize"
         size="small"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
@@ -151,8 +163,14 @@
     <manager-com-user-assign-roles
       ref="assignRole"
     ></manager-com-user-assign-roles>
-    <manager-com-user-editor ref="editor"></manager-com-user-editor>
-    <manager-com-user-create ref="create"></manager-com-user-create>
+    <manager-com-user-editor
+      ref="editor"
+      @req="handlerReq"
+    ></manager-com-user-editor>
+    <manager-com-user-create
+      ref="create"
+      @req="handlerReq"
+    ></manager-com-user-create>
   </div>
 </template>
 
@@ -160,7 +178,16 @@
 import moment from "@/utils/moment"
 // 引入 hooks
 import { useManagerUserBase } from "@/hooks/manager/access/user/useManagerUserBase"
-
+// 引入 接口api
+import { managerRemoveUser, managerDeleteUser } from "@/api/user"
+// 引入 类型
+import type { User } from "@/api/user/types/searchUserPagination"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+import { useOwnerStore } from "@/store/owner"
+// 提取请求
+const { reqUserInfo } = useUserStore()
+const { getAdminUserInfo } = useOwnerStore()
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -170,6 +197,7 @@ const {
   handlerSearch,
   handleSelectionChange,
   reqUsers,
+  userIds,
   handlerReset,
 } = useManagerUserBase()
 
@@ -179,11 +207,122 @@ const assignRole = ref()
 const editor = ref()
 // 创建用户
 const create = ref()
-// 删除
-const handlerDelete = (id: number) => {}
+// 当前是第几页
+const currentPage = ref(1)
+// 存储每页显示的个数
+const pageSize = ref(10)
+// 个数变化
+const handlerSizeChange = (num: number) => {
+  pageSize.value = num
+}
+
+// 页数变化
+const handlerCurrentPage = (num: number) => {
+  currentPage.value = num
+}
+
+// 请求的逻辑
+const handlerReq = async () => {
+  // 只有一条数据时
+  if (pagination.value?.total === 1) {
+    // 清除 table数据
+    tableData.value = []
+    return
+  }
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 || 1
+  // 只有一个的情况
+  if (tableData.value.length === 1) {
+    // 跳到上一页
+    await reqUsers(pre, pageSize.value)
+    return
+  }
+  // 处理批量删除时的逻辑
+  const len = userIds.value?.length
+  // 删除时选择的个数和页码个数大于等于 则是上一页
+  if (len >= pageSize.value) {
+    // 跳到上一页
+    await reqUsers(cur - 1, pageSize.value)
+    return
+  }
+  // 默认是 当前页 和分页器的个数
+  await reqUsers(cur, pageSize.value)
+  // 重新获取用户数据
+  await reqUserInfo()
+  await getAdminUserInfo()
+}
+
 // 软删除
-const handlerRemove = (id: number) => {}
-onMounted(() => {})
+const handlerRemove = async (row: User) => {
+  const { id, account } = row
+  try {
+    // 回收到垃圾桶
+    await managerRemoveUser(id)
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`移动${account}用户到垃圾桶成功~`)
+  } catch (error) {
+    ElMessage.warning(`移动${account}用户到垃圾桶失败~`)
+  }
+}
+
+// 删除
+const handlerDelete = async (row: User) => {
+  const { id, account } = row
+  try {
+    // 彻底删除
+    await managerDeleteUser(id)
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`彻底删除${account}用户成功~`)
+  } catch (error) {
+    ElMessage.error(`彻底删除${account}用户失败~`)
+  }
+}
+
+// 批量软删除
+const handlerAllRemove = async () => {
+  let id: number
+  try {
+    await Promise.all(
+      userIds.value.map(async (item) => {
+        id = item
+        // 软删除
+        await managerRemoveUser(id)
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量删除成功,已成功移动到垃圾桶~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
+  }
+}
+
+// 批量删除
+const handlerAllDelete = async () => {
+  let id: number
+  try {
+    await Promise.all(
+      userIds.value.map(async (item) => {
+        id = item
+        // 彻底删除
+        await managerDeleteUser(id)
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量删除成功,已成功删除~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
+  }
+}
 </script>
 
 <style scoped lang="scss">

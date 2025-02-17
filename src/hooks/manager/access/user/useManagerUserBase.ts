@@ -47,7 +47,7 @@ export const useManagerUserBase = () => {
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
   const handleSelectionChange = (user: searchData["users"]) => {
-    // 得到 选张的user的id
+    // 得到 选择的user的id
     userIds.value = user.map((item) => item.id)
   }
 
