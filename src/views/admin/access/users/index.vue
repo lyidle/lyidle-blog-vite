@@ -162,6 +162,7 @@
     </my-card>
     <manager-com-user-assign-roles
       ref="assignRole"
+      @req="handlerReq"
     ></manager-com-user-assign-roles>
     <manager-com-user-editor
       ref="editor"
@@ -185,9 +186,12 @@ import type { User } from "@/api/user/types/searchUserPagination"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+import { mitt } from "@/utils/emitter"
 // 提取请求
 const { reqUserInfo } = useUserStore()
 const { getAdminUserInfo } = useOwnerStore()
+// 提取数据
+const { userRoles } = storeToRefs(useUserStore())
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -252,6 +256,8 @@ const handlerReq = async () => {
   // 重新获取用户数据
   await reqUserInfo()
   await getAdminUserInfo()
+  // 重新判断权限
+  mitt.emit("authRoles", userRoles.value)
 }
 
 // 软删除

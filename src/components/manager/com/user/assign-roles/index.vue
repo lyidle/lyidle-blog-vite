@@ -2,11 +2,14 @@
   <my-drawer v-model="drawer" width="250px" name="manager-drawer">
     <template #body>
       <div class="text-[20px]">分配角色</div>
-      <el-form class="mt-20px">
-        <el-form-item class="!mb-10px" label="用户用户名">
-          <my-input placeholder="用户姓名" v-model="currentUser"></my-input>
+      <el-form class="mt-20px" label-width="70" label-position="left">
+        <el-form-item class="!mb-10px" label="账号">
+          <my-input placeholder="账号" v-model="nickName" disabled></my-input>
         </el-form-item>
-        <el-form-item class="!mb-10px" label="用户列表">
+        <el-form-item class="!mb-10px" label="用户名">
+          <my-input placeholder="用户名" v-model="account" disabled></my-input>
+        </el-form-item>
+        <el-form-item class="!mb-10px" label="角色列表">
           <el-checkbox
             v-model="checkAll"
             :indeterminate="isIndeterminate"
@@ -29,12 +32,17 @@
           </el-checkbox-group>
         </el-form-item>
       </el-form>
+      <div class="flex">
+        <my-button type="default" @click="drawer = false">取消</my-button>
+        <my-button @click="handlerConfirm">提交</my-button>
+      </div>
     </template>
   </my-drawer>
 </template>
 
 <script setup lang="ts" name="UserAssignRoles">
 import { findALlRoles } from "@/api/admin"
+import { setUserRoles } from "@/api/user"
 import { User } from "@/api/user/types/searchUserPagination"
 import type { CheckboxValueType } from "element-plus"
 // drawer是否显示
@@ -45,7 +53,14 @@ const checkedRoles = ref<string[]>([])
 const Roles = ref<string[]>([])
 // 中间态
 const isIndeterminate = ref(false)
-const currentUser = ref<string>()
+// 当前用户
+const currentUser = ref<User>()
+const nickName = computed(() => {
+  return currentUser.value?.nickName
+})
+const account = computed(() => {
+  return currentUser.value?.account
+})
 // 全选状态
 const checkAll = ref(false)
 
@@ -68,7 +83,7 @@ const initDrawer = async (row: User) => {
   const result = await findALlRoles()
   const roles = result.map((item) => item.name)
   // 初始化输入框
-  currentUser.value = row.nickName
+  currentUser.value = row
   // 初始化角色
   Roles.value = roles
   // 赋值选中的数据
@@ -79,6 +94,24 @@ const initDrawer = async (row: User) => {
     checkedRoles.value.length < Roles.value.length
   // 初始化 全选框
   checkAll.value = checkedRoles.value.length === Roles.value.length
+}
+// 夫组件的自定义事件
+const emit = defineEmits<{
+  req: []
+}>()
+
+// 提交
+const handlerConfirm = async () => {
+  try {
+    await setUserRoles({
+      id: currentUser.value?.id as number,
+      roles: checkedRoles.value,
+    })
+    // 重新请求
+    await emit("req")
+    drawer.value = false
+    ElMessage.success("分配用户的角色成功~")
+  } catch (error) {}
 }
 
 defineExpose({ initDrawer })

@@ -15,6 +15,7 @@ import { UpdateUserBody } from "./types/updateUserBody"
 import { ManagerUpdateUserBody } from "./types/managerUpdateUserBody"
 import { UpdateUser } from "./types/updateUser"
 import { CreateUserBody } from "./types/createUserBody"
+import { setUserRolesBody } from "./types/setUserRolesBody"
 // 统一管理 api
 enum API {
   regEmail = "/user/reg/email",
@@ -32,6 +33,7 @@ enum API {
   managerUpdateUser = "/user/admin/update/manager",
   updateUser = "/user/admin/update",
   create = "/user/admin/create",
+  setUserRoles = "/user/admin/setRoles",
 }
 
 // API 的 key 的类型
@@ -117,3 +119,7 @@ export const managerUpdateUser = (data: ManagerUpdateUserBody) =>
 // 创建用户  登录用户需要拥有权限
 export const createUser = (data: CreateUserBody) =>
   request.post<any, void>(server + prefix + API.create, data)
+
+// 分配用户的权限
+export const setUserRoles = (data: setUserRolesBody) =>
+  request.post<any, void>(server + prefix + API.setUserRoles, data)

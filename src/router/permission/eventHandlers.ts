@@ -35,9 +35,17 @@ export const routerEventHandlered = (router: any) => {
     onlyOne = ""
   })
 
+  // 重新 判断权限是否通过
+  mitt.on("authRoles", (roles: string[]) => {
+    const cur = router.currentRoute.value.meta?.roles
+    if (!cur.find((item: string) => roles.includes(item))) {
+      router.push("/")
+      ElMessage.warning("权限丢失了哦~")
+    }
+  })
+
   // 处理 Not Found 跳转
   mitt.on("NotFound", (res) => {
-    console.log(res)
     if (res.message?.includes("没有查找到文章哦~"))
       console.log("需要跳转没有文章的404页")
 
