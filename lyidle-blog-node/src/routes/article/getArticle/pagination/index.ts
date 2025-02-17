@@ -4,15 +4,15 @@ const router = express.Router()
 const { Article } = require("@/db/models")
 // 分页获取文章
 router.get("/", async (req, res, next) => {
+  const { query } = req
+  /**
+   * @pagesize 每页显示条目个数
+   * @currentPage 当前页
+   */
+  const currentPage = Math.abs(Number(query.currentPage)) || 1
+  const pageSize = Math.abs(Number(query.pageSize)) || 10
+  const offset = (currentPage - 1) * pageSize
   try {
-    const { query } = req
-    /**
-     * @pagesize 每页显示条目个数
-     * @currentPage 当前页
-     */
-    const currentPage = Math.abs(Number(query.currentPage)) || 1
-    const pageSize = Math.abs(Number(query.pageSize)) || 10
-    const offset = (currentPage - 1) * pageSize
     const { count, rows } = await Article.findAndCountAll({
       attributes: [
         "id",
@@ -29,8 +29,7 @@ router.get("/", async (req, res, next) => {
       limit: pageSize,
       offset,
     })
-    if (JSON.stringify(rows) === "[]")
-      return res.result(void 0, "获取文章失败~", false)
+    if (!count) return res.result(void 0, "获取文章失败~", false)
     return res.result(
       {
         pagination: {

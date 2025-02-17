@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface FindALlRoles {
+export interface FindAllRoles {
   code: number
   data: Datum[]
   message: string
@@ -10,9 +10,9 @@ export interface FindALlRoles {
 
 export interface Datum {
   createdAt: string
-  desc: null | string
+  desc: null
   id: number
-  isBin: Date | null
+  isBin: null
   name: string
   updatedAt: string
   [property: string]: any

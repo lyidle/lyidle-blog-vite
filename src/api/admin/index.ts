@@ -11,7 +11,9 @@ import type { SetMenuList } from "@/api/admin/types/setMenuList"
 import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"
 import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
-import { FindALlRoles } from "./types/findALlRoles"
+import { FindAllRoles } from "./types/findALlRoles"
+import { paginationQuery } from "../types/paginationQuery"
+import { findAllRolesPagination } from "./types/findAllRolesPagination"
 
 // 统一管理 api
 enum API {
@@ -21,6 +23,7 @@ enum API {
   webInfo = "/webinfo",
   findOneSetting = "/admin/settings",
   findALlRoles = "/admin/role",
+  findALlRolesPagination = "/admin/role/pagination",
 }
 
 // 引入前缀
@@ -56,4 +59,13 @@ export const findOneSetting = (name: string) =>
 
 // 获取 所有的角色信息
 export const findALlRoles = () =>
-  request.get<any, FindALlRoles["data"]>(server + prefix + API.findALlRoles)
+  request.get<any, FindAllRoles["data"]>(server + prefix + API.findALlRoles)
+
+// 获取 所有的角色信息
+export const findALlRolesPagination = (data?: paginationQuery) =>
+  request.get<any, findAllRolesPagination["data"]>(
+    server +
+      prefix +
+      API.findALlRolesPagination +
+      `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
+  )

@@ -1,6 +1,12 @@
-import { getKey, getKeys, setKey } from "@/utils/redis"
+// 引入 类型和 express
 import express, { NextFunction, Request, Response } from "express"
+// 引入 redis
+import { getKey, setKey } from "@/utils/redis"
+// 引入 pagination 接口
+import pagination from "./pagination"
+// 引入 模型
 const { Role } = require("@/db/models")
+
 const router = express.Router()
 
 // 获取权限菜单列表
@@ -28,4 +34,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     )
   }
 })
+// 按照 分页器的格式查询
+router.use("/pagination", pagination)
 export default router

@@ -33,7 +33,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        max-height="40vh"
+        height="46vh"
         show-overflow-tooltip
         @selection-change="handleSelectionChange"
       >
