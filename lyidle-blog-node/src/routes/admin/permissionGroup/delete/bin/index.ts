@@ -32,4 +32,28 @@ router.delete(
     }
   }
 )
+// 不需要验证 登录用户拥有权限
+router.delete(
+  "/manager",
+  [jwtMiddleware],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id: permissionGroupId } = req.body
+      // 判断是否 移动到垃圾桶
+      const isBin = await getKey(`permissionsGroupBin:${permissionGroupId}`)
+      if (isBin)
+        return res.result(
+          void 0,
+          "权限菜单移动到垃圾桶了，请勿重复操作~",
+          false
+        )
+
+      await remove(req, res, true, false)
+    } catch (error) {
+      res.validateAuth(error, next, () =>
+        res.result(void 0, "权限菜单移动到回收站失败~", false)
+      )
+    }
+  }
+)
 export default router

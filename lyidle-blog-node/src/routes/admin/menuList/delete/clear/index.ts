@@ -20,4 +20,19 @@ router.delete(
     }
   }
 )
+
+// 不需要验证 登录用户拥有权限
+router.delete(
+  "/manager",
+  [jwtMiddleware, isAdmin],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await remove(req, res, false, false)
+    } catch (error) {
+      res.validateAuth(error, next, () =>
+        res.result(void 0, "删除菜单失败~", false)
+      )
+    }
+  }
+)
 export default router

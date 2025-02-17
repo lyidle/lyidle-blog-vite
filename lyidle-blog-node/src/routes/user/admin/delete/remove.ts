@@ -4,7 +4,7 @@ import type { Request, Response } from "express"
 import { delKey, setKey, getKey } from "@/utils/redis"
 // 引入时间转换
 const ms = require("ms")
-const { User, Article } = require("@/db/models")
+const { User } = require("@/db/models")
 // 软删除用户的时间
 const delete_user_expire = ms(process.env.delete_user_expire)
 // 不管是否删除都要移除的 定时任务 也需要

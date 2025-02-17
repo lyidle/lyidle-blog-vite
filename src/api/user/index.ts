@@ -22,6 +22,10 @@ enum API {
   search = "/user/search",
   exactSearch = "/user/search/exact",
   searchCounts = "/user/search/user",
+  removeUser = "/user/admin/bin",
+  deleteUser = "/user/admin/clear",
+  managerRemoveUser = "/user/admin/bin/manager",
+  managerDeleteUser = "/user/admin/clear/manager",
 }
 
 // API 的 key 的类型
@@ -55,12 +59,10 @@ export const getUserInfo = () =>
   request.get<any, GetUserInfo["data"]>(server + prefix + API.userInfo)
 
 // 搜索文章的回调
-const searchUserCallback = (api: APIKeysType) => {
-  return (data?: SearchUserQuery) =>
-    request.get<any, SearchUserPagination["data"]>(
-      server + prefix + API[api] + `?${new URLSearchParams(data)}`
-    )
-}
+const searchUserCallback = (api: APIKeysType) => (data?: SearchUserQuery) =>
+  request.get<any, SearchUserPagination["data"]>(
+    server + prefix + API[api] + `?${new URLSearchParams(data)}`
+  )
 
 // 模糊搜索用户信息
 export const searchUser = searchUserCallback("search")
@@ -72,3 +74,20 @@ export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
   request.get<any, SearchCountsById["data"]>(
     server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`
   )
+
+const removeCallbackUser = (api: APIKeysType) => (id: number) =>
+  request.delete<any, void>(server + prefix + API[api], {
+    data: { id },
+  })
+
+// 软删除 用户 需要 是本用户拥有权限
+export const removeUser = removeCallbackUser("removeUser")
+
+// 彻底删除 用户 需要 是本用户的
+export const deleteUser = removeCallbackUser("deleteUser")
+
+// 不需要验证 登录用户拥有权限
+// 软删除
+export const managerRemoveUser = removeCallbackUser("managerRemoveUser")
+// 彻底删除
+export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
