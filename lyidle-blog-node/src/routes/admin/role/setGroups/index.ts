@@ -12,7 +12,7 @@ const router = express.Router()
 
 router.post(
   "/",
-  // [jwtMiddleware],
+  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 获取所有角色 保存的键
@@ -52,19 +52,22 @@ router.post(
 
       // 不存在
       if (!findRole)
-        return res.result(void 0, "设置角色权限组时,获取权限组失败~", false)
+        return res.result(void 0, "设置角色权限组时,获取角色失败~", false)
 
       const findGroups = await PermissionGroup.findAll({
         where: { name: groups },
       })
 
+      if (!findGroups?.length) {
+        return res.result(void 0, "设置角色权限组时,获取权限组失败~", false)
+      }
+      // 设置角色的权限组信息
+      await findRole.setPermissionGroups(findGroups)
+
       // 处理user
       const users = JSON.parse(JSON.stringify(findRole)).Users
       // 删除 用户的缓存
       await resetUserInfo(users)
-
-      // 设置角色的权限组信息
-      await findRole.setPermissionGroups(findGroups)
 
       // 返回并 删除缓存
       await delKey(cacheKey)
