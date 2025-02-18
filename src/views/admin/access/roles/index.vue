@@ -75,7 +75,12 @@
         <!-- 工具栏 -->
         <el-table-column width="295" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button size="small" class="w-80px">分配权限</my-button>
+            <my-button
+              size="small"
+              class="w-80px"
+              @click="assignGroup.init(row)"
+              >分配权限组</my-button
+            >
             <my-button
               size="small"
               class="w-50px"
@@ -149,6 +154,10 @@
 
       <manager-com-role-create ref="create" @req="handlerReq" />
       <manager-com-role-editor ref="editor" @req="handlerReq" />
+      <manager-com-role-assign-group
+        ref="assignGroup"
+        @req="handlerReq"
+      ></manager-com-role-assign-group>
     </my-card>
   </div>
 </template>
@@ -156,6 +165,7 @@
 <script setup lang="ts" name="AdminAccessRoles">
 // 引入 api
 import { deleteRole, removeRole } from "@/api/admin"
+// 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
 import { useMangerRolesBase } from "@/hooks/manager/access/roles/useMangerRolesBase"
@@ -197,7 +207,7 @@ const handleSelectionChange = (role: Role[]) => {
 // 子组件实例
 const create = ref()
 const editor = ref()
-
+const assignGroup = ref()
 // 请求的逻辑
 const handlerReq = async () => {
   // 只有一条数据时

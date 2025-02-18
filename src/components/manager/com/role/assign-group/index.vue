@@ -1,13 +1,13 @@
 <template>
   <my-drawer v-model="drawer" width="250px" name="manager-drawer">
     <template #body>
-      <div class="text-[20px]">分配角色</div>
+      <div class="text-[20px]">分配权限组</div>
       <el-form class="mt-20px" label-width="70" label-position="right">
-        <el-form-item class="!mb-10px" label="账号">
-          <my-input v-model="nickName" disabled></my-input>
+        <el-form-item class="!mb-10px" label="名字">
+          <my-input v-model="name" disabled></my-input>
         </el-form-item>
-        <el-form-item class="!mb-10px" label="用户名">
-          <my-input v-model="account" disabled></my-input>
+        <el-form-item class="!mb-10px" label="描述">
+          <my-input v-model="desc" disabled></my-input>
         </el-form-item>
         <el-form-item class="!mb-10px" label="角色列表">
           <el-checkbox
@@ -41,12 +41,13 @@
   </my-drawer>
 </template>
 
-<script setup lang="ts" name="UserAssignRoles">
+<script setup lang="ts" name="RoleAssignGroup">
 // 引入 api
-import { findAllRoles } from "@/api/admin"
+import { findAllGroups } from "@/api/admin"
 import { setUserRoles } from "@/api/user"
 // 引入 类型
-import { User } from "@/api/user/types/searchUserPagination"
+import { PermissionGroup, Role } from "@/api/admin/types/findAllRolesPagination"
+
 import type { CheckboxValueType } from "element-plus"
 // drawer是否显示
 const drawer = ref<boolean>(false)
@@ -57,13 +58,14 @@ const Roles = ref<string[]>([])
 // 中间态
 const isIndeterminate = ref(false)
 // 当前用户
-const currentUser = ref<User>()
-const nickName = computed(() => {
-  return currentUser.value?.nickName
+const currentRole = ref<Role>()
+const name = computed(() => {
+  return currentRole.value?.name
 })
-const account = computed(() => {
-  return currentUser.value?.account
+const desc = computed(() => {
+  return currentRole.value?.desc
 })
+
 // 全选状态
 const checkAll = ref(false)
 
@@ -80,17 +82,27 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
   isIndeterminate.value = checkedCount > 0 && checkedCount < Roles.value.length
 }
 
+// 把 得到的 权限组转为 键值对 名字对应对象
+type groupsMapType = { [key in string]: PermissionGroup }
+const groupsMap = ref<groupsMapType>()
 // 得到 所有的角色信息
-const init = async (row: User) => {
+const init = async (row: Role) => {
   drawer.value = true
-  const result = await findAllRoles()
+  const result = await findAllGroups()
   const roles = result.map((item) => item.name)
-  // 初始化用户信息
-  currentUser.value = row
+  // 初始化角色信息
+  currentRole.value = row
   // 初始化角色
   Roles.value = roles
+  // 把 得到的 权限组转为 键值对 名字对应对象
+  const handler = row.PermissionGroups.reduce((pre, cur) => {
+    pre[cur.name] = cur
+    return pre
+  }, {} as groupsMapType)
+  groupsMap.value = handler
+
   // 赋值选中的数据
-  checkedRoles.value = row.roles
+  checkedRoles.value = row.PermissionGroups.map((item) => item.name)
   // 初始化中间态
   isIndeterminate.value =
     checkedRoles.value.length > 0 &&
@@ -106,14 +118,17 @@ const emit = defineEmits<{
 // 提交
 const handlerConfirm = async () => {
   try {
-    await setUserRoles({
-      id: currentUser.value?.id as number,
-      roles: checkedRoles.value,
-    })
+    // await setUserRoles({
+    //   id: currentRole.value?.id as number,
+    //   roles: checkedRoles.value,
+    // })
+    console.log(currentRole.value?.id)
+    console.log(checkedRoles.value.map((item) => groupsMap.value?.[item]))
+
     // 重新请求
     await emit("req")
     drawer.value = false
-    ElMessage.success("分配用户的角色成功~")
+    ElMessage.success("分配角色的权限组成功~")
   } catch (error) {}
 }
 

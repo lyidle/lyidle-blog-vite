@@ -16,6 +16,7 @@ import { FindAllRolesPagination } from "./types/findAllRolesPagination"
 import { FindAllRoles } from "./types/findAllRoles"
 import { CreateRoleBody } from "./types/createRoleBody"
 import { UpdateRoleBody } from "./types/updateRoleBody"
+import { FindAllGroups } from "./types/findAllGroups"
 
 // 统一管理 api
 enum API {
@@ -29,6 +30,7 @@ enum API {
   Role = "/admin/role",
   removeRole = "/admin/role/bin",
   deleteRole = "/admin/role/clear",
+  findAllGroups = "/admin/permissionGroup",
 }
 
 // API 的 key 的类型
@@ -97,3 +99,5 @@ export const deleteRole = removeCallback("deleteRole")
 export const removeRole = removeCallback("removeRole")
 
 // 查询所有 权限组 登录用户需要拥有权限
+export const findAllGroups = () =>
+  request.get<any, FindAllGroups["data"]>(server + prefix + API.findAllGroups)

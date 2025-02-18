@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface FindAllRoles {
+export interface FindAllGroups {
   code: number
   data: Datum[]
   message: string
@@ -9,21 +9,19 @@ export interface FindAllRoles {
 }
 
 export interface Datum {
+  children: Child[]
   createdAt: string
-  desc: null | string
+  desc: null
   id: number
-  isBin: null
   name: string
-  PermissionGroups: PermissionGroup[]
   updatedAt: string
   [property: string]: any
 }
 
-export interface PermissionGroup {
+export interface Child {
   createdAt: string
   desc: null
   id: number
-  isBin: null
   name: string
   updatedAt: string
   [property: string]: any

@@ -86,6 +86,8 @@ declare module 'vue' {
     ManagerAside: typeof import('./src/components/manager/aside/index.vue')['default']
     ManagerComAssignRoles: typeof import('./src/components/manager/com/assign-roles/index.vue')['default']
     ManagerComAssignRolescopy: typeof import('./src/components/manager/com/assign-roles copy/index.vue')['default']
+    ManagerComRoleAssignGroup: typeof import('./src/components/manager/com/role/assign-group/index.vue')['default']
+    ManagerComRoleAssignRoles: typeof import('./src/components/manager/com/role/assign-roles/index.vue')['default']
     ManagerComRoleCreate: typeof import('./src/components/manager/com/role/create/index.vue')['default']
     ManagerComRoleCreatecopy: typeof import('./src/components/manager/com/role/create copy/index.vue')['default']
     ManagerComRoleEditor: typeof import('./src/components/manager/com/role/editor/index.vue')['default']

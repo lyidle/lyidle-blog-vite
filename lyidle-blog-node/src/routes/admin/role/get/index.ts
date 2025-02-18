@@ -5,21 +5,28 @@ import { getKey, setKey } from "@/utils/redis"
 // 引入 pagination 接口
 import pagination from "./pagination"
 // 引入 模型
-const { Role } = require("@/db/models")
+const { Role, PermissionGroup } = require("@/db/models")
 
 const router = express.Router()
 
 // 获取权限菜单列表
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const roles = await Role.findAll()
+    const roles = await Role.findAll({
+      include: [
+        {
+          model: PermissionGroup,
+          through: { attributes: [] }, // 排除中间表字段
+        },
+      ],
+    })
 
     // 获取所有角色 保存的键
     const cacheKey = "roles:*"
 
     // 有缓存直接返回
-    const cacheValue = await getKey(cacheKey)
-    if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
+    // const cacheValue = await getKey(cacheKey)
+    // if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
 
     // 判断是否有 角色
     if (!roles?.length)

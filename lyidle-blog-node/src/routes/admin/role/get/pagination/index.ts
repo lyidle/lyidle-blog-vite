@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express"
-const { Role } = require("@/db/models")
+const { Role, PermissionGroup } = require("@/db/models")
 const router = express.Router()
 
 // 获取权限菜单列表
@@ -12,9 +12,14 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
-  const { role } = req.query
   try {
     const { count, rows } = await Role.findAndCountAll({
+      include: [
+        {
+          model: PermissionGroup,
+          through: { attributes: [] }, // 排除中间表字段
+        },
+      ],
       limit: pageSize,
       offset,
     })
@@ -22,7 +27,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     // 判断是否有 角色
     if (!count) return res.result(void 0, "服务器角色未初始化哦~", false)
 
-    const cacheValue = {
+    const result = {
       pagination: {
         total: count,
         currentPage,
@@ -31,7 +36,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
       roles: rows,
     }
 
-    res.result(cacheValue, "获取所有角色成功~")
+    res.result(result, "获取所有角色成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
       res.result(void 0, "获取所有角色失败哦~", false)

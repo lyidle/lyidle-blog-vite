@@ -23,6 +23,17 @@ export interface Pagination {
 
 export interface Role {
   createdAt: string
+  desc: null | string
+  id: number
+  isBin: null
+  name: string
+  PermissionGroups: PermissionGroup[]
+  updatedAt: string
+  [property: string]: any
+}
+
+export interface PermissionGroup {
+  createdAt: string
   desc: null
   id: number
   isBin: null
