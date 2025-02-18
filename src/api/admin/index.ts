@@ -94,7 +94,10 @@ export const findAllRolesPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllRolesPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
+      `/?currentPage=${data?.currentPage || 1}&pageSize=${
+        data?.pageSize || 10
+      }` +
+      `${data?.name ? `&name=${data.name}` : ""}`
   )
 
 // 创建角色 登录用户需要拥有权限
@@ -129,7 +132,10 @@ export const findAllGroupsPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllGroupsPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
+      `/?currentPage=${data?.currentPage || 1}&pageSize=${
+        data?.pageSize || 10
+      }` +
+      `${data?.name ? `&name=${data.name}` : ""}`
   )
 
 // 彻底删除权限组 登录用户需要拥有权限
@@ -162,7 +168,10 @@ export const findAllPermissionsPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllPermissionsPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
+      `/?currentPage=${data?.currentPage || 1}&pageSize=${
+        data?.pageSize || 10
+      }` +
+      `${data?.name ? `&name=${data.name}` : ""}`
   )
 
 // 彻底删除权限 登录用户需要拥有权限
