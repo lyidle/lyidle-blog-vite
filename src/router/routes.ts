@@ -237,6 +237,18 @@ export const asyncRoute: RouteRecordRaw[] = [
             component: () => import("@/views/admin/access/roles/index.vue"),
           },
           {
+            name: "GroupManagement",
+            path: "/admin/access/groups",
+            meta: { title: "权限组管理", roles: ["admin"] },
+            component: () => import("@/views/admin/access/roles/index.vue"),
+          },
+          {
+            name: "PermissionManagement",
+            path: "/admin/access/permissions",
+            meta: { title: "权限管理", roles: ["admin"] },
+            component: () => import("@/views/admin/access/roles/index.vue"),
+          },
+          {
             name: "MenuManagement",
             path: "/admin/access/menus",
             meta: { title: "菜单管理", roles: ["admin"] },

@@ -47,6 +47,16 @@ const asyncRoute = [
             to: "/admin/access/roles",
           },
           {
+            name: "GroupManagement",
+            roles: ["admin"],
+            to: "/admin/access/groups",
+          },
+          {
+            name: "PermissionManagement",
+            roles: ["admin"],
+            to: "/admin/access/permissions",
+          },
+          {
             name: "MenuManagement",
             roles: ["admin"],
             to: "/admin/access/menus",
