@@ -3,6 +3,7 @@
     <my-search-admin
       :submit="handlerSearch"
       label="角色名"
+      :reset="handlerReset"
       placeholder="请输入角色名"
     >
     </my-search-admin>
@@ -181,9 +182,17 @@ const { reqUserInfo } = useUserStore()
 const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
+// 搜索 的key
+const searchKey = ref("")
 // 使用 基础配置
-const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllRoles } =
-  useMangerRolesBase()
+const {
+  handlerSearch,
+  headerBtnsSize,
+  tableData,
+  pagination,
+  reqAllRoles,
+  handlerReset,
+} = useMangerRolesBase(searchKey)
 // 当前页
 const currentPage = ref(1)
 // 分页器个数

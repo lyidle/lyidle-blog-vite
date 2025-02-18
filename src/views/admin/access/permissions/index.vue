@@ -3,6 +3,7 @@
     <my-search-admin
       :submit="handlerSearch"
       label="权限名"
+      :reset="handlerReset"
       placeholder="请输入权限名"
     >
     </my-search-admin>
@@ -158,7 +159,7 @@ import { deletePermission, removePermission } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
-import { useMangerRolesBase } from "@/hooks/manager/access/permissions/useMangerRolesBase"
+import { useMangerPermissionsBase } from "@/hooks/manager/access/permissions/useMangerPermissionsBase"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
@@ -171,9 +172,17 @@ const { reqUserInfo } = useUserStore()
 const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
+// 搜索 的key
+const searchKey = ref("")
 // 使用 基础配置
-const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllRoles } =
-  useMangerRolesBase()
+const {
+  handlerSearch,
+  headerBtnsSize,
+  tableData,
+  pagination,
+  reqAllRoles,
+  handlerReset,
+} = useMangerPermissionsBase(searchKey)
 // 当前页
 const currentPage = ref(1)
 // 分页器个数
@@ -197,7 +206,6 @@ const handleSelectionChange = (role: Role[]) => {
 // 子组件实例
 const create = ref()
 const editor = ref()
-const assignGroup = ref()
 // 请求的逻辑
 const handlerReq = async () => {
   // 只有一条数据时

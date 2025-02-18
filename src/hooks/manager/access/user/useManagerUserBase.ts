@@ -1,9 +1,10 @@
 // 引入api
-import { searchExactUser, searchUser } from "@/api/user"
+import { searchUser } from "@/api/user"
 // 引入类型
 import type { searchData } from "@/api/user/types/searchUserPagination"
+import { SearchUserQuery } from "@/api/user/types/searchUserQuery"
 import { mitt } from "@/utils/emitter"
-export const useManagerUserBase = () => {
+export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
   const tableData = ref<searchData["users"]>([])
   // 分页器
@@ -18,12 +19,16 @@ export const useManagerUserBase = () => {
   const handlerSearch = async (key: string) => {
     try {
       const result = await searchUser({ nickName: key })
+      // 保存 key
+      searchKey.value = key
       tableData.value = result?.users || []
       pagination.value = result?.pagination
       ElMessage.success("搜索成功~")
     } catch (error) {}
   }
   const handlerReset = async () => {
+    // 重置 key
+    searchKey.value = ""
     await reqUsers()
   }
 
@@ -54,7 +59,10 @@ export const useManagerUserBase = () => {
   // 获取用户
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
-      const result = await searchExactUser({ currentPage, pageSize })
+      const search = { currentPage, pageSize } as SearchUserQuery
+      // 如果搜索了 则按照搜索的来
+      if (searchKey) search.nickName = searchKey.value
+      const result = await searchUser(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
     } catch (error) {}

@@ -3,6 +3,7 @@
     <my-search-admin
       :submit="handlerSearch"
       label="权限组"
+      :reset="handlerReset"
       placeholder="请输入权限组名"
     >
     </my-search-admin>
@@ -168,7 +169,7 @@ import { deleteGroups, removeGroups } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
-import { useMangerRolesBase } from "@/hooks/manager/access/groups/useMangerRolesBase"
+import { useMangerGroupsBase } from "@/hooks/manager/access/groups/useMangerGroupsBase"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
@@ -181,9 +182,17 @@ const { reqUserInfo } = useUserStore()
 const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
+// 搜索 的key
+const searchKey = ref("")
 // 使用 基础配置
-const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllGroups } =
-  useMangerRolesBase()
+const {
+  handlerSearch,
+  headerBtnsSize,
+  tableData,
+  pagination,
+  reqAllGroups,
+  handlerReset,
+} = useMangerGroupsBase(searchKey)
 // 当前页
 const currentPage = ref(1)
 // 分页器个数

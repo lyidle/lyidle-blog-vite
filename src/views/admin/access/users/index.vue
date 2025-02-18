@@ -189,6 +189,7 @@ const { reqUserInfo } = useUserStore()
 const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
+const searchKey = ref("")
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -200,7 +201,7 @@ const {
   reqUsers,
   userIds,
   handlerReset,
-} = useManagerUserBase()
+} = useManagerUserBase(searchKey)
 
 // 获取子组件示例 用于分配角色按钮的点击事件
 const assignRole = ref()

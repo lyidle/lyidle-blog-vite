@@ -1,17 +1,30 @@
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 api
-import { findAllGroupsPagination } from "@/api/admin"
+import { findAllPermissionsPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
-import type { Group } from "@/api/admin/types/findAllGroupsPagination"
-export const useMangerRolesBase = () => {
+import { Permission } from "@/api/admin/types/findAllPermissionsPagination"
+export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 头部的按钮大小
   const headerBtnsSize = ref("default")
 
   // 搜索回调
-  const handlerSearch = (key: string) => {
-    ElMessage(key)
+  const handlerSearch = async (key: string) => {
+    try {
+      const result = await findAllPermissionsPagination({ name: key })
+      // 保存 key
+      searchKey.value = key
+      tableData.value = result.permission
+      pagination.value = result.pagination
+      ElMessage.success("搜索成功~")
+    } catch (error) {}
+  }
+
+  const handlerReset = async () => {
+    // 重置 key
+    searchKey.value = ""
+    await reqAllRoles()
   }
 
   // 处理 窗口变化 的事件
@@ -26,18 +39,21 @@ export const useMangerRolesBase = () => {
   }
 
   // 表格的数据
-  const tableData = ref<Group[]>([])
+  const tableData = ref<Permission[]>([])
   const pagination = ref<Pagination>()
 
   // pagination  的回调
-  // 获取权限组
-  const reqAllGroups = async (
+  // 获取用户
+  const reqAllRoles = async (
     currentPage: number = 1,
     pageSize: number = 10
   ) => {
     try {
-      const result = await findAllGroupsPagination({ currentPage, pageSize })
-      tableData.value = result.groups
+      const result = await findAllPermissionsPagination({
+        currentPage,
+        pageSize,
+      })
+      tableData.value = result.permission
       pagination.value = result.pagination
     } catch (error) {}
   }
@@ -46,7 +62,7 @@ export const useMangerRolesBase = () => {
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
     // 得到 用户
-    await reqAllGroups()
+    await reqAllRoles()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -61,6 +77,7 @@ export const useMangerRolesBase = () => {
     headerBtnsSize,
     tableData,
     pagination,
-    reqAllGroups,
+    reqAllRoles,
+    handlerReset,
   }
 }
