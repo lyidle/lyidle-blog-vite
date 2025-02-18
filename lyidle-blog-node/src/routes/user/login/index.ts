@@ -9,10 +9,9 @@ const bcrypt = require("bcryptjs")
 import { accountReg, pwdReg } from "@/RegExp/loginOrReg"
 // 引入模型
 const { User, Role } = require("@/db/models")
-// 引入 redis 设置缓存
-import { delKey } from "@/utils/redis"
 // 引入 处理 用户的role 的函数
 import { handlerUserRoles } from "@/utils/db/handlerRoles"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 router.get("/", async (req, res, next) => {
   try {
     const { account: userAccount, password } = req.query
@@ -61,7 +60,8 @@ router.get("/", async (req, res, next) => {
 
     // 登录验证成功后创建 token
     const token = await setToken(user?.[0])
-    await delKey(`userInfo:${user.id}`)
+    // 删除对应用户信息缓存
+    await resetUserInfo([findUser])
     return res.result({ token }, "登录成功~")
   } catch (error) {
     res.validateAuth(error, next, () => {

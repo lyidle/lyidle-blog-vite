@@ -8,9 +8,11 @@ import createRole from "./create"
 import putRole from "./put"
 // 删除
 import deleteRole from "./delete"
+import setGroups from "./setGroups"
 const router = express.Router()
 router.use(getRole)
 router.use(createRole)
 router.use(putRole)
 router.use(deleteRole)
+router.use("/setGroups", setGroups)
 export default router

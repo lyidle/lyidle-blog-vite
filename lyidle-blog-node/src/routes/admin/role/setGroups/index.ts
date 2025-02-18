@@ -7,6 +7,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 import { delKey } from "@/utils/redis"
 // 设置权限
 import { setRoles } from "@/utils/db/user/setRoles"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 
@@ -21,9 +22,9 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 得到id
-      const { id, roles } = req.body
+      const { id, groups } = req.body
 
-      if (!id || !roles?.length)
+      if (!id || !groups?.length)
         return res.result(void 0, "设置用户权限时,id和roles是必传项哦~", false)
 
       // 查询对应id的信息
@@ -43,7 +44,7 @@ router.post(
         return res.result(void 0, "设置用户权限时,获取用户信息失败~", false)
 
       // 设置和创建权限
-      const result = await setRoles(roles)
+      const result = await setRoles(groups)
 
       if (result.length) {
         //  直接重置用户角色
@@ -51,13 +52,7 @@ router.post(
       }
 
       // 删除对应用户信息缓存
-      await delKey(`userInfo:${id}`)
-      await delKey(`userInfo:${findUser.dataValues.account}`)
-
-      // 判断是否 是 owner
-      const isOwner = default_owner.find((item: string) => roles.includes(item))
-      // 删除owner的缓存
-      if (isOwner) await delKey(`userInfo:owner`)
+      await resetUserInfo([findUser])
 
       return res.result(void 0, "获取用户信息成功~")
     } catch (error) {

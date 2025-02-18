@@ -124,6 +124,7 @@ router.put(
       }
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)
+      await delKey(`userInfo:${userAccount}`)
 
       // 判断修改的用户是否是owner角色
       const isOwner = tokenSetRoles?.find((item: string) =>
@@ -200,6 +201,7 @@ router.put(
       let token = await setToken({ ...dataValues, roles: tokenSetRoles })
       // 删除对应用户信息缓存
       await delKey(`userInfo:${id}`)
+      await delKey(`userInfo:${findUser.dataValues.account}`)
 
       // 判断修改的用户是否是owner角色
       const isOwner = tokenSetRoles?.find((item: string) =>

@@ -9,22 +9,29 @@ const delete_article_expire = ms(process.env.delete_article_expire)
 const { Article } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (userId: number) => {
+export const publicUserRemove = async (userId: number, author: string) => {
   // 删除用户信息缓存
   await delKey(`userInfo:${userId}`)
+  await delKey(`userInfo:${author}`)
+  await delKey(`userInfo:owner`)
   // 删除文章的缓存
   await delKey(`webTotalPages`)
   await delKey(`webTotalWords`)
 }
 
 // 彻底删除函数
-const deleted = async (delArticle: any, id: number, userId: number) => {
+const deleted = async (
+  delArticle: any,
+  id: number,
+  userId: number,
+  author: string
+) => {
   // 删除文章
   await delArticle.destroy({ force: true })
   // 删除临时的 userArticleBin
   await delKey(`userArticleBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(userId)
+  await publicUserRemove(userId, author)
 }
 // 删除函数
 const remove = async (
@@ -45,7 +52,7 @@ const remove = async (
     return res.result(void 0, "删除文章时，没有找到文章哦~", false)
 
   // 找到提取需要的信息
-  const { id, userId } = findArticle.dataValues
+  const { id, userId, author } = findArticle.dataValues
 
   // 是否 权限 判断
   if (isAuth) {
@@ -68,13 +75,13 @@ const remove = async (
     await setKey(`userArticleBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(userId)
+    await publicUserRemove(userId, author)
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_article_expire, "文章成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findArticle, id, userId)
+  await deleted(findArticle, id, userId, author)
   return res.result(void 0, "删除文章成功~")
 }
 export default remove

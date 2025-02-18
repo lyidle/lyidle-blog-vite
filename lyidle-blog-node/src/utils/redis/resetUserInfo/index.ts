@@ -1,11 +1,12 @@
 import { _handlerRoles } from "@/utils/db/handlerRoles"
-import { delKeys } from ".."
+import { delKey, delKeys } from ".."
 
 // 清除 user的信息 缓存
 export const resetUserInfo = async (findUsers: string[]) => {
   const users = JSON.parse(JSON.stringify(findUsers))
   let isOwnerRole: boolean = false
   const userIds = users.map((item: any) => {
+    delKey(`userInfo:${item.account}`)
     // 找到 user中有owner的 改变 isOwnerRole true
     item.Roles.find((item: any) => {
       if (item.name === "owner") {
@@ -23,8 +24,6 @@ export const resetUserInfo = async (findUsers: string[]) => {
       if (!isOwnerRole) {
         _keys = keys.filter((item) => item !== "owner")
       }
-      console.log({ _keys })
-
       return _keys
     })
   }

@@ -39,6 +39,8 @@ router.post(
       await delKey("webTotalWords")
       // 删除用户信息缓存
       await delKey(`userInfo:${ArticleData.userId}`)
+      await delKey(`userInfo:${ArticleData.author}`)
+      await delKey(`userInfo:owner`)
       // 返回处理后的结果
       return res.result({ id: dataValues.id }, "增加文章成功~")
     } catch (err) {

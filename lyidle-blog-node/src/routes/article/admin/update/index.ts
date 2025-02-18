@@ -75,6 +75,7 @@ router.put(
       // 删除用户信息缓存
       await delKey(`userInfo:${req.auth.id}`)
       await delKey(`userInfo:${req.auth.account}`)
+      await delKey(`userInfo:owner`)
       // 删除 文章的缓存
       await delKey(`ArticlefindByPk:${result.dataValues.id}`)
       res.result(result, "修改文章成功~")
