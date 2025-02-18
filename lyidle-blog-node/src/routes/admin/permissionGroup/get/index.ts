@@ -1,9 +1,11 @@
 import { getKey, getKeys, setKey } from "@/utils/redis"
 import express, { NextFunction, Request, Response } from "express"
+// 引入 pagination 接口
+import pagination from "./pagination"
 const { Permission, PermissionGroup } = require("@/db/models")
 const router = express.Router()
-// 查询 权限菜单的回调
-const getMenuList = async (req: Request, res: Response, next: NextFunction) => {
+// 获取权限菜单列表
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 保存 redis 的键
     let cacheKey = `permissionGroup:*`
@@ -32,8 +34,7 @@ const getMenuList = async (req: Request, res: Response, next: NextFunction) => {
       res.result(void 0, "获取权限菜单失败~", false)
     )
   }
-}
-
-// 获取权限菜单列表
-router.get("/", getMenuList)
+})
+// 按照 分页器的格式查询
+router.use("/pagination", pagination)
 export default router
