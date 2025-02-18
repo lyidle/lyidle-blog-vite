@@ -240,13 +240,14 @@ export const asyncRoute: RouteRecordRaw[] = [
             name: "GroupManagement",
             path: "/admin/access/groups",
             meta: { title: "权限组管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/roles/index.vue"),
+            component: () => import("@/views/admin/access/groups/index.vue"),
           },
           {
             name: "PermissionManagement",
             path: "/admin/access/permissions",
             meta: { title: "权限管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/roles/index.vue"),
+            component: () =>
+              import("@/views/admin/access/permissions/index.vue"),
           },
           {
             name: "MenuManagement",

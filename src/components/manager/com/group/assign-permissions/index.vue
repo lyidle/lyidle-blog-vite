@@ -1,7 +1,7 @@
 <template>
   <my-drawer v-model="drawer" width="250px" name="manager-drawer">
     <template #body>
-      <div class="text-[20px]">分配权限组</div>
+      <div class="text-[20px]">分配权限</div>
       <el-form class="mt-20px" label-width="70" label-position="right">
         <el-form-item class="!mb-10px" label="名字">
           <my-input v-model="name" disabled></my-input>
@@ -9,7 +9,7 @@
         <el-form-item class="!mb-10px" label="描述">
           <my-input v-model="desc" disabled></my-input>
         </el-form-item>
-        <el-form-item class="!mb-10px" label="角色列表">
+        <el-form-item class="!mb-10px" label="权限列表">
           <el-checkbox
             v-model="checkAll"
             :indeterminate="isIndeterminate"
@@ -19,11 +19,11 @@
             Check all
           </el-checkbox>
           <el-checkbox-group
-            v-model="checkedRoles"
-            @change="handleCheckedRolesChange"
+            v-model="checkedPermissions"
+            @change="handleCheckedPermissionsChange"
           >
             <el-checkbox
-              v-for="city in Roles"
+              v-for="city in Permissions"
               :key="city"
               :label="city"
               :value="city"
@@ -41,23 +41,22 @@
   </my-drawer>
 </template>
 
-<script setup lang="ts" name="RoleAssignGroup">
+<script setup lang="ts" name="GroupAssignPermissions">
 // 引入 api
-import { findAllGroups, setRoleGroups } from "@/api/admin"
+import { findAllPermissions, setGroupPermissions } from "@/api/admin"
 // 引入 类型
-import { Role } from "@/api/admin/types/findAllRolesPagination"
-
 import type { CheckboxValueType } from "element-plus"
+import type { Group } from "@/api/admin/types/findAllGroupsPagination"
 // drawer是否显示
 const drawer = ref<boolean>(false)
 // 选中的数据
-const checkedRoles = ref<string[]>([])
+const checkedPermissions = ref<string[]>([])
 // 全部的roles
-const Roles = ref<string[]>([])
+const Permissions = ref<string[]>([])
 // 中间态
 const isIndeterminate = ref(false)
 // 当前用户
-const currentRole = ref<Role>()
+const currentRole = ref<Group>()
 const name = computed(() => {
   return currentRole.value?.name
 })
@@ -70,35 +69,39 @@ const checkAll = ref(false)
 
 // 全选中状态变化
 const handleCheckAllChange = (val: CheckboxValueType) => {
-  checkedRoles.value = val ? Roles.value : []
+  checkedPermissions.value = val ? Permissions.value : []
   isIndeterminate.value = false
 }
 
 // 选中状态变化
-const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
+const handleCheckedPermissionsChange = (value: CheckboxValueType[]) => {
   const checkedCount = value.length
-  checkAll.value = checkedCount === Roles.value.length
-  isIndeterminate.value = checkedCount > 0 && checkedCount < Roles.value.length
+  checkAll.value = checkedCount === Permissions.value.length
+  isIndeterminate.value =
+    checkedCount > 0 && checkedCount < Permissions.value.length
 }
 
-// 得到 所有的角色信息
-const init = async (row: Role) => {
+// 得到 所有的权限信息
+const init = async (row: Group) => {
+  console.log(row)
+
   drawer.value = true
-  const result = await findAllGroups()
+  const result = await findAllPermissions()
   const roles = result.map((item) => item.name)
-  // 初始化角色信息
+  // 初始化权限信息
   currentRole.value = row
-  // 初始化角色
-  Roles.value = roles
+  // 初始化权限
+  Permissions.value = roles
   // 赋值选中的数据
-  checkedRoles.value = row.PermissionGroups.map((item) => item.name)
+  checkedPermissions.value = row.children.map((item) => item.name)
   // 初始化中间态
   isIndeterminate.value =
-    checkedRoles.value.length > 0 &&
-    checkedRoles.value.length < Roles.value.length
+    checkedPermissions.value.length > 0 &&
+    checkedPermissions.value.length < Permissions.value.length
   // 初始化 全选框
-  checkAll.value = checkedRoles.value.length === Roles.value.length
+  checkAll.value = checkedPermissions.value.length === Permissions.value.length
 }
+
 // 夫组件的自定义事件
 const emit = defineEmits<{
   req: []
@@ -107,15 +110,15 @@ const emit = defineEmits<{
 // 提交
 const handlerConfirm = async () => {
   try {
-    // 设置 角色的权限组
-    await setRoleGroups({
+    // 设置 权限组的权限
+    await setGroupPermissions({
       id: currentRole.value?.id as number,
-      groups: checkedRoles.value,
+      permissions: checkedPermissions.value,
     })
     // 重新请求
     await emit("req")
     drawer.value = false
-    ElMessage.success("分配角色的权限组成功~")
+    ElMessage.success("分配权限组的权限成功~")
   } catch (error) {}
 }
 

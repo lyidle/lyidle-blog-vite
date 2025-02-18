@@ -18,6 +18,9 @@ import { CreateRoleBody } from "./types/createRoleBody"
 import { UpdateRoleBody } from "./types/updateRoleBody"
 import { FindAllGroups } from "./types/findAllGroups"
 import { SetRoleGroupsBody } from "./types/setRoleGroupsBody"
+import { FindAllGroupsPagination } from "./types/findAllGroupsPagination"
+import { FindAllPermissions } from "./types/findAllPermissions"
+import { SetGroupPermissionsBody } from "./types/setGroupPermissionsBody"
 
 // 统一管理 api
 enum API {
@@ -33,6 +36,12 @@ enum API {
   deleteRole = "/admin/role/clear",
   findAllGroups = "/admin/permissionGroup",
   setRoleGroups = "/admin/role/setGroups",
+  findAllGroupsPagination = "/admin/permissionGroup/pagination",
+  removeGroups = "/admin/permissionGroup/bin",
+  deleteGroups = "/admin/permissionGroup/clear",
+  Group = "/admin/permissionGroup",
+  findAllPermissions = "/admin/permissionGroup/permission",
+  setGroupPermissions = "/admin/permissionGroup/setPermissions",
 }
 
 // API 的 key 的类型
@@ -73,7 +82,7 @@ export const findOneSetting = (name: string) =>
 export const findAllRoles = () =>
   request.get<any, FindAllRoles["data"]>(server + prefix + API.findAllRoles)
 
-// 获取 所有的角色信息
+// 获取 所有的角色信息 分页器
 export const findAllRolesPagination = (data?: paginationQuery) =>
   request.get<any, FindAllRolesPagination["data"]>(
     server +
@@ -94,10 +103,10 @@ export const updateRole = (data: UpdateRoleBody) =>
 const removeCallback = (api: APIKeysType) => (id: number) =>
   request.delete<any, void>(server + prefix + API[api], { data: { id } })
 
-// 彻底删除 登录用户需要拥有权限
+// 彻底删除角色 登录用户需要拥有权限
 export const deleteRole = removeCallback("deleteRole")
 
-// 软删除 登录用户需要拥有权限
+// 软删除角色 登录用户需要拥有权限
 export const removeRole = removeCallback("removeRole")
 
 // 查询所有 权限组 登录用户需要拥有权限
@@ -107,3 +116,36 @@ export const findAllGroups = () =>
 // 分配角色的权限组
 export const setRoleGroups = (data: SetRoleGroupsBody) =>
   request.post<any, void>(server + prefix + API.setRoleGroups, data)
+
+// 获取 所有的权限组信息 分页器
+export const findAllGroupsPagination = (data?: paginationQuery) =>
+  request.get<any, FindAllGroupsPagination["data"]>(
+    server +
+      prefix +
+      API.findAllGroupsPagination +
+      `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
+  )
+
+// 彻底删除权限组 登录用户需要拥有权限
+export const deleteGroups = removeCallback("deleteGroups")
+
+// 软删除权限组 登录用户需要拥有权限
+export const removeGroups = removeCallback("removeGroups")
+
+// 创建权限组 登录用户需要拥有权限
+export const createGroup = (data: CreateRoleBody) =>
+  request.post<any, void>(server + prefix + API.Group, data)
+
+// 更新权限组 登录用户需要拥有权限
+export const updateGroup = (data: UpdateRoleBody) =>
+  request.put<any, void>(server + prefix + API.Group, data)
+
+// 获取 所有的权限信息
+export const findAllPermissions = () =>
+  request.get<any, FindAllPermissions["data"]>(
+    server + prefix + API.findAllPermissions
+  )
+
+// 分配权限组的权限
+export const setGroupPermissions = (data: SetGroupPermissionsBody) =>
+  request.post<any, void>(server + prefix + API.setGroupPermissions, data)

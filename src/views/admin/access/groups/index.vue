@@ -2,8 +2,8 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="角色名"
-      placeholder="请输入角色名"
+      label="权限组"
+      placeholder="请输入权限组名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
@@ -12,7 +12,7 @@
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="create.init()"
-          >添加角色</my-button
+          >添加权限组</my-button
         >
         <my-button
           :size="headerBtnsSize"
@@ -79,7 +79,7 @@
               size="small"
               class="w-80px"
               @click="assignGroup.init(row)"
-              >分配权限组</my-button
+              >分配权限</my-button
             >
             <my-button
               size="small"
@@ -143,7 +143,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqAllRoles"
+        @change="reqAllGroups"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         :default-current-page="currentPage"
@@ -152,23 +152,23 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
 
-      <manager-com-role-create ref="create" @req="handlerReq" />
-      <manager-com-role-editor ref="editor" @req="handlerReq" />
-      <manager-com-role-assign-groups
+      <manager-com-group-create ref="create" @req="handlerReq" />
+      <manager-com-group-editor ref="editor" @req="handlerReq" />
+      <manager-com-group-assign-permissions
         ref="assignGroup"
         @req="handlerReq"
-      ></manager-com-role-assign-groups>
+      ></manager-com-group-assign-permissions>
     </my-card>
   </div>
 </template>
 
-<script setup lang="ts" name="AdminAccessRoles">
+<script setup lang="ts" name="AdminAccessGroups">
 // 引入 api
-import { deleteRole, removeRole } from "@/api/admin"
+import { deleteGroups, removeGroups } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
-import { useMangerRolesBase } from "@/hooks/manager/access/roles/useMangerRolesBase"
+import { useMangerRolesBase } from "@/hooks/manager/access/groups/useMangerRolesBase"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
@@ -182,7 +182,7 @@ const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
 // 使用 基础配置
-const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllRoles } =
+const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllGroups } =
   useMangerRolesBase()
 // 当前页
 const currentPage = ref(1)
@@ -223,7 +223,7 @@ const handlerReq = async () => {
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqAllRoles(pre, pageSize.value)
+    await reqAllGroups(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -231,11 +231,11 @@ const handlerReq = async () => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqAllRoles(cur - 1, pageSize.value)
+    await reqAllGroups(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqAllRoles(cur, pageSize.value)
+  await reqAllGroups(cur, pageSize.value)
   // 重新获取用户数据
   await reqUserInfo()
   await getAdminUserInfo()
@@ -248,12 +248,12 @@ const handlerRemove = async (row: Role) => {
   const { id, name } = row
   try {
     // 回收到垃圾桶
-    await removeRole(id)
+    await removeGroups(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`移动${name}角色到垃圾桶成功~`)
+    ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}角色到垃圾桶失败~`)
+    ElMessage.warning(`移动${name}权限组到垃圾桶失败~`)
   }
 }
 
@@ -262,12 +262,12 @@ const handlerDelete = async (row: Role) => {
   const { id, name } = row
   try {
     // 彻底删除
-    await deleteRole(id)
+    await deleteGroups(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`彻底删除${name}角色成功~`)
+    ElMessage.success(`彻底删除${name}权限组成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}角色失败~`)
+    ElMessage.error(`彻底删除${name}权限组失败~`)
   }
 }
 
@@ -279,7 +279,7 @@ const handlerAllRemove = async () => {
       roleIds.value.map(async (item) => {
         id = item
         // 软删除
-        await removeRole(id)
+        await removeGroups(id)
       })
     )
     // 重新请求
@@ -300,7 +300,7 @@ const handlerAllDelete = async () => {
       roleIds.value.map(async (item) => {
         id = item
         // 彻底删除
-        await deleteRole(id)
+        await deleteGroups(id)
       })
     )
     // 重新请求

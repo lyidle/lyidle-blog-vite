@@ -154,15 +154,15 @@
 
       <manager-com-role-create ref="create" @req="handlerReq" />
       <manager-com-role-editor ref="editor" @req="handlerReq" />
-      <manager-com-role-assign-groups
+      <manager-com-role-assign-group
         ref="assignGroup"
         @req="handlerReq"
-      ></manager-com-role-assign-groups>
+      ></manager-com-role-assign-group>
     </my-card>
   </div>
 </template>
 
-<script setup lang="ts" name="AdminAccessRoles">
+<script setup lang="ts" name="AdminAccessPermissions">
 // 引入 api
 import { deleteRole, removeRole } from "@/api/admin"
 // 引入 类型
