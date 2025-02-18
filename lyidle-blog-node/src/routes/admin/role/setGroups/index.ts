@@ -3,61 +3,75 @@ import express from "express"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
-// 引入redis
 import { delKey } from "@/utils/redis"
-// 设置权限
-import { setRoles } from "@/utils/db/user/setRoles"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
-const { User, Role } = require("@/db/models")
-
-// 默认的所有者的角色
-const default_owner = JSON.parse(process.env.default_owner!)
+const { PermissionGroup, Role, User } = require("@/db/models")
 
 const router = express.Router()
-// 获取当前token用户信息
+
 router.post(
   "/",
-  [jwtMiddleware],
+  // [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // 获取所有角色 保存的键
+      const cacheKey = "roles:*"
+
       // 得到id
       const { id, groups } = req.body
 
       if (!id || !groups?.length)
-        return res.result(void 0, "设置用户权限时,id和roles是必传项哦~", false)
+        return res.result(
+          void 0,
+          "设置角色权限组时,id和groups是必传项哦~",
+          false
+        )
 
       // 查询对应id的信息
-      const findUser = await User.findByPk(id, {
+      const findRole = await Role.findByPk(id, {
         paranoid: false,
         include: [
           {
-            model: Role,
-            attributes: ["name"], // 只获取角色名称
+            model: User,
+            paranoid: false,
+            attributes: ["id"],
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            include: [
+              {
+                model: Role,
+                paranoid: false,
+                attributes: ["id", "name"], // 只获取角色名称
+                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+                required: true, //按照 role时 过滤 User 的数据
+              },
+            ],
           },
         ],
       })
 
       // 不存在
-      if (!findUser)
-        return res.result(void 0, "设置用户权限时,获取用户信息失败~", false)
+      if (!findRole)
+        return res.result(void 0, "设置角色权限组时,获取权限组失败~", false)
 
-      // 设置和创建权限
-      const result = await setRoles(groups)
+      const findGroups = await PermissionGroup.findAll({
+        where: { name: groups },
+      })
 
-      if (result.length) {
-        //  直接重置用户角色
-        await findUser.setRoles(result)
-      }
+      // 处理user
+      const users = JSON.parse(JSON.stringify(findRole)).Users
+      // 删除 用户的缓存
+      await resetUserInfo(users)
 
-      // 删除对应用户信息缓存
-      await resetUserInfo([findUser])
+      // 设置角色的权限组信息
+      await findRole.setPermissionGroups(findGroups)
 
-      return res.result(void 0, "获取用户信息成功~")
+      // 返回并 删除缓存
+      await delKey(cacheKey)
+      return res.result(void 0, "获取角色权限组成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "设置用户权限时,获取用户信息失败~", false)
+        res.result(void 0, "设置角色权限组时失败~", false)
       )
     }
   }

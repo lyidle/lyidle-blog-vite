@@ -25,8 +25,8 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     const cacheKey = "roles:*"
 
     // 有缓存直接返回
-    // const cacheValue = await getKey(cacheKey)
-    // if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
+    const cacheValue = await getKey(cacheKey)
+    if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
 
     // 判断是否有 角色
     if (!roles?.length)

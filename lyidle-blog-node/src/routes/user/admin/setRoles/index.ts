@@ -14,7 +14,7 @@ const { User, Role } = require("@/db/models")
 const default_owner = JSON.parse(process.env.default_owner!)
 
 const router = express.Router()
-// 获取当前token用户信息
+
 router.post(
   "/",
   [jwtMiddleware],
@@ -59,10 +59,10 @@ router.post(
       // 删除owner的缓存
       if (isOwner) await delKey(`userInfo:owner`)
 
-      return res.result(void 0, "获取用户信息成功~")
+      return res.result(void 0, "设置用户权限成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "设置用户权限时,获取用户信息失败~", false)
+        res.result(void 0, "设置用户权限时失败~", false)
       )
     }
   }
