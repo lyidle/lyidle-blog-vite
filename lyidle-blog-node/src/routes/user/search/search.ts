@@ -33,7 +33,7 @@ export default async (
   isPagination: boolean = true
 ) => {
   let { id, account, email, roles, nickName, currentPage, pageSize } = data
-  roles = JSON.parse(roles)
+  if (roles) roles = JSON.parse(roles)
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
