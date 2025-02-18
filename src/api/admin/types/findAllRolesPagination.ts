@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface findAllRolesPagination {
+export interface FindAllRolesPagination {
   code: number
   data: Data
   message: string

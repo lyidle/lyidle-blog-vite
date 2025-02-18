@@ -12,7 +12,7 @@ import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"
 import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
 import { paginationQuery } from "../types/paginationQuery"
-import { findAllRolesPagination } from "./types/findAllRolesPagination"
+import { FindAllRolesPagination } from "./types/findAllRolesPagination"
 import { FindAllRoles } from "./types/findAllRoles"
 import { CreateRoleBody } from "./types/createRoleBody"
 import { UpdateRoleBody } from "./types/updateRoleBody"
@@ -24,8 +24,8 @@ enum API {
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
   findOneSetting = "/admin/settings",
-  findALlRoles = "/admin/role",
-  findALlRolesPagination = "/admin/role/pagination",
+  findAllRoles = "/admin/role",
+  findAllRolesPagination = "/admin/role/pagination",
   Role = "/admin/role",
   removeRole = "/admin/role/bin",
   deleteRole = "/admin/role/clear",
@@ -66,15 +66,15 @@ export const findOneSetting = (name: string) =>
   )
 
 // 获取 所有的角色信息
-export const findALlRoles = () =>
-  request.get<any, FindAllRoles["data"]>(server + prefix + API.findALlRoles)
+export const findAllRoles = () =>
+  request.get<any, FindAllRoles["data"]>(server + prefix + API.findAllRoles)
 
 // 获取 所有的角色信息
-export const findALlRolesPagination = (data?: paginationQuery) =>
-  request.get<any, findAllRolesPagination["data"]>(
+export const findAllRolesPagination = (data?: paginationQuery) =>
+  request.get<any, FindAllRolesPagination["data"]>(
     server +
       prefix +
-      API.findALlRolesPagination +
+      API.findAllRolesPagination +
       `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
   )
 

@@ -1,7 +1,7 @@
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 api
-import { findALlRolesPagination } from "@/api/admin"
+import { findAllRolesPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination, Role } from "@/api/admin/types/findAllRolesPagination"
 export const useMangerRolesBase = () => {
@@ -35,7 +35,7 @@ export const useMangerRolesBase = () => {
     pageSize: number = 10
   ) => {
     try {
-      const result = await findALlRolesPagination({ currentPage, pageSize })
+      const result = await findAllRolesPagination({ currentPage, pageSize })
       tableData.value = result.roles
       pagination.value = result.pagination
     } catch (error) {}

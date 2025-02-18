@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts" name="UserAssignRoles">
-import { findALlRoles } from "@/api/admin"
+import { findAllRoles } from "@/api/admin"
 import { setUserRoles } from "@/api/user"
 import { User } from "@/api/user/types/searchUserPagination"
 import type { CheckboxValueType } from "element-plus"
@@ -80,7 +80,7 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
 // 得到 所有的角色信息
 const init = async (row: User) => {
   drawer.value = true
-  const result = await findALlRoles()
+  const result = await findAllRoles()
   const roles = result.map((item) => item.name)
   // 初始化输入框
   currentUser.value = row
