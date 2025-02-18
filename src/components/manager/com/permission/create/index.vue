@@ -10,19 +10,19 @@
         @close="handlerClose"
       >
         <template #header>
-          <div class="color-[var(--primary-color)]">创建权限组</div>
+          <div class="color-[var(--primary-color)]">创建权限</div>
         </template>
         <el-form
           :model="createData"
           :rules="createRules"
           label-position="right"
-          label-width="70"
+          label-width="60"
           ref="formInstance"
           @submit.prevent="handlerConfirm"
         >
-          <el-form-item label="权限组名" prop="name">
+          <el-form-item label="权限名" prop="name">
             <my-input
-              placeholder="请输入权限组名"
+              placeholder="请输入权限名"
               v-model="createData.name"
             ></my-input>
           </el-form-item>
@@ -49,16 +49,12 @@
   </teleport>
 </template>
 
-<script setup lang="ts" name="GroupEditor">
-// 引入 接口
-import { updateGroup } from "@/api/admin"
-// 引入 类型
-import type { UpdateRoleBody } from "@/api/admin/types/updateRoleBody"
+<script setup lang="ts" name="PermissionCreate">
+import { createPermission } from "@/api/admin"
 
 const centerDialogVisible = ref(false)
 
-const createData = reactive<UpdateRoleBody>({
-  id: -1,
+const createData = reactive({
   name: "",
   desc: "",
 })
@@ -66,13 +62,13 @@ const createData = reactive<UpdateRoleBody>({
 // 创建规则
 const createRules = reactive({
   name: [
-    { required: true, trigger: "change", message: "权限组名是必填项哦~" },
+    { required: true, trigger: "change", message: "权限名是必填项哦~" },
     {
       required: true,
       trigger: "change",
       min: 1,
       max: 32,
-      message: "权限组名字长度必须在1-32之间哦",
+      message: "权限名字长度必须在1-32之间哦",
     },
   ],
   desc: [
@@ -80,15 +76,14 @@ const createRules = reactive({
       trigger: "change",
       min: 0,
       max: 255,
-      message: "权限组描述长度必须要在0-32之间哦",
+      message: "权限描述长度必须要在0-32之间哦",
     },
   ],
 })
 
 // 初始化
-const init = (row: UpdateRoleBody) => {
+const init = () => {
   centerDialogVisible.value = true
-  Object.assign(createData, row)
 }
 
 // 表单实例
@@ -109,8 +104,8 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await updateGroup(createData)
-    ElMessage.success(`修改权限组成功~`)
+    await createPermission(createData)
+    ElMessage.success(`创建权限成功~`)
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")

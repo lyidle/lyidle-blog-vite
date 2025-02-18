@@ -2,8 +2,8 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="角色名"
-      placeholder="请输入角色名"
+      label="权限名"
+      placeholder="请输入权限名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
@@ -12,7 +12,7 @@
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="create.init()"
-          >添加角色</my-button
+          >添加权限</my-button
         >
         <my-button
           :size="headerBtnsSize"
@@ -73,14 +73,8 @@
           </template>
         </el-table-column>
         <!-- 工具栏 -->
-        <el-table-column width="295" label="工具栏" align="center">
+        <el-table-column width="250" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button
-              size="small"
-              class="w-80px"
-              @click="assignGroup.init(row)"
-              >分配权限组</my-button
-            >
             <my-button
               size="small"
               class="w-50px"
@@ -152,23 +146,19 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
 
-      <manager-com-role-create ref="create" @req="handlerReq" />
-      <manager-com-role-editor ref="editor" @req="handlerReq" />
-      <manager-com-role-assign-group
-        ref="assignGroup"
-        @req="handlerReq"
-      ></manager-com-role-assign-group>
+      <manager-com-permission-create ref="create" @req="handlerReq" />
+      <manager-com-permission-editor ref="editor" @req="handlerReq" />
     </my-card>
   </div>
 </template>
 
 <script setup lang="ts" name="AdminAccessPermissions">
 // 引入 api
-import { deleteRole, removeRole } from "@/api/admin"
+import { deletePermission, removePermission } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
-import { useMangerRolesBase } from "@/hooks/manager/access/roles/useMangerRolesBase"
+import { useMangerRolesBase } from "@/hooks/manager/access/permissions/useMangerRolesBase"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
@@ -248,12 +238,12 @@ const handlerRemove = async (row: Role) => {
   const { id, name } = row
   try {
     // 回收到垃圾桶
-    await removeRole(id)
+    await removePermission(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`移动${name}角色到垃圾桶成功~`)
+    ElMessage.success(`移动${name}权限到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}角色到垃圾桶失败~`)
+    ElMessage.warning(`移动${name}权限到垃圾桶失败~`)
   }
 }
 
@@ -262,12 +252,12 @@ const handlerDelete = async (row: Role) => {
   const { id, name } = row
   try {
     // 彻底删除
-    await deleteRole(id)
+    await deletePermission(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`彻底删除${name}角色成功~`)
+    ElMessage.success(`彻底删除${name}权限成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}角色失败~`)
+    ElMessage.error(`彻底删除${name}权限失败~`)
   }
 }
 
@@ -279,7 +269,7 @@ const handlerAllRemove = async () => {
       roleIds.value.map(async (item) => {
         id = item
         // 软删除
-        await removeRole(id)
+        await removePermission(id)
       })
     )
     // 重新请求
@@ -300,7 +290,7 @@ const handlerAllDelete = async () => {
       roleIds.value.map(async (item) => {
         id = item
         // 彻底删除
-        await deleteRole(id)
+        await deletePermission(id)
       })
     )
     // 重新请求

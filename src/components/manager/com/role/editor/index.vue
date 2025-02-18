@@ -110,7 +110,7 @@ const handlerConfirm = async () => {
     // 表单校验
     await formInstance.value.validate()
     await updateRole(createData)
-    ElMessage.success(`创建角色成功~`)
+    ElMessage.success(`修改角色成功~`)
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
