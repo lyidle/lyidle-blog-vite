@@ -78,7 +78,7 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
 }
 
 // 得到 所有的角色信息
-const initDrawer = async (row: User) => {
+const init = async (row: User) => {
   drawer.value = true
   const result = await findALlRoles()
   const roles = result.map((item) => item.name)
@@ -114,7 +114,7 @@ const handlerConfirm = async () => {
   } catch (error) {}
 }
 
-defineExpose({ initDrawer })
+defineExpose({ init })
 </script>
 
 <style scoped></style>

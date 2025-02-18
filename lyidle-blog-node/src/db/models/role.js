@@ -14,11 +14,28 @@ module.exports = (sequelize, DataTypes) => {
   Role.init(
     {
       name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(32),
         allowNull: false,
         unique: true,
+        validate: {
+          notNull: { msg: "角色名字不能为空哦~" },
+          notEmpty: { msg: "角色名字不能为空哦~" },
+          len: { args: [1, 32], msg: "角色名字长度必须在1-32之间哦~" },
+          async isUnique(value) {
+            const findOne = await sequelize.models.Role.findOne({
+              where: { name: value },
+              paranoid: false,
+            })
+            if (findOne) throw new Error("角色名字已存在哦~")
+          },
+        },
       },
-      desc: DataTypes.STRING,
+      desc: {
+        type: DataTypes.STRING,
+        validate: {
+          len: { args: [0, 255], msg: "角色描述长度必须在0-255之间哦~" },
+        },
+      },
       isBin: DataTypes.DATE,
     },
     {

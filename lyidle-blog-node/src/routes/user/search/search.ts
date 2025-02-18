@@ -32,8 +32,8 @@ export default async (
   isCounts: boolean = false,
   isPagination: boolean = true
 ) => {
-  const { id, account, email, roles, nickName, currentPage, pageSize } = data
-
+  let { id, account, email, roles, nickName, currentPage, pageSize } = data
+  roles = JSON.parse(roles)
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
@@ -53,7 +53,7 @@ export default async (
         model: Role,
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        where: roles ? { name: roles } : {}, // 传入 roles 时查询对于的 roles 没有时 查询全部
+        where: roles ? { name: { [Op.in]: roles } } : {}, // 传入 roles 时查询对于的 roles 没有时 查询全部
         required: Boolean(roles), //按照 role时 过滤 User 的数据
         include: [
           {

@@ -1,23 +1,31 @@
 <template>
   <div class="admin-container">
-    <my-search-admin :submit="handlerSearch"> </my-search-admin>
+    <my-search-admin
+      :submit="handlerSearch"
+      label="角色名"
+      placeholder="请输入角色名"
+    >
+    </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="create.init()"
           >添加角色</my-button
         >
         <my-button
           :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="handlerAllRemove"
           >批量软删除</my-button
         >
         <my-button
           :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="handlerAllDelete"
           >批量删除</my-button
         >
       </div>
@@ -68,7 +76,11 @@
         <el-table-column width="295" label="工具栏" align="center">
           <template #="{ row }">
             <my-button size="small" class="w-80px">分配权限</my-button>
-            <my-button size="small" class="w-50px" type="warning"
+            <my-button
+              size="small"
+              class="w-50px"
+              type="warning"
+              @click="editor.init(row)"
               >编辑</my-button
             >
 
@@ -78,6 +90,7 @@
               icon-color="#F56C6C"
               :title="`确认要把《${row.name}》回收到垃圾桶么?`"
               placement="top"
+              @confirm="handlerRemove(row)"
             >
               <template #reference>
                 <my-button class="w-50px" size="small" type="danger"
@@ -97,6 +110,7 @@
               icon-color="#F56C6C"
               :title="`确认要彻底删除《${row.name}》么?`"
               placement="top"
+              @confirm="handlerDelete(row)"
             >
               <template #reference>
                 <my-button class="w-50px" size="small" type="danger"
@@ -132,28 +146,162 @@
         size="small"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
+
+      <manager-com-role-create ref="create" @req="handlerReq" />
+      <manager-com-role-editor ref="editor" @req="handlerReq" />
     </my-card>
   </div>
 </template>
 
 <script setup lang="ts" name="AdminAccessRoles">
+// 引入 api
+import { deleteRole, removeRole } from "@/api/admin"
+import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
 import { useMangerRolesBase } from "@/hooks/manager/access/roles/useMangerRolesBase"
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+import { useOwnerStore } from "@/store/owner"
+// 提取请求
+const { reqUserInfo } = useUserStore()
+const { getAdminUserInfo } = useOwnerStore()
+// 提取数据
+const { userRoles } = storeToRefs(useUserStore())
 // 使用 基础配置
-const {
-  handlerSearch,
-  headerBtnsSize,
-  tableData,
-  pagination,
-  currentPage,
-  pageSize,
-  handlerSizeChange,
-  handlerCurrentPage,
-  handleSelectionChange,
-  reqAllRoles,
-} = useMangerRolesBase()
+const { handlerSearch, headerBtnsSize, tableData, pagination, reqAllRoles } =
+  useMangerRolesBase()
+// 当前页
+const currentPage = ref(1)
+// 分页器个数
+const pageSize = ref(10)
+// 个数变化
+const handlerSizeChange = (num: number) => {
+  pageSize.value = num
+}
+// 页数变化
+const handlerCurrentPage = (num: number) => {
+  currentPage.value = num
+}
+
+// 保存选中的 roleId
+const roleIds = ref<number[]>([])
+// 选择状态发生变化
+const handleSelectionChange = (role: Role[]) => {
+  roleIds.value = role.map((item) => item.id)
+}
+
+// 子组件实例
+const create = ref()
+const editor = ref()
+
+// 请求的逻辑
+const handlerReq = async () => {
+  // 只有一条数据时
+  if (pagination.value?.total === 1) {
+    // 清除 table数据
+    tableData.value = []
+    return
+  }
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 || 1
+  // 只有一个的情况
+  if (tableData.value.length === 1) {
+    // 跳到上一页
+    await reqAllRoles(pre, pageSize.value)
+    return
+  }
+  // 处理批量删除时的逻辑
+  const len = roleIds.value?.length
+  // 删除时选择的个数和页码个数大于等于 则是上一页
+  if (len >= pageSize.value) {
+    // 跳到上一页
+    await reqAllRoles(cur - 1, pageSize.value)
+    return
+  }
+  // 默认是 当前页 和分页器的个数
+  await reqAllRoles(cur, pageSize.value)
+  // 重新获取用户数据
+  await reqUserInfo()
+  await getAdminUserInfo()
+  // 重新判断权限
+  mitt.emit("authRoles", userRoles.value)
+}
+
+// 软删除
+const handlerRemove = async (row: Role) => {
+  const { id, name } = row
+  try {
+    // 回收到垃圾桶
+    await removeRole(id)
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`移动${name}角色到垃圾桶成功~`)
+  } catch (error) {
+    ElMessage.warning(`移动${name}角色到垃圾桶失败~`)
+  }
+}
+
+// 删除
+const handlerDelete = async (row: Role) => {
+  const { id, name } = row
+  try {
+    // 彻底删除
+    await deleteRole(id)
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`彻底删除${name}角色成功~`)
+  } catch (error) {
+    ElMessage.error(`彻底删除${name}角色失败~`)
+  }
+}
+
+// 批量软删除
+const handlerAllRemove = async () => {
+  let id: number
+  try {
+    await Promise.all(
+      roleIds.value.map(async (item) => {
+        id = item
+        // 软删除
+        await removeRole(id)
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量删除成功,已成功移动到垃圾桶~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
+  }
+}
+
+// 批量删除
+const handlerAllDelete = async () => {
+  let id: number
+  try {
+    await Promise.all(
+      roleIds.value.map(async (item) => {
+        id = item
+        // 彻底删除
+        await deleteRole(id)
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量删除成功,已成功删除~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
+  }
+}
 </script>
 
 <style scoped lang="scss">

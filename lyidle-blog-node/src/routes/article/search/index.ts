@@ -37,7 +37,9 @@ const search = async (
     ],
     limit: pageSize,
     offset,
+    where: {},
   }
+
   if (!(id || author || title || desc || category || tags))
     return res.result(
       void 0,
@@ -53,8 +55,11 @@ const search = async (
     }
   }
 
-  if (tags) {
-    const condition = literal(`JSON_CONTAINS(tags, '"${tags}"')`)
+  if (tags && tags.length) {
+    const tagsArray = JSON.parse(tags)
+      .map((tag: string) => `"${tag}"`)
+      .join(",")
+    const condition = literal(`JSON_CONTAINS(tags, JSON_ARRAY(${tagsArray}))`)
     !merge ? (commend.where = condition) : (commend.where.tags = condition)
   }
 
@@ -63,9 +68,6 @@ const search = async (
   if (title) addCondition("title", title, exact)
   if (author) addCondition("author", author, exact)
   if (id) addCondition("id", id, true)
-
-  // 判断是否 查询回收站
-  if (isBin) commend.where.isBin = 1
 
   // 查询用户的所有文章
   const { count, rows } = await Article.findAndCountAll(commend)

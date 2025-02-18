@@ -12,7 +12,7 @@
         <my-button
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
-          @click="create.initCreate()"
+          @click="create.init()"
           >添加用户</my-button
         >
         <my-button
@@ -83,17 +83,14 @@
         <!-- 工具栏 -->
         <el-table-column width="295" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button
-              size="small"
-              class="w-80px"
-              @click="assignRole.initDrawer(row)"
+            <my-button size="small" class="w-80px" @click="assignRole.init(row)"
               >分配角色</my-button
             >
             <my-button
               size="small"
               class="w-50px"
               type="warning"
-              @click="editor.initEditor(row)"
+              @click="editor.init(row)"
               >编辑</my-button
             >
 

@@ -27,19 +27,6 @@ export const useMangerRolesBase = () => {
   // 表格的数据
   const tableData = ref<Role[]>([])
   const pagination = ref<Pagination>()
-  const currentPage = ref(1)
-  const pageSize = ref(10)
-  // 个数变化
-  const handlerSizeChange = (num: number) => {
-    pageSize.value = num
-  }
-  // 页数变化
-  const handlerCurrentPage = (num: number) => {
-    currentPage.value = num
-  }
-
-  // 选择状态发生变化
-  const handleSelectionChange = () => {}
 
   // pagination  的回调
   // 获取用户
@@ -73,11 +60,6 @@ export const useMangerRolesBase = () => {
     headerBtnsSize,
     tableData,
     pagination,
-    currentPage,
-    pageSize,
-    handlerSizeChange,
-    handlerCurrentPage,
-    handleSelectionChange,
     reqAllRoles,
   }
 }

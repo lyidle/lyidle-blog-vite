@@ -10,11 +10,11 @@
         @close="handlerClose"
       >
         <template #header>
-          <div class="color-[var(--primary-color)]">编辑用户</div>
+          <div class="color-[var(--primary-color)]">创建用户</div>
         </template>
         <el-form
-          :model="editorData"
-          :rules="editorRules"
+          :model="createData"
+          :rules="createRules"
           label-position="left"
           label-width="60"
           ref="formInstance"
@@ -22,23 +22,26 @@
         >
           <el-form-item label="账号" prop="account">
             <my-input
-              placeholder="账号"
-              v-model="editorData.account"
+              placeholder="请输入账号"
+              v-model="createData.account"
             ></my-input>
           </el-form-item>
           <el-form-item label="用户名" prop="nickName">
             <my-input
-              placeholder="用户名"
-              v-model="editorData.nickName"
+              placeholder="请输入用户名"
+              v-model="createData.nickName"
             ></my-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <my-input placeholder="邮箱" v-model="editorData.email"></my-input>
+            <my-input
+              placeholder="请输入邮箱"
+              v-model="createData.email"
+            ></my-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <my-input
-              placeholder="密码"
-              v-model="editorData.password"
+              placeholder="请输入密码"
+              v-model="createData.password"
             ></my-input>
           </el-form-item>
           <div class="flex justify-end mt-20px">
@@ -58,7 +61,7 @@
   </teleport>
 </template>
 
-<script setup lang="ts" name="UserEditor">
+<script setup lang="ts" name="UserCreate">
 // 引入接口
 import { createUser } from "@/api/user"
 // 引入 类型
@@ -67,15 +70,15 @@ import { CreateUserBody } from "@/api/user/types/createUserBody"
 import { accountReg, emailReg, nickNameReg, pwdReg } from "@/RegExp/loginOrReg"
 const centerDialogVisible = ref(false)
 
-const editorData = reactive<CreateUserBody>({
+const createData = reactive<CreateUserBody>({
   account: "",
   nickName: "",
   email: "",
   password: "",
 })
 
-// 登录规则
-const editorRules = reactive({
+// 创建规则
+const createRules = reactive({
   account: [
     { required: true, trigger: "change", message: "账号是必填项哦~" },
     {
@@ -121,7 +124,7 @@ const editorRules = reactive({
 })
 
 // 初始化
-const initCreate = () => {
+const init = () => {
   centerDialogVisible.value = true
 }
 
@@ -143,7 +146,7 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await createUser(editorData)
+    await createUser(createData)
     ElMessage.success(`创建用户成功~`)
     centerDialogVisible.value = false
     // 重新请求
@@ -152,7 +155,7 @@ const handlerConfirm = async () => {
 }
 
 // 暴露
-defineExpose({ initCreate })
+defineExpose({ init })
 </script>
 
 <style lang="scss">

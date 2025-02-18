@@ -11,9 +11,11 @@ import type { SetMenuList } from "@/api/admin/types/setMenuList"
 import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"
 import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
-import { FindAllRoles } from "./types/findALlRoles"
 import { paginationQuery } from "../types/paginationQuery"
 import { findAllRolesPagination } from "./types/findAllRolesPagination"
+import { FindAllRoles } from "./types/findAllRoles"
+import { CreateRoleBody } from "./types/createRoleBody"
+import { UpdateRoleBody } from "./types/updateRoleBody"
 
 // 统一管理 api
 enum API {
@@ -24,7 +26,13 @@ enum API {
   findOneSetting = "/admin/settings",
   findALlRoles = "/admin/role",
   findALlRolesPagination = "/admin/role/pagination",
+  Role = "/admin/role",
+  removeRole = "/admin/role/bin",
+  deleteRole = "/admin/role/clear",
 }
+
+// API 的 key 的类型
+export type APIKeysType = keyof typeof API
 
 // 引入前缀
 const prefix = import.meta.env.VITE_API
@@ -69,3 +77,23 @@ export const findALlRolesPagination = (data?: paginationQuery) =>
       API.findALlRolesPagination +
       `/?currentPage=${data?.currentPage || 1}&pageSize=${data?.pageSize || 10}`
   )
+
+// 创建角色 登录用户需要拥有权限
+export const createRole = (data: CreateRoleBody) =>
+  request.post<any, void>(server + prefix + API.Role, data)
+
+// 更新角色 登录用户需要拥有权限
+export const updateRole = (data: UpdateRoleBody) =>
+  request.put<any, void>(server + prefix + API.Role, data)
+
+// 删除的回调
+const removeCallback = (api: APIKeysType) => (id: number) =>
+  request.delete<any, void>(server + prefix + API[api], { data: { id } })
+
+// 彻底删除 登录用户需要拥有权限
+export const deleteRole = removeCallback("deleteRole")
+
+// 软删除 登录用户需要拥有权限
+export const removeRole = removeCallback("removeRole")
+
+// 查询所有 权限组 登录用户需要拥有权限

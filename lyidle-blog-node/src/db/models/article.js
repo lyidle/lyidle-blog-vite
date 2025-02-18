@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       desc: {
         type: DataTypes.STRING,
         validate: {
-          len: { args: [1, 255], msg: "文章描述长度必须在1-255之间哦~" },
+          len: { args: [0, 255], msg: "文章描述长度必须在0-255之间哦~" },
         },
       },
       poster: DataTypes.TEXT,

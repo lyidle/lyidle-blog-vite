@@ -12,7 +12,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
-
+  const { role } = req.query
   try {
     const { count, rows } = await Role.findAndCountAll({
       limit: pageSize,

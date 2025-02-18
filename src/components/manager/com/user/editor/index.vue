@@ -22,18 +22,21 @@
         >
           <el-form-item label="账号" prop="account">
             <my-input
-              placeholder="账号"
+              placeholder="请输入账号"
               v-model="editorData.account"
             ></my-input>
           </el-form-item>
           <el-form-item label="用户名" prop="nickName">
             <my-input
-              placeholder="用户名"
+              placeholder="请输入用户名"
               v-model="editorData.nickName"
             ></my-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <my-input placeholder="邮箱" v-model="editorData.email"></my-input>
+            <my-input
+              placeholder="请输入邮箱"
+              v-model="editorData.email"
+            ></my-input>
           </el-form-item>
           <div class="flex justify-end mt-20px">
             <my-button
@@ -77,7 +80,7 @@ const editorData = reactive<User>({
   signer: "",
   updatedAt: "",
 })
-// 登录规则
+// 编辑规则
 const editorRules = reactive({
   account: [
     { required: true, trigger: "change", message: "账号是必填项哦~" },
@@ -108,7 +111,7 @@ const editorRules = reactive({
 })
 
 // 处理编辑
-const initEditor = (row: User) => {
+const init = (row: User) => {
   centerDialogVisible.value = true
   Object.assign(editorData, row)
 }
@@ -145,7 +148,7 @@ const handlerConfirm = async () => {
   } catch (error) {}
 }
 // 暴露
-defineExpose({ initEditor })
+defineExpose({ init })
 </script>
 
 <style lang="scss">
