@@ -43,10 +43,9 @@
 
 <script setup lang="ts" name="RoleAssignGroup">
 // 引入 api
-import { findAllGroups } from "@/api/admin"
-import { setUserRoles } from "@/api/user"
+import { findAllGroups, setRoleGroups } from "@/api/admin"
 // 引入 类型
-import { PermissionGroup, Role } from "@/api/admin/types/findAllRolesPagination"
+import { Role } from "@/api/admin/types/findAllRolesPagination"
 
 import type { CheckboxValueType } from "element-plus"
 // drawer是否显示
@@ -82,9 +81,6 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
   isIndeterminate.value = checkedCount > 0 && checkedCount < Roles.value.length
 }
 
-// 把 得到的 权限组转为 键值对 名字对应对象
-type groupsMapType = { [key in string]: PermissionGroup }
-const groupsMap = ref<groupsMapType>()
 // 得到 所有的角色信息
 const init = async (row: Role) => {
   drawer.value = true
@@ -94,13 +90,6 @@ const init = async (row: Role) => {
   currentRole.value = row
   // 初始化角色
   Roles.value = roles
-  // 把 得到的 权限组转为 键值对 名字对应对象
-  const handler = row.PermissionGroups.reduce((pre, cur) => {
-    pre[cur.name] = cur
-    return pre
-  }, {} as groupsMapType)
-  groupsMap.value = handler
-
   // 赋值选中的数据
   checkedRoles.value = row.PermissionGroups.map((item) => item.name)
   // 初始化中间态
@@ -118,13 +107,11 @@ const emit = defineEmits<{
 // 提交
 const handlerConfirm = async () => {
   try {
-    // await setUserRoles({
-    //   id: currentRole.value?.id as number,
-    //   roles: checkedRoles.value,
-    // })
-    console.log(currentRole.value?.id)
-    console.log(checkedRoles.value.map((item) => groupsMap.value?.[item]))
-
+    // 设置 角色的权限组
+    await setRoleGroups({
+      id: currentRole.value?.id as number,
+      groups: checkedRoles.value,
+    })
     // 重新请求
     await emit("req")
     drawer.value = false
