@@ -11,10 +11,11 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   const pagination = ref<searchData["pagination"]>()
 
   // 头部 搜索 按钮大小
-  const headerBtnsSize = ref("default")
+  const headerBtnsSize = ref()
   // 账号和用户名的 宽度
-  const accountsWidth = ref(130)
-
+  const accountsWidth = ref()
+  // 右侧 工具栏
+  const toolBtnsWidth = ref()
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -38,11 +39,13 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       // 账号和用户名的 宽度
       accountsWidth.value = 130
       headerBtnsSize.value = "default"
+      toolBtnsWidth.value = 290
       return
     }
     // 账号和用户名的 宽度
     accountsWidth.value = 70
     headerBtnsSize.value = "small"
+    toolBtnsWidth.value = 100
   }
 
   // 监听窗口变化
@@ -91,5 +94,6 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     handleSelectionChange,
     reqUsers,
     handlerReset,
+    toolBtnsWidth,
   }
 }

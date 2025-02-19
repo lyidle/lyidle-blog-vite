@@ -42,8 +42,8 @@
           width="40"
           prop="id"
           label="id"
-          align="center"
           fixed="left"
+          align="center"
         />
         <el-table-column
           :width="accountsWidth"
@@ -81,59 +81,63 @@
           </template>
         </el-table-column>
         <!-- 工具栏 -->
-        <el-table-column width="295" label="工具栏" align="center">
+        <el-table-column :width="toolBtnsWidth" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button size="small" class="w-80px" @click="assignRole.init(row)"
-              >分配角色</my-button
-            >
-            <my-button
-              size="small"
-              class="w-50px"
-              type="warning"
-              @click="editor.init(row)"
-              >编辑</my-button
-            >
-
-            <!-- 软删除 -->
-            <el-popconfirm
-              width="220"
-              icon-color="#F56C6C"
-              :title="`确认要把《${row.account}》回收到垃圾桶么?`"
-              placement="top"
-              @confirm="handlerRemove(row)"
-            >
-              <template #reference>
-                <my-button class="w-50px" size="small" type="danger"
-                  >软删除</my-button
-                >
-              </template>
-              <template #actions="{ confirm, cancel }">
-                <el-button size="small" @click="cancel">否</el-button>
-                <el-button type="danger" size="small" @click="confirm">
-                  是
-                </el-button>
-              </template>
-            </el-popconfirm>
-            <!-- 删除 -->
-            <el-popconfirm
-              width="220"
-              icon-color="#F56C6C"
-              :title="`确认要彻底删除《${row.account}》么?`"
-              placement="top"
-              @confirm="handlerDelete(row)"
-            >
-              <template #reference>
-                <my-button class="w-50px" size="small" type="danger"
-                  >删除</my-button
-                >
-              </template>
-              <template #actions="{ confirm, cancel }">
-                <el-button size="small" @click="cancel">否</el-button>
-                <el-button type="danger" size="small" @click="confirm">
-                  是
-                </el-button>
-              </template>
-            </el-popconfirm>
+            <div class="flex gap-10px flex-wrap justify-center">
+              <my-button
+                size="small"
+                class="w-80px !m-0"
+                @click="assignRole.init(row)"
+                >分配角色</my-button
+              >
+              <my-button
+                size="small"
+                class="w-50px !m-0"
+                type="warning"
+                @click="editor.init(row)"
+                >编辑</my-button
+              >
+              <!-- 软删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要把《${row.account}》回收到垃圾桶么?`"
+                placement="top"
+                @confirm="handlerRemove(row)"
+              >
+                <template #reference>
+                  <my-button class="w-50px !m-0" size="small" type="danger"
+                    >软删除</my-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <el-button size="small" @click="cancel">否</el-button>
+                  <el-button type="danger" size="small" @click="confirm">
+                    是
+                  </el-button>
+                </template>
+              </el-popconfirm>
+              <!-- 删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要彻底删除《${row.account}》么?`"
+                placement="top"
+                @confirm="handlerDelete(row)"
+              >
+                <template #reference>
+                  <my-button class="w-50px !m-0" size="small" type="danger"
+                    >删除</my-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <el-button size="small" @click="cancel">否</el-button>
+                  <el-button type="danger" size="small" @click="confirm">
+                    是
+                  </el-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
         <template #empty>
@@ -194,13 +198,14 @@ const searchKey = ref("")
 const {
   tableData,
   pagination,
-  headerBtnsSize,
-  accountsWidth,
-  handlerSearch,
   handleSelectionChange,
   reqUsers,
   userIds,
   handlerReset,
+  headerBtnsSize,
+  accountsWidth,
+  handlerSearch,
+  toolBtnsWidth,
 } = useManagerUserBase(searchKey)
 
 // 获取子组件示例 用于分配角色按钮的点击事件

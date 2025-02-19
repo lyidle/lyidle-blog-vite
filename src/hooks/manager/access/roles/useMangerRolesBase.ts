@@ -6,9 +6,12 @@ import { findAllRolesPagination } from "@/api/admin"
 import type { Pagination, Role } from "@/api/admin/types/findAllRolesPagination"
 import { paginationQuery } from "@/api/types/paginationQuery"
 export const useMangerRolesBase = (searchKey: Ref<string>) => {
-  // 头部的按钮大小
-  const headerBtnsSize = ref("default")
-
+  // 头部 搜索 按钮大小
+  const headerBtnsSize = ref()
+  // 账号和用户名的 宽度
+  const accountsWidth = ref()
+  // 右侧 工具栏
+  const toolBtnsWidth = ref()
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -30,14 +33,17 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      // 头部的按钮大小
+      // 账号和用户名的 宽度
+      accountsWidth.value = 150
       headerBtnsSize.value = "default"
+      toolBtnsWidth.value = 290
       return
     }
-    // 头部的按钮大小
+    // 账号和用户名的 宽度
+    accountsWidth.value = 100
     headerBtnsSize.value = "small"
+    toolBtnsWidth.value = 100
   }
-
   // 表格的数据
   const tableData = ref<Role[]>([])
   const pagination = ref<Pagination>()
@@ -75,6 +81,8 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   return {
     handlerSearch,
     headerBtnsSize,
+    accountsWidth,
+    toolBtnsWidth,
     tableData,
     pagination,
     reqAllRoles,
