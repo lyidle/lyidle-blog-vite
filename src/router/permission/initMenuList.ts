@@ -25,7 +25,9 @@ const reloadRoute = async (
 ) => {
   // 移除路由
   routes.value?.forEach((item) => {
-    if (item.name) {
+    // 存在注册的路由则移除
+    if (item.name && router.hasRoute(item.name)) {
+      // 检查路由是否存在
       router.removeRoute(item.name) // 使用路由的 name 属性
     }
   })
