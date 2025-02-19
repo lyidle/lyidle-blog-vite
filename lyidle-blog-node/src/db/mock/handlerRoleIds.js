@@ -9,7 +9,7 @@ const { Roles } = require("../mock/handlerPermissions")
 
 // 生成 的 权限表
 const default_owner = JSON.parse(process.env.default_owner)
-const default_user = JSON.parse(process.env.default_user)
+const default_user = process.env.default_user
 const default_admin = JSON.parse(process.env.default_admin)
 
 const handlerRoleId = (roles, setRoles) => {
@@ -31,7 +31,7 @@ const adminIds = deduplication(handlerRoleId(roles, default_admin)).filter(
   Boolean
 )
 // user 角色id
-const userIds = deduplication(handlerRoleId(roles, default_user)).filter(
+const userIds = deduplication(handlerRoleId(roles, [default_user])).filter(
   Boolean
 )
 

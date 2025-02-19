@@ -12,7 +12,7 @@ const { Menu } = require("@/db/models")
 const db = require("@/db/models")
 const router = express.Router()
 // 用户角色用户组
-const default_user = JSON.parse(process.env.default_user!)
+const default_user = process.env.default_user!
 // 创建菜单
 router.post(
   "/",
@@ -38,7 +38,7 @@ router.post(
       const newMenu = await Menu.create(setData, { transaction })
 
       // 得到 roles
-      const _roles = roles?.length ? roles : default_user
+      const _roles = roles?.length ? roles : [default_user]
       // 处理 roles
       const $roles = await setRoles(_roles)
 

@@ -46,7 +46,7 @@ const buildMenuTree = ($menus: any[]) => {
 }
 
 // 用户角色用户组
-const default_user = JSON.parse(process.env.default_user!)
+const default_user = process.env.default_user!
 
 // 查询 菜单的回调
 const getMenuList = async (
@@ -56,9 +56,9 @@ const getMenuList = async (
   isAll: boolean = false
 ) => {
   try {
-    let roles =
-      (req.query?.roles && JSON.parse(req.query.roles as string)) ||
-      default_user // 从请求中获取角色名称
+    let roles = (req.query?.roles && JSON.parse(req.query.roles as string)) || [
+      default_user,
+    ] // 从请求中获取角色名称
     // 判断 是否查询所有菜单
     if (isAll) roles = "*"
     // 保存 redis 的键 确保 缓存时的顺序一致 避免重复缓存

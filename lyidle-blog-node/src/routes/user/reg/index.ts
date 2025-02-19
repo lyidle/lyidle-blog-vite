@@ -11,7 +11,7 @@ import { createUserWithRoles } from "@/utils/db/user/createUserWithRoles"
 const router = express.Router()
 
 // 普通用户组
-const default_user = JSON.parse(process.env.default_user!)
+const default_user = process.env.default_user!
 
 // 注册接口
 router.post("/", async (req, res, next) => {
@@ -54,7 +54,7 @@ router.post("/", async (req, res, next) => {
       email,
     }
 
-    const result = await createUserWithRoles(user, default_user)
+    const result = await createUserWithRoles(user, [default_user])
 
     // 注册成功后删除缓存
     await delKey(`regCode:${email}`)
