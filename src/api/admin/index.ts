@@ -5,10 +5,6 @@ import request from "@/utils/request"
 */
 import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import type { GetAnnounce } from "@/api/admin/types/getAnnounce"
-import type { SetAnnounce } from "@/api/admin/types/setAnnounce"
-import type { SetAnnounceBody } from "@/api/admin/types/setAnnounceBody"
-import type { SetMenuList } from "@/api/admin/types/setMenuList"
-import type { SetMenuListBody } from "@/api/admin/types/setMenuListBody"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"
 import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
 import { paginationQuery } from "../types/paginationQuery"
@@ -22,6 +18,11 @@ import { FindAllGroupsPagination } from "./types/findAllGroupsPagination"
 import { FindAllPermissions } from "./types/findAllPermissions"
 import { SetGroupPermissionsBody } from "./types/setGroupPermissionsBody"
 import { FindAllPermissionsPagination } from "./types/findAllPermissionsPagination"
+import { CreateMenuListBody } from "./types/createMenuListBody"
+import { CreateMenuList } from "./types/createMenuList"
+import { CreateAnnounceBody } from "./types/createAnnounceBody"
+import { CreateAnnounce } from "./types/createAnnounce"
+import { UpdateMenuListBody } from "./types/updateMenuListBody"
 
 // 统一管理 api
 enum API {
@@ -67,17 +68,19 @@ export const getMenuList = (roles: string[] = ["user"]) =>
 // 获取所有菜单
 export const getAllMenuList = () =>
   request.get<any, GetMenuList["data"]>(server + prefix + API.allMenuList)
-
-// 设置菜单
-export const setMenuList = (data: SetMenuListBody) =>
-  request.post<any, SetMenuList>(server + prefix + API.menuList, { data })
+// 创建菜单
+export const createMenuList = (data: CreateMenuListBody) =>
+  request.post<any, CreateMenuList>(server + prefix + API.menuList, { data })
+// 更新菜单
+export const updateMenuList = (data: UpdateMenuListBody) =>
+  request.put<any, CreateMenuList>(server + prefix + API.menuList, { data })
 
 // 获取公告
 export const getAnnounce = () =>
   request.get<any, GetAnnounce["data"]>(server + prefix + API.announce)
-// 设置公告
-export const setAnnounce = (data: SetAnnounceBody) =>
-  request.put<any, SetAnnounce>(server + prefix + API.announce, { data })
+// 创建公告
+export const createAnnounce = (data: CreateAnnounceBody) =>
+  request.put<any, CreateAnnounce>(server + prefix + API.announce, { data })
 
 // 获取短诗
 export const getPoetry = () =>

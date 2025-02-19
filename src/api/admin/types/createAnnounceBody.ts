@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface SetAnnounceBody {
+export interface CreateAnnounceBody {
   announce: string
   [property: string]: any
 }

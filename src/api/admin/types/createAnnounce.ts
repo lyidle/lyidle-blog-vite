@@ -1,8 +1,8 @@
 /**
  * Request
  */
-export interface SetMenuList {
+export interface CreateAnnounce {
   code: number
-  message: string[] | string
+  message: string
   [property: string]: any
 }

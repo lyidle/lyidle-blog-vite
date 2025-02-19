@@ -18,11 +18,27 @@
           align="center"
           class="tools-btns"
         >
-          <div class="flex flex-wrap gap-10px justify-center btns-tools">
-            <my-button class="w-70px !m-0" size="small">添加菜单</my-button>
-            <my-button class="w-70px !m-0" size="small">编辑</my-button>
-            <my-button class="w-70px !m-0" size="small">删除</my-button>
-          </div>
+          <template #="{ row }">
+            <div class="flex flex-wrap gap-10px justify-center btns-tools">
+              <my-button class="w-70px !m-0" size="small" type="defalt" plain
+                >添加菜单</my-button
+              >
+              <my-button
+                class="w-70px !m-0"
+                type="warning"
+                plain
+                size="small"
+                @click="editor.init(row)"
+                >编辑</my-button
+              >
+              <my-button class="w-70px !m-0" type="danger" plain size="small"
+                >软删除</my-button
+              >
+              <my-button class="w-70px !m-0" type="danger" plain size="small"
+                >删除</my-button
+              >
+            </div>
+          </template>
         </el-table-column>
         <template #empty>
           <div class="flex items-center justify-center h-100%">
@@ -30,6 +46,10 @@
           </div>
         </template>
       </el-table>
+      <manager-com-menu-editor
+        ref="editor"
+        @req="handlerReq"
+      ></manager-com-menu-editor>
     </my-card>
   </div>
 </template>
@@ -45,7 +65,7 @@ const toolBtnsWidth = ref()
 // 处理 窗口变化 的事件
 const handlerResize = () => {
   if (window.innerWidth > 870) {
-    toolBtnsWidth.value = 260
+    toolBtnsWidth.value = 340
     return
   }
   toolBtnsWidth.value = 150
@@ -58,9 +78,17 @@ onBeforeUnmount(() => {
   // 卸载监听窗口变化
   mitt.off("window:resize", handlerResize)
 })
-onMounted(async () => {
+
+// 获取子组件实例
+const editor = ref()
+
+// 发起请求
+const handlerReq = async () => {
   const result = await getAllMenuList()
   if (result) tableData.value = result
+}
+onMounted(async () => {
+  await handlerReq()
   // 处理 窗口变化 的事件
   handlerResize()
 })
