@@ -1,7 +1,5 @@
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
-// 引入 获取 roles 的函数
-import { ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { deduplication } from "@/utils/array/deduplication"

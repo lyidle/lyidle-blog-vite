@@ -43,18 +43,21 @@ export const handlerUserRoles = (
   return result
 }
 
-type rolesType = { [key in string]: any }[]
+type paramsType = { [key in string]: any }[]
 
 // 处理 Roles 为 string[]
-export const _handlerRoles = (Roles: rolesType) => {
+export const _handlerRoles = (Roles: paramsType) => {
   return deduplication(Roles.map((item) => item.name)).filter(Boolean)
 }
 
-// 把 权限 处理 成功 string[] 的形式
-export const handlerPermissions = (Roles: rolesType) => {
+/**
+ * @param Permissions 传入单个的Permissions
+ * @returns 返回 处理好的 Permissions 的名单 string[]
+ */
+export const handlerPermissions = (Permissions: paramsType) => {
   // 去重 加 过滤
   return deduplication(
-    Roles.reduce((acc, role) => {
+    Permissions.reduce((acc, role) => {
       role.PermissionGroups.forEach((group: any) => {
         // 将权限组名称添加到 permissions 数组中
         if (!acc.includes(group.name)) {
@@ -72,7 +75,10 @@ export const handlerPermissions = (Roles: rolesType) => {
   ).filter(Boolean)
 }
 
-// 返回 处理好的 roles 的名单 string[]
+/**
+ * @param includeRolesModel 第一个子集包含Roles的查询结果
+ * @returns 返回 处理好的 roles 的名单 string[]
+ */
 export const ReturnRoles = (includeRolesModel: any[]) => {
   const data = JSON.parse(JSON.stringify(includeRolesModel))
   // 把 roles 变为 string[]

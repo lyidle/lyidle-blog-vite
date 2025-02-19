@@ -16,7 +16,7 @@ export const createUserWithRoles = async (userData: any, roles: string[]) => {
 
     // 确保用户和角色都存在
     if (!user) {
-      throw new myError("otherError", "生成用户token时出错了哦~")
+      throw new myError("otherError", "创建用户时出错了哦~")
     }
 
     // 设置和创建权限
