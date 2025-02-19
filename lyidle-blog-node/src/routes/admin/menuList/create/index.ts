@@ -46,7 +46,7 @@ router.post(
         // 设置 roles
         await newMenu.setRoles($roles, { transaction })
         // 清除 菜单 的缓存
-        await delMenuRoles(_roles)
+        await delMenuRoles({ roles: _roles })
       }
 
       // 提交事务

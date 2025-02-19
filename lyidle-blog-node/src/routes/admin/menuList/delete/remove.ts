@@ -17,7 +17,7 @@ const { Menu, Role } = require("@/db/models")
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicMenusRemove = async (roles: string[]) => {
   // 清除 菜单 的缓存
-  await delMenuRoles(roles)
+  await delMenuRoles({ roles })
 }
 
 // 彻底删除函数
@@ -49,7 +49,7 @@ const remove = async (
   const { id } = findMenu.dataValues
 
   //  查询 文章 的角色 清除 menuList 的缓存
-  const existingRoles = await Menu.findAll({
+  const existingRoles = await Menu.findByPk({
     include: [
       {
         model: Role,
@@ -58,7 +58,6 @@ const remove = async (
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
       },
     ],
-    where: { id },
     paranoid: false,
   })
 

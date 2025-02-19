@@ -36,6 +36,7 @@ router.put(
         include: [
           {
             model: Role,
+            paranoid: false,
             attributes: ["name"], // 只获取角色名称
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
           },
@@ -48,6 +49,8 @@ router.put(
       }
 
       const menu = JSON.parse(JSON.stringify(findMenu))
+
+      // 处理原来的 roles
       let originRoles: string[] | null = null
       if (menu.Roles) {
         originRoles = _handlerRoles(menu.Roles)
@@ -72,6 +75,8 @@ router.put(
       if ($roles?.length) {
         // 设置 roles
         await findMenu.setRoles($roles, { transaction })
+
+        // 处理 roles 的缓存
         // 保存 需要删除 roles
         let roles = _roles
         // 判断 有无 原来的 角色信息
@@ -79,7 +84,7 @@ router.put(
           roles = deduplication([originRoles, roles]) as string[]
         }
         // 清除 菜单 的缓存
-        await delMenuRoles(roles)
+        await delMenuRoles({ roles })
       }
 
       // 提交事务

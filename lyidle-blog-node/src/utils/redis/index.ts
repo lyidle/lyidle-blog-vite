@@ -75,7 +75,7 @@ const delKey = async (key: string): Promise<void> => {
 /**
  * 批量删除以指定前缀开头的 key，并根据 patterns 和自定义回调过滤
  * @param prefix 前缀字符串（如 "menu:"）
- * @param patterns 需要匹配的数组项  如果没有 callback，使用默认的 patterns 过滤逻辑 将 patterns 拼接成逗号分隔的字符串 进行判断包含的删除
+ * @param patterns 需要匹配的数组项  如果没有 callback，使用默认的 patterns 过滤逻辑 即按照保存时是按照 , 分割的
  * @param callback 自定义过滤回调函数
  * @returns 删除的 key 数量
  */
@@ -100,8 +100,12 @@ const delKeys = async (
     filteredKeys = callback(keys, patterns)
   } else if (patterns && patterns?.length) {
     // 如果没有 callback，使用默认的 patterns 过滤逻辑
-    const patternsString = patterns.join(",") // 将 patterns 拼接成逗号分隔的字符串
-    filteredKeys = keys.filter((key) => key.includes(patternsString))
+    // 保存时是按照 ，分割的
+    filteredKeys = keys.filter((key) =>
+      patterns.find((item: any) => {
+        return key.includes(item)
+      })
+    )
   }
 
   if (!filteredKeys?.length) {
@@ -114,42 +118,10 @@ const delKeys = async (
 
   // 使用 DEL 命令批量删除
   const deletedCount = await client!.del(fullKeys)
-  console.log(`删除了 ${deletedCount} 个 key`)
+  console.log(`${prefix}删除了 ${deletedCount} 个 key`)
 
   return deletedCount
 }
-
-/**
- * 删除以指定前缀开头的所有键
- * @param prefix 键的前缀（例如 "menu:"）
- * @returns {Promise<void>}
- */
-// const delAllKeys = async (prefix: string): Promise<void> => {
-//   if (!client) await redisClient(); // 确保客户端已初始化
-
-//   try {
-//     let cursor = '0'; // 游标初始值
-//     let keys: string[] = [];
-
-//     // 使用 SCAN 遍历所有匹配的键
-//     do {
-//       const reply = await client!.scan(cursor, 'MATCH', `${redis_prefix}:${prefix}*`);
-//       cursor = reply[0]; // 更新游标
-//       keys = keys.concat(reply[1]); // 收集匹配的键
-//     } while (cursor !== '0'); // 游标为 '0' 时表示遍历完成
-
-//     // 如果有匹配的键，则批量删除
-//     if (keys.length > 0) {
-//       await client!.del(keys);
-//       console.log(`已删除 ${keys.length} 个以 "${prefix}" 开头的键`);
-//     } else {
-//       console.log(`未找到以 "${prefix}" 开头的键`);
-//     }
-//   } catch (error) {
-//     console.error(`删除以 "${prefix}" 开头的键时出错:`, error);
-//     throw error; // 抛出错误以便调用方处理
-//   }
-// };
 
 /**
  * 生成缓存 key
