@@ -8,15 +8,17 @@
       @close="handleClose(tag)"
       :type="tagsType[i % tagsType.length]"
       class="!h-25px"
+      :style="{ marginLeft: left }"
     >
       {{ tag }}
     </el-tag>
-    <template v-if="tags!?.length < max">
+    <template v-if="tags!?.length < +max">
       <el-input
         v-if="inputVisible"
         ref="InputRef"
         v-model="inputValue"
         class="!w-80px !h-25px"
+        :style="{ marginLeft: left }"
         size="small"
         @keyup.enter="handleInputConfirm"
         @blur="handleInputConfirm"
@@ -25,6 +27,7 @@
         v-else
         type="default"
         class="button-new-tag w-80px !h-25px"
+        :style="{ marginLeft: left }"
         size="small"
         @click="showInput"
       >
@@ -40,16 +43,18 @@ import type { InputInstance } from "element-plus"
 const tags = defineModel<string[]>()
 const props = withDefaults(
   defineProps<{
-    min?: number
-    max?: number
+    min?: number | string
+    max?: number | string
     error?: string
     repeatError?: string
+    left?: string
   }>(),
   {
     min: 1,
     max: 10,
     error: "标签个数需要在1-10之间哦~",
     repeatError: "标签不能重复哦~",
+    left: "",
   }
 )
 const inputValue = ref("")
@@ -73,7 +78,7 @@ const resetInput = () => {
 const handleClose = async (tag: string) => {
   await emit("before-close")
   // 没内容
-  if ((tags.value?.length || 0) <= props.min) {
+  if ((tags.value?.length || 0) <= +props.min) {
     ElMessage.error(props.error)
   }
   tags.value?.splice(tags.value.indexOf(tag), 1)
@@ -89,7 +94,7 @@ const showInput = () => {
 // 验证
 const validate = () => {
   const len = tags.value?.length || 0
-  if (len < props.min || len > props.max) {
+  if (len < +props.min || len > +props.max) {
     ElMessage.error(props.error)
     resetInput()
     throw new Error(props.error)
@@ -110,7 +115,7 @@ const handleInputConfirm = async () => {
   }
   // 验证没有通过
   const len = (tags.value?.length || 0) + 1
-  if (len < props.min || len > props.max) {
+  if (len < +props.min || len > +props.max) {
     ElMessage.error(props.error)
     resetInput()
     return

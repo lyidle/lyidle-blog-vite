@@ -83,15 +83,16 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
 
 // 得到 所有的权限组信息
 const init = async (row: Role) => {
+  const _row = JSON.parse(JSON.stringify(row)) as Role
   drawer.value = true
   const result = await findAllGroups()
   const roles = result.map((item) => item.name)
   // 初始化权限组信息
-  currentRole.value = row
+  currentRole.value = _row
   // 初始化权限组
   Roles.value = roles
   // 赋值选中的数据
-  checkedRoles.value = row.PermissionGroups.map((item) => item.name)
+  checkedRoles.value = _row.PermissionGroups.map((item) => item.name)
   // 初始化中间态
   isIndeterminate.value =
     checkedRoles.value.length > 0 &&

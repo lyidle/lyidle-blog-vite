@@ -20,7 +20,7 @@
         >
           <template #="{ row }">
             <div class="flex flex-wrap gap-10px justify-center btns-tools">
-              <my-button class="w-70px !m-0" size="small" type="defalt" plain
+              <my-button class="w-70px !m-0" size="small" type="default" plain
                 >添加菜单</my-button
               >
               <my-button

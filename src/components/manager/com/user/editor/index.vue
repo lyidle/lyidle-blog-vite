@@ -13,7 +13,7 @@
           <div class="color-[var(--primary-color)]">编辑用户</div>
         </template>
         <el-form
-          :model="editorData"
+          :model="createData"
           :rules="editorRules"
           label-position="left"
           label-width="60"
@@ -23,19 +23,19 @@
           <el-form-item label="账号" prop="account">
             <my-input
               placeholder="请输入账号"
-              v-model="editorData.account"
+              v-model="createData.account"
             ></my-input>
           </el-form-item>
           <el-form-item label="用户名" prop="nickName">
             <my-input
               placeholder="请输入用户名"
-              v-model="editorData.nickName"
+              v-model="createData.nickName"
             ></my-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <my-input
               placeholder="请输入邮箱"
-              v-model="editorData.email"
+              v-model="createData.email"
             ></my-input>
           </el-form-item>
           <div class="flex justify-end mt-20px">
@@ -68,7 +68,7 @@ import { useUserStore } from "@/store/user"
 const { userToken } = storeToRefs(useUserStore())
 
 const centerDialogVisible = ref(false)
-const editorData = reactive<User>({
+const createData = reactive<User>({
   account: "",
   avatar: "",
   createdAt: "",
@@ -113,7 +113,7 @@ const editorRules = reactive({
 // 处理编辑
 const init = (row: User) => {
   centerDialogVisible.value = true
-  Object.assign(editorData, row)
+  Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
 
 // 表单实例
@@ -135,7 +135,7 @@ const handlerConfirm = async () => {
     // 表单校验
     await formInstance.value.validate()
     // 更新用户
-    const result = await managerUpdateUser(editorData)
+    const result = await managerUpdateUser(createData)
     // 修改到自身
     if (result?.isUser) {
       // 重新赋值 token

@@ -82,15 +82,16 @@ const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
 
 // 得到 所有的角色信息
 const init = async (row: User) => {
+  const _row = JSON.parse(JSON.stringify(row)) as User
   drawer.value = true
   const result = await findAllRoles()
   const roles = result.map((item) => item.name)
   // 初始化用户信息
-  currentUser.value = row
+  currentUser.value = _row
   // 初始化角色
   Roles.value = roles
   // 赋值选中的数据
-  checkedRoles.value = row.roles
+  checkedRoles.value = _row.roles
   // 初始化中间态
   isIndeterminate.value =
     checkedRoles.value.length > 0 &&

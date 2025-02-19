@@ -88,7 +88,7 @@ const createRules = reactive({
 // 初始化
 const init = (row: UpdateRoleBody) => {
   centerDialogVisible.value = true
-  Object.assign(createData, row)
+  Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
 
 // 表单实例

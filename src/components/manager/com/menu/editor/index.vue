@@ -27,10 +27,15 @@
             ></my-input>
           </el-form-item>
           <el-form-item label="权限" prop="role">
-            <my-input
-              placeholder="请输入权限"
-              v-model="createData.role"
-            ></my-input>
+            <my-tags
+              v-model="createData.roles"
+              min="1"
+              max="5"
+              error="标签个数需要在0-5之间哦~"
+              ref="tagsInstance"
+              class="mr-10px"
+              left="10px"
+            ></my-tags>
           </el-form-item>
           <div class="flex justify-end mt-20px">
             <my-button
@@ -50,18 +55,14 @@
 </template>
 
 <script setup lang="ts" name="MenuEditor">
-// 引入 接口
-import { updateMenuList } from "@/api/admin"
 // 引入 类型
+import { updateMenuList } from "@/api/admin"
 import type { UpdateMenuListBody } from "@/api/admin/types/updateMenuListBody"
-
-const centerDialogVisible = ref(true)
-
+const centerDialogVisible = ref(false)
 const createData = reactive<UpdateMenuListBody>({
   id: -1,
   name: "",
   roles: [],
-  role: "",
   parentId: null,
 })
 
@@ -82,11 +83,13 @@ const createRules = reactive({
 // 初始化
 const init = (row: UpdateMenuListBody) => {
   centerDialogVisible.value = true
-  Object.assign(createData, row)
+  Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
 
-// 表单实例
+// 表单组件实例
 const formInstance = ref()
+// tags组件实例
+const tagsInstance = ref()
 
 // 关闭
 const handlerClose = () => {
@@ -103,6 +106,7 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
+    tagsInstance.value.validate?.()
     // await updateMenuList(createData)
     ElMessage.success(`修改菜单成功~`)
     centerDialogVisible.value = false
