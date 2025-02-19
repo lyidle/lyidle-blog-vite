@@ -44,38 +44,13 @@
             class="!mb-0 is-required doc-publish-item"
             label="文章的标签"
           >
-            <div class="flex gap-2 ml-0.625rem">
-              <el-tag
-                v-for="(tag, i) in docsFormData.tags"
-                :key="tag"
-                closable
-                :disable-transitions="false"
-                :type="tagsType[i % tagsType.length]"
-                @close="handleClose(tag)"
-              >
-                {{ tag }}
-              </el-tag>
-              <template v-if="tags.length < tagsReg.totalMax">
-                <el-input
-                  v-if="inputVisible"
-                  ref="InputRef"
-                  v-model="inputValue"
-                  class="tags-input"
-                  size="small"
-                  @keyup.enter="handleInputConfirm"
-                  @blur="handleInputConfirm"
-                />
-                <my-button
-                  v-else
-                  class="button-new-tag"
-                  size="small"
-                  @click="showInput"
-                  type="default"
-                >
-                  + New Tag
-                </my-button>
-              </template>
-            </div>
+            <my-tags
+              v-model="docsFormData.tags"
+              ref="tagsInstance"
+              repeatError="标签不能重复哦~"
+              :error="tagsReg.msg"
+              class="ml-0.625rem"
+            ></my-tags>
           </el-form-item>
           <!-- 文章的描述 -->
           <el-form-item
@@ -181,9 +156,11 @@ const docsFormData = reactive({
   desc,
   tags,
 })
-
+// 表单组件实例
 const docsForm = ref()
-
+// tags的组件实例
+const tagsInstance = ref()
+// 表单规则
 const rules = reactive({
   title: [
     {
@@ -222,54 +199,6 @@ const rules = reactive({
     },
   ],
 })
-
-const tagsType = ["primary", "success", "info", "warning", "danger"]
-
-const inputValue = ref("")
-const inputVisible = ref(false)
-const InputRef = ref<InputInstance>()
-// 关闭 tags事件
-const handleClose = (tag: string) => {
-  if (tags.value.length <= tagsReg.totalMin) {
-    ElMessage.error(tagsReg.msg)
-  }
-  docsFormData.tags.splice(docsFormData.tags.indexOf(tag), 1)
-}
-
-const showInput = () => {
-  inputVisible.value = true
-  nextTick(() => {
-    InputRef.value!.input!.focus()
-  })
-}
-
-const resetInput = () => {
-  inputVisible.value = false
-  inputValue.value = ""
-}
-
-const handleInputConfirm = () => {
-  // 没内容
-  if (!inputValue.value) {
-    resetInput()
-    return
-  }
-  // 重复
-  if (docsFormData.tags.includes(inputValue.value)) {
-    ElMessage.error("标签不能重复哦~")
-    resetInput()
-    return
-  }
-  const len = tags.value.length + 1
-  if (len < tagsReg.totalMin || len > tagsReg.totalMax) {
-    ElMessage.error(tagsReg.msg)
-    resetInput()
-    return
-  }
-  docsFormData.tags.push(inputValue.value)
-  resetInput()
-}
-
 // #endregion 表单 验证
 
 // vditor 容器
@@ -298,12 +227,8 @@ const handerUpload = async () => {
   try {
     // 验证 数据
     await docsForm.value.validate()
-    const len = tags.value.length
-    if (len < tagsReg.totalMin || len > tagsReg.totalMax) {
-      ElMessage.error(tagsReg.msg)
-      resetInput()
-      return
-    }
+    // 验证tags
+    tagsInstance.value.validate?.()
     const content = vditor.value?.getValue() || ""
     // 验证 内容
     if (+(length.value || 0) < contentReg.min) {

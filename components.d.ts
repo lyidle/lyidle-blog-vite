@@ -123,6 +123,7 @@ declare module 'vue' {
     MySearchAdmin: typeof import('./src/components/my/search/admin/index.vue')['default']
     MySelect: typeof import('./src/components/my/select/index.vue')['default']
     MySwitch: typeof import('./src/components/my/switch/index.vue')['default']
+    MyTags: typeof import('./src/components/my/tags/index.vue')['default']
     MyTree: typeof import('./src/components/my/tree/index.vue')['default']
     MyUpload: typeof import('./src/components/my/upload/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
