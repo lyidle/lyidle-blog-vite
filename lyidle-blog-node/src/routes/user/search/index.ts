@@ -3,7 +3,8 @@ import express from "express"
 import search from "./search"
 import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
-
+// 环境变量
+const default_owner = process.env.default_owner!
 // 模糊搜索
 router.get("/", async (req, res, next) => {
   try {
@@ -82,7 +83,7 @@ router.get("/user", async (req, res, next) => {
       "查询用户，至少要传入id、roles、account中的一个参数~",
       false
     )
-  if (roles && roles !== "owner") {
+  if (roles && roles !== default_owner) {
     return res.result(
       void 0,
       "该接口查询用户信息失败,roles只能传入owner~",

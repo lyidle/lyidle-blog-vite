@@ -55,7 +55,7 @@ router.post(
       await delKey(`userInfo:${findUser.dataValues.account}`)
 
       // 判断是否 是 owner
-      const isOwner = roles.includes(default_owner)
+      const isOwner = roles === default_owner
       // 删除owner的缓存
       if (isOwner) await delKey(`userInfo:owner`)
 
