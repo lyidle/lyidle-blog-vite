@@ -12,7 +12,7 @@ const delete_user_expire = ms(process.env.delete_user_expire)
 export const publicUserRemove = async (findUser: any) => {
   // 删除对应用户信息缓存
   await resetUserInfo([findUser])
-  // 删除用户的缓存
+  // 删除用户的临时垃圾桶变量
   await delKey(`userArticleBin`)
   // 删除文章的缓存
   await delKey(`webTotalPages`)

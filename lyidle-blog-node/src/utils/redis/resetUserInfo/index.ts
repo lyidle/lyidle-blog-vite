@@ -1,17 +1,21 @@
 import { _handlerRoles } from "@/utils/db/handlerRoles"
-import { delKey, delKeys } from ".."
+import { delKeys } from ".."
 import { deduplication } from "@/utils/array/deduplication"
 
 // 环境变量
 const default_owner = process.env.default_owner!
 
-// 清除 user的信息 缓存
-export const resetUserInfo = async (findUsers: string[]) => {
+/**
+ * 清除 Users 的信息 缓存
+ * @param findUsers 查找到的user是一个数组
+ * @param roles string[] 各式的 角色
+ */
+export const resetUserInfo = async (findUsers: string[], roles?: string[]) => {
   const users = JSON.parse(JSON.stringify(findUsers))
   // 是否包含owner
   let isOwnerRole: boolean = false
   // 需要删除 的数组 去重加 过滤
-  const deleteArr = deduplication(
+  const deleteArr = deduplication([
     users.map((item: any) => {
       // 找到 user中有owner的 改变 isOwnerRole true
       item.Roles.find((item: any) => {
@@ -20,8 +24,9 @@ export const resetUserInfo = async (findUsers: string[]) => {
         }
       })
       return [item.id, item.account]
-    })
-  ).filter(Boolean)
+    }),
+    roles,
+  ]).filter(Boolean)
 
   if (deleteArr && deleteArr.length) {
     // 删除 缓存

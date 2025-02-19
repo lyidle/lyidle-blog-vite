@@ -7,12 +7,9 @@ import { jwtMiddleware } from "@/middleware/auth"
 import { delKey } from "@/utils/redis"
 // 设置权限
 import { setRoles } from "@/utils/db/user/setRoles"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
 const { User, Role } = require("@/db/models")
-
-// 默认的所有者的角色
-const default_owner = process.env.default_owner!
-
 const router = express.Router()
 
 router.post(
@@ -51,13 +48,7 @@ router.post(
       }
 
       // 删除对应用户信息缓存
-      await delKey(`userInfo:${id}`)
-      await delKey(`userInfo:${findUser.dataValues.account}`)
-
-      // 判断是否 是 owner
-      const isOwner = roles === default_owner
-      // 删除owner的缓存
-      if (isOwner) await delKey(`userInfo:owner`)
+      await resetUserInfo([findUser], roles)
 
       return res.result(void 0, "设置用户权限成功~")
     } catch (error) {

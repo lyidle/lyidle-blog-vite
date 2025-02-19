@@ -7,9 +7,12 @@ import { jwtMiddleware } from "@/middleware/auth"
 import { delKey } from "@/utils/redis"
 // 设置token
 import { setToken } from "@/utils/token"
-// 设置用户角色
-import { setRoles } from "@/utils/db/user/setRoles"
+// 处理roles
 import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
+// 通过 id查询用户
+import { findUserByPk } from "../findUserByPk"
+// 重置user的缓存
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 
 // 引入 模型
 const { User, Role } = require("@/db/models")
@@ -26,7 +29,7 @@ router.put(
     // 开启事务
     const transaction = await db.sequelize.transaction()
     try {
-      const { account, pwd, email, avatar, signer, nickName, roles } = req.body
+      const { account, pwd, email, avatar, signer, nickName } = req.body
 
       const id: number | string = req.auth.id
 
@@ -41,24 +44,14 @@ router.put(
         // 可能为 null
         signer !== null &&
         !signer &&
-        !nickName &&
-        !roles
+        !nickName
       ) {
         await transaction.rollback() // 回滚事务
         return res.result(void 0, "修改用户失败哦~", false)
       }
 
       // 查询
-      const findUser = await User.findByPk(id, {
-        paranoid: false,
-        include: [
-          {
-            model: Role,
-            attributes: ["name"], // 只获取角色名称
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-          },
-        ],
-      })
+      const findUser = await findUserByPk(id as number)
 
       // 判断有无找到用户
       if (!findUser) {
@@ -98,21 +91,12 @@ router.put(
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
 
-      // 处理 角色信息
-      const _roles = roles?.length && (await setRoles(roles))
-
-      if (_roles?.length) {
-        await findUser.setRoles(_roles, { transaction })
-      }
-
       // 提交事务
       await transaction.commit()
 
       let token = null
       // 处理 token 字段 的roles
-      const tokenSetRoles = _roles?.length
-        ? _handlerRoles(_roles)
-        : ReturnRoles([findUser])
+      const tokenSetRoles = ReturnRoles([findUser])
 
       // 改变了pwd 需要重新登录
       if (pwd)
@@ -122,20 +106,12 @@ router.put(
       else {
         token = await setToken({ ...dataValues, roles: tokenSetRoles })
       }
+
       // 删除对应用户信息缓存
-      await delKey(`userInfo:${id}`)
-      await delKey(`userInfo:${userAccount}`)
-
-      // 判断修改的用户是否是owner角色
-      const isOwner = tokenSetRoles?.find(
-        (item: string) => item === default_owner
-      )
-
-      // 删除owner的缓存
-      if (isOwner) await delKey(`userInfo:owner`)
+      await resetUserInfo([findUser])
 
       return res.result(
-        { token, isUser: id === req.auth.id, isOwner },
+        { token, isUser: id === req.auth.id },
         "修改用户信息成功~"
       )
     } catch (error) {
@@ -167,16 +143,7 @@ router.put(
       }
 
       // 查询
-      const findUser = await User.findByPk(id, {
-        paranoid: false,
-        include: [
-          {
-            model: Role,
-            attributes: ["name"], // 只获取角色名称
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-          },
-        ],
-      })
+      const findUser = await findUserByPk(id as number)
 
       // 判断有无找到用户
       if (!findUser) {
@@ -199,20 +166,12 @@ router.put(
       const tokenSetRoles = ReturnRoles([findUser])
       // 没有 修改 密码 则不需要重新登录
       let token = await setToken({ ...dataValues, roles: tokenSetRoles })
+
       // 删除对应用户信息缓存
-      await delKey(`userInfo:${id}`)
-      await delKey(`userInfo:${findUser.dataValues.account}`)
-
-      // 判断修改的用户是否是owner角色
-      const isOwner = tokenSetRoles?.find(
-        (item: string) => item === default_owner
-      )
-
-      // 删除owner的缓存
-      if (isOwner) await delKey(`userInfo:owner`)
+      await resetUserInfo([findUser])
 
       return res.result(
-        { token, isUser: id === req.auth.id, isOwner },
+        { token, isUser: id === req.auth.id },
         "修改用户信息成功~"
       )
     } catch (error) {
