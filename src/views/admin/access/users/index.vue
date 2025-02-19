@@ -217,11 +217,9 @@ import { managerRemoveUser, managerDeleteUser } from "@/api/user"
 import type { User } from "@/api/user/types/searchUserPagination"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-import { useOwnerStore } from "@/store/owner"
 import { mitt } from "@/utils/emitter"
 // 提取请求
 const { reqUserInfo } = useUserStore()
-const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
 const searchKey = ref("")
@@ -291,7 +289,8 @@ const handlerReq = async () => {
   await reqUsers(cur, pageSize.value)
   // 重新获取用户数据
   await reqUserInfo()
-  await getAdminUserInfo()
+  // 重新加载路由
+  mitt.emit("route:reload")
   // 重新判断权限
   mitt.emit("authRoles", userRoles.value)
 }

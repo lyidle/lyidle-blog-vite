@@ -3,12 +3,13 @@ import { useUserStore } from "@/store/user"
 import router from "@/router"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+import { RouteRecordRaw } from "vue-router"
 let isInitRoute = false
 // 添加路由
-const addRoute = async () => {
-  // 提取数据
-  const { routes } = storeToRefs(useUserStore())
-  const { reqUserMenuList } = useUserStore()
+const addRoute = async (
+  routes: Ref<RouteRecordRaw[] | undefined>,
+  reqUserMenuList: () => void
+) => {
   // 获取菜单和权限
   await reqUserMenuList()
   // 添加路由
@@ -18,10 +19,10 @@ const addRoute = async () => {
 }
 
 // 移除路由
-const reloadRoute = async () => {
-  // 提取数据
-  const { routes } = storeToRefs(useUserStore())
-  const { reqUserMenuList } = useUserStore()
+const reloadRoute = async (
+  routes: Ref<RouteRecordRaw[] | undefined>,
+  reqUserMenuList: () => void
+) => {
   // 移除路由
   routes.value?.forEach((item) => {
     if (item.name) {
@@ -30,15 +31,18 @@ const reloadRoute = async () => {
   })
   // 获取菜单和权限
   await reqUserMenuList()
-  await addRoute()
+  await addRoute(routes, reqUserMenuList)
 }
 
 export const initMenuList = async () => {
   // 只初始化一次
   if (!isInitRoute) {
-    await addRoute()
+    // 提取数据
+    const { routes } = storeToRefs(useUserStore())
+    const { reqUserMenuList } = useUserStore()
+    await addRoute(routes, reqUserMenuList)
     // 监听是否重载路由
-    mitt.on("route:reload", reloadRoute)
+    mitt.on("route:reload", () => reloadRoute(routes, reqUserMenuList))
     isInitRoute = true
   }
 }

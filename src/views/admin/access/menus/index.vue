@@ -58,7 +58,14 @@
 import { getAllMenuList } from "@/api/admin"
 // 引入 类型
 import type { GetMenuList } from "@/api/admin/types/getMenuList"
+// 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+// 提取请求
+const { reqUserInfo } = useUserStore()
+// 提取数据
+const { userRoles } = storeToRefs(useUserStore())
 // 表格数据
 const tableData = ref<GetMenuList["data"]>([])
 const toolBtnsWidth = ref()
@@ -85,6 +92,12 @@ const editor = ref()
 // 发起请求
 const handlerReq = async () => {
   const result = await getAllMenuList()
+  // 重新获取用户数据
+  await reqUserInfo()
+  // 重新加载路由
+  mitt.emit("route:reload")
+  // 重新判断权限
+  mitt.emit("authRoles", userRoles.value)
   if (result) tableData.value = result
 }
 onMounted(async () => {

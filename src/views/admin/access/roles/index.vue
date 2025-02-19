@@ -209,10 +209,8 @@ import { mitt } from "@/utils/emitter"
 import moment from "@/utils/moment"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-import { useOwnerStore } from "@/store/owner"
 // 提取请求
 const { reqUserInfo } = useUserStore()
-const { getAdminUserInfo } = useOwnerStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
 // 搜索 的key
@@ -284,7 +282,8 @@ const handlerReq = async () => {
   await reqAllRoles(cur, pageSize.value)
   // 重新获取用户数据
   await reqUserInfo()
-  await getAdminUserInfo()
+  // 重新加载路由
+  mitt.emit("route:reload")
   // 重新判断权限
   mitt.emit("authRoles", userRoles.value)
 }
