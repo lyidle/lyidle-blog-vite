@@ -17,7 +17,7 @@ const db = require("@/db/models")
 const router = express.Router()
 
 // 默认的所有者的角色
-const default_owner = JSON.parse(process.env.default_owner!)
+const default_owner = process.env.default_owner!
 // 按照 req.auth.id 查找当前的用户
 router.put(
   "/",
@@ -128,7 +128,7 @@ router.put(
 
       // 判断修改的用户是否是owner角色
       const isOwner = tokenSetRoles?.find((item: string) =>
-        default_owner?.find((_item: string) => _item.includes(item))
+        item.includes(default_owner)
       )
 
       // 删除owner的缓存
@@ -205,7 +205,7 @@ router.put(
 
       // 判断修改的用户是否是owner角色
       const isOwner = tokenSetRoles?.find((item: string) =>
-        default_owner?.find((_item: string) => _item.includes(item))
+        item.includes(default_owner)
       )
 
       // 删除owner的缓存

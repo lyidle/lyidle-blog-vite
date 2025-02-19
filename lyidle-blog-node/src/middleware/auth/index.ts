@@ -49,12 +49,12 @@ export const jwtMiddleware = async (
 }
 
 // 管理员权限验证
-const adminData: string[] = JSON.parse(process.env.default_admin!)
+const adminData = process.env.default_admin!
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { roles: userRole } = req.auth
   // 判断是否有权限
-  if (!adminData.some((item) => userRole.includes(item)))
+  if (!userRole.includes(adminData))
     return next(
       new myError("otherError", `无权限访问该接口: ${req.originalUrl}`)
     )

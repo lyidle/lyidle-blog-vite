@@ -11,7 +11,7 @@ import { setRoles } from "@/utils/db/user/setRoles"
 const { User, Role } = require("@/db/models")
 
 // 默认的所有者的角色
-const default_owner = JSON.parse(process.env.default_owner!)
+const default_owner = process.env.default_owner!
 
 const router = express.Router()
 
@@ -55,7 +55,7 @@ router.post(
       await delKey(`userInfo:${findUser.dataValues.account}`)
 
       // 判断是否 是 owner
-      const isOwner = default_owner.find((item: string) => roles.includes(item))
+      const isOwner = roles.includes(default_owner)
       // 删除owner的缓存
       if (isOwner) await delKey(`userInfo:owner`)
 
