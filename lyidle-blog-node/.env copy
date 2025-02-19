@@ -6,16 +6,27 @@ api_prefix='/api'
 api_port=3594
 # web 端口
 web_port=3598
-# 默认用户
+
+# 默认用户 的角色信息
 default_user='["user"]'
-# 默认网站拥有者
+# 默认网站拥有者 的角色信息
 default_owner='["owner"]'
-# 默认管理员
+# 默认管理员 的角色信息
 default_admin='["admin"]'
+
+# 初始化生成角色 的种子文件需要的权限
+seeder_roles='["owner","admin", "user","doc"]'
+# 初始化生成权限组 的种子文件需要的权限
+seeder_permission_group='["user","menu","doc"]'
 # 初始化生成权限 的种子文件需要的权限
-seeder_roles='["owner","admin", "user"]'
-# 初始化 的 admin 用户组
-seeder_admin='["admin","user","doc:publish"]'
+seeder_permissions='["user:read","user:write","menu:read","menu:write","doc:publish"]'
+# 初始化生成的 owner 的用户组
+seeder_owner_group='["user","menu","doc"]'
+# 初始化生成的 admin 的用户组
+seeder_admin_group='["user","menu","doc"]'
+# 初始化生成的 user 的用户组
+seeder_user_group='["user"]'
+
 # 生成jwt 的 hash
 jwt_hash=9&fQkK$a^o!rNq*8ra&F2ot!S@b@3ekw72q
 # 邮箱服务
@@ -29,6 +40,7 @@ email_pwd=
 # 注册邮箱的平台
 email_reg_stage=Lyのblog
 # redis 
+redis_prefix=vite-blog # redis 的保存键的 前缀
 redis_pwd=redis_bXwWeD
 redis_host=154.9.253.229
 # 使用 ms 库进行转换成对应的毫秒

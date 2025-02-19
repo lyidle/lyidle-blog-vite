@@ -1,24 +1,26 @@
 import { _handlerRoles } from "@/utils/db/handlerRoles"
 import { delKey, delKeys } from ".."
+import { deduplication } from "@/utils/array/deduplication"
 
 // 清除 user的信息 缓存
 export const resetUserInfo = async (findUsers: string[]) => {
   const users = JSON.parse(JSON.stringify(findUsers))
   let isOwnerRole: boolean = false
-  const userIds = users.map((item: any) => {
-    delKey(`userInfo:${item.account}`)
-    // 找到 user中有owner的 改变 isOwnerRole true
-    item.Roles.find((item: any) => {
-      if (item.name === "owner") {
-        isOwnerRole = true
-      }
+  const deleteArr = deduplication(
+    users.map((item: any) => {
+      // 找到 user中有owner的 改变 isOwnerRole true
+      item.Roles.find((item: any) => {
+        if (item.name === "owner") {
+          isOwnerRole = true
+        }
+      })
+      return [item.id, item.account]
     })
-    return item.id
-  })
+  ).filter(Boolean)
 
-  if (userIds && userIds.length) {
+  if (deleteArr && deleteArr.length) {
     // 删除 缓存
-    await delKeys("userInfo:", userIds, (keys) => {
+    await delKeys("userInfo:", deleteArr, (keys) => {
       let _keys = keys
       // 没有 找到 owner的则不需要删除 owner
       if (!isOwnerRole) {
