@@ -8,7 +8,7 @@ export interface CreateMenuListBody {
   name: string
   parentId: number | null
   roles?: string[]
-  to: string
+  to?: string
   [property: string]: any
 }
 

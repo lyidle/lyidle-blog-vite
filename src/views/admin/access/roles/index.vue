@@ -312,7 +312,7 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}角色成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}角色失败~`)
+    ElMessage.warning(`彻底删除${name}角色失败~`)
   }
 }
 

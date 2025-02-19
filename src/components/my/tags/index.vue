@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2">
+  <div class="flex gap-2 flex-wrap">
     <el-tag
       v-for="(tag, i) in tags"
       :key="tag"

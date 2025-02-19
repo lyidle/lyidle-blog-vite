@@ -27,6 +27,8 @@ import { UpdateMenuListBody } from "./types/updateMenuListBody"
 // 统一管理 api
 enum API {
   menuList = "/admin/menuList",
+  removeMenuList = "/admin/menuList/bin",
+  deleteMenuList = "/admin/menuList/clear",
   allMenuList = "/admin/menuList/*",
   announce = "/admin/announce",
   poetry = "/admin/poetry",
@@ -60,6 +62,10 @@ const prefix = import.meta.env.VITE_API
 // 引入服务器
 const server = import.meta.env.VITE_SERVE
 
+// 删除的回调
+const removeCallback = (api: APIKeysType) => (id: number) =>
+  request.delete<any, void>(server + prefix + API[api], { data: { id } })
+
 // 获取菜单 按照权限获取菜单 加了redis缓存
 export const getMenuList = (roles: string[] = ["user"]) =>
   request.get<any, GetMenuList["data"]>(
@@ -70,17 +76,21 @@ export const getAllMenuList = () =>
   request.get<any, GetMenuList["data"]>(server + prefix + API.allMenuList)
 // 创建菜单
 export const createMenuList = (data: CreateMenuListBody) =>
-  request.post<any, CreateMenuList>(server + prefix + API.menuList, { data })
+  request.post<any, CreateMenuList>(server + prefix + API.menuList, data)
 // 更新菜单
 export const updateMenuList = (data: UpdateMenuListBody) =>
-  request.put<any, CreateMenuList>(server + prefix + API.menuList, { data })
+  request.put<any, CreateMenuList>(server + prefix + API.menuList, data)
+// 软删除菜单
+export const removeMenuList = removeCallback("removeMenuList")
+// 彻底删除菜单
+export const deleteMenuList = removeCallback("deleteMenuList")
 
 // 获取公告
 export const getAnnounce = () =>
   request.get<any, GetAnnounce["data"]>(server + prefix + API.announce)
 // 创建公告
 export const createAnnounce = (data: CreateAnnounceBody) =>
-  request.put<any, CreateAnnounce>(server + prefix + API.announce, { data })
+  request.put<any, CreateAnnounce>(server + prefix + API.announce, data)
 
 // 获取短诗
 export const getPoetry = () =>
@@ -115,10 +125,6 @@ export const createRole = (data: CreateRoleBody) =>
 // 更新角色 登录用户需要拥有权限
 export const updateRole = (data: UpdateRoleBody) =>
   request.put<any, void>(server + prefix + API.Role, data)
-
-// 删除的回调
-const removeCallback = (api: APIKeysType) => (id: number) =>
-  request.delete<any, void>(server + prefix + API[api], { data: { id } })
 
 // 彻底删除角色 登录用户需要拥有权限
 export const deleteRole = removeCallback("deleteRole")

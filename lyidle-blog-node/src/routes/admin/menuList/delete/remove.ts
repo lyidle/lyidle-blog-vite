@@ -74,7 +74,8 @@ const remove = async (
   if (counts) {
     return res.result(
       void 0,
-      `子菜单个数${counts},需要接触子菜单的关联后才能够删除哦~`
+      `子菜单个数${counts},需要接触子菜单的关联后才能够删除哦~`,
+      false
     )
   }
 

@@ -22,9 +22,8 @@ router.put(
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     const { id, name, icon, to, layout, bannerImg, roles, parentId } = req.body
-
     // 没有 id、name 返回失败
-    if (id !== 0 && !id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项哦~", false)
 
     // 开启事务
     const transaction = await db.sequelize.transaction()

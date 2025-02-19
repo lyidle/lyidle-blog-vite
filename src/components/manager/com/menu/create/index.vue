@@ -10,7 +10,7 @@
         @close="handlerClose"
       >
         <template #header>
-          <div class="color-[var(--primary-color)]">编辑菜单</div>
+          <div class="color-[var(--primary-color)]">创建菜单</div>
         </template>
         <el-form
           :model="createData"
@@ -22,7 +22,7 @@
         >
           <el-form-item label="菜单名" prop="name">
             <my-input
-              placeholder="请输入菜单名"
+              placeholder="请输入子菜单名"
               v-model="createData.name"
             ></my-input>
           </el-form-item>
@@ -54,18 +54,19 @@
   </teleport>
 </template>
 
-<script setup lang="ts" name="MenuEditor">
+<script setup lang="ts" name="MenuCreate">
 // 引入api
-import { updateMenuList } from "@/api/admin"
 // 引入 类型
-import type { UpdateMenuListBody } from "@/api/admin/types/updateMenuListBody"
 import type { Datum } from "@/api/admin/types/getMenuList"
+import type { CreateMenuListBody } from "@/api/admin/types/createMenuListBody"
+import { createMenuList } from "@/api/admin"
+
 const centerDialogVisible = ref(false)
-const createData = reactive<UpdateMenuListBody>({
-  id: -1,
+
+const createData = reactive<CreateMenuListBody>({
   name: "",
   roles: [],
-  parentId: null,
+  parentId: -1,
 })
 
 // 创建规则
@@ -84,8 +85,10 @@ const createRules = reactive({
 
 // 初始化
 const init = (row: Datum) => {
+  const _row = JSON.parse(JSON.stringify(row))
+  createData.parentId = _row.id
+  createData.roles = _row.roles
   centerDialogVisible.value = true
-  Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
 
 // 表单组件实例
@@ -110,8 +113,8 @@ const handlerConfirm = async () => {
     await formInstance.value.validate()
     // 触发 tags的验证
     tagsInstance.value.validate?.()
-    await updateMenuList(createData)
-    ElMessage.success(`修改菜单成功~`)
+    await createMenuList(createData)
+    ElMessage.success(`创建角色成功~`)
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")

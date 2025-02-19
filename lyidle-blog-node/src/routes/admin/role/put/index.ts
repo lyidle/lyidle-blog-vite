@@ -24,7 +24,7 @@ router.put(
     const { id, name, desc } = req.body
 
     // 没有 id、name 返回失败
-    if (id !== 0 && !id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项哦~", false)
 
     // 开启事务
     const transaction = await db.sequelize.transaction()

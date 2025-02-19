@@ -319,7 +319,7 @@ const handlerDelete = async (row: User) => {
     await handlerReq()
     ElMessage.success(`彻底删除${account}用户成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${account}用户失败~`)
+    ElMessage.warning(`彻底删除${account}用户失败~`)
   }
 }
 

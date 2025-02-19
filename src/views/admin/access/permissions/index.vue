@@ -291,7 +291,7 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}权限成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}权限失败~`)
+    ElMessage.warning(`彻底删除${name}权限失败~`)
   }
 }
 
