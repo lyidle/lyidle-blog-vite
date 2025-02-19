@@ -89,10 +89,21 @@
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
-                  <el-button size="small" @click="cancel">否</el-button>
-                  <el-button type="danger" size="small" @click="confirm">
+                  <my-button
+                    class="w-unset"
+                    type="default"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
                     是
-                  </el-button>
+                  </my-button>
                 </template>
               </el-popconfirm>
               <!-- 删除 -->
@@ -113,10 +124,21 @@
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
-                  <el-button size="small" @click="cancel">否</el-button>
-                  <el-button type="danger" size="small" @click="confirm">
+                  <my-button
+                    class="w-unset"
+                    type="default"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
                     是
-                  </el-button>
+                  </my-button>
                 </template>
               </el-popconfirm>
             </div>

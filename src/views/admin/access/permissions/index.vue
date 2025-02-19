@@ -46,7 +46,7 @@
           fixed="left"
         />
         <el-table-column
-          width="150"
+          :width="accountsWidth"
           prop="name"
           label="name"
           align="center"
@@ -74,56 +74,80 @@
           </template>
         </el-table-column>
         <!-- 工具栏 -->
-        <el-table-column width="250" label="工具栏" align="center">
+        <el-table-column :width="toolBtnsWidth" label="工具栏" align="center">
           <template #="{ row }">
-            <my-button
-              size="small"
-              class="w-50px"
-              type="warning"
-              @click="editor.init(row)"
-              >编辑</my-button
-            >
+            <div class="flex gap-10px flex-wrap justify-center">
+              <my-button
+                size="small"
+                class="w-50px !m-0"
+                type="warning"
+                @click="editor.init(row)"
+                >编辑</my-button
+              >
 
-            <!-- 软删除 -->
-            <el-popconfirm
-              width="220"
-              icon-color="#F56C6C"
-              :title="`确认要把《${row.name}》回收到垃圾桶么?`"
-              placement="top"
-              @confirm="handlerRemove(row)"
-            >
-              <template #reference>
-                <my-button class="w-50px" size="small" type="danger"
-                  >软删除</my-button
-                >
-              </template>
-              <template #actions="{ confirm, cancel }">
-                <el-button size="small" @click="cancel">否</el-button>
-                <el-button type="danger" size="small" @click="confirm">
-                  是
-                </el-button>
-              </template>
-            </el-popconfirm>
-            <!-- 删除 -->
-            <el-popconfirm
-              width="220"
-              icon-color="#F56C6C"
-              :title="`确认要彻底删除《${row.name}》么?`"
-              placement="top"
-              @confirm="handlerDelete(row)"
-            >
-              <template #reference>
-                <my-button class="w-50px" size="small" type="danger"
-                  >删除</my-button
-                >
-              </template>
-              <template #actions="{ confirm, cancel }">
-                <el-button size="small" @click="cancel">否</el-button>
-                <el-button type="danger" size="small" @click="confirm">
-                  是
-                </el-button>
-              </template>
-            </el-popconfirm>
+              <!-- 软删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要把《${row.name}》回收到垃圾桶么?`"
+                placement="top"
+                @confirm="handlerRemove(row)"
+              >
+                <template #reference>
+                  <my-button class="w-50px !m-0" size="small" type="danger"
+                    >软删除</my-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <my-button
+                    class="w-unset"
+                    type="default"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
+                    是
+                  </my-button>
+                </template>
+              </el-popconfirm>
+              <!-- 删除 -->
+              <el-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要彻底删除《${row.name}》么?`"
+                placement="top"
+                @confirm="handlerDelete(row)"
+              >
+                <template #reference>
+                  <my-button class="w-50px !m-0" size="small" type="danger"
+                    >删除</my-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <my-button
+                    class="w-unset"
+                    type="default"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
+                    是
+                  </my-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
         <template #empty>
@@ -177,11 +201,14 @@ const searchKey = ref("")
 // 使用 基础配置
 const {
   handlerSearch,
-  headerBtnsSize,
   tableData,
   pagination,
   reqAllRoles,
   handlerReset,
+
+  headerBtnsSize,
+  accountsWidth,
+  toolBtnsWidth,
 } = useMangerPermissionsBase(searchKey)
 // 当前页
 const currentPage = ref(1)

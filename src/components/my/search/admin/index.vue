@@ -20,7 +20,7 @@
             <my-button
               class="!ml-[var(--admin-content-header-gap)]"
               :size
-              plain
+              type="default"
               @click="handlerRest"
               >重置</my-button
             >

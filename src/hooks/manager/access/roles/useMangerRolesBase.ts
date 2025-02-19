@@ -6,12 +6,6 @@ import { findAllRolesPagination } from "@/api/admin"
 import type { Pagination, Role } from "@/api/admin/types/findAllRolesPagination"
 import { paginationQuery } from "@/api/types/paginationQuery"
 export const useMangerRolesBase = (searchKey: Ref<string>) => {
-  // 头部 搜索 按钮大小
-  const headerBtnsSize = ref()
-  // 账号和用户名的 宽度
-  const accountsWidth = ref()
-  // 右侧 工具栏
-  const toolBtnsWidth = ref()
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -30,6 +24,14 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
     await reqAllRoles()
   }
 
+  // 头部 搜索 按钮大小
+  const headerBtnsSize = ref<string>()
+  // 账号和用户名的 宽度
+  const accountsWidth = ref<number>()
+  // 右侧 工具栏
+  const toolBtnsWidth = ref<number>()
+  // 是否是小屏
+  const isSmall = ref<boolean>()
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
@@ -37,12 +39,14 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
       accountsWidth.value = 150
       headerBtnsSize.value = "default"
       toolBtnsWidth.value = 290
+      isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
     accountsWidth.value = 100
     headerBtnsSize.value = "small"
     toolBtnsWidth.value = 100
+    isSmall.value = true
   }
   // 表格的数据
   const tableData = ref<Role[]>([])
@@ -80,12 +84,14 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
 
   return {
     handlerSearch,
-    headerBtnsSize,
-    accountsWidth,
-    toolBtnsWidth,
     tableData,
     pagination,
     reqAllRoles,
     handlerReset,
+
+    headerBtnsSize,
+    accountsWidth,
+    toolBtnsWidth,
+    isSmall,
   }
 }

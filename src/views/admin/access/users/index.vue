@@ -92,7 +92,8 @@
               >
               <my-button
                 size="small"
-                class="w-50px !m-0"
+                class="!m-0"
+                :style="{ width: isSmall ? '80px' : '50px' }"
                 type="warning"
                 @click="editor.init(row)"
                 >编辑</my-button
@@ -106,15 +107,30 @@
                 @confirm="handlerRemove(row)"
               >
                 <template #reference>
-                  <my-button class="w-50px !m-0" size="small" type="danger"
+                  <my-button
+                    class="!m-0"
+                    :style="{ width: isSmall ? '80px' : '50px' }"
+                    size="small"
+                    type="danger"
                     >软删除</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
-                  <el-button size="small" @click="cancel">否</el-button>
-                  <el-button type="danger" size="small" @click="confirm">
+                  <my-button
+                    type="default"
+                    class="w-unset"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
                     是
-                  </el-button>
+                  </my-button>
                 </template>
               </el-popconfirm>
               <!-- 删除 -->
@@ -126,15 +142,30 @@
                 @confirm="handlerDelete(row)"
               >
                 <template #reference>
-                  <my-button class="w-50px !m-0" size="small" type="danger"
+                  <my-button
+                    class="!m-0"
+                    :style="{ width: isSmall ? '80px' : '50px' }"
+                    size="small"
+                    type="danger"
                     >删除</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
-                  <el-button size="small" @click="cancel">否</el-button>
-                  <el-button type="danger" size="small" @click="confirm">
+                  <my-button
+                    type="default"
+                    class="w-unset"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
                     是
-                  </el-button>
+                  </my-button>
                 </template>
               </el-popconfirm>
             </div>
@@ -203,9 +234,11 @@ const {
   userIds,
   handlerReset,
   headerBtnsSize,
+
   accountsWidth,
   handlerSearch,
   toolBtnsWidth,
+  isSmall,
 } = useManagerUserBase(searchKey)
 
 // 获取子组件示例 用于分配角色按钮的点击事件

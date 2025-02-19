@@ -10,12 +10,6 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 分页器
   const pagination = ref<searchData["pagination"]>()
 
-  // 头部 搜索 按钮大小
-  const headerBtnsSize = ref()
-  // 账号和用户名的 宽度
-  const accountsWidth = ref()
-  // 右侧 工具栏
-  const toolBtnsWidth = ref()
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -33,6 +27,15 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     await reqUsers()
   }
 
+  // 头部 搜索 按钮大小
+  const headerBtnsSize = ref<string>()
+  // 账号和用户名的 宽度
+  const accountsWidth = ref<number>()
+  // 右侧 工具栏
+  const toolBtnsWidth = ref<number>()
+  // 是否是小屏
+  const isSmall = ref<boolean>()
+
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
@@ -40,12 +43,14 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       accountsWidth.value = 130
       headerBtnsSize.value = "default"
       toolBtnsWidth.value = 290
+      isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
     accountsWidth.value = 70
     headerBtnsSize.value = "small"
     toolBtnsWidth.value = 100
+    isSmall.value = true
   }
 
   // 监听窗口变化
@@ -86,14 +91,16 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   return {
     tableData,
     pagination,
-    headerBtnsSize,
-    accountsWidth,
     handlerSearch,
     handlerResize,
     userIds,
     handleSelectionChange,
     reqUsers,
     handlerReset,
+
+    headerBtnsSize,
+    accountsWidth,
     toolBtnsWidth,
+    isSmall,
   }
 }

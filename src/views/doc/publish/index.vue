@@ -65,14 +65,15 @@
                   @keyup.enter="handleInputConfirm"
                   @blur="handleInputConfirm"
                 />
-                <el-button
+                <my-button
                   v-else
                   class="button-new-tag"
                   size="small"
                   @click="showInput"
+                  type="default"
                 >
                   + New Tag
-                </el-button>
+                </my-button>
               </template>
             </div>
           </el-form-item>
