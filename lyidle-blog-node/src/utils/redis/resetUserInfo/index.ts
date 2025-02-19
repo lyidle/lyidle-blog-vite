@@ -18,14 +18,16 @@ export const resetUserInfo = async (findUsers: string[], roles?: string[]) => {
   const deleteArr = deduplication([
     users.map((item: any) => {
       // 找到 user中有owner的 改变 isOwnerRole true
-      item.Roles.find((item: any) => {
-        if (item.name === default_owner) {
-          isOwnerRole = true
-        }
-      })
+      !isOwnerRole &&
+        item.Roles.find((item: any) => {
+          if (item.name === default_owner) {
+            isOwnerRole = true
+          }
+        })
       return [item.id, item.account]
     }),
     roles,
+    default_owner,
   ]).filter(Boolean)
 
   if (deleteArr && deleteArr.length) {

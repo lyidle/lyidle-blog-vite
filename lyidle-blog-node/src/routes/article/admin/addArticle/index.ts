@@ -8,7 +8,8 @@ const router = express.Router()
 const { Article } = require("@/db/models")
 // 引入 redis 设置缓存
 import { setKey, getKey, delKey } from "@/utils/redis"
-
+// 引入 重置user的缓存的函数
+import { resetUserInfoByArticlePk } from "../resetUserInfoByArticlePk"
 router.post(
   "/",
   [jwtMiddleware],
@@ -37,12 +38,15 @@ router.post(
       await setKey("webUpdatedAt", new Date())
       // 删除总字数统计缓存
       await delKey("webTotalWords")
-      // 删除用户信息缓存
-      await delKey(`userInfo:${ArticleData.userId}`)
-      await delKey(`userInfo:${ArticleData.author}`)
-      await delKey(`userInfo:owner`)
+
+      // 得到 id
+      const id = dataValues.id
+
+      // 删除对应用户信息缓存
+      await resetUserInfoByArticlePk(id)
+
       // 返回处理后的结果
-      return res.result({ id: dataValues.id }, "增加文章成功~")
+      return res.result({ id }, "增加文章成功~")
     } catch (err) {
       return res.validateAuth(err, next, () =>
         res.result(err, "增加文章失败~", false)

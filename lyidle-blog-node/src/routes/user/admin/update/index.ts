@@ -9,18 +9,29 @@ import { delKey } from "@/utils/redis"
 import { setToken } from "@/utils/token"
 // 处理roles
 import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
-// 通过 id查询用户
-import { findUserByPk } from "../findUserByPk"
 // 重置user的缓存
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 
 // 引入 模型
 const { User, Role } = require("@/db/models")
+
 const db = require("@/db/models")
 const router = express.Router()
 
-// 默认的所有者的角色
-const default_owner = process.env.default_owner!
+// 通过 id查询用户
+const findUserByPk = async (id: number) => {
+  return await User.findByPk(id, {
+    paranoid: false,
+    include: [
+      {
+        model: Role,
+        attributes: ["name"], // 只获取角色名称
+        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+      },
+    ],
+  })
+}
+
 // 按照 req.auth.id 查找当前的用户
 router.put(
   "/",

@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {
         ["id", "desc"],
       ],
     })
-    if (JSON.stringify(result) === "[]")
+    if (!result.dataValues?.length)
       return res.result(void 0, "获取最新文章失败~", false)
     return res.result(result, "获取最新文章成功~")
   } catch (error) {

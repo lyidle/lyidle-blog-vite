@@ -8,30 +8,26 @@ const delete_article_expire = ms(process.env.delete_article_expire)
 // 引入模型
 const { Article } = require("@/db/models")
 
+// 引入 重置user的缓存的函数
+import { resetUserInfoByArticlePk } from "../resetUserInfoByArticlePk"
+
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (userId: number, author: string) => {
-  // 删除用户信息缓存
-  await delKey(`userInfo:${userId}`)
-  await delKey(`userInfo:${author}`)
-  await delKey(`userInfo:owner`)
+export const publicUserRemove = async (id: number) => {
+  // 删除对应用户信息缓存
+  await resetUserInfoByArticlePk(id)
   // 删除文章的缓存
   await delKey(`webTotalPages`)
   await delKey(`webTotalWords`)
 }
 
 // 彻底删除函数
-const deleted = async (
-  delArticle: any,
-  id: number,
-  userId: number,
-  author: string
-) => {
+const deleted = async (model: any, id: number) => {
   // 删除文章
-  await delArticle.destroy({ force: true })
+  await model.destroy({ force: true })
   // 删除临时的 userArticleBin
   await delKey(`userArticleBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(userId, author)
+  await publicUserRemove(id)
 }
 // 删除函数
 const remove = async (
@@ -75,13 +71,13 @@ const remove = async (
     await setKey(`userArticleBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(userId, author)
+    await publicUserRemove(id)
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_article_expire, "文章成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findArticle, id, userId, author)
+  await deleted(findArticle, id)
   return res.result(void 0, "删除文章成功~")
 }
 export default remove

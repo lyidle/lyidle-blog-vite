@@ -4,7 +4,8 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
-
+// 引入 重置user的缓存的函数
+import { resetUserInfoByArticlePk } from "../resetUserInfoByArticlePk"
 // 引入 模型
 const { Article } = require("@/db/models")
 
@@ -72,10 +73,10 @@ router.put(
       await setKey("webUpdatedAt", new Date())
       // 删除总字数统计缓存
       await delKey("webTotalWords")
-      // 删除用户信息缓存
-      await delKey(`userInfo:${req.auth.id}`)
-      await delKey(`userInfo:${req.auth.account}`)
-      await delKey(`userInfo:owner`)
+
+      // 删除对应用户信息缓存
+      await resetUserInfoByArticlePk(articleId)
+
       // 删除 文章的缓存
       await delKey(`ArticlefindByPk:${result.dataValues.id}`)
       res.result(result, "修改文章成功~")

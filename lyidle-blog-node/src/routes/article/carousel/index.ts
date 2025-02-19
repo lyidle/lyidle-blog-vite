@@ -6,7 +6,7 @@ const { Article } = require("@/db/models")
 router.get("/", async (req, res, next) => {
   try {
     const limit = req.query.limit ?? 5
-    const data = await Article.findAll({
+    const result = await Article.findAll({
       where: { carousel: 1 },
       attributes: [
         "author",
@@ -23,9 +23,9 @@ router.get("/", async (req, res, next) => {
         ["id", "desc"],
       ],
     })
-    if (JSON.stringify(data) === "[]")
+    if (!result.dataValues?.length)
       return res.result(void 0, "获取首页焦点图失败~", false)
-    return res.result(data, "获取首页焦点图成功~")
+    return res.result(result, "获取首页焦点图成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
       res.result(void 0, "获取首页焦点图失败~", false)
