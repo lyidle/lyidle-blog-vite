@@ -5,6 +5,7 @@ import { findAllGroupsPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import type { Group } from "@/api/admin/types/findAllGroupsPagination"
+import { paginationQuery } from "@/api/types/paginationQuery"
 export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   // 头部的按钮大小
   const headerBtnsSize = ref("default")
@@ -49,7 +50,10 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
     pageSize: number = 10
   ) => {
     try {
-      const result = await findAllGroupsPagination({ currentPage, pageSize })
+      const search = { currentPage, pageSize } as paginationQuery
+      // 如果搜索了 则按照搜索的来
+      if (searchKey) search.name = searchKey.value
+      const result = await findAllGroupsPagination(search)
       tableData.value = result.groups
       pagination.value = result.pagination
     } catch (error) {}

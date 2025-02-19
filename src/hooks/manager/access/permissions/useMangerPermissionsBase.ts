@@ -5,6 +5,7 @@ import { findAllPermissionsPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import { Permission } from "@/api/admin/types/findAllPermissionsPagination"
+import { paginationQuery } from "@/api/types/paginationQuery"
 export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 头部的按钮大小
   const headerBtnsSize = ref("default")
@@ -49,10 +50,10 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     pageSize: number = 10
   ) => {
     try {
-      const result = await findAllPermissionsPagination({
-        currentPage,
-        pageSize,
-      })
+      const search = { currentPage, pageSize } as paginationQuery
+      // 如果搜索了 则按照搜索的来
+      if (searchKey) search.name = searchKey.value
+      const result = await findAllPermissionsPagination(search)
       tableData.value = result.permission
       pagination.value = result.pagination
     } catch (error) {}

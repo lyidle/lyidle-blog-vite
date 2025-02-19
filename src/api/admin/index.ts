@@ -26,6 +26,7 @@ import { FindAllPermissionsPagination } from "./types/findAllPermissionsPaginati
 // 统一管理 api
 enum API {
   menuList = "/admin/menuList",
+  allMenuList = "/admin/menuList/*",
   announce = "/admin/announce",
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
@@ -58,11 +59,15 @@ const prefix = import.meta.env.VITE_API
 // 引入服务器
 const server = import.meta.env.VITE_SERVE
 
-// 获取菜单
+// 获取菜单 按照权限获取菜单 加了redis缓存
 export const getMenuList = (roles: string[] = ["user"]) =>
   request.get<any, GetMenuList["data"]>(
     server + prefix + API.menuList + `/?roles=${JSON.stringify(roles)}`
   )
+// 获取所有菜单
+export const getAllMenuList = () =>
+  request.get<any, GetMenuList["data"]>(server + prefix + API.allMenuList)
+
 // 设置菜单
 export const setMenuList = (data: SetMenuListBody) =>
   request.post<any, SetMenuList>(server + prefix + API.menuList, { data })
