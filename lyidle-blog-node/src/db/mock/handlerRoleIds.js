@@ -7,7 +7,7 @@ const { deduplication } = require("../../utils/array/deduplication/js")
 // 引入 处理好的信息
 const { Roles } = require("../mock/handlerPermissions")
 
-// 生成 的 权限表
+// 默认的 角色
 const default_owner = process.env.default_owner
 const default_user = process.env.default_user
 const default_admin = process.env.default_admin
@@ -23,9 +23,10 @@ const roles = Roles.reduce((pre, cur) => {
   return pre
 }, {})
 
-// doc  角色id
-const docIds = deduplication(handlerRoleId(roles, ["doc"])).filter(Boolean)
-
+// owner 角色id
+const ownerIds = deduplication(handlerRoleId(roles, [default_owner])).filter(
+  Boolean
+)
 // admin 角色id
 const adminIds = deduplication(handlerRoleId(roles, [default_admin])).filter(
   Boolean
@@ -35,17 +36,10 @@ const userIds = deduplication(handlerRoleId(roles, [default_user])).filter(
   Boolean
 )
 
-// owner 角色id
-const ownerIds = deduplication(
-  adminIds,
-  handlerRoleId(roles, [default_owner])
-).filter(Boolean)
-
 module.exports = {
   adminIds,
   userIds,
   ownerIds,
-  docIds,
   handlerRoleId,
   roles,
 }

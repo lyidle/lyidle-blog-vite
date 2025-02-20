@@ -8,7 +8,7 @@ const { deduplication } = require("../../utils/array/deduplication/js")
 const bcrypt = require("bcryptjs")
 
 // 引入 处理好的信息
-const { adminIds, userIds, ownerIds, docIds } = require("./handlerRoleIds")
+const { userIds, adminIds, ownerIds } = require("./handlerRoleIds")
 
 // 插入用户信息
 const users = []
@@ -18,11 +18,11 @@ const userCounts = 103
 for (let i = 1; i <= userCounts; i++) {
   const userId = i
   // 默认 是 user
-  let roleIds = userIds
+  let roleIds = deduplication(userIds)
   // 第一个是 owner
-  if (i === 1) roleIds = deduplication(userIds, ownerIds, docIds)
+  if (i === 1) roleIds = deduplication(ownerIds)
   // 偶数是 admin
-  if (i % 2 === 0) roleIds = deduplication(userIds, ownerIds, docIds)
+  if (i % 2 === 0) roleIds = deduplication(adminIds)
   users.push({
     id: userId,
     account: `test${i}`,

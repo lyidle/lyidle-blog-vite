@@ -5,8 +5,8 @@ const {
   Roles,
   PermissionGroups,
   Permissions,
-  setRolePermissionGroups,
-  setPermissionGroupPermissions,
+  RolePermissionGroups,
+  PermissionGroupPermissions,
 } = require("../mock/handlerPermissions")
 
 module.exports = {
@@ -23,14 +23,14 @@ module.exports = {
     // 插入角色和权限组的关联数据
     await queryInterface.bulkInsert(
       "RolePermissionGroups",
-      setRolePermissionGroups,
+      RolePermissionGroups,
       {}
     )
 
     // 插入权限组和权限的关联数据
     await queryInterface.bulkInsert(
       "PermissionGroupPermissions",
-      setPermissionGroupPermissions,
+      PermissionGroupPermissions,
       {}
     )
   },
