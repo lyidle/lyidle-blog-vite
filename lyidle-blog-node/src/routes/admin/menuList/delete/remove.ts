@@ -17,7 +17,7 @@ const { Menu, Role } = require("@/db/models")
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicMenusRemove = async (roles: string[]) => {
   // 清除 菜单 的缓存
-  await delMenuRoles({ roles })
+  await delMenuRoles(roles)
 }
 
 // 彻底删除函数

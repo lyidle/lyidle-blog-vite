@@ -21,7 +21,7 @@ export const publicUserRemove = async (roles: string[], users: any[]) => {
   // 重置 用户的信息缓存
   await resetUserInfo(users)
   // 清除 菜单 的缓存
-  await delMenuRoles({ roles })
+  await delMenuRoles(roles)
 }
 
 // 彻底删除函数

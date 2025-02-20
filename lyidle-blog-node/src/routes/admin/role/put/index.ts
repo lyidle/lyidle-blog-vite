@@ -69,7 +69,7 @@ router.put(
       ).filter(Boolean)
 
       // 删除 找到 的Menu用到的缓存
-      await delMenuRoles({ roles })
+      await delMenuRoles(roles)
       // 删除找到的users的缓存
       await resetUserInfo(users)
 

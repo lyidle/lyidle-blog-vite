@@ -91,7 +91,7 @@ router.post(
       // 删除找到的users的缓存
       await resetUserInfo(users)
       // 删除找到的menus的缓存
-      await delMenuRoles({ roles })
+      await delMenuRoles(roles)
 
       // 返回并 删除缓存
       await delKey(cacheKey)

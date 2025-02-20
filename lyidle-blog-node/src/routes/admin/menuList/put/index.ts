@@ -84,7 +84,7 @@ router.put(
           roles = deduplication([originRoles, roles]) as string[]
         }
         // 清除 菜单 的缓存
-        await delMenuRoles({ roles })
+        await delMenuRoles(roles)
       }
 
       // 提交事务

@@ -3,11 +3,9 @@ import myError from "@/utils/error/myError"
 import { delKeys, delKey, genCacheKey } from "@/utils/redis"
 
 // 清除菜单缓存
-export const delMenuRoles = async (options: { roles: string[] }) => {
+export const delMenuRoles = async (roles: string[]) => {
   // 获取所有菜单的缓存 无论如何都要删除
   await delKey("menu:*")
-  // 得到 roles
-  const roles = options.roles
   if (roles && roles.length) {
     // 需要删除 的数组 去重加 过滤
     const deleteArr = deduplication(roles).filter(Boolean)

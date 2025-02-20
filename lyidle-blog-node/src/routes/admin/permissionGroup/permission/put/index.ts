@@ -92,7 +92,7 @@ router.put(
       // 删除找到的users的缓存
       await resetUserInfo(users)
       // 删除找到的roles的缓存
-      await delMenuRoles({ roles })
+      await delMenuRoles(roles)
 
       // 删除 缓存
       await delKey(cacheKey)
