@@ -59,10 +59,6 @@ export const handlerPermissions = (Permissions: paramsType) => {
   return deduplication(
     Permissions.reduce((acc, role) => {
       role.PermissionGroups.forEach((group: any) => {
-        // 将权限组名称添加到 permissions 数组中
-        if (!acc.includes(group.name)) {
-          acc.push(group.name)
-        }
         // 将权限名称添加到 permissions 数组中
         group.permissions.forEach((permission: any) => {
           if (!acc.includes(permission.name)) {
