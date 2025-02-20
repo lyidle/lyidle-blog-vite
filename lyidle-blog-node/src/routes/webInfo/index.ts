@@ -1,51 +1,56 @@
 import express from "express"
 const router = express.Router()
 // 引入模型
-const { Article, Visitor, User, Setting } = require("@/db/models")
+const { Article, Visitor, User } = require("@/db/models")
 // 引入 redis 设置缓存
-import { setKey, getKey, delKey } from "@/utils/redis"
+import { setKey, getKey } from "@/utils/redis"
 router.get("/", async (req, res, next) => {
   try {
     // 获取创建站的时间
-    const webCreatedAt = await getKey("webCreatedAt")
+    let webCreatedAt = await getKey("webCreatedAt")
+    if (webCreatedAt === null)
+      webCreatedAt = await setKey("webCreatedAt", new Date())
 
     // 获取到访客数量
     let touristCounts = +(await getKey("touristCounts"))
-    if (!touristCounts) {
+    if (touristCounts === null) {
       // 查询游客量
       touristCounts = await Visitor.count()
       await setKey("touristCounts", touristCounts)
     }
 
     // 查询用户数量
-    const webUserCounts = +(await getKey("userCounts"))
+    let webUserCounts = +(await getKey("userCounts"))
+    if (webUserCounts === null) {
+      // 得到 用户数量
+      webUserCounts = await User.count()
+      await setKey("userCounts", webUserCounts)
+    }
 
     // 总访问量
     const webTotalPersonCounts = webUserCounts + touristCounts
 
     // 网页总数
-    const webTotalPages = +(await getKey("webTotalPages"))
+    let webTotalPages = +(await getKey("webTotalPages"))
+    if (webTotalPages === null) {
+      webTotalPages = await Article.count()
+      await setKey("webTotalPages", webTotalPages)
+    }
 
     // 最后更新时间
-    const webUpdatedAt = await getKey("webUpdatedAt")
+    let webUpdatedAt = await getKey("webUpdatedAt")
+    if (webUpdatedAt === null)
+      webUpdatedAt = await setKey("webUpdatedAt", new Date())
 
     // 获取字数
     let webTotalWords = await getKey("webTotalWords")
-    if (!webTotalWords) {
-      // 查询所有文章 统计字数
-      const totalWordsData = await Article.findAll({
-        order: [
-          ["updatedAt", "desc"],
-          ["id", "desc"],
-        ],
-        attributes: ["length"],
+    if (webTotalWords === null) {
+      const Articles = await Article.findAll({ attributes: ["length"] })
+      let length = 0
+      JSON.parse(JSON.stringify(Articles)).forEach((item: any) => {
+        length += item.length
       })
-
-      let totalCounts = 0
-      for (const data of JSON.parse(JSON.stringify(totalWordsData))) {
-        totalCounts += data.length
-      }
-      webTotalWords = await setKey("webTotalWords", totalCounts)
+      webTotalWords = await setKey("totalWords", length)
     }
 
     return res.result(
