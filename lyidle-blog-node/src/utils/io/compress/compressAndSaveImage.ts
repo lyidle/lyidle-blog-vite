@@ -1,6 +1,6 @@
 import sharp from "sharp" // 引入 Sharp 作为图片压缩工具
-// 引入 nanoid  生成临时文件的 id
-import { nanoid } from "nanoid"
+// 引入 uuidV4  生成临时文件的 id
+import { v4 as uuidV4 } from "uuid"
 // 引入 判断路径是否 存在 不存在则创建的函数
 import { isDir } from "@/utils/io/isDir"
 import { join } from "path"
@@ -11,7 +11,7 @@ export const compressAndSaveImage = async (
   quality: NumberRange<1, 100> = 50
 ): Promise<string> => {
   // 生成唯一的文件名
-  const uniqueOutputFileName = `${nanoid()}.jpeg`
+  const uniqueOutputFileName = `${uuidV4()}.jpeg`
   // 输出目录
   const outputPath = join(route, uniqueOutputFileName)
 

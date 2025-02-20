@@ -4,8 +4,8 @@ import { join, resolve } from "path"
 import { existsSync, writeFileSync } from "fs"
 // 引入 判断 是否存在路径 不存在则创建
 import { isDir } from "@/utils/io/isDir"
-// 生成文件名
-import { nanoid } from "nanoid"
+// 引入 uuidV4  生成临时文件的 id
+import { v4 as uuidV4 } from "uuid"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
 // 缓存
@@ -84,7 +84,7 @@ router.post(
       // 保存的目录
       const savePath = resolve(
         __dirname,
-        `../../../../assets/images/temp/${account}/${nanoid()}.${extension}`
+        `../../../../assets/images/temp/${account}/${uuidV4()}.${extension}`
       )
 
       // 确保路径文件存在

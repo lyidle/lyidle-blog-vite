@@ -1,13 +1,21 @@
 // 引入redis 设置缓存
 import { setKey, getKey } from "@/utils/redis"
 // 引入模型
-const { User, Article, Setting } = require("@/db/models")
+const { User, Article, Setting, Visitor } = require("@/db/models")
 const is_production = JSON.parse(process.env.is_production!)
 export default async () => {
   try {
     // 初始化 创站时间
     const webCreatedAt = await getKey("webCreatedAt")
     if (webCreatedAt === null) await setKey("webCreatedAt", new Date())
+
+    // 初始化 访客数
+    let touristCounts = +(await getKey("touristCounts"))
+    if (touristCounts === null) {
+      // 查询游客量
+      touristCounts = await Visitor.count()
+      await setKey("touristCounts", touristCounts)
+    }
 
     // 初始化 用户数
     const userCounts = await getKey("userCounts")

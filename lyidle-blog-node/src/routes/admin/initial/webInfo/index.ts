@@ -8,7 +8,7 @@ const router = express.Router()
 // 引入redis 设置缓存
 import { setKey, getKey, delKey } from "@/utils/redis"
 // 引入模型
-const { User, Article } = require("@/db/models")
+const { User, Article, Visitor } = require("@/db/models")
 router.get(
   "/",
   [jwtMiddleware, isAdmin],
@@ -25,17 +25,26 @@ router.get(
       const webCreatedAt = await getKey("webCreatedAt")
       if (!webCreatedAt) await setKey("webCreatedAt", new Date())
 
+      // 初始化 访客数
+      const touristCounts = await Visitor.count()
+      await setKey("touristCounts", touristCounts)
+
       // 初始化 用户数
       const userCount = await User.count()
       await setKey("userCounts", userCount)
 
       // 初始化 文章信息
-      const { dataValues: FindOneArticle } = await Article.findOne({
-        attributes: ["updatedAt"],
-        order: [["updatedAt", "desc"], [["id", "desc"]]],
-        limit: 1,
-      })
-      await setKey("webUpdatedAt", FindOneArticle.updatedAt)
+
+      // 网站最后更新时间
+      const webUpdatedAt = await getKey("webUpdatedAt")
+      if (!webUpdatedAt) {
+        const { dataValues: FindOneArticle } = await Article.findOne({
+          attributes: ["updatedAt"],
+          order: [["updatedAt", "desc"], [["id", "desc"]]],
+          limit: 1,
+        })
+        await setKey("webUpdatedAt", FindOneArticle?.updatedAt || new Date())
+      }
 
       // 初始化 文章总数
       const articleCount = await Article.count()

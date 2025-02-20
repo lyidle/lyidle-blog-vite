@@ -1,6 +1,7 @@
 import { isDir } from "@/utils/io/isDir"
 import express, { Request, Response, NextFunction } from "express"
-import { nanoid } from "nanoid"
+// 引入 uuidV4  文件的 id
+import { v4 as uuidV4 } from "uuid"
 import { extname, join } from "path"
 
 // 引入 jwt
@@ -30,7 +31,7 @@ const multerPath = async (req: Request, res: Response, next: NextFunction) => {
     },
     // 动态设置文件名（保留原始扩展名）
     filename: (req: any, file: any, cb: any) => {
-      const uniqueId = nanoid() // 使用 nanoid 生成唯一 ID
+      const uniqueId = uuidV4() // 使用 uuidV4 生成唯一 ID
       const ext = extname(file.originalname) // 获取文件扩展名
       const path = `${uniqueId}${ext}`
       cb(null, path)

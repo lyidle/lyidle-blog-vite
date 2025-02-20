@@ -1,6 +1,6 @@
 import { exec } from "child_process"
-// 引入 nanoid  生成临时文件的 id
-import { nanoid } from "nanoid"
+// 引入 uuidV4  生成临时文件的 id
+import { v4 as uuidV4 } from "uuid"
 // 引入 判断路径是否 存在 不存在则创建的函数
 import { isDir } from "@/utils/io/isDir"
 import { existsSync, unlinkSync, writeFileSync } from "fs"
@@ -14,8 +14,8 @@ export const compressGifAndSaveImage = async (
   optimize: NumberRange<1, 3> = 2
 ): Promise<string> => {
   // 生成唯一的文件名
-  const uniqueInputFileName = `${nanoid()}.gif`
-  const uniqueOutputFileName = `${nanoid()}.gif`
+  const uniqueInputFileName = `${uuidV4()}.gif`
+  const uniqueOutputFileName = `${uuidV4()}.gif`
 
   // 临时文件路径
   const tempInputPath = join(route, uniqueInputFileName)
