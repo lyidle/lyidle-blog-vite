@@ -55,7 +55,7 @@ const findUserByPk = async (id: number) => {
       {
         model: Article,
         as: "articles",
-        attributes: ["id"],
+        attributes: ["id", "author"],
       },
       {
         model: Role,

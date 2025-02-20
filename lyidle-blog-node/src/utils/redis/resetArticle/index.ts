@@ -9,7 +9,10 @@ import { delKeys } from ".."
  */
 export const resetArticle = async (findArticles: any[]) => {
   const deleteArr = deduplication(
-    JSON.parse(JSON.stringify(findArticles)).map((item: any) => item.id)
+    JSON.parse(JSON.stringify(findArticles)).map((item: any) => [
+      item.id,
+      item.author,
+    ])
   ).filter(Boolean)
 
   // 判断是否需要和删除缓存
@@ -17,5 +20,13 @@ export const resetArticle = async (findArticles: any[]) => {
     // 删除 缓存
     await delKeys("ArticlefindByPk:", deleteArr, (keys) => keys)
     await delKeys("ArticlefindAuthorAndId:", deleteArr, (keys) => keys)
+    // 最新文章的 缓存
+    await delKeys("recentPages:")
+    // 用户的 所有 tags
+    await delKeys(`allTags:`)
+    // 用户的 所有 categories
+    await delKeys(`allCategories:`)
+    // 获取文章 按照分页器 的格式返回
+    await delKeys(`articlePagination:`)
   }
 }

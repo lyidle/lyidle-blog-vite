@@ -75,8 +75,8 @@ const delKey = async (key: string): Promise<void> => {
 /**
  * 批量删除以指定前缀开头的 key，并根据 patterns 和自定义回调过滤
  * @param prefix 前缀字符串（如 "menu:"）
- * @param patterns 需要匹配的数组项  如果没有 callback，使用默认的 patterns 过滤逻辑 即按照保存时是按照 , 分割的
- * @param callback 自定义过滤回调函数
+ * @param patterns 需要匹配的数组项  如果没有 callback，使用默认的 patterns 过滤逻辑 即所有查询到的数组
+ * @param callback 自定义过滤回调函数 即按照保存时是按照 , 分割的
  * @returns 删除的 key 数量
  */
 const delKeys = async (

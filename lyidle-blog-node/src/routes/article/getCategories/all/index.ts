@@ -1,10 +1,16 @@
 import express from "express"
+// redis
+import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
 router.get("/", async (req, res) => {
   // 提取信息
   const { author } = req.query
+
+  // 判断有无缓存
+  const cacheValue = await getKey(`allCategories:${author}`)
+  if (cacheValue) return res.result(cacheValue, "获取所有categories成功~")
 
   // 查询
   const Articles = await Article.findAll({
@@ -27,6 +33,8 @@ router.get("/", async (req, res) => {
   const categories = Object.fromEntries(categoriesMap)
   categoriesMap.clear()
 
+  // 设置 缓存
+  await setKey(`allCategories:${author}`, categories)
   // 返回
   res.result(categories, "获取所有categories成功~")
 })
