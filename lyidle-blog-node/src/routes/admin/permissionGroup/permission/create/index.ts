@@ -6,7 +6,6 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 import { delKey } from "@/utils/redis"
 // 引入 模型
 const { Permission } = require("@/db/models")
-const db = require("@/db/models")
 const router = express.Router()
 // 创建权限子菜单
 router.post(

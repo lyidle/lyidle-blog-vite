@@ -28,6 +28,7 @@ export const resetUserInfo = async (findUsers: string[], isOwner?: boolean) => {
     }),
     isOwnerRole && default_owner,
   ]).filter(Boolean)
+
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
     // 删除 缓存

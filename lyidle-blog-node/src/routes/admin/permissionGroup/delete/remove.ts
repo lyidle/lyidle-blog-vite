@@ -60,7 +60,7 @@ const remove = async (
     include: [
       {
         model: Role,
-        attributes: ["name"],
+        attributes: ["id"],
         paranoid: false,
         include: [
           {

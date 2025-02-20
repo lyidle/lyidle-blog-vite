@@ -51,7 +51,7 @@ router.put(
           {
             model: Role,
             paranoid: false,
-            attributes: ["name"],
+            attributes: ["id"],
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
             include: [
               {
