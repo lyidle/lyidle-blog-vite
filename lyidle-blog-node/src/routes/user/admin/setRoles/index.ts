@@ -3,11 +3,12 @@ import express from "express"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
-// 引入redis
-import { delKey } from "@/utils/redis"
 // 设置权限
 import { setRoles } from "@/utils/db/user/setRoles"
+// 清除 对应 User 的缓存
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 判断是否是owner
+import { isOwner } from "../update"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 const router = express.Router()
@@ -48,7 +49,7 @@ router.post(
       }
 
       // 删除对应用户信息缓存
-      await resetUserInfo([findUser], roles)
+      await resetUserInfo([findUser], isOwner(roles))
 
       return res.result(void 0, "设置用户权限成功~")
     } catch (error) {

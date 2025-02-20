@@ -15,6 +15,9 @@ import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 
+// 环境变量
+const default_owner = process.env.default_owner!
+
 const db = require("@/db/models")
 const router = express.Router()
 
@@ -31,6 +34,9 @@ const findUserByPk = async (id: number) => {
     ],
   })
 }
+
+// 判断 是否是owner
+export const isOwner = (roles: string[]) => roles.includes(default_owner)
 
 // 按照 req.auth.id 查找当前的用户
 router.put(
@@ -119,7 +125,7 @@ router.put(
       }
 
       // 删除对应用户信息缓存
-      await resetUserInfo([findUser])
+      await resetUserInfo([findUser], isOwner(tokenSetRoles))
 
       return res.result(
         { token, isUser: id === req.auth.id },
@@ -179,7 +185,7 @@ router.put(
       let token = await setToken({ ...dataValues, roles: tokenSetRoles })
 
       // 删除对应用户信息缓存
-      await resetUserInfo([findUser])
+      await resetUserInfo([findUser], isOwner(tokenSetRoles))
 
       return res.result(
         { token, isUser: id === req.auth.id },

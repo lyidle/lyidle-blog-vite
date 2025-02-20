@@ -10,10 +10,10 @@ const default_owner = process.env.default_owner!
  * @param findUsers 查找到的user是一个数组
  * @param roles string[] 各式的 角色
  */
-export const resetUserInfo = async (findUsers: string[], roles?: string[]) => {
+export const resetUserInfo = async (findUsers: string[], isOwner?: boolean) => {
   const users = JSON.parse(JSON.stringify(findUsers))
   // 是否包含owner
-  let isOwnerRole: boolean = false
+  let isOwnerRole: boolean = isOwner || false
   // 需要删除 的数组 去重加 过滤
   const deleteArr = deduplication([
     users.map((item: any) => {
@@ -26,20 +26,12 @@ export const resetUserInfo = async (findUsers: string[], roles?: string[]) => {
         })
       return [item.id, item.account]
     }),
-    roles,
-    default_owner,
+    isOwnerRole && default_owner,
   ]).filter(Boolean)
 
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
     // 删除 缓存
-    await delKeys("userInfo:", deleteArr, (keys) => {
-      let _keys = keys
-      // 没有 找到 owner的则不需要删除 owner
-      if (!isOwnerRole) {
-        _keys = keys.filter((item) => item !== default_owner)
-      }
-      return _keys
-    })
+    await delKeys("userInfo:", deleteArr, (keys) => keys)
   }
 }

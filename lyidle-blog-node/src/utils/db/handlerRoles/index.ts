@@ -79,10 +79,10 @@ export const handlerPermissions = (Permissions: paramsType) => {
  * @param includeRolesModel 第一个子集包含Roles的查询结果
  * @returns 返回 处理好的 roles 的名单 string[]
  */
-export const ReturnRoles = (includeRolesModel: any[]) => {
+export const ReturnRoles = (includeRolesModel: string[]) => {
   const data = JSON.parse(JSON.stringify(includeRolesModel))
   // 把 roles 变为 string[]
   return deduplication(
     data.map((item: any) => item.Roles.map((item: any) => item.name))
-  ).filter(Boolean)
+  ).filter(Boolean) as string[]
 }
