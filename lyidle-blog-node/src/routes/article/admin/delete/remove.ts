@@ -9,7 +9,7 @@ const delete_article_expire = ms(process.env.delete_article_expire)
 const { Article } = require("@/db/models")
 
 // 引入 重置user的缓存的函数
-import { resetUserInfoByArticlePk } from "../resetUserInfoByArticlePk"
+import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
 
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicUserRemove = async (id: number) => {

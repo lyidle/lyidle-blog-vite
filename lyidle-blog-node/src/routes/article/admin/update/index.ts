@@ -5,7 +5,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
 // 引入 重置user的缓存的函数
-import { resetUserInfoByArticlePk } from "../resetUserInfoByArticlePk"
+import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
 // 引入 模型
 const { Article } = require("@/db/models")
 
