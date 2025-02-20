@@ -6,9 +6,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 设置权限
 import { setRoles } from "@/utils/db/user/setRoles"
 // 清除 对应 User 的缓存
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
-// 引入 判断是否是owner
-import { isOwner } from "../update"
+import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 const router = express.Router()

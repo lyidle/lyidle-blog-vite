@@ -5,11 +5,14 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // redis
 import { delKey } from "@/utils/redis"
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 去重函数
 import { deduplication } from "@/utils/array/deduplication"
+// 引入 清除用户缓存的函数
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 清除菜单缓存的函数
+import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 模型
 const { PermissionGroup, Role, User } = require("@/db/models")
-const db = require("@/db/models")
 
 const router = express.Router()
 
@@ -25,50 +28,43 @@ router.put(
     // 没有 id、name 返回失败
     if (!id) return res.result(void 0, "id是必传项哦~", false)
 
-    // 开启事务
-    const transaction = await db.sequelize.transaction()
-
     try {
       // 存储查询到的结果
 
       // 通过id 查找
       let findPermissionGroup = await PermissionGroup.findByPk(id)
 
-      if (!findPermissionGroup) {
-        await transaction.rollback() // 回滚事务
+      if (!findPermissionGroup)
         return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
-      }
 
       // 找到 了 则更新
       name && findPermissionGroup.set("name", name)
       findPermissionGroup.set("desc", desc ? desc : null)
 
-      const result = await findPermissionGroup.save({ transaction })
+      const result = await findPermissionGroup.save()
       const groupId = JSON.parse(JSON.stringify(result)).id
 
       // 逐级查询到缓存 的 Users
-      const findUsers = await PermissionGroup.findByPk(groupId, {
+      const findGroup = await PermissionGroup.findByPk(groupId, {
         paranoid: false,
-        attributes: ["id"],
         include: [
           {
             model: Role,
             paranoid: false,
-            attributes: ["id"],
+            attributes: ["name"],
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
             include: [
               {
                 model: User,
                 paranoid: false,
-                attributes: ["id"],
+                attributes: ["id", "account"],
                 through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
                 include: [
                   {
                     model: Role,
                     paranoid: false,
-                    attributes: ["id", "name"], // 只获取角色名称
+                    attributes: ["name"], // 只获取角色名称
                     through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-                    required: true, //按照 role时 过滤 User 的数据
                   },
                 ],
               },
@@ -79,22 +75,26 @@ router.put(
 
       // 处理找到的users
       const users = deduplication(
-        JSON.parse(JSON.stringify(findUsers)).Roles?.map(
+        JSON.parse(JSON.stringify(findGroup)).Roles?.map(
           (item: any) => item.Users
         )
-      )
+      ).filter(Boolean)
+
+      // 处理找到的roles
+      const roles = deduplication(
+        users.map((item) => item.Roles?.map((item: any) => item.name))
+      ).filter(Boolean) as string[]
+
       // 删除找到的users的缓存
       await resetUserInfo(users)
-
-      // 提交事务
-      await transaction.commit()
+      // 删除找到的menus的缓存
+      await delMenuRoles({ roles })
 
       // 删除缓存
       await delKey(cacheKey)
 
       res.result(void 0, "更新权限菜单成功~")
     } catch (error) {
-      await transaction.rollback() // 回滚事务
       res.validateAuth(error, next, () =>
         res.result(void 0, "更新权限菜单失败~", false)
       )

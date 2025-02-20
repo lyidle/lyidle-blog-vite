@@ -1,8 +1,11 @@
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
-// 重置 用户缓存的函数
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 去重函数
 import { deduplication } from "@/utils/array/deduplication"
+// 引入 清除用户缓存的函数
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 清除菜单缓存的函数
+import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入时间转换
 const ms = require("ms")
 
@@ -12,23 +15,30 @@ const delete_menu = ms(process.env.delete_menu)
 const { PermissionGroup, Role, User } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (users: any[]) => {
+export const publicUserRemove = async (users: any[], roles: string[]) => {
   // 获取全部时保存 redis 的键
   let cacheKey = `permissionGroup:*`
   // 删除 缓存
   await delKey(cacheKey)
-  // 重置 用户的信息缓存
+  // 删除找到的users的缓存
   await resetUserInfo(users)
+  // 删除找到的menus的缓存
+  await delMenuRoles({ roles })
 }
 
 // 彻底删除函数
-const deleted = async (model: any, id: number, users: any[]) => {
+const deleted = async (
+  model: any,
+  id: number,
+  users: any[],
+  roles: string[]
+) => {
   // 删除权限菜单
   await model.destroy({ force: true })
   // 删除临时的 permissionGroupBin
   await delKey(`permissionGroupBin:${id}`)
   // 不管是否删除都要移除的
-  await publicUserRemove(users)
+  await publicUserRemove(users, roles)
 }
 
 // 删除函数
@@ -50,21 +60,20 @@ const remove = async (
     include: [
       {
         model: Role,
-        attributes: ["id", "name"],
+        attributes: ["name"],
         paranoid: false,
         include: [
           {
             model: User,
             paranoid: false,
-            attributes: ["id"],
+            attributes: ["id", "account"],
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
             include: [
               {
                 model: Role,
                 paranoid: false,
-                attributes: ["id", "name"], // 只获取角色名称
+                attributes: ["name"], // 只获取角色名称
                 through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-                required: true, //按照 role时 过滤 User 的数据
               },
             ],
           },
@@ -79,11 +88,15 @@ const remove = async (
   // 找到提取需要的信息
   const { id } = findGroup.dataValues
 
-  const groups = JSON.parse(JSON.stringify(findGroup))
-  // 处理得到 users
-  const users = deduplication(groups.Roles?.map((item: any) => item.Users))
-  // 处理得到 roles
-  const roles = deduplication(groups.Roles?.map((item: any) => item.name))
+  // 处理找到的users
+  const users = deduplication(
+    JSON.parse(JSON.stringify(findGroup)).Roles?.map((item: any) => item.Users)
+  ).filter(Boolean)
+
+  // 处理找到的roles
+  const roles = deduplication(
+    users.map((item) => item.Roles?.map((item: any) => item.name))
+  ).filter(Boolean) as string[]
 
   // 是否 权限 判断
   if (isAuth) {
@@ -110,13 +123,13 @@ const remove = async (
     await setKey(`permissionGroupBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(users)
+    await publicUserRemove(users, roles)
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_menu, "权限菜单成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findGroup, id, users)
+  await deleted(findGroup, id, users, roles)
   return res.result(void 0, "删除权限菜单成功~")
 }
 export default remove

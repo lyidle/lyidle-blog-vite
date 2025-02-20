@@ -10,13 +10,10 @@ import { setToken } from "@/utils/token"
 // 处理roles
 import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置user的缓存
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 
 // 引入 模型
 const { User, Role } = require("@/db/models")
-
-// 环境变量
-const default_owner = process.env.default_owner!
 
 const db = require("@/db/models")
 const router = express.Router()
@@ -34,9 +31,6 @@ const findUserByPk = async (id: number) => {
     ],
   })
 }
-
-// 判断 是否是owner
-export const isOwner = (roles: string[]) => roles.includes(default_owner)
 
 // 按照 req.auth.id 查找当前的用户
 router.put(

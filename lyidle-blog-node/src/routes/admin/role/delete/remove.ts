@@ -58,15 +58,14 @@ const remove = async (
       {
         model: User,
         paranoid: false,
-        attributes: ["id"],
+        attributes: ["id", "account"],
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
         include: [
           {
             model: Role,
             paranoid: false,
-            attributes: ["id", "name"], // 只获取角色名称
+            attributes: ["name"],
             through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-            required: true, //按照 role时 过滤 User 的数据
           },
         ],
       },
@@ -78,12 +77,14 @@ const remove = async (
   // 找到提取需要的信息
   const { id } = findRole.dataValues
 
-  const _roles = JSON.parse(JSON.stringify(findRole))
+  const _Role = JSON.parse(JSON.stringify(findRole))
 
   // 处理得到 users
-  const users = deduplication(_roles.Users)
-  // 处理得到 roles
-  const roles = deduplication(_roles.name)
+  const users = deduplication(_Role.Users).filter(Boolean)
+  // 处理找到的roles
+  const roles = deduplication(
+    _Role.Users?.map((item: any) => item.Roles?.map((item: any) => item.name))
+  ).filter(Boolean)
 
   // 是否 权限 判断
   if (isAuth) {

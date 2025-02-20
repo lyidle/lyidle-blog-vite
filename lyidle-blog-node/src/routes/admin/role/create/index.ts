@@ -1,18 +1,29 @@
-import { delKey, getKey, getKeys, setKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 import express, { NextFunction, Request, Response } from "express"
 // 引入 模型
 const { Role } = require("@/db/models")
 const router = express.Router()
+
+// 环境变量
+const default_owner = process.env.default_owner!
 
 // 获取权限菜单列表
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, desc } = req.body
 
+    if (name === default_owner)
+      return res.result(
+        void 0,
+        `创建角色失败哦，不能创建${default_owner}角色哦~`,
+        false
+      )
+
     const setData = {
       name,
       desc,
     }
+
     // 创建权限
     const result = await Role.create(setData)
 
