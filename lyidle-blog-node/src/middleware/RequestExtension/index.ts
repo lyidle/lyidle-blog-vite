@@ -1,6 +1,4 @@
 import express, { NextFunction } from "express"
-// 引入 redis
-import { getKey } from "@/utils/redis"
 const router = express.Router()
 router.use(async (req, res, next) => {
   // 配置通用的返回格式
@@ -34,8 +32,6 @@ router.use(async (req, res, next) => {
     cb()
     return
   }
-  if (await getKey("initialWebInfo"))
-    return res.result(void 0, "正在初始化小站中，请稍后重试~", false)
   next()
 })
 module.exports = router

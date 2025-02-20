@@ -32,9 +32,9 @@ router.get("/", async (req, res, next) => {
       if (data) {
         const { country, province, city } = data
         ipRegion = { country, province, city }
+        ;(ipRegion as ipRegionType).userIp = userIp
+        await setKey(`ipRegion:${userIp}`, ipRegion)
       }
-      ;(ipRegion as ipRegionType).userIp = userIp
-      await setKey(`ipRegion:${userIp}`, ipRegion)
     }
 
     // 有缓存直接返回

@@ -28,5 +28,7 @@ export const resetArticle = async (findArticles: any[]) => {
     await delKeys(`allCategories:`)
     // 获取文章 按照分页器 的格式返回
     await delKeys(`articlePagination:`)
+    // 获取 文章的 轮播图 焦点图 字段为recommend true的
+    await delKeys(`carousel:`)
   }
 }
