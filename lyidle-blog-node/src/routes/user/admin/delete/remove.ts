@@ -2,16 +2,22 @@
 import type { Request, Response } from "express"
 // 引入redis
 import { delKey, setKey, getKey } from "@/utils/redis"
+// 引入 清除 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 引入 清除 文章缓存的函数
+import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入时间转换
 const ms = require("ms")
-const { User, Role } = require("@/db/models")
+const { User, Article, Role } = require("@/db/models")
+
 // 软删除用户的时间
 const delete_user_expire = ms(process.env.delete_user_expire)
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (findUser: any) => {
+export const publicUserRemove = async (findUser: any, articles: any[]) => {
   // 删除对应用户信息缓存
   await resetUserInfo([findUser])
+  // 删除 对应的 文章的缓存
+  await resetArticle(articles)
   // 删除用户的临时垃圾桶变量
   await delKey(`userArticleBin`)
   // 删除文章的缓存
@@ -19,7 +25,7 @@ export const publicUserRemove = async (findUser: any) => {
   await delKey(`webTotalWords`)
 }
 // 彻底删除函数
-const deleted = async (findUser: any) => {
+const deleted = async (findUser: any, articles: any[]) => {
   // 删除用户
   await findUser.destroy({ force: true })
   // 删除文章 和 权限等信息 会 自动删除
@@ -38,7 +44,7 @@ const deleted = async (findUser: any) => {
   await delKey(`userBin:${findUser.dataValues.id}`)
 
   // 不管是否删除都要移除的
-  await publicUserRemove(findUser)
+  await publicUserRemove(findUser, articles)
 }
 
 // 通过 id查询用户
@@ -47,7 +53,13 @@ const findUserByPk = async (id: number) => {
     paranoid: false,
     include: [
       {
+        model: Article,
+        as: "articles",
+        attributes: ["id"],
+      },
+      {
         model: Role,
+        paranoid: false,
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
       },
@@ -72,6 +84,9 @@ const remove = async (
   // 找到提取需要的信息
   const { id: userId } = findUser.dataValues
 
+  // 得到 对应的文章
+  const articles = JSON.parse(JSON.stringify(findUser)).articles
+
   // 是否 权限 判断
   if (isAuth) {
     // 判断是否是用户的用户
@@ -92,13 +107,13 @@ const remove = async (
     await setKey(`userBin:${userId}`, true)
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(findUser)
+    await publicUserRemove(findUser, articles)
 
     return res.result(delete_user_expire, "用户成功移动到回收站~")
   }
 
   // 彻底删除
-  await deleted(findUser)
+  await deleted(findUser, articles)
   return res.result(void 0, "删除用户成功~")
 }
 export default remove

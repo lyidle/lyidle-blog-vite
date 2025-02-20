@@ -4,8 +4,10 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
-// 引入 重置user的缓存的函数
+// 引入 清除 user 的缓存的函数
 import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
+// 引入 清除 article 的缓存的函数
+import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入 模型
 const { Article } = require("@/db/models")
 
@@ -21,7 +23,7 @@ router.put(
         return res.result(void 0, "修改文章时，没有找到文章哦~", false)
 
       // 查找是否有文章
-      const findArticle = await Article.findByPk(articleId)
+      const findArticle = await Article.findByPk(articleId, { paranoid: false })
 
       // 没有找到文章
       if (!findArticle)
@@ -76,7 +78,8 @@ router.put(
 
       // 删除对应用户信息缓存
       await resetUserInfoByArticlePk(articleId)
-
+      // 删除 对应的文章缓存
+      await resetArticle([findArticle])
       // 删除 文章的缓存
       await delKey(`ArticlefindByPk:${result.dataValues.id}`)
       res.result(result, "修改文章成功~")
