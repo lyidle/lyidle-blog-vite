@@ -15,25 +15,34 @@ import { UpdateUserBody } from "./types/updateUserBody"
 import { ManagerUpdateUserBody } from "./types/managerUpdateUserBody"
 import { UpdateUser } from "./types/updateUser"
 import { CreateUserBody } from "./types/createUserBody"
-import { setUserRolesBody } from "./types/setUserRolesBody"
+import { managerSetUserRolesBody } from "./types/setUserRolesBody"
 // 统一管理 api
 enum API {
+  // 注册相关
   regEmail = "/user/reg/email",
   reg = "/user/reg",
+  // 登录
   login = "/user/login",
+  // 退出登录 清除token redis 缓存
   logout = "/user/logout",
   userInfo = "/user/userinfo",
   search = "/user/search",
   exactSearch = "/user/search/exact",
   searchCounts = "/user/search/user",
+  // 普通的 需要req.auth.id 的jwt验证
   removeUser = "/user/admin/bin",
   deleteUser = "/user/admin/clear",
+  updateUser = "/user/admin/update",
+  // 管理 面板api
+  // 创建
+  managerCreateUser = "/user/admin/create",
+  // 更新
+  managerUpdateUser = "/user/admin/update/manager",
+  // 设置角色
+  managerSetUserRoles = "/user/admin/setRoles",
+  // 删除
   managerRemoveUser = "/user/admin/bin/manager",
   managerDeleteUser = "/user/admin/clear/manager",
-  managerUpdateUser = "/user/admin/update/manager",
-  updateUser = "/user/admin/update",
-  create = "/user/admin/create",
-  setUserRoles = "/user/admin/setRoles",
 }
 
 // API 的 key 的类型
@@ -90,10 +99,12 @@ const removeCallbackUser = (api: APIKeysType) => (id: number) =>
   })
 
 // 软删除 用户 需要 是本用户的id
-export const removeUser = removeCallbackUser("removeUser")
+export const removeUser = () =>
+  request.delete<any, void>(server + prefix + API.removeUser)
 
 // 彻底删除 用户 需要 是本用户的id
-export const deleteUser = removeCallbackUser("deleteUser")
+export const deleteUser = () =>
+  request.delete<any, void>(server + prefix + API.deleteUser)
 
 // 不需要验证是本用户的id
 // 登录用户需要拥有权限
@@ -102,7 +113,7 @@ export const managerRemoveUser = removeCallbackUser("managerRemoveUser")
 // 彻底删除
 export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
 
-// 修改用户 需要 是本用户的id 不需要传入id 从jwt中获取的 redis缓存
+// 修改用户 需要 是本用户的id
 export const updateUser = (data: UpdateUserBody) =>
   request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, {
     data,
@@ -117,9 +128,9 @@ export const managerUpdateUser = (data: ManagerUpdateUserBody) =>
   )
 
 // 创建用户  登录用户需要拥有权限
-export const createUser = (data: CreateUserBody) =>
-  request.post<any, void>(server + prefix + API.create, data)
+export const managerCreateUser = (data: CreateUserBody) =>
+  request.post<any, void>(server + prefix + API.managerCreateUser, data)
 
 // 分配用户的权限
-export const setUserRoles = (data: setUserRolesBody) =>
-  request.post<any, void>(server + prefix + API.setUserRoles, data)
+export const managerSetUserRoles = (data: managerSetUserRolesBody) =>
+  request.post<any, void>(server + prefix + API.managerSetUserRoles, data)

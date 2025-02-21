@@ -44,7 +44,7 @@
 <script setup lang="ts" name="UserAssignRoles">
 // 引入 api
 import { findAllRoles } from "@/api/admin"
-import { setUserRoles } from "@/api/user"
+import { managerSetUserRoles } from "@/api/user"
 // 引入 类型
 import { User } from "@/api/user/types/searchUserPagination"
 import type { CheckboxValueType } from "element-plus"
@@ -107,7 +107,7 @@ const emit = defineEmits<{
 // 提交
 const handlerConfirm = async () => {
   try {
-    await setUserRoles({
+    await managerSetUserRoles({
       id: currentUser.value?.id as number,
       roles: checkedRoles.value,
     })

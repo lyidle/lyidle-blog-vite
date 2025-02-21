@@ -63,7 +63,7 @@
 
 <script setup lang="ts" name="UserCreate">
 // 引入接口
-import { createUser } from "@/api/user"
+import { managerCreateUser } from "@/api/user"
 // 引入 类型
 import { CreateUserBody } from "@/api/user/types/createUserBody"
 // 引入 正则
@@ -146,7 +146,7 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await createUser(createData)
+    await managerCreateUser(createData)
     ElMessage.success(`创建用户成功~`)
     centerDialogVisible.value = false
     // 重新请求
