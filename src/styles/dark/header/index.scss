@@ -13,8 +13,6 @@ html[themes="#{$theme}"] {
     --scissors-color: #{$header-color};
     // 头部小屏drawer
     --header-drawer-title-color: #{$header-color};
-    --mini-drawer-pin-bg: #36759f;
-    --mini-drawer-pin-color: #dbf1ff;
     // 头部小屏drawer导航的菜单颜色
     $accordion-bg-hover: #396396;
     $accordion-color-hover: #e9f6ff;

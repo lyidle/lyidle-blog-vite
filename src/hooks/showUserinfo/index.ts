@@ -13,6 +13,7 @@ type UseShowUserinfoOptions = {
   showTags?: boolean
   showCategories?: boolean
   isAccount?: boolean
+  showIsBin?: boolean
 }
 
 // 主函数
@@ -27,6 +28,7 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     userPages,
     userTags,
     userCategories,
+    userIsBin,
   } = storeToRefs(useUserStore())
 
   const {
@@ -37,6 +39,7 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     adminPages,
     adminTags,
     adminCategories,
+    adminIsBin,
   } = storeToRefs(useOwnerStore())
 
   // 定义一个函数来安全地创建 computed，如果选项中未启用，则返回 undefined
@@ -50,6 +53,10 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
   // 根据传入的 options 动态计算
   const showAccount = createComputed("showAccount", () => {
     return userToken.value ? userAccount.value : adminAccount.value
+  })
+
+  const showIsBin = createComputed("showIsBin", () => {
+    return userToken.value ? userIsBin.value : adminIsBin.value
   })
 
   const showNickName = createComputed("showNickName", () =>
@@ -91,5 +98,6 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     showTags,
     showCategories,
     isAccount,
+    showIsBin,
   }
 }

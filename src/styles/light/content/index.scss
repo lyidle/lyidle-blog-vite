@@ -6,9 +6,6 @@
 
 html[themes="#{$theme}"] {
   .global-content {
-    // 内容卡片
-    --content-card-pin-bg: #619ec7;
-    --content-card-pin-color: #ecf8ff;
     // 内容图片遮罩
     --content-mask: linear-gradient(
       to right,

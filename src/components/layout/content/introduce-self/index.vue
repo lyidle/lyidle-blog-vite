@@ -12,6 +12,15 @@
             }"
             v-if="!userToken"
           ></div>
+          <div
+            class="pin right-pin"
+            :content="'bin'"
+            :style="{
+              '--pin-left': '13px',
+              '--pin-top': '15px',
+            }"
+            v-if="showIsBin"
+          ></div>
           <div class="userInfo">
             <!-- 头像 -->
             <global-avatar></global-avatar>
@@ -84,9 +93,10 @@ import { useOwnerStore } from "@/store/owner"
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 // 提取需要展示的信息
-const { showNickName, showSigner } = useShowUserinfo({
+const { showNickName, showSigner, showIsBin } = useShowUserinfo({
   showNickName: true,
   showSigner: true,
+  showIsBin: true,
 })
 
 const {
@@ -130,24 +140,8 @@ $userinfo-btn-car-size: 25px;
   display: flex;
   flex-direction: column;
   gap: $gap;
-  .pin {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2.5rem;
-    height: 5rem;
-    background-color: var(--content-card-pin-bg);
-    clip-path: polygon(0 0, 0% 100%, 100% 0);
-    color: var(--content-card-pin-color);
-    &::before {
-      content: attr(content);
-      display: block;
-      position: absolute;
-      transform: rotate(295deg);
-      top: var(--pin-top, 0);
-      left: var(--pin-left, 0);
-    }
-  }
+  // 引入 card-pin 的样式
+  @include card-pin;
   .userInfo {
     width: 100%;
     display: flex;

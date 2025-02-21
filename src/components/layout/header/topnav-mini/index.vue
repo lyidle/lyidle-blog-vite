@@ -30,6 +30,15 @@
             }"
             v-if="!userToken"
           ></div>
+          <div
+            class="pin right-pin"
+            :content="'bin'"
+            :style="{
+              '--pin-left': '13px',
+              '--pin-top': '15px',
+            }"
+            v-if="showIsBin"
+          ></div>
           <!-- 头像 -->
           <global-avatar></global-avatar>
           <layout-link-pages></layout-link-pages>
@@ -46,6 +55,14 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+// 引入 处理后的数据
+import { useShowUserinfo } from "@/hooks/showUserinfo"
+import { mitt } from "@/utils/emitter"
+// 提取需要展示的信息
+const { showIsBin } = useShowUserinfo({
+  showIsBin: true,
+})
+
 // 提取需要的数据
 const {
   // 用户信息
@@ -61,15 +78,23 @@ const drawer = ref(false)
 // 展示drawer
 const isShow = () => {
   // 隐藏 html 的滚动条
-  document.documentElement.style.overflow = "hidden"
   drawer.value = true
+  document.documentElement.style.overflow = "hidden"
 }
-
 // 关闭drawer
 const handlerClose = () => {
   // 打开 html 的滚动条
-  document.documentElement.style.overflow = "unset"
+  drawer.value = false
+  document.documentElement.style.overflow = ""
 }
+
+// 监听 路由的变化
+mitt.on("router changed", handlerClose)
+
+onBeforeUnmount(() => {
+  // 取消监听 路由的变化
+  mitt.off("router changed", handlerClose)
+})
 </script>
 
 <style scoped lang="scss">
@@ -109,28 +134,8 @@ $header-content-pd: 20px;
     color: var(--header-drawer-title-color);
     box-sizing: border-box;
     position: relative;
-    .pin {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 2.5rem;
-      height: 5rem;
-      background-color: var(--mini-drawer-pin-bg);
-      clip-path: polygon(0 0, 0% 100%, 100% 0);
-      color: var(--mini-drawer-pin-color);
-
-      //底部距离
-      margin-bottom: $gap;
-      &::before {
-        content: attr(content);
-        display: block;
-        position: absolute;
-        transform: rotate(295deg);
-        top: var(--pin-top, 0);
-        left: var(--pin-left, 0);
-      }
-    }
-
+    // 引入 card-pin 的样式
+    @include card-pin;
     .avatar {
       width: 100px;
       height: 100px;

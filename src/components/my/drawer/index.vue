@@ -67,6 +67,6 @@ $drawer-during: 0.3s;
   width: v-bind(width);
   background-color: v-bind(bg);
   z-index: $my-drawer-mask-index + 1;
-  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>
