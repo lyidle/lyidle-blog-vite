@@ -4,7 +4,7 @@ import remove from "@/routes/article/admin/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入redis
 import { getKey } from "@/utils/redis"
 const router = express.Router()
@@ -28,10 +28,12 @@ router.delete(
     }
   }
 )
-// 不需要验证 登录用户拥有权限
+
+// 不需要验证 角色信息
+// 需要验证 登录用户拥有权限 admin
 router.delete(
   "/manager",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id: articleId } = req.body

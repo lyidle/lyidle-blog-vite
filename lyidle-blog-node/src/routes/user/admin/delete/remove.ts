@@ -71,10 +71,14 @@ const findUserByPk = async (id: number) => {
 const remove = async (
   req: Request,
   res: Response,
+  _id: number | null = null,
   bin: boolean = false,
   isAuth = true
 ) => {
-  const { id } = req.body
+  let { id } = req.body
+  if (_id) id = _id
+
+  if (!id) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
 
   // 查找是否有用户
   const findUser = await findUserByPk(id)

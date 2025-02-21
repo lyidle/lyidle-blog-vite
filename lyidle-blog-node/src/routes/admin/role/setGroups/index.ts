@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 import { delKey } from "@/utils/redis"
 // 去重函数
 import { deduplication } from "@/utils/array/deduplication"
@@ -17,7 +17,7 @@ const router = express.Router()
 
 router.post(
   "/",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 获取所有角色 保存的键

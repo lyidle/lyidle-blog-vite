@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 设置权限
 import { setRoles } from "@/utils/db/user/setRoles"
 // 清除 对应 User 的缓存
@@ -15,7 +15,7 @@ const router = express.Router()
 // 需要验证 登录用户拥有权限 admin
 router.post(
   "/",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 得到id

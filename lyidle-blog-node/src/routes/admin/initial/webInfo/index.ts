@@ -9,7 +9,7 @@ const router = express.Router()
 import { setKey, getKey, delKey } from "@/utils/redis"
 // 引入模型
 const { User, Article, Visitor } = require("@/db/models")
-router.get(
+router.post(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {

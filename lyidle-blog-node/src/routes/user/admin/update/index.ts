@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入redis
 import { delKey } from "@/utils/redis"
 // 设置token
@@ -136,10 +136,11 @@ router.put(
   }
 )
 
-// 需要传入 id  没有验证
+// 不需要验证 用户
+// 需要验证 登录用户拥有权限 admin
 router.put(
   "/manager",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.body.id
     if (!id) return res.result(void 0, "修改用户信息失败,id是必传项~", false)
