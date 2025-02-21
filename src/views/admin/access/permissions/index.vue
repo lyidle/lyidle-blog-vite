@@ -302,8 +302,10 @@ const handlerAllRemove = async () => {
     await Promise.all(
       roleIds.value.map(async (item) => {
         id = item
-        // 软删除
-        await removePermission(id)
+        try {
+          // 软删除
+          await removePermission(id)
+        } catch (error) {}
       })
     )
     // 重新请求
@@ -323,8 +325,10 @@ const handlerAllDelete = async () => {
     await Promise.all(
       roleIds.value.map(async (item) => {
         id = item
-        // 彻底删除
-        await deletePermission(id)
+        try {
+          // 彻底删除
+          await deletePermission(id)
+        } catch (error) {}
       })
     )
     // 重新请求

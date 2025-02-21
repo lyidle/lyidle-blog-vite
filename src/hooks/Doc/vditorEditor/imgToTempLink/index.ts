@@ -41,12 +41,16 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
       try {
         const handlers = await Promise.all(
           arr.map(async (item) => {
-            const handler = await postTempImgUrl(item)
-            if (handler?.url) {
-              return {
-                url: handler.url,
-                origin: handler.origin,
+            try {
+              const handler = await postTempImgUrl(item)
+              if (handler?.url) {
+                return {
+                  url: handler.url,
+                  origin: handler.origin,
+                }
               }
+            } catch (error) {
+              return null
             }
             return null
           })

@@ -11,6 +11,8 @@ import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 const { User, Role } = require("@/db/models")
 const router = express.Router()
 
+// 不需要验证 角色信息
+// 需要验证 登录用户拥有权限 admin
 router.post(
   "/",
   [jwtMiddleware],

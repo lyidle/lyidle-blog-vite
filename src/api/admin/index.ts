@@ -27,8 +27,8 @@ import { UpdateMenuListBody } from "./types/updateMenuListBody"
 // 统一管理 api
 enum API {
   menuList = "/admin/menuList",
-  removeMenuList = "/admin/menuList/bin",
-  deleteMenuList = "/admin/menuList/clear",
+  removeMenuList = "/admin/menuList/bin/manager",
+  deleteMenuList = "/admin/menuList/clear/manager",
   allMenuList = "/admin/menuList/*",
   announce = "/admin/announce",
   poetry = "/admin/poetry",

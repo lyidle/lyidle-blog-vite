@@ -79,6 +79,6 @@ export const ReturnRoles = (includeRolesModel: string[]) => {
   const data = JSON.parse(JSON.stringify(includeRolesModel))
   // 把 roles 变为 string[]
   return deduplication(
-    data.map((item: any) => item.Roles.map((item: any) => item.name))
+    data.map((item: any) => item.Roles?.map((item: any) => item.name))
   ).filter(Boolean) as string[]
 }

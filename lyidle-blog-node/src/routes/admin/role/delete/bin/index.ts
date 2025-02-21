@@ -28,7 +28,9 @@ router.delete(
     }
   }
 )
-// 不需要验证 登录用户拥有权限
+
+// 不需要验证 角色信息
+// 需要验证 登录用户拥有权限 admin
 router.delete(
   "/manager",
   [jwtMiddleware],

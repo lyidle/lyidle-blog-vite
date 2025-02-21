@@ -330,8 +330,10 @@ const handlerAllRemove = async () => {
     await Promise.all(
       userIds.value.map(async (item) => {
         id = item
-        // 软删除
-        await managerRemoveUser(id)
+        try {
+          // 软删除
+          await managerRemoveUser(id)
+        } catch (error) {}
       })
     )
     // 重新请求
@@ -351,8 +353,10 @@ const handlerAllDelete = async () => {
     await Promise.all(
       userIds.value.map(async (item) => {
         id = item
-        // 彻底删除
-        await managerDeleteUser(id)
+        try {
+          // 彻底删除
+          await managerDeleteUser(id)
+        } catch (error) {}
       })
     )
     // 重新请求

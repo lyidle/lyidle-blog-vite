@@ -12,7 +12,7 @@ const ms = require("ms")
 // 软删除菜单的时间
 const delete_menu = ms(process.env.delete_menu)
 // 引入模型
-const { Menu, Role } = require("@/db/models")
+const { Menu, Role, sequelize } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicMenusRemove = async (roles: string[]) => {
@@ -41,15 +41,8 @@ const remove = async (
   if (!menuId) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
 
   // 查找是否有菜单
-  const findMenu = await Menu.findByPk(menuId, { paranoid: false })
-  // 没有找到菜单
-  if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
-
-  // 找到提取需要的信息
-  const { id } = findMenu.dataValues
-
-  //  查询 文章 的角色 清除 menuList 的缓存
-  const existingRoles = await Menu.findByPk({
+  const findMenu = await Menu.findByPk(menuId, {
+    paranoid: false,
     include: [
       {
         model: Role,
@@ -58,28 +51,15 @@ const remove = async (
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
       },
     ],
-    paranoid: false,
   })
+  // 没有找到菜单
+  if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
 
-  // 查询子菜单的 parentId 数组集合
-  const ids = JSON.parse(JSON.stringify(existingRoles)).map(
-    (item: any) => item.id
-  )
-
-  // 查询子菜单的个数
-  const counts = await Menu.count({ where: { parentId: ids } })
-
-  // 有个数 不允许删除  因为单个删除 后 处理缓存很麻烦 需要获得子集的所有roles集合 删除缓存 或者直接清除menu的所有缓存
-  if (counts) {
-    return res.result(
-      void 0,
-      `子菜单个数${counts},需要接触子菜单的关联后才能够删除哦~`,
-      false
-    )
-  }
+  // 找到提取需要的信息
+  const { id } = findMenu.dataValues
 
   // 得到 roles
-  const roles = deduplication(ReturnRoles(existingRoles))
+  let roles = deduplication(ReturnRoles([findMenu]))
 
   // 是否 权限 判断
   if (isAuth) {
@@ -95,20 +75,92 @@ const remove = async (
 
   // 回收到垃圾桶
   if (bin) {
-    // 只能点击移动到一次垃圾桶
+    // 检查是否已经移动到垃圾桶
     const isBin = await getKey(`userMenusBin:${id}`)
-    if (isBin)
-      return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
+    if (isBin) {
+      return res.result(void 0, "菜单已经移动到垃圾桶，请勿重复操作~", false)
+    }
 
-    // 软删除
-    await findMenu.destroy()
-    // 设置缓存
-    await setKey(`userMenusBin:${id}`, true)
+    // 开启事务
+    const transaction = await sequelize.transaction()
+    try {
+      // 查询当前菜单的 parentId
+      const parentId = JSON.parse(JSON.stringify(findMenu)).id
 
-    // 不管是否是软删除都要移除的
-    await publicMenusRemove(roles)
-    // 到时间自动删除 使用定时任务 每天判断
-    return res.result(delete_menu, "菜单成功移到回收站~")
+      // 软删除当前菜单
+      await findMenu.destroy({ transaction })
+
+      // 递归加载所有子菜单（包括嵌套的子菜单）
+      const loadNestedMenus = async (parentId: number) => {
+        const menus = await Menu.findAll({
+          where: { parentId },
+          include: [
+            {
+              model: Menu,
+              as: "children", // 假设关联关系是 "children"
+            },
+            {
+              model: Role,
+              paranoid: false,
+              attributes: ["name"], // 只获取角色名称
+              through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            },
+          ],
+          transaction, // 将事务传递给查询
+        })
+
+        // 添加 roles
+        roles.push(deduplication(ReturnRoles([menus])))
+
+        // 递归加载子菜单的子菜单
+        for (const menu of menus) {
+          if (menu.children && menu.children.length > 0) {
+            menu.children = await loadNestedMenus(menu.id)
+          }
+        }
+
+        return menus
+      }
+
+      // 加载所有子菜单
+      const nestedMenus = await loadNestedMenus(parentId)
+
+      // 提取所有需要删除的菜单项（包括嵌套的子菜单）
+      const menusToDelete: any[] = []
+      const extractMenus = (menu: any) => {
+        menusToDelete.push(menu) // 将当前菜单项加入删除列表
+        if (menu.children && menu.children.length > 0) {
+          menu.children.forEach((child: any) => extractMenus(child)) // 递归提取子菜单
+        }
+      }
+
+      nestedMenus.forEach((menu: any) => extractMenus(menu))
+
+      // 并发删除所有菜单项
+      await Promise.all(
+        menusToDelete.map(async (item) => {
+          await item.destroy({ transaction })
+        })
+      )
+
+      // 设置缓存，标记菜单已移动到垃圾桶
+      await setKey(`userMenusBin:${id}`, true)
+      // 去重
+      roles = deduplication(roles).filter(Boolean)
+      // 清理公共菜单缓存
+      await publicMenusRemove(roles)
+
+      // 提交事务
+      await transaction.commit()
+
+      // 返回成功响应
+      return res.result(delete_menu, "菜单成功移到回收站~", true)
+    } catch (error) {
+      // 发生错误时回滚
+      await transaction.rollback()
+      console.error("菜单移到回收站失败:", error) // 记录错误日志
+      return res.result(void 0, "菜单移到回收站失败~", false)
+    }
   }
 
   // 彻底删除

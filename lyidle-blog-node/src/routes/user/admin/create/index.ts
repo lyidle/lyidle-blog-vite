@@ -8,7 +8,8 @@ const router = express.Router()
 // 普通用户组
 const default_user = process.env.default_user!
 
-// 注册接口
+// 不需要验证 角色信息
+// 需要验证 登录用户拥有权限 admin
 router.post("/", async (req, res, next) => {
   const {
     account: userAccount,
