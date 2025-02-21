@@ -182,8 +182,8 @@ interface YearGroupedArticles {
 }
 const articles = ref<YearGroupedArticles[]>([])
 // 获取所有文章
-const handlerArticles = async (author: string) => {
-  const result = await searchArticleExact({ author })
+const handlerArticles = async () => {
+  const result = await searchArticleExact({ author: account })
   const article = result.article
   if (article.length) {
     // 处理排序
@@ -226,7 +226,7 @@ const handlerRemove = async (id: string | number) => {
       )
     }
     // 获取所有文章
-    await handlerArticles(account)
+    await handlerArticles()
   } catch (error) {}
 }
 // 删除文章的回调
@@ -236,7 +236,7 @@ const handlerDelete = async (id: string | number) => {
     console.log(result)
     ElMessage.success(`成功删除文章~`)
     // 获取所有文章
-    await handlerArticles(account)
+    await handlerArticles()
   } catch (error) {}
 }
 onMounted(async () => {
@@ -244,7 +244,7 @@ onMounted(async () => {
     // 获取文章个数
     await handlerCounts(account)
     // 获取所有文章
-    await handlerArticles(account)
+    await handlerArticles()
   } catch (error) {}
 })
 </script>
