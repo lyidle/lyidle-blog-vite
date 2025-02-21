@@ -64,8 +64,11 @@ const dialogVisible = ref(false)
 const handleRemove: UploadProps["beforeRemove"] = async (uploadFile) => {
   if (!props.remove) return true
   const url = uploadFile.url ? [uploadFile.url] : null
-  if (url) return await handlerRemoveFileStatic(url)
-  else return false
+  // 不管 成功与否都 true 失败表明临时图片消失了
+  if (url) {
+    await handlerRemoveFileStatic(url)
+    return true
+  } else return true
 }
 
 // 预览图片

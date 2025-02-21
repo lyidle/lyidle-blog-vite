@@ -101,9 +101,12 @@ import {
 // 引入 hooks
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 import { mitt } from "@/utils/emitter"
+import { postImgPermanent } from "@/api/img"
 const route = useRoute()
 const router = useRouter()
+// 上传的 poster图
 const poster = ref<uploadFiles>([])
+// 初始的 poster图
 let originPoster: string | null = null
 // 得到 作者和id
 const docAuthor = route.query.author as string
@@ -123,7 +126,6 @@ const reqArticle = async () => {
     docsFormData.category = Article?.category || ""
     docsFormData.tags = Article?.tags || []
     docsFormData.desc = Article?.desc || ""
-
     if (Article.poster) {
       // 展示poster
       poster.value = [{ name: "", url: Article.poster }]
@@ -131,6 +133,7 @@ const reqArticle = async () => {
       originPoster = Article.poster
     }
 
+    // 内容尝试解压 失败就展示原内容
     try {
       context.value = decompressString(Article?.content || "") as string
     } catch (error) {
@@ -249,8 +252,30 @@ const handerUpload = async () => {
 
     // 判断是否有更新的上传海报
     const newPoster = poster.value?.[0]?.url
-    if (newPoster && newPoster !== originPoster && originPoster) {
-      data.poster = newPoster
+    // 更新了 poster 则修改
+    if (newPoster && newPoster !== originPoster) {
+      const tempImg = [newPoster]
+      const result = await postImgPermanent({
+        tempImg,
+        account: docAuthor,
+        path: "/md/poster",
+      })
+      if (result) {
+        const { successImg, tempImgNull } = result
+        // 临时图片失效的
+        if (tempImgNull.length) {
+          tempImgNull.forEach((item) => {
+            ElMessage.warning({
+              message: `文章的海报临时图片:${item}不存在~`,
+              customClass: "selectMessage",
+            })
+          })
+        }
+        // 得到 成功的poster
+        const _poster = successImg?.[0]?.url
+        // 修改 poster
+        if (_poster) data.poster = _poster
+      }
     }
 
     // 更新

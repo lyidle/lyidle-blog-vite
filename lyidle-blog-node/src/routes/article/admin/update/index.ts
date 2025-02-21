@@ -54,7 +54,7 @@ router.put(
       }
 
       // 提取body 信息
-      const { title, content, category, tags, desc, poster, length } = req.body
+      const { title, content, length, category, tags, desc, poster } = req.body
 
       // 非空判断
       if (
@@ -77,9 +77,9 @@ router.put(
       content && length && findArticle.set("content", content)
       content && length && findArticle.set("length", length)
       category && findArticle.set("category", category)
-      tags && findArticle.set("tags", tags)
-      desc ?? findArticle.set("desc", desc)
-      poster ?? findArticle.set("poster", poster)
+      tags?.length && findArticle.set("tags", tags)
+      findArticle.set("desc", desc)
+      findArticle.set("poster", poster)
 
       // 更新数据
       const result = await findArticle.save()

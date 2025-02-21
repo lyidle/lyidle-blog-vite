@@ -174,7 +174,6 @@ onBeforeMount(async () => {
           (decompressString(articles.content) as string) || articles.content
     } catch (error) {}
     article.value = articles
-    console.log(article.value)
   } catch (error) {}
 })
 

@@ -91,8 +91,7 @@ import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // 引入 仓库
 import { useDocEditorOpt } from "@/store/doc"
-// 引入 类型
-import type { InputInstance } from "element-plus"
+import { useUserStore } from "@/store/user"
 // 引入 api
 import { addArticle } from "@/api/article"
 // 引入 类型
@@ -105,9 +104,12 @@ import {
   descReg,
   contentReg,
 } from "@/RegExp/Docs"
+import { postImgPermanent } from "@/api/img"
 
+// 提取需要的数据
 const { title, category, tags, desc, length, docHeight, context, poster } =
   storeToRefs(useDocEditorOpt())
+const { userAccount } = storeToRefs(useUserStore())
 
 // 重置表单
 const resetDoc = async () => {
@@ -119,6 +121,7 @@ const resetDoc = async () => {
     tags.value.length ||
     desc.value
   ) {
+    // 默认使用的 store 中的响应式数据 重置表单无法生效
     title.value = ""
     category.value = ""
     tags.value = []
@@ -139,7 +142,6 @@ const resetDoc = async () => {
           })
         },
         success: (url) => {
-          console.log(url === urls)
           if (url === urls) poster.value = []
         },
       })
@@ -214,14 +216,20 @@ const vditor = useVditorEditor("vditor-publish", vditorEditor, {
 // 使用 路由
 const router = useRouter()
 
-// 清空缓存
+// 成功 上传清空缓存
 const mdAndFormReset = () => {
   title.value = ""
   category.value = ""
   tags.value = []
   desc.value = ""
+  poster.value = []
   context.value = ""
+  // 使用 定时器 在 微任务后清除验证
+  setTimeout(() => {
+    docsForm.value.clearValidate()
+  }, 0)
 }
+
 // 提交的数据整理
 const handerUpload = async () => {
   try {
@@ -249,21 +257,37 @@ const handerUpload = async () => {
     await useMdReplaceImg(content, data)
 
     // 判断是否有上传海报
-
     if (poster.value.length) {
-      data.poster = poster.value[0].url
+      const tempImg = [poster.value[0].url as string]
+      const result = await postImgPermanent({
+        tempImg,
+        account: userAccount.value as string,
+        path: "/md/poster",
+      })
+      if (result) {
+        const { successImg, tempImgNull } = result
+        // 临时图片失效的
+        if (tempImgNull.length) {
+          tempImgNull.forEach((item) => {
+            ElMessage.warning({
+              message: `文章的海报临时图片:${item}不存在~`,
+              customClass: "selectMessage",
+            })
+          })
+        }
+        // 得到 成功的poster
+        const _poster = successImg?.[0]?.url
+        // 修改 poster
+        if (_poster) data.poster = _poster
+      }
     }
 
     const result = await addArticle(data)
     const docId = result?.id
     if (docId) {
       router.replace(`/doc/${docId}`)
-      nextTick(() => {
-        mdAndFormReset()
-      })
+      mdAndFormReset()
     }
-
-    poster.value = []
     ElMessage.success("上传文章成功~")
   } catch (error) {}
 }
