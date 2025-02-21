@@ -58,11 +58,11 @@ router.put(
 
       // 找到 了 则更新
       name && findMenu.set("name", name)
-      icon && findMenu.set("icon", icon)
-      to && findMenu.set("to", to)
-      layout && findMenu.set("layout", layout)
-      bannerImg && findMenu.set("bannerImg", bannerImg)
-      parentId && findMenu.set("parentId", parentId)
+      icon ?? findMenu.set("icon", icon)
+      to ?? findMenu.set("to", to)
+      layout ?? findMenu.set("layout", layout)
+      bannerImg ?? findMenu.set("bannerImg", bannerImg)
+      parentId ?? findMenu.set("parentId", parentId)
 
       await findMenu.save({ transaction })
 
