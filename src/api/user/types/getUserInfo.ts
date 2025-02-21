@@ -15,7 +15,7 @@ export interface Datum {
   createdAt: string
   email: string
   id: number
-  isBin: number
+  isBin: string | null
   nickName: string
   roles: string[]
   signer: null | string

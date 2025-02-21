@@ -60,6 +60,7 @@ export const useUserStore = defineStore(
 
     // 用户信息
     const userAccount = ref<string>()
+    const userIsBin = ref<string | null>()
     const userNickName = ref<string>()
     const userEmail = ref<string>()
     const userAvatar = ref<string | null>()
@@ -75,6 +76,7 @@ export const useUserStore = defineStore(
         const result = await getUserInfo()
         // 有用户信息 赋值
         if (result) {
+          userIsBin.value = result?.[0]?.isBin
           userPermissions.value = result?.[0]?.permissions
           userRoles.value = result?.[0]?.roles || []
           userAccount.value = result?.[0]?.account
@@ -107,6 +109,7 @@ export const useUserStore = defineStore(
         // 用户的 白名单路径
         whitelist.value = []
         // 用户信息
+        userIsBin.value = undefined
         userAccount.value = ""
         userNickName.value = ""
         userEmail.value = ""
@@ -140,6 +143,7 @@ export const useUserStore = defineStore(
       reqUserInfo,
       // 用户信息
       userAccount,
+      userIsBin,
       userNickName,
       userEmail,
       userAvatar,

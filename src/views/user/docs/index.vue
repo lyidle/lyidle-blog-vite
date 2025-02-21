@@ -168,11 +168,12 @@ const counts = ref<Counts>()
 // 获取文章个数
 const handlerCounts = async (account: string) => {
   // 获取用户文章信息
-  const result = await searchCounts({ account })
+  const result = await searchCounts({ account, isBin: "true" })
   if (result?.length) {
     counts.value = result[0].counts
   }
 }
+
 // 所有文章
 // 定义按年份分组的类型
 interface YearGroupedArticles {
