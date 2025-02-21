@@ -18,9 +18,9 @@ export const routerEventHandlered = (router: any) => {
     router.push({ path: "/", replace: true })
   })
 
-  mitt.on("account inconsistent", () => {
+  mitt.on("account inconsistent", (msg: string) => {
     router.replace("/")
-    ElMessage.warning(`访问当前页面需要是本人的账户哦~`)
+    msg && ElMessage.warning(msg)
   })
 
   mitt.on("handler request error", ({ msg, type }) => {

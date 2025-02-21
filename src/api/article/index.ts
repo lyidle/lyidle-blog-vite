@@ -22,13 +22,20 @@ enum API {
   searchArticleExact = "/article/search/exact",
   searchArticleMerge = "/article/search/merge",
   searchArticleMergeExact = "/api/article/search/merge/exact",
+  // 通过id搜索
   getOneArticle = "/article/get/id",
+  // 通过 id和作者搜索
   getArticleByAuthorAndId = "/article/get/authorAndId",
+  // 增加 获取的 req.auth.id 为 userId
   addArticle = "/article/admin/add",
+  // 修改 获取的 req.auth.id 为 userId
   updateArticle = "/article/admin/update",
+  // 删除 获取的 req.auth.id 为 userId
   binArticle = "/article/admin/bin",
   clearArticle = "/article/admin/clear",
+  // 获取 所有tags
   getTagsAll = "/article/getTags/all",
+  // 获取 所有categories
   getCategoriesAll = "/article/getCategories/all",
 }
 

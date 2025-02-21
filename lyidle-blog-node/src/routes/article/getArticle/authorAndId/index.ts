@@ -9,9 +9,10 @@ router.get("/", async (req, res, next) => {
   const author = req.query.author
   if (!id || !author)
     return res.result(void 0, "id、author是必传项哦~", false, 404)
-  // 获取缓存 有直接返回
-  const cacheValue = await getKey(`ArticlefindAuthorAndId:${id}`)
 
+  const cacheKey = `ArticlefindAuthorAndId:${author}:${id}`
+  // 获取缓存 有直接返回
+  const cacheValue = await getKey(cacheKey)
   if (cacheValue) return res.result(cacheValue, "获取文章成功~")
   try {
     const result = await Article.findOne({
@@ -24,7 +25,7 @@ router.get("/", async (req, res, next) => {
       return res.result(void 0, "文章被删除了哦~", false, 404)
 
     // 获取成功时 设置缓存
-    await setKey(`ArticlefindAuthorAndId:${id}`, result)
+    await setKey(cacheKey, result)
 
     res.result(result, "获取文章成功~")
   } catch (error) {
