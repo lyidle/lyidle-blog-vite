@@ -17,18 +17,29 @@ export const resetArticle = async (findArticles: any[]) => {
 
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
+    // 得到 ids
+    const ids = deleteArr.filter(
+      (item: string | number) => !Number.isNaN(+item) && +item
+    )
+    // 得到 accounts
+    const accounts = deleteArr.filter(
+      (item: string | number) => typeof item === "string" && item
+    )
     // 删除 缓存
-    await delKeys("ArticlefindByPk:", deleteArr, (keys) => keys)
-    await delKeys("ArticlefindAuthorAndId:", deleteArr, (keys) => keys)
-    // 最新文章的 缓存
+    // 按照 id
+    await delKeys("ArticlefindByPk:", ids, (keys) => keys)
+    // 按照 作者和id 所以只需要以作者开头
+    await delKeys("ArticlefindAuthorAndId:", accounts, (keys) => keys)
+    // 最新文章的 缓存 使用的
     await delKeys("recentPages:")
-    // 用户的 所有 tags
-    await delKeys(`allTags:`)
-    // 用户的 所有 categories
-    await delKeys(`allCategories:`)
+    // 用户的 所有 tags 按照作者
+    await delKeys(`allTags:`, accounts, (keys) => keys)
+    // 用户的 所有 categories 按照作者
+    await delKeys(`allCategories:`, accounts, (keys) => keys)
     // 获取文章 按照分页器 的格式返回
     await delKeys(`articlePagination:`)
-    // 获取 文章的 轮播图 焦点图 字段为recommend true的
-    await delKeys(`carousel:`)
+    // // 获取 文章的 轮播图 焦点图 字段为 recommend true的
+    // 设置 recommend 时清除
+    // await delKeys(`carousel:`)
   }
 }

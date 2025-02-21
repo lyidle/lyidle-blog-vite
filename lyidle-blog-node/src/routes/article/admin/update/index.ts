@@ -5,10 +5,7 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
 // 引入 清除 user 的缓存的函数
-import {
-  resetUserInfo,
-  resetUserInfoByArticlePk,
-} from "@/utils/redis/resetUserInfo"
+import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
 import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入 模型
@@ -57,8 +54,7 @@ router.put(
       }
 
       // 提取body 信息
-      const { title, content, category, tags, carousel, desc, poster, length } =
-        req.body
+      const { title, content, category, tags, desc, poster, length } = req.body
 
       // 非空判断
       if (
@@ -67,7 +63,6 @@ router.put(
         !length &&
         !category &&
         !tags &&
-        !carousel &&
         !desc &&
         !poster
       )
@@ -83,9 +78,8 @@ router.put(
       content && length && findArticle.set("length", length)
       category && findArticle.set("category", category)
       tags && findArticle.set("tags", tags)
-      carousel && findArticle.set("carousel", carousel)
-      desc && findArticle.set("desc", desc)
-      poster && findArticle.set("poster", poster)
+      desc ?? findArticle.set("desc", desc)
+      poster ?? findArticle.set("poster", poster)
 
       // 更新数据
       const result = await findArticle.save()
