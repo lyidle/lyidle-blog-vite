@@ -74,8 +74,8 @@ export const getRecentPages = (data?: GetRecentPagesQuery) =>
   )
 
 // 搜索文章的回调
-const searchArticleCallback = (api: APIKeysType) => {
-  return (data: SearchArticleQuery) =>
+const searchArticleCallback =
+  (api: APIKeysType) => (data: SearchArticleQuery) =>
     request.get<any, SearchArticle["data"]>(
       `${server + prefix + API[api]}` +
         `${data.id ? `/?id=${data.id}` : ""}` +
@@ -83,9 +83,10 @@ const searchArticleCallback = (api: APIKeysType) => {
         `${data.category ? `/?category=${data.category}` : ""}` +
         `${data.desc ? `/?desc=${data.desc}` : ""}` +
         `${data.tags ? `/?tags=${data.tags}` : ""}` +
-        `${data.title ? `/?title=${data.title}` : ""}`
+        `${data.title ? `/?title=${data.title}` : ""}` +
+        `${data.currentPage ? `&currentPage=${data.currentPage}` : ""}` +
+        `${data.pageSize ? `&pageSize=${data.pageSize}` : ""}`
     )
-}
 
 // 模糊搜索文章
 export const searchArticle = searchArticleCallback("searchArticle")

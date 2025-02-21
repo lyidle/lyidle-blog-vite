@@ -27,6 +27,7 @@
             >
           </div>
         </div>
+        <!-- 时间树形结构 -->
         <div v-for="item in articles" :key="item.year" class="card-container">
           <div class="years cur-text text-[1.625rem] my-0.9375rem">
             {{ item.year }}
@@ -146,6 +147,18 @@
         </div>
       </my-card>
     </template>
+    <template #content-end>
+      <div class="flex justify-center">
+        <el-pagination
+          v-if="pagination?.total"
+          background
+          layout="prev, pager, next, sizes"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 30]"
+          @change="handlerArticles"
+        />
+      </div>
+    </template>
   </layout-content>
 </template>
 
@@ -161,6 +174,7 @@ import { orderArticle } from "@/utils/doc/orderArticle"
 // 引入 moment
 import moment from "@/utils/moment"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
+import { Pagination } from "@/api/admin/types/findAllRolesPagination"
 
 // 文章 的 数据
 // 个数
@@ -181,9 +195,19 @@ interface YearGroupedArticles {
   articles: Article[]
 }
 const articles = ref<YearGroupedArticles[]>([])
+
+const pagination = ref<Pagination>()
+
 // 获取所有文章
-const handlerArticles = async () => {
-  const result = await searchArticleExact({ author: account })
+const handlerArticles = async (
+  currentPage: number = 1,
+  pageSize: number = 10
+) => {
+  const result = await searchArticleExact({
+    author: account,
+    currentPage,
+    pageSize,
+  })
   const article = result.article
   if (article.length) {
     // 处理排序
@@ -210,6 +234,7 @@ const handlerArticles = async () => {
 
     // 更新数据
     articles.value = groupedArticles
+    pagination.value = result.pagination
   }
 }
 // 使用 路由 hook

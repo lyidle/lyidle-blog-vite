@@ -10,7 +10,7 @@ export interface SearchArticleQuery {
   /**
    * 当前页默认值1
    */
-  currentPage?: string
+  currentPage?: number
   /**
    * 描述
    */
@@ -22,7 +22,7 @@ export interface SearchArticleQuery {
   /**
    * 一页显示的数量10
    */
-  pageSize?: string
+  pageSize?: number
   /**
    * 标签
    */
