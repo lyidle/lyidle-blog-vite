@@ -22,13 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "访客标识不能为空哦~" },
           notEmpty: { msg: "访客标识不能为空哦~" },
-          async isUnique(value) {
-            const find = await Visitor.findOne({ where: { name: value } })
-            if (find) throw new Error("访客标识不能重复哦~")
-            // 获取到访客数量
-            let touristCounts = +(await getKey("touristCounts"))
-            await setKey("touristCounts", touristCounts + 1)
-          },
         },
       },
     },

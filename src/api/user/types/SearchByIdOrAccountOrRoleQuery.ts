@@ -1,6 +1,6 @@
 export interface SearchByIdOrAccountOrRoleQuery {
   /**
-   * 按照account查詢
+   * 按照account查询
    */
   account?: string
   /**
@@ -8,7 +8,11 @@ export interface SearchByIdOrAccountOrRoleQuery {
    */
   id?: number
   /**
-   * 按照role查詢
+   * 是否查询用户是查询回收站的，只控制user
+   */
+  isBin?: string
+  /**
+   * 按照owner查詢
    */
   roles?: string
   [property: string]: any

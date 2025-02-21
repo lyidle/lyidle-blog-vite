@@ -30,7 +30,8 @@ export default async (
   res: Response,
   exact: boolean = false,
   isCounts: boolean = false,
-  isPagination: boolean = true
+  isPagination: boolean = true,
+  isBin: boolean = false
 ) => {
   let { id, account, email, roles, nickName, currentPage, pageSize } = data
   if (roles) roles = JSON.parse(roles)
@@ -43,6 +44,7 @@ export default async (
   let offset
 
   const commend: any = {
+    paranoid: isBin ? false : true,
     include: [
       {
         model: Article,

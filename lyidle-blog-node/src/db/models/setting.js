@@ -24,12 +24,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      content: {
-        type: DataTypes.JSON,
-        set(value) {
-          this.setDataValue("content", value)
-        },
-      },
+      content: DataTypes.JSON,
     },
     {
       sequelize,

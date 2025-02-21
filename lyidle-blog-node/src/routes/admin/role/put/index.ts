@@ -14,6 +14,10 @@ import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 模型
 const { Role, User } = require("@/db/models")
 
+// 引入 环境变量
+const default_owner = process.env.default_owner!
+const default_admin = process.env.default_admin!
+
 const router = express.Router()
 
 // 更新 角色
@@ -52,8 +56,14 @@ router.put(
       if (!findRole)
         return res.result(void 0, "没有找到需要更新的角色哦~", false)
 
+      // 得到 name
+      const _name = findRole.dataValues?.name
       // 找到 了 则更新
-      name && findRole.set("name", name)
+      // 限制指定的name 不能修改
+      _name !== default_owner &&
+        _name !== default_admin &&
+        name &&
+        findRole.set("name", name)
       findRole.set("desc", desc ? desc : null)
 
       await findRole.save()
@@ -75,6 +85,11 @@ router.put(
 
       // 删除缓存
       await delKey(cacheKey)
+
+      // 限制指定的name 不能修改
+      if (_name === default_owner || _name === default_admin)
+        return res.result(_name, `不可修改名字为${_name}的角色哦~`)
+
       res.result(void 0, "更新角色成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

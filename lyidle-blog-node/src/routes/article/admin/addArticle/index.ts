@@ -10,6 +10,7 @@ const { Article } = require("@/db/models")
 import { setKey, getKey, delKey } from "@/utils/redis"
 // 引入 重置user的缓存的函数
 import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
+import { resetArticle } from "@/utils/redis/resetArticle"
 router.post(
   "/",
   [jwtMiddleware],
@@ -30,7 +31,7 @@ router.post(
 
     try {
       // 创建文章
-      const { dataValues } = await Article.create(ArticleData)
+      const createArticle = await Article.create(ArticleData)
       // 创建成功文章数 +1
       const webTotalPages = await getKey("webTotalPages")
       await setKey("webTotalPages", +webTotalPages + 1)
@@ -40,10 +41,12 @@ router.post(
       await delKey("webTotalWords")
 
       // 得到 id
-      const id = dataValues.id
+      const id = createArticle.dataValues?.id
 
       // 删除对应用户信息缓存
       await resetUserInfoByArticlePk(id)
+      // 删除 对应的用户的文章缓存
+      await resetArticle([createArticle])
 
       // 返回处理后的结果
       return res.result({ id }, "增加文章成功~")

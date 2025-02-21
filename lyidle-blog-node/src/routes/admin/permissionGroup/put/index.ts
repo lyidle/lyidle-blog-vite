@@ -16,6 +16,10 @@ const { PermissionGroup, Role, User } = require("@/db/models")
 
 const router = express.Router()
 
+// 引入 环境变量
+const default_owner = process.env.default_owner!
+const default_admin = process.env.default_admin!
+
 // 更新 权限菜单
 router.put(
   "/",
@@ -32,20 +36,7 @@ router.put(
       // 存储查询到的结果
 
       // 通过id 查找
-      let findPermissionGroup = await PermissionGroup.findByPk(id)
-
-      if (!findPermissionGroup)
-        return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
-
-      // 找到 了 则更新
-      name && findPermissionGroup.set("name", name)
-      findPermissionGroup.set("desc", desc ? desc : null)
-
-      const result = await findPermissionGroup.save()
-      const groupId = JSON.parse(JSON.stringify(result)).id
-
-      // 逐级查询到缓存 的 Users
-      const findGroup = await PermissionGroup.findByPk(groupId, {
+      let findGroup = await PermissionGroup.findByPk(id, {
         paranoid: false,
         include: [
           {
@@ -73,6 +64,21 @@ router.put(
         ],
       })
 
+      if (!findGroup)
+        return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
+
+      // 得到 name
+      const _name = findGroup.dataValues?.name
+      // 找到 了 则更新
+      // 限制指定的name 不能修改
+      _name !== default_owner &&
+        _name !== default_admin &&
+        name &&
+        findGroup.set("name", name)
+      findGroup.set("desc", desc ? desc : null)
+
+      await findGroup.save()
+
       // 处理找到的users
       const users = deduplication(
         JSON.parse(JSON.stringify(findGroup)).Roles?.map(
@@ -92,6 +98,10 @@ router.put(
 
       // 删除缓存
       await delKey(cacheKey)
+
+      // 限制指定的name 不能修改
+      if (_name === default_owner || _name === default_admin)
+        return res.result(_name, `不可修改名字为${_name}的权限组哦~`)
 
       res.result(void 0, "更新权限菜单成功~")
     } catch (error) {

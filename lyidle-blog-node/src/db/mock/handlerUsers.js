@@ -20,9 +20,9 @@ for (let i = 1; i <= userCounts; i++) {
   // 默认 是 user
   let roleIds = deduplication(userIds)
   // 第一个是 owner
-  if (i === 1) roleIds = deduplication(ownerIds)
+  if (i === 1) roleIds = deduplication([ownerIds, adminIds])
   // 偶数是 admin
-  if (i % 2 === 0) roleIds = deduplication(adminIds)
+  if (i === 2) roleIds = deduplication(adminIds)
   users.push({
     id: userId,
     account: `test${i}`,

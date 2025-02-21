@@ -22,14 +22,14 @@ router.get(
         throw new myError("otherError", "获取用户信息时 jwt 出错没有id哦~")
 
       // 缓存用户信息
-      const cacheValue = await getKey(`userInfo:${id}`)
+      const cacheValue = await getKey(`userInfo:bin:${id}`)
       if (cacheValue) return res.result(cacheValue, "获取用户信息成功~")
       // 查询对应id的信息
-      const findUser = await search({ id }, res, true, true, false)
+      const findUser = await search({ id }, res, true, true, false, true)
       // 不存在
       if (!findUser) return
       // 存储用户信息 到 redis
-      await setKey(`userInfo:${id}`, findUser)
+      await setKey(`userInfo:bin:${id}`, findUser)
       return res.result(findUser, "获取用户信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

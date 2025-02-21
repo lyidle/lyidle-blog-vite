@@ -74,8 +74,9 @@ router.get("/exact/counts", async (req, res, next) => {
 })
 
 // 按照 按照 id、roles、account 搜索计数
+// isBin 判断 是否查询 软删除的
 router.get("/user", async (req, res, next) => {
-  const { id, account } = req.query
+  const { id, account, isBin } = req.query
   let roles = req.query.roles
   if (!id && !roles && !account)
     return res.result(
@@ -91,12 +92,17 @@ router.get("/user", async (req, res, next) => {
     )
   }
 
-  const cacheKey = id || roles || account
+  // 缓存 的键
+  let cacheKey = `userInfo:${id || roles || account}`
+
+  //  查询回收站 缓存 的键
+  if (isBin) cacheKey = `userInfo:bin:${id || roles || account}`
+
   if (roles) roles = JSON.stringify([roles])
 
   if (cacheKey) {
     // 缓存用户信息
-    const cacheValue = await getKey(`userInfo:${cacheKey}`)
+    const cacheValue = await getKey(cacheKey)
     if (cacheValue) return res.result(cacheValue, "查询用户信息成功~")
   }
 
@@ -106,12 +112,13 @@ router.get("/user", async (req, res, next) => {
       res,
       true,
       true,
-      false
+      false,
+      JSON.parse(isBin as string)
     )
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis
-    if (cacheKey) await setKey(`userInfo:${cacheKey}`, findUser)
+    if (cacheKey) await setKey(cacheKey, findUser)
     return res.result(findUser, "查询用户信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

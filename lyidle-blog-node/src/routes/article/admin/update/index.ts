@@ -5,11 +5,14 @@ import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey, delKey } from "@/utils/redis"
 // 引入 清除 user 的缓存的函数
-import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
+import {
+  resetUserInfo,
+  resetUserInfoByArticlePk,
+} from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
 import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入 模型
-const { Article } = require("@/db/models")
+const { Article, User, Role } = require("@/db/models")
 
 const router = express.Router()
 router.put(
@@ -23,7 +26,23 @@ router.put(
         return res.result(void 0, "修改文章时，没有找到文章哦~", false)
 
       // 查找是否有文章
-      const findArticle = await Article.findByPk(articleId, { paranoid: false })
+      const findArticle = await Article.findByPk(articleId, {
+        paranoid: false,
+        include: [
+          {
+            model: User,
+            paranoid: false,
+            attributes: ["id", "account"],
+            include: [
+              {
+                model: Role,
+                paranoid: false,
+                attributes: ["name"],
+              },
+            ],
+          },
+        ],
+      })
 
       // 没有找到文章
       if (!findArticle)
@@ -76,12 +95,14 @@ router.put(
       // 删除总字数统计缓存
       await delKey("webTotalWords")
 
+      // 得到 user
+      const user = JSON.parse(JSON.stringify(findArticle)).User
+
       // 删除对应用户信息缓存
-      await resetUserInfoByArticlePk(articleId)
-      // 删除 对应的文章缓存
+      await resetUserInfo([user])
+      // 删除 对应的用户的文章缓存
       await resetArticle([findArticle])
-      // 删除 文章的缓存
-      await delKey(`ArticlefindByPk:${result.dataValues.id}`)
+
       res.result(result, "修改文章成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

@@ -12,6 +12,10 @@ const delete_menu = ms(process.env.delete_menu)
 // 引入模型
 const { Role, User } = require("@/db/models")
 
+// 引入 环境变量
+const default_owner = process.env.default_owner!
+const default_admin = process.env.default_admin!
+
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicUserRemove = async (roles: string[], users: any[]) => {
   // 获取所有角色 保存的键
@@ -73,6 +77,12 @@ const remove = async (
   })
   // 没有找到角色
   if (!findRole) return res.result(void 0, "删除角色时，没有找到角色哦~", false)
+
+  // 得到 name
+  const name = findRole.dataValues?.name
+  // 限制指定的name 不能修改
+  if (name === default_owner || name === default_admin)
+    return res.result(void 0, `不可删除名字为${name}的角色哦~`, false)
 
   // 找到提取需要的信息
   const { id } = findRole.dataValues

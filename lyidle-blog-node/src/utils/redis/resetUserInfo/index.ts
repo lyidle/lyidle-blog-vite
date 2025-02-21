@@ -42,29 +42,36 @@ export const resetUserInfo = async (findUsers: string[], isOwner?: boolean) => {
   if (deleteArr && deleteArr.length) {
     // 删除 缓存
     await delKeys("userInfo:", deleteArr, (keys) => keys)
+    await delKeys("userInfo:bin:", deleteArr, (keys) => keys)
   }
 }
 
 /**
  * 通过 文章的id 清除 User 的信息 缓存
+ * 创建文章时 使用
  * @param id 查询文章的id
  */
 export const resetUserInfoByArticlePk = async (id: number) => {
   const article = await Article.findByPk(id, {
+    paranoid: false,
+    attributes: ["id"],
     include: [
       {
         model: User,
+        paranoid: false,
         attributes: ["id", "account"],
         include: [
           {
             model: Role,
+            paranoid: false,
             attributes: ["name"],
           },
         ],
       },
     ],
   })
+  // 得到 user
   const user = JSON.parse(JSON.stringify(article)).User
-  // 清除 Users 的信息 缓存
+  // 删除对应用户信息缓存
   await resetUserInfo([user])
 }
