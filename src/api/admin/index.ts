@@ -27,31 +27,38 @@ import { UpdateMenuListBody } from "./types/updateMenuListBody"
 // 统一管理 api
 enum API {
   menuList = "/admin/menuList",
-  removeMenuList = "/admin/menuList/bin/manager",
-  deleteMenuList = "/admin/menuList/clear/manager",
+  managerRemoveMenuList = "/admin/menuList/bin/manager",
+  managerDeleteMenuList = "/admin/menuList/clear/manager",
   allMenuList = "/admin/menuList/*",
   announce = "/admin/announce",
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
   findOneSetting = "/admin/settings",
+  // 角色
+  Role = "/admin/role",
   findAllRoles = "/admin/role",
   findAllRolesPagination = "/admin/role/pagination",
-  Role = "/admin/role",
-  removeRole = "/admin/role/bin",
-  deleteRole = "/admin/role/clear",
-  findAllGroups = "/admin/permissionGroup",
-  setRoleGroups = "/admin/role/setGroups",
-  findAllGroupsPagination = "/admin/permissionGroup/pagination",
-  removeGroups = "/admin/permissionGroup/bin",
-  deleteGroups = "/admin/permissionGroup/clear",
+  // 删除
+  managerRemoveRole = "/admin/role/bin/manager",
+  managerDeleteRole = "/admin/role/clear/manager",
+  // 设置 权限组
+  managerSetRoleGroups = "/admin/role/setGroups",
+  // 权限组
   Group = "/admin/permissionGroup",
+  findAllGroups = "/admin/permissionGroup",
+  findAllGroupsPagination = "/admin/permissionGroup/pagination",
+  // 删除
+  managerRemoveGroups = "/admin/permissionGroup/bin/manager",
+  managerDeleteGroups = "/admin/permissionGroup/clear/manager",
+  // 设置 权限
+  managerSetGroupPermissions = "/admin/permissionGroup/setPermissions",
+  // 权限
+  Permission = "/admin/permissionGroup/permission",
   findAllPermissions = "/admin/permissionGroup/permission",
-  setGroupPermissions = "/admin/permissionGroup/setPermissions",
   findAllPermissionsPagination = "/admin/permissionGroup/permission/pagination",
-  deletePermission = "/admin/permissionGroup/permission/clear",
-  removePermission = "/admin/permissionGroup/permission/bin",
-  createPermission = "/admin/permissionGroup/permission",
-  updatePermission = "/admin/permissionGroup/permission",
+  // 删除
+  managerDeletePermission = "/admin/permissionGroup/permission/clear/manager",
+  managerRemovePermission = "/admin/permissionGroup/permission/bin/manager",
 }
 
 // API 的 key 的类型
@@ -81,9 +88,9 @@ export const createMenuList = (data: CreateMenuListBody) =>
 export const updateMenuList = (data: UpdateMenuListBody) =>
   request.put<any, CreateMenuList>(server + prefix + API.menuList, data)
 // 软删除菜单
-export const removeMenuList = removeCallback("removeMenuList")
+export const managerRemoveMenuList = removeCallback("managerRemoveMenuList")
 // 彻底删除菜单
-export const deleteMenuList = removeCallback("deleteMenuList")
+export const managerDeleteMenuList = removeCallback("managerDeleteMenuList")
 
 // 获取公告
 export const getAnnounce = () =>
@@ -127,18 +134,18 @@ export const updateRole = (data: UpdateRoleBody) =>
   request.put<any, void>(server + prefix + API.Role, data)
 
 // 彻底删除角色 登录用户需要拥有权限
-export const deleteRole = removeCallback("deleteRole")
+export const managerDeleteRole = removeCallback("managerDeleteRole")
 
 // 软删除角色 登录用户需要拥有权限
-export const removeRole = removeCallback("removeRole")
+export const managerRemoveRole = removeCallback("managerRemoveRole")
 
 // 查询所有 权限组 登录用户需要拥有权限
 export const findAllGroups = () =>
   request.get<any, FindAllGroups["data"]>(server + prefix + API.findAllGroups)
 
 // 分配角色的权限组
-export const setRoleGroups = (data: SetRoleGroupsBody) =>
-  request.post<any, void>(server + prefix + API.setRoleGroups, data)
+export const managerSetRoleGroups = (data: SetRoleGroupsBody) =>
+  request.post<any, void>(server + prefix + API.managerSetRoleGroups, data)
 
 // 获取 所有的权限组信息 分页器
 export const findAllGroupsPagination = (data?: paginationQuery) =>
@@ -153,10 +160,10 @@ export const findAllGroupsPagination = (data?: paginationQuery) =>
   )
 
 // 彻底删除权限组 登录用户需要拥有权限
-export const deleteGroups = removeCallback("deleteGroups")
+export const managerDeleteGroups = removeCallback("managerDeleteGroups")
 
 // 软删除权限组 登录用户需要拥有权限
-export const removeGroups = removeCallback("removeGroups")
+export const managerRemoveGroups = removeCallback("managerRemoveGroups")
 
 // 创建权限组 登录用户需要拥有权限
 export const createGroup = (data: CreateRoleBody) =>
@@ -173,8 +180,11 @@ export const findAllPermissions = () =>
   )
 
 // 分配权限组的权限
-export const setGroupPermissions = (data: SetGroupPermissionsBody) =>
-  request.post<any, void>(server + prefix + API.setGroupPermissions, data)
+export const managerSetGroupPermissions = (data: SetGroupPermissionsBody) =>
+  request.post<any, void>(
+    server + prefix + API.managerSetGroupPermissions,
+    data
+  )
 
 // 获取 所有的权限信息 分页器
 export const findAllPermissionsPagination = (data?: paginationQuery) =>
@@ -189,15 +199,15 @@ export const findAllPermissionsPagination = (data?: paginationQuery) =>
   )
 
 // 彻底删除权限 登录用户需要拥有权限
-export const deletePermission = removeCallback("deletePermission")
+export const managerDeletePermission = removeCallback("managerDeletePermission")
 
 // 软删除权限 登录用户需要拥有权限
-export const removePermission = removeCallback("removePermission")
+export const managerRemovePermission = removeCallback("managerRemovePermission")
 
 // 创建权限 登录用户需要拥有权限
-export const createPermission = (data: CreateRoleBody) =>
-  request.post<any, void>(server + prefix + API.createPermission, data)
+export const managerCreatePermission = (data: CreateRoleBody) =>
+  request.post<any, void>(server + prefix + API.Permission, data)
 
 // 更新权限组 登录用户需要拥有权限
-export const updatePermission = (data: UpdateRoleBody) =>
-  request.put<any, void>(server + prefix + API.updatePermission, data)
+export const managerUpdatePermission = (data: UpdateRoleBody) =>
+  request.put<any, void>(server + prefix + API.Permission, data)

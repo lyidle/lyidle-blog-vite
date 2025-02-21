@@ -198,7 +198,7 @@
 
 <script setup lang="ts" name="AdminAccessGroups">
 // 引入 api
-import { deleteGroups, removeGroups } from "@/api/admin"
+import { managerDeleteGroups, managerRemoveGroups } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
@@ -293,7 +293,7 @@ const handlerRemove = async (row: Role) => {
   const { id, name } = row
   try {
     // 回收到垃圾桶
-    await removeGroups(id)
+    await managerRemoveGroups(id)
     // 重新请求
     await handlerReq()
     ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
@@ -307,7 +307,7 @@ const handlerDelete = async (row: Role) => {
   const { id, name } = row
   try {
     // 彻底删除
-    await deleteGroups(id)
+    await managerDeleteGroups(id)
     // 重新请求
     await handlerReq()
     ElMessage.success(`彻底删除${name}权限组成功~`)
@@ -325,7 +325,7 @@ const handlerAllRemove = async () => {
         id = item
         try {
           // 软删除
-          await removeGroups(id)
+          await managerRemoveGroups(id)
         } catch (error) {}
       })
     )
@@ -348,7 +348,7 @@ const handlerAllDelete = async () => {
         id = item
         try {
           // 彻底删除
-          await deleteGroups(id)
+          await managerDeleteGroups(id)
         } catch (error) {}
       })
     )

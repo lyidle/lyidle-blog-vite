@@ -51,7 +51,7 @@
 
 <script setup lang="ts" name="PermissionEditor">
 // 引入 接口
-import { updateGroup, updatePermission } from "@/api/admin"
+import { updateGroup, managerUpdatePermission } from "@/api/admin"
 // 引入 类型
 import type { UpdateRoleBody } from "@/api/admin/types/updateRoleBody"
 
@@ -109,7 +109,7 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await updatePermission(createData)
+    await managerUpdatePermission(createData)
     ElMessage.success(`修改权限成功~`)
     centerDialogVisible.value = false
     // 重新请求

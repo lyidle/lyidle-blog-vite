@@ -198,7 +198,7 @@
 
 <script setup lang="ts" name="AdminAccessRoles">
 // 引入 api
-import { deleteRole, removeRole } from "@/api/admin"
+import { managerDeleteRole, managerRemoveRole } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
@@ -293,7 +293,7 @@ const handlerRemove = async (row: Role) => {
   const { id, name } = row
   try {
     // 回收到垃圾桶
-    await removeRole(id)
+    await managerRemoveRole(id)
     // 重新请求
     await handlerReq()
     ElMessage.success(`移动${name}角色到垃圾桶成功~`)
@@ -307,7 +307,7 @@ const handlerDelete = async (row: Role) => {
   const { id, name } = row
   try {
     // 彻底删除
-    await deleteRole(id)
+    await managerDeleteRole(id)
     // 重新请求
     await handlerReq()
     ElMessage.success(`彻底删除${name}角色成功~`)
@@ -325,7 +325,7 @@ const handlerAllRemove = async () => {
         id = item
         try {
           // 软删除
-          await removeRole(id)
+          await managerRemoveRole(id)
         } catch (error) {}
       })
     )
@@ -348,7 +348,7 @@ const handlerAllDelete = async () => {
         id = item
         try {
           // 彻底删除
-          await deleteRole(id)
+          await managerDeleteRole(id)
         } catch (error) {}
       })
     )

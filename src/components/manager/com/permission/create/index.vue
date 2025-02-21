@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts" name="PermissionCreate">
-import { createPermission } from "@/api/admin"
+import { managerCreatePermission } from "@/api/admin"
 
 const centerDialogVisible = ref(false)
 
@@ -104,7 +104,7 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await createPermission(createData)
+    await managerCreatePermission(createData)
     ElMessage.success(`创建权限成功~`)
     centerDialogVisible.value = false
     // 重新请求

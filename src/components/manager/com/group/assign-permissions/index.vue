@@ -43,7 +43,7 @@
 
 <script setup lang="ts" name="GroupAssignPermissions">
 // 引入 api
-import { findAllPermissions, setGroupPermissions } from "@/api/admin"
+import { findAllPermissions, managerSetGroupPermissions } from "@/api/admin"
 // 引入 类型
 import type { CheckboxValueType } from "element-plus"
 import type { Group } from "@/api/admin/types/findAllGroupsPagination"
@@ -110,7 +110,7 @@ const emit = defineEmits<{
 const handlerConfirm = async () => {
   try {
     // 设置 权限组的权限
-    await setGroupPermissions({
+    await managerSetGroupPermissions({
       id: currentRole.value?.id as number,
       permissions: checkedPermissions.value,
     })

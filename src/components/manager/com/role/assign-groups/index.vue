@@ -43,7 +43,7 @@
 
 <script setup lang="ts" name="RoleAssignGroup">
 // 引入 api
-import { findAllGroups, setRoleGroups } from "@/api/admin"
+import { findAllGroups, managerSetRoleGroups } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 
@@ -109,7 +109,7 @@ const emit = defineEmits<{
 const handlerConfirm = async () => {
   try {
     // 设置 权限组的权限组
-    await setRoleGroups({
+    await managerSetRoleGroups({
       id: currentRole.value?.id as number,
       groups: checkedRoles.value,
     })
