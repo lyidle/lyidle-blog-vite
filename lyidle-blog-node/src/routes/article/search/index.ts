@@ -9,7 +9,7 @@ const search = async (
   res: any,
   exact: boolean = false,
   merge: boolean = false,
-  isBin: boolean = false
+  callBack?: (commend: any) => void
 ) => {
   const { query } = req
   const { id, author, title, desc, category, tags } = query
@@ -37,7 +37,10 @@ const search = async (
     ],
     limit: pageSize,
     offset,
-    where: {},
+    order: [
+      ["createdAt", "desc"],
+      ["id", "desc"],
+    ],
   }
 
   if (!(id || author || title || desc || category || tags))
@@ -68,6 +71,9 @@ const search = async (
   if (title) addCondition("title", title, exact)
   if (author) addCondition("author", author, exact)
   if (id) addCondition("id", id, true)
+
+  // 回调函数
+  callBack && callBack(commend)
 
   // 查询用户的所有文章
   const { count, rows } = await Article.findAndCountAll(commend)

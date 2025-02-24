@@ -26,9 +26,6 @@
 </template>
 
 <script setup lang="ts" name="MyDialog">
-// 引入  mitt
-import { mitt } from "@/utils/emitter"
-
 const isShowPanel = defineModel()
 // 初始化 props
 const props = withDefaults(
@@ -103,11 +100,16 @@ const close = () => {
   const tar = title.value as HTMLDivElement
   tar?.removeEventListener("mousedown", handlerMousedown)
 }
-
-// 订阅 面板显示与否 的事件
-mitt.on("isShowPanel:true", open)
-mitt.on("isShowPanel:false", close)
-
+watch(
+  () => isShowPanel.value,
+  (newV) => {
+    if (newV) {
+      open()
+    } else {
+      close()
+    }
+  }
+)
 // 拖拽
 // 获取 容器
 // 获取 头部 容器
@@ -128,7 +130,6 @@ let wrapLeft = 0
 // 鼠标 按下
 const handlerMousedown = ($e: Event) => {
   const e = $e as MouseEvent
-  ElMessage("test")
   // 判断是否是鼠标左键 与 只有 头部时才能移动 关闭等功能按下时不移动
   if (
     e.button !== 0 ||
@@ -185,9 +186,6 @@ const move = ($e: Event) => {
   tar.style.top = changeY + "px"
 }
 onBeforeUnmount(() => {
-  // 取消订阅 面板显示与否 的事件
-  mitt.off("isShowPanel:true", open)
-  mitt.off("isShowPanel:false", close)
   // 移除移动的事件监听
   window.removeEventListener("mousemove", move)
   window.removeEventListener("mouseup", handlerMouseup)

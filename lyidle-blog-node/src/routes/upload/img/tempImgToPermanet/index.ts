@@ -33,7 +33,11 @@ router.post(
 
     // 不存在返回
     if (fndAccount === null)
-      return res.result(void 0, "临时图片转永久图片，用户不存在哦~", false)
+      return res.result(
+        void 0,
+        "临时图片转永久图片，用户不存在或在垃圾桶里哦~",
+        false
+      )
 
     try {
       if (Array.isArray(tempImg) && !tempImg.length)

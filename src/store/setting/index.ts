@@ -6,6 +6,7 @@ export const useSettingStore = defineStore(
     const isShowPanel = ref<boolean>(false)
     // 面板的场景
     const setScene = ref<string | number>("0")
+    const isSaveScene = ref<boolean>(true)
     // #endregion 面板相关设置
 
     // #region 主题的设置
@@ -120,6 +121,7 @@ export const useSettingStore = defineStore(
       contentIsReverse,
       // 个性化设置 右键的编辑项
       setScene,
+      isSaveScene,
       isShowPanel,
       isPanelPositionSaved,
       savedPanelLeft,
@@ -161,6 +163,7 @@ export const useSettingStore = defineStore(
         "contentIsReverse",
         // 个性化设置 右键的编辑项
         "setScene",
+        "isSaveScene",
         "isPanelPositionSaved",
         "savedPanelLeft",
         "savedPanelTop",

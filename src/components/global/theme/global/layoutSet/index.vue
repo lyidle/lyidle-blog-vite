@@ -24,7 +24,7 @@
             @click="isPanelPositionSaved = !isPanelPositionSaved"
           >
             <span
-              >化面板位置({{ isPanelPositionSaved ? "存储" : "不存储" }})</span
+              >面板位置({{ isPanelPositionSaved ? "存储" : "不存储" }})</span
             >
           </span>
           <my-switch
@@ -68,6 +68,18 @@
             size="small"
           />
         </div>
+        <div class="item">
+          <span class="label cur-pointer" @click="isSaveScene = !isSaveScene">
+            <span>面板记录({{ isSaveScene ? "开启" : "关闭" }})</span>
+          </span>
+          <my-switch
+            v-model="isSaveScene"
+            inline-prompt
+            :active-icon="aside"
+            :inactive-icon="unaside"
+            size="small"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -85,9 +97,7 @@ const {
   isPanelPositionSaved,
   docMenuIsFixed,
   isScrollOrnaments,
-  // #region 侧边栏的 显示与否
-  asideCounts,
-  // #endregion 侧边栏的 显示与否
+  isSaveScene,
 } = storeToRefs(useSettingStore())
 </script>
 

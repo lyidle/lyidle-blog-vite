@@ -19,19 +19,21 @@
     <template #content>
       <div class="container">
         <ul class="side">
-          <li
-            class="cur-pointer"
-            :class="{ active: setScene == index }"
-            v-for="(item, index) in asideData"
-            :key="item.name"
-            @click="setScene = index"
-          >
-            {{ item.name }}
-          </li>
+          <template v-for="(item, index) in asideData" :key="item.name">
+            <!-- 判断 索引 为用户编辑时 的 编辑选项是否显示 -->
+            <li
+              class="cur-pointer"
+              :class="{ active: setScene == index }"
+              @click="setScene = index"
+              v-if="item.name === '用户编辑' ? isShowEditor : true"
+            >
+              {{ item.name }}
+            </li>
+          </template>
         </ul>
         <div class="content">
           <global-theme-global v-if="setScene == 0"></global-theme-global>
-          <div v-if="setScene == 1"><div>test1</div></div>
+          <div v-if="isShowEditor && setScene == 1"><div>用户编辑</div></div>
           <div v-if="setScene == 2"><div>test2</div></div>
           <div v-if="setScene == 3"><div>test3</div></div>
           <div v-if="setScene == 4"><div>test4</div></div>
@@ -49,8 +51,9 @@
 <script setup lang="ts" name="LayoutSetting">
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-// 引入mitt
-import { mitt } from "@/utils/emitter"
+import { useUserStore } from "@/store/user"
+// 引入 侧边栏数据
+import { asideData } from "./asideData"
 // 初始化仓库中用到的值
 const {
   setScene,
@@ -58,53 +61,31 @@ const {
   isPanelPositionSaved,
   savedPanelLeft,
   savedPanelTop,
+  isSaveScene,
 } = storeToRefs(useSettingStore())
-// 侧边栏数据
-const asideData = [
-  {
-    name: "全局设置",
-  },
-  {
-    name: "test1",
-  },
-  {
-    name: "test2",
-  },
-  {
-    name: "test3",
-  },
-  {
-    name: "test4",
-  },
-  {
-    name: "test5",
-  },
-  {
-    name: "test6",
-  },
-  {
-    name: "test7",
-  },
-  {
-    name: "test8",
-  },
-  {
-    name: "test9",
-  },
-]
-
-// 监听 面板 显示与隐藏
-watch(
-  () => isShowPanel.value,
-  (newV) => {
-    mitt.emit("isShowPanel")
-    if (newV) {
-      mitt.emit("isShowPanel:true")
+const { userToken } = storeToRefs(useUserStore())
+const isShowEditor = ref(false)
+// 监听
+watchEffect(() => {
+  // 打开面板时 判断
+  if (isShowPanel.value) {
+    if (!isSaveScene.value) {
+      // 如果 不保存 场景信息 则设置为 0
+      setScene.value = 0
+    }
+    // 判断有无 账户 取消与显示 用户编辑栏
+    if (userToken.value) {
+      isShowEditor.value = true
     } else {
-      mitt.emit("isShowPanel:false")
+      isShowEditor.value = false
+    }
+    // 没有账号的情况 如果 场景保存的 1 则设置为 0
+    if (!userToken.value && setScene.value == 1) {
+      setScene.value = 0
+      isShowEditor.value = false
     }
   }
-)
+})
 </script>
 
 <style scoped lang="scss">
