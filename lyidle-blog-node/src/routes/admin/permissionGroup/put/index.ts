@@ -11,6 +11,8 @@ import { deduplication } from "@/utils/array/deduplication"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除菜单缓存的函数
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
+// 引入 验证 模型中 修改了的 属性字段 的函数
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { PermissionGroup, Role, User } = require("@/db/models")
 
@@ -67,7 +69,7 @@ router.put(
       if (!findGroup)
         return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
 
-      // 得到 name
+      // 得到查询到的  name
       const _name = findGroup.dataValues?.name
       // 找到 了 则更新
       // 限制指定的name 不能修改
@@ -75,7 +77,10 @@ router.put(
         _name !== default_admin &&
         name &&
         findGroup.set("name", name)
-      findGroup.set("desc", desc ? desc : null)
+      findGroup.set("desc", desc || null)
+
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findGroup)
 
       await findGroup.save()
 

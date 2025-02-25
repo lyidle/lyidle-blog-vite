@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 dotenv.config() // 加载环境变量
 
 const redis_prefix: string = process.env.redis_prefix || "" // Redis 保存键的前缀，默认为空
-const is_production: boolean = JSON.parse(process.env.is_production || "false") // 是否为生产环境
 const redis_pwd: string | undefined = process.env.redis_pwd // Redis 密码
 const redis_host: string | undefined = process.env.redis_host // Redis 主机地址
 
@@ -20,8 +19,8 @@ let client: RedisClientInstance = null
 const redisClient = async (): Promise<void> => {
   if (client) return // 如果客户端已经初始化，则不再重复初始化
   client = createClient({
-    password: is_production ? redis_pwd || "" : "",
-    url: `redis://${is_production ? redis_host : "127.0.0.1"}`,
+    password: redis_pwd || "",
+    url: `redis://${redis_host || "127.0.0.1"}`,
   })
 
   client.on("error", (err) => console.log("Redis 连接失败:", err)) // 监听连接错误

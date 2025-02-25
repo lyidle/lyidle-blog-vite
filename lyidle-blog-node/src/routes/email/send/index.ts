@@ -45,7 +45,7 @@ const email_send = JSON.parse(process.env.email_send!)
 // 邮箱发送接口
 export default (
   route: string,
-  setData: "regCode" | "forgetCode",
+  setData: "regCode" | "forgetCode" | "updateCode",
   template: (email: string, code: string, createTime?: string) => string
 ) => {
   return (
@@ -63,7 +63,7 @@ export default (
       // 有缓存 返回
       if (result)
         return res.result(
-          (!is_production && result) || void 0,
+          (!is_production && { ...result, expire: codeExpire }) || void 0,
           `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
           false
         )
@@ -83,18 +83,34 @@ export default (
       }
       // 更具传递的参数生成 是 发送的什么邮件
       cacheValue[setData] = code
-      // 如果redis没有 则设置
-      result = await setKey(cacheKey, cacheValue, codeExpire)
-      try {
-        // 发送邮件
-        email_send && (await sendMail(email, "验证码", genHtml))
-      } catch (err: any) {
-        return res.validateAuth(err, next, () =>
-          res.result(void 0, "发送邮件失败~", false)
-        )
+      // 默认保存的键
+      result = cacheValue
+      // 是生产环境
+      if (is_production) {
+        try {
+          // 判断是否发送邮件
+          if (email_send) {
+            // 发送邮件
+            await sendMail(email, "验证码", genHtml)
+            // 设置缓存
+            result = await setKey(cacheKey, cacheValue, codeExpire)
+          }
+        } catch (err: any) {
+          return res.validateAuth(err, next, () =>
+            res.result(void 0, "发送邮件失败~", false)
+          )
+        }
       }
+      // 不是 生产 环境
+      else {
+        // 设置缓存
+        result = await setKey(cacheKey, cacheValue, codeExpire)
+      }
+
       return res.result(
+        // 不是生产环境
         (!is_production && { ...result, expire: codeExpire }) || {
+          // 是生产环境
           expire: codeExpire,
         },
         "发送邮件成功~"

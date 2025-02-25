@@ -1,16 +1,18 @@
 // 文章上传和修改的正则
 // 标题
-export const titleReg = {
+exports.titleReg = {
   reg: /^.{1,25}$/,
   msg: "文章标题长度必须在1-25之间哦~",
 }
+
 // 分类
-export const categoryReg = {
+exports.categoryReg = {
   reg: /^.{1,10}$/,
   msg: "文章分类长度必须在1-10之间哦~",
 }
+
 // 标签
-export const tagsReg = {
+exports.tagsReg = {
   itemReg: /^.{1,10}$/,
   itemMsg: "文章标签长度需要在1-10之间哦~",
   totalMin: 1,
@@ -19,13 +21,13 @@ export const tagsReg = {
 }
 
 // 内容
-export const contentReg = {
+exports.contentReg = {
   min: 100,
   msg: "文章内容至少要有100字哦~",
 }
 
 // 描述
-export const descReg = {
+exports.descReg = {
   reg: /^.{1,255}$/,
   msg: "文章描述长度必须在1-255之间哦~",
 }

@@ -1,7 +1,7 @@
 import request from "@/utils/request"
 // 引入类型
-import type { RegEmail } from "./types/regEmail"
-import type { RegEmailBody } from "./types/regEmailBody"
+import type { Email } from "./types/email"
+import type { EmailBody } from "./types/emailBody"
 import type { Login } from "./types/login"
 import type { LoginQuery } from "./types/loginQuery"
 import type { RegBody } from "./types/regBody"
@@ -19,6 +19,7 @@ import { managerSetUserRolesBody } from "./types/setUserRolesBody"
 // 统一管理 api
 enum API {
   // 注册相关
+  // 邮箱 发送
   regEmail = "/user/reg/email",
   reg = "/user/reg",
   // 登录
@@ -33,6 +34,8 @@ enum API {
   removeUser = "/user/admin/bin",
   deleteUser = "/user/admin/clear",
   updateUser = "/user/admin/update",
+  // 邮箱 发送
+  updateUserEmail = "/user/admin/update/email",
   // 管理 面板api
   // 创建
   managerCreateUser = "/user/admin/create",
@@ -53,9 +56,15 @@ const prefix = import.meta.env.VITE_API
 // 引入服务器
 const server = import.meta.env.VITE_SERVE
 
-// 注册发送邮箱验证码
-export const reqRegEmail = (data?: RegEmailBody) =>
-  request.post<any, RegEmail>(server + prefix + API.regEmail, data)
+// 发送 邮箱的接口
+const sendEmail = (api: APIKeysType) => (data?: EmailBody) =>
+  request.post<any, Email>(server + prefix + API[api], data)
+
+// 注册用户 发送邮箱验证码
+export const reqRegEmail = sendEmail("regEmail")
+
+// 更新用户 发送邮箱验证码
+export const updateUserEmail = sendEmail("updateUserEmail")
 
 // 注册
 export const reqReg = (data: RegBody) =>

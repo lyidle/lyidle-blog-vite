@@ -30,23 +30,23 @@ router.post("/", async (req, res, next) => {
   // 密码与确认密码不一致
   if (password !== confirmPassword)
     return res.result(void 0, "账号与密码不一致~", false)
-  const { reg: codeRef, msg: codeMsg } = codeReg
+  const { reg: _codeReg, msg: codeMsg } = codeReg
   // 验证码不合格
-  if (!codeRef.test(code)) {
+  if (!_codeReg.test(code)) {
     return res.result(void 0, codeMsg, false)
   }
+  // 得到 code
+  const findRegEmail = await getKey(`regCode:${email}`)
+  // 判断有无找到
+  if (findRegEmail === null) {
+    return res.result(void 0, "请重新发送验证码~", false)
+  }
+  const { regCode: findCode } = findRegEmail
+  // 判断验证码是否符合
+  if (findCode != code) {
+    return res.result(void 0, "验证码不正确~", false)
+  }
   try {
-    const findRegEmail = await getKey(`regCode:${email}`)
-    // 判断有无找到
-    if (findRegEmail === null) {
-      return res.result(void 0, "请重新发送验证码~", false)
-    }
-    const { regCode: findCode } = findRegEmail
-    // 判断验证码是否符合
-    if (findCode != code) {
-      return res.result(void 0, "验证码不正确~", false)
-    }
-
     const user = {
       account,
       nickName,
@@ -54,6 +54,7 @@ router.post("/", async (req, res, next) => {
       email,
     }
 
+    // 创建 用户
     const result = await createUserWithRoles(user, [default_user])
 
     // 注册成功后删除缓存

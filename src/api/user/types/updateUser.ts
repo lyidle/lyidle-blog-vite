@@ -10,7 +10,7 @@ export interface UpdateUser {
 
 export interface Data {
   token: string
-  isUser: boolean
-  isOwner: boolean
+  // isUser 是 管理面板的
+  isUser?: boolean
   [property: string]: any
 }

@@ -26,6 +26,8 @@
 </template>
 
 <script setup lang="ts" name="MyDialog">
+import { mitt } from "@/utils/emitter"
+
 const isShowPanel = defineModel()
 // 初始化 props
 const props = withDefaults(
@@ -76,20 +78,30 @@ const open = () => {
     const wrap = containter.value as HTMLDivElement
     // 绑定 鼠标 按下事件
     tar.addEventListener("mousedown", handlerMousedown)
-
-    const left = `${
+    // 得到几何信息
+    const rect = wrap.getBoundingClientRect()
+    // 得到 宽高的 一半
+    const width = rect.width / 2
+    const height = rect.height / 2
+    // 得到 窗口的 width 和 height
+    const innerWidth = window.innerWidth
+    const innerHeight = window.innerHeight
+    // 初始 left 和 top
+    let left = `${
       (isPanelPositionSaved.value && savedPanelLeft.value) ||
-      document.documentElement.clientWidth / 2 - wrap.offsetWidth / 2
+      innerWidth / 2 - width
     }`
-    const top = `${
+    let top = `${
       (isPanelPositionSaved.value && savedPanelTop.value) ||
-      document.documentElement.clientHeight / 2 - wrap.offsetHeight / 2
+      innerHeight / 2 - height
     }`
-    nextTick(() => {
-      // 初始化位置
-      wrap.style.left = left + "px"
-      wrap.style.top = top + "px"
-    })
+
+    // 判断 是否超出
+    if (+left + rect.width > innerWidth) left = "0"
+    if (+top + rect.height > innerHeight) top = "0"
+    // 初始化位置
+    wrap.style.left = left + "px"
+    wrap.style.top = top + "px"
   })
 }
 
@@ -185,10 +197,17 @@ const move = ($e: Event) => {
   tar.style.left = changeX + "px"
   tar.style.top = changeY + "px"
 }
+
+// 监听 窗口变化事件
+// 处理 窗口变化时的 边界超出问题
+mitt.on("window:resize", open)
+
 onBeforeUnmount(() => {
   // 移除移动的事件监听
   window.removeEventListener("mousemove", move)
   window.removeEventListener("mouseup", handlerMouseup)
+  // 解除监控
+  mitt.off("window:resize", open)
 })
 </script>
 
@@ -212,14 +231,18 @@ $title-color: v-bind(titleColor);
   background-color: $mask;
   z-index: $my-dialog-index;
   .dialog-container {
-    width: 700px;
     max-width: 100%;
+    width: 700px;
     height: 80%;
     position: absolute;
     background-color: $bg;
     border-radius: 10px;
     overflow: hidden;
     color: $color;
+    // 小屏
+    @include media(500px, true) {
+      height: 100%;
+    }
     // 头部
     .title {
       display: flex;

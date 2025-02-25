@@ -59,18 +59,18 @@ export const useUserStore = defineStore(
     }
 
     // 用户信息
-    const userAccount = ref<string>()
-    const userIsBin = ref<string | null>()
-    const userNickName = ref<string>()
-    const userEmail = ref<string>()
-    const userAvatar = ref<string | null>()
-    const userSigner = ref<string | null>()
+    const userAccount = ref<string>("")
+    const userIsBin = ref<string | null>(null)
+    const userNickName = ref<string>("")
+    const userEmail = ref<string>("")
+    const userAvatar = ref<string | null>(null)
+    const userSigner = ref<string | null>(null)
     const userRoles = ref<string[]>([])
     const userPermissions = ref<string[]>([])
-    const userToken = ref<string>()
-    const userPages = ref<number>()
-    const userTags = ref<number>()
-    const userCategories = ref<number>()
+    const userToken = ref<string>("")
+    const userPages = ref<number>(0)
+    const userTags = ref<number>(0)
+    const userCategories = ref<number>(0)
     const reqUserInfo = async () => {
       try {
         const result = await getUserInfo()
@@ -109,7 +109,7 @@ export const useUserStore = defineStore(
         // 用户的 白名单路径
         whitelist.value = []
         // 用户信息
-        userIsBin.value = undefined
+        userIsBin.value = null
         userAccount.value = ""
         userNickName.value = ""
         userEmail.value = ""

@@ -8,6 +8,8 @@ import { setKey, delKey } from "@/utils/redis"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
 import { resetArticle } from "@/utils/redis/resetArticle"
+// 引入 验证 模型中 修改了的 属性字段 的函数
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { Article, User, Role } = require("@/db/models")
 
@@ -80,6 +82,9 @@ router.put(
       tags?.length && findArticle.set("tags", tags)
       findArticle.set("desc", desc)
       findArticle.set("poster", poster)
+
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findArticle)
 
       // 更新数据
       const result = await findArticle.save()

@@ -100,7 +100,7 @@ const handlerLogin = throttle(async () => {
   try {
     await loginForm.value.validateField()
     const result = await reqLogin(loginData)
-    userToken.value = result?.token
+    userToken.value = result?.token || ""
     ElMessage.success("登录成功~")
     router.push("/")
   } catch (error) {}

@@ -1,6 +1,12 @@
 <template>
   <div class="avatar">
-    <router-link :to="`/user/space/${showAccount}`" class="w-100% h-100% block">
+    <my-anchor
+      :to="isTo ? `/user/space/${showAccount}` : ''"
+      class="w-100% h-100% block"
+      :style="{
+        cursor: !isCursor ? 'unset!important' : 'var(--cursor-pointer)',
+      }"
+    >
       <img
         :style="{
           background: 'no-repeat center',
@@ -11,7 +17,7 @@
         v-bind="$attrs"
         class="avatar w-100% h-100% block"
       />
-    </router-link>
+    </my-anchor>
   </div>
 </template>
 
@@ -23,10 +29,18 @@ const { showAccount, showAvatar } = useShowUserinfo({
   showAccount: true,
   showAvatar: true,
 })
+withDefaults(
+  defineProps<{ size?: string; isTo?: boolean; isCursor?: boolean }>(),
+  {
+    size: "100px",
+    isTo: true,
+    isCursor: true,
+  }
+)
 </script>
 
 <style scoped lang="scss">
-$avater-size: 110px;
+$avater-size: v-bind(size);
 .avatar {
   width: $avater-size;
   height: $avater-size;

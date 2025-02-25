@@ -9,6 +9,8 @@ import { setRoles } from "@/utils/db/user/setRoles"
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 import { _handlerRoles } from "@/utils/db/handlerRoles"
 import { deduplication } from "@/utils/array/deduplication"
+// 引入 验证 模型中 修改了的 属性字段 的函数
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { Menu, Role } = require("@/db/models")
 const db = require("@/db/models")
@@ -58,11 +60,14 @@ router.put(
 
       // 找到 了 则更新
       name && findMenu.set("name", name)
-      icon ?? findMenu.set("icon", icon)
-      to ?? findMenu.set("to", to)
-      layout ?? findMenu.set("layout", layout)
-      bannerImg ?? findMenu.set("bannerImg", bannerImg)
-      parentId ?? findMenu.set("parentId", parentId)
+      findMenu.set("icon", icon || null)
+      findMenu.set("to", to || null)
+      findMenu.set("layout", layout || null)
+      findMenu.set("bannerImg", bannerImg || null)
+      findMenu.set("parentId", parentId || null)
+
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findMenu)
 
       await findMenu.save({ transaction })
 

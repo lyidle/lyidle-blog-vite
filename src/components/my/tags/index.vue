@@ -48,11 +48,15 @@ const props = withDefaults(
     error?: string
     repeatError?: string
     left?: string
+    itemReg?: RegExp
+    itemError?: string
   }>(),
   {
     min: 1,
     max: 10,
     error: "标签个数需要在1-10之间哦~",
+    itemReg: () => /^.{1,10}$/,
+    itemError: "标签长度需要在1-10之间哦",
     repeatError: "标签不能重复哦~",
     left: "",
   }
@@ -75,9 +79,10 @@ const resetInput = () => {
   inputValue.value = ""
 }
 
+// 输入框关闭
 const handleClose = async (tag: string) => {
   await emit("before-close")
-  // 没内容
+  // 标签个数
   if ((tags.value?.length || 0) <= +props.min) {
     ElMessage.error(props.error)
   }
@@ -107,6 +112,14 @@ const handleInputConfirm = async () => {
     resetInput()
     return
   }
+
+  // 单个的 标签长度判断
+  if (!props.itemReg.test(inputValue.value)) {
+    resetInput()
+    ElMessage.error(props.itemError)
+    return
+  }
+
   // 重复
   if (tags.value?.includes(inputValue.value)) {
     ElMessage.error(props.repeatError)

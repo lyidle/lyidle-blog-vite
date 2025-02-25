@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:meta";
 @use "sass:list";
 @use "./variable/index.scss" as *;
 // 屏幕尺寸 参照 element-plus的layout
@@ -15,7 +16,7 @@ $scr: (
 /// @param {Boolean} $height - 是否基于 `max-height` 进行查询，默认为 `false`（即 `max-width`）。
 /// 如果传入的 `$size` 不在 `$scr` 中且 `$height` 为 `false`，将发出警告。
 @mixin media($size, $height: false) {
-  @if $height and type-of($size) == number {
+  @if $height and meta.type-of($size) == number {
     @media screen and (max-height: $size) {
       @content;
     }

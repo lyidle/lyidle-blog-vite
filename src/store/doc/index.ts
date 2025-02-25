@@ -2,7 +2,7 @@
 import { uploadFiles } from "@/components/my/upload/index.vue"
 
 export const useDocEditorOpt = defineStore(
-  "docEditorOptStore",
+  "docEditorOpt",
   () => {
     // 配置信息
     // 高度

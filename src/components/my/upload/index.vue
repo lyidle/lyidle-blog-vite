@@ -29,7 +29,12 @@ import { postTempImgFiles } from "@/api/img"
 // 引入 处理删除文件的函数
 import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 // 类型
-import type { UploadProps, UploadUserFile } from "element-plus"
+import type {
+  UploadFile,
+  UploadFiles,
+  UploadProps,
+  UploadUserFile,
+} from "element-plus"
 
 export type uploadFiles = UploadUserFile[]
 
@@ -41,15 +46,28 @@ const slots = defineSlots()
 // 使用 Hook
 const { exposed } = useExposeInstance(instance)
 
-// 在组件的 <script setup> 中调用 defineExpose
+// 在组件的 暴露 upload 的组件实例
 defineExpose(exposed)
 
 // 接收 v-model
 // 展示的图片
 const fileList = defineModel<uploadFiles>()
-const props = withDefaults(defineProps<{ remove?: boolean }>(), {
-  remove: true,
-})
+// 触发自定义事件
+const emit = defineEmits<{
+  (e: "before-remove", uploadFile: UploadFile, uploadFiles: UploadFiles): void
+}>()
+// 接收 props
+const props = withDefaults(
+  defineProps<{
+    // 是否 自动删除 与对应的回调 可选
+    autoRemove?: boolean
+    autoRemoveSuccess?: (url: string) => void
+    autoRemoveError?: (url: string) => void
+  }>(),
+  {
+    autoRemove: true,
+  }
+)
 // 是否显示添加框
 const isShowPlus = computed(() => {
   return Array.isArray(fileList.value) && fileList.value.length
@@ -61,12 +79,20 @@ const dialogImageUrl = ref("")
 const dialogVisible = ref(false)
 
 // 删除的回调
-const handleRemove: UploadProps["beforeRemove"] = async (uploadFile) => {
-  if (!props.remove) return true
-  const url = uploadFile.url ? [uploadFile.url] : null
+const handleRemove: UploadProps["beforeRemove"] = async (
+  uploadFile,
+  uploadFiles
+) => {
+  // 出发自定义 事件
+  emit("before-remove", uploadFile, uploadFiles)
+  if (!props.autoRemove) return true
+  const urls = uploadFile.url ? [uploadFile.url] : null
   // 不管 成功与否都 true 失败表明临时图片消失了
-  if (url) {
-    await handlerRemoveFileStatic(url)
+  if (urls) {
+    await handlerRemoveFileStatic(urls, {
+      success: props.autoRemoveSuccess,
+      error: props.autoRemoveError,
+    })
     return true
   } else return true
 }

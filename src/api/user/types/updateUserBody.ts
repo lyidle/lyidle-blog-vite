@@ -3,12 +3,12 @@
  */
 export interface UpdateUserBody {
   account: string
-  avater: null
+  avatar: string
+  code: string
+  confirmPassword: string
   email: string
-  id?: number
   nickName: string
-  pwd: string
-  roles: string[]
-  signer: null
+  password: string
+  signer: string
   [property: string]: any
 }

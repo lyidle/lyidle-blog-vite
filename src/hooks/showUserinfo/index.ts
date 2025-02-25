@@ -39,7 +39,6 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     adminPages,
     adminTags,
     adminCategories,
-    adminIsBin,
   } = storeToRefs(useOwnerStore())
 
   // 定义一个函数来安全地创建 computed，如果选项中未启用，则返回 undefined
@@ -56,7 +55,7 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
   })
 
   const showIsBin = createComputed("showIsBin", () => {
-    return userToken.value ? userIsBin.value : adminIsBin.value
+    return userToken.value && userIsBin.value
   })
 
   const showNickName = createComputed("showNickName", () =>

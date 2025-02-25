@@ -31,3 +31,10 @@ export const asideData = [
     name: "test9",
   },
 ]
+
+// 保存的 侧边栏对应的索引
+export const asideDataMap: { [key: string]: number } = {}
+// 生成索引 映射
+asideData.forEach((item, index) => {
+  asideDataMap[item.name] = index
+})

@@ -205,13 +205,14 @@ const handlerReg = throttle(async () => {
 // 发送验证码按钮
 const handlerCode = async () => {
   try {
-    await regForm.value.clearValidate("code")
+    // 验证 邮箱
     await regForm.value.validateField("email")
+    // 发生 邮件
     const result = await reqRegEmail({ email: regData.email })
+    // 得到 过期时间
     const expire = formatMilliseconds(result.expire)
-    console.log(result.regCode)
-
     ElMessage.success(`验证码发送成功，有效时间${expire}~`)
+    // 处理成功的 事件
     codeIsActive.value = false
     const tim = setInterval(() => {
       --code.value

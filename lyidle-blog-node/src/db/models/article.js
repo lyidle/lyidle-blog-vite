@@ -1,7 +1,14 @@
 "use strict"
 const { Model } = require("sequelize")
-// 引入错误函数
-const setDbError = require("../../utils/error/setDbError/js")
+// 引入验证
+const { accountReg } = require("../../RegExp/loginOrReg/js")
+const {
+  tagsReg,
+  titleReg,
+  categoryReg,
+  descReg,
+} = require("../../RegExp/articleReg")
+
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     static associate(models) {
@@ -14,12 +21,16 @@ module.exports = (sequelize, DataTypes) => {
   Article.init(
     {
       title: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(25),
         allowNull: false,
         validate: {
           notNull: { msg: "文章标题不能为空哦~" },
           notEmpty: { msg: "文章标题不能为空哦~" },
-          len: { args: [1, 60], msg: "文章标题长度必须在1-60之间哦~" },
+          // 正则限制
+          is: {
+            args: titleReg.reg,
+            msg: titleReg.msg,
+          },
         },
       },
       content: {
@@ -36,16 +47,24 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章作者不能为空哦~" },
           notEmpty: { msg: "文章作者不能为空哦~" },
-          len: { args: [1, 32], msg: "文章作者长度必须在1-32之间哦~" },
+          // 正则限制
+          is: {
+            args: accountReg.reg,
+            msg: "文章作者长度必须在1-32之间哦~",
+          },
         },
       },
       category: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.STRING(10),
         allowNull: false,
         validate: {
           notNull: { msg: "文章分类不能为空哦~" },
           notEmpty: { msg: "文章分类不能为空哦~" },
-          len: { args: [1, 12], msg: "文章分类长度必须在1-12之间哦~" },
+          // 正则限制
+          is: {
+            args: categoryReg.reg,
+            msg: categoryReg.msg,
+          },
         },
       },
       tags: {
@@ -54,14 +73,35 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章标签不能为空哦~" },
           notEmpty: { msg: "文章标签不能为空哦~" },
+          // 自定义验证逻辑
+          isArray(value) {
+            if (!Array.isArray(value)) {
+              throw new Error("文章标签必须是一个数组哦~")
+            }
+          },
+          isNotEmpty(value) {
+            if (!value.length) {
+              throw new Error("文章标签至少要有一个哦~")
+            }
+          },
+          // 个数
+          isLengthValid(value) {
+            if (
+              value.length < tagsReg.totalMin ||
+              value.length > tagsReg.totalMax
+            ) {
+              throw new Error(tagsReg.msg)
+            }
+          },
+          // 每一项
+          isEachItemValid(value) {
+            if (value.some((tag) => !tagsReg.itemReg.test(tag))) {
+              throw new Error(tagsReg.itemMsg)
+            }
+          },
         },
         set(value) {
-          if (!Array.isArray(value))
-            throw new setDbError("文章标签必须是一个数组哦~")
-          if (Array.length < 1 || Array.length > 12) {
-            throw new setDbError("文章标签长度必须在1-12之间哦~")
-          }
-          if (!value.length) throw new setDbError("文章标签至少要有一个哦~")
+          // 去重存储
           const result = [...new Set([value].flat(Infinity))]
           this.setDataValue("tags", result)
         },
@@ -78,7 +118,11 @@ module.exports = (sequelize, DataTypes) => {
       desc: {
         type: DataTypes.STRING,
         validate: {
-          len: { args: [0, 255], msg: "文章描述长度必须在0-255之间哦~" },
+          // 正则限制
+          is: {
+            args: descReg.reg,
+            msg: descReg.msg,
+          },
         },
       },
       poster: DataTypes.TEXT,

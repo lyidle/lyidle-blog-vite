@@ -11,6 +11,8 @@ import { deduplication } from "@/utils/array/deduplication"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除菜单缓存的函数
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
+// 引入 验证 模型中 修改了的 属性字段 的函数
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { PermissionGroup, Permission, Role, User } = require("@/db/models")
 
@@ -74,7 +76,10 @@ router.put(
 
       // 找到 了 则更新
       name && findPermission.set("name", name)
-      findPermission.set("desc", desc ? desc : null)
+      findPermission.set("desc", desc || null)
+
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findPermission)
 
       await findPermission.save()
 

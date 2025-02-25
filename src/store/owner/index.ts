@@ -12,7 +12,6 @@ export const useOwnerStore = defineStore("Owner", () => {
   const adminPages = ref<number>()
   const adminTags = ref<number>()
   const adminCategories = ref<number>()
-  const adminIsBin = ref<string | null>()
   // 网站设置信息
   const ownerWeChat = ref<string>()
   const ownerQQ = ref<string>()
@@ -24,7 +23,6 @@ export const useOwnerStore = defineStore("Owner", () => {
       const adminResult = await searchCounts({ roles: "owner", isBin: "true" })
 
       if (Array.isArray(adminResult)) {
-        adminIsBin.value = adminResult?.[0]?.isBin
         adminAccount.value = adminResult?.[0]?.account
         adminNickName.value = adminResult?.[0]?.nickName
         adminAvatar.value = adminResult?.[0]?.avatar || null
@@ -53,7 +51,6 @@ export const useOwnerStore = defineStore("Owner", () => {
   return {
     getAdminUserInfo,
     // 管理员的信息
-    adminIsBin,
     adminAccount,
     adminNickName,
     adminAvatar,

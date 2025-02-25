@@ -3,13 +3,13 @@ import { removeFileStatic } from "@/api/img"
 export const handlerRemoveFileStatic = async (
   url: string[],
   opt?: {
-    error?: (url: string) => void | boolean
-    success?: (url: string) => void | boolean
+    error?: (url: string) => void
+    success?: (url: string) => void
   }
 ) => {
   try {
     // 没有链接
-    if (!url.length) return false
+    if (!url.length) return
     // 从返回结果中提取成功和失败的结果
     const { successMap, errorMap } = await removeFileStatic(url)
     // 成功的
@@ -19,7 +19,7 @@ export const handlerRemoveFileStatic = async (
         // 成功回调
         const res = opt?.success && opt?.success(item)
         if (!res) ElMessage.success(`删除文件${item}成功~`)
-        return true
+        return
       }
     // 错误的
     if (errorMap.length)
@@ -32,12 +32,12 @@ export const handlerRemoveFileStatic = async (
             message: `删除文件${item}失败~`,
             customClass: "selectMessage",
           })
-        return false
+        return
       }
     // 错误
-    return false
+    return
   } catch (error) {
     // 错误
-    return false
+    return
   }
 }

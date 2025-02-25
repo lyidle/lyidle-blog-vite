@@ -43,6 +43,8 @@ declare module 'vue' {
     GlobalThemeGlobalLayoutSet: typeof import('./src/components/global/theme/global/layoutSet/index.vue')['default']
     GlobalThemeGlobalMoveEffect: typeof import('./src/components/global/theme/global/moveEffect/index.vue')['default']
     GlobalThemeGlobalSetThemes: typeof import('./src/components/global/theme/global/setThemes/index.vue')['default']
+    GlobalThemeUserEditor: typeof import('./src/components/global/theme/user-editor/index.vue')['default']
+    GlobalThemeUserEditorAvatar: typeof import('./src/components/global/theme/user-editor/avatar/index.vue')['default']
     GlobalTools: typeof import('./src/components/global/tools/index.vue')['default']
     IconArrowRight: typeof import('./src/components/icon/arrow-right/index.vue')['default']
     IconCar: typeof import('./src/components/icon/car/index.vue')['default']

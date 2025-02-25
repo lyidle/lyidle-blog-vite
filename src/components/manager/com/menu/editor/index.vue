@@ -73,7 +73,7 @@
               白天:
               <my-upload
                 v-model="createData.light"
-                :remove="false"
+                :auto-remove="false"
                 class="ml-10px"
               ></my-upload>
             </div>
@@ -81,7 +81,7 @@
               暗夜:
               <my-upload
                 v-model="createData.dark"
-                :remove="false"
+                :auto-remove="false"
                 class="ml-10px"
               ></my-upload>
             </div>

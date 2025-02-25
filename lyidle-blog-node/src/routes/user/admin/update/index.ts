@@ -4,14 +4,20 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入redis
-import { delKey } from "@/utils/redis"
+import { delKey, getKey } from "@/utils/redis"
+// 正则判断
+import { codeReg } from "@/RegExp/loginOrReg"
 // 设置token
 import { setToken } from "@/utils/token"
 // 处理roles
 import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置user的缓存
 import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
+// 发送 邮箱 的 api
+import update from "@/routes/email/update"
 
+// 引入 验证 模型中 修改了的 属性字段 的函数
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 
@@ -38,30 +44,46 @@ router.put(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
+    const {
+      account: userAccount,
+      nickName: userNickName,
+      email: userEmail,
+      code,
+      password,
+      confirmPassword,
+      avatar,
+      signer,
+    } = req.body
+    // 去除左右空格
+    const account = userAccount.trim()
+    const nickName = userNickName.trim()
+    const email = userEmail.trim()
+    // 密码与确认密码不一致
+    if (password !== confirmPassword)
+      return res.result(void 0, "账号与密码不一致~", false)
+    const { reg: _codeReg, msg: codeMsg } = codeReg
+    // 验证码不合格
+    if (!_codeReg.test(code)) {
+      return res.result(void 0, codeMsg, false)
+    }
+    // 得到 code
+    const findRegEmail = await getKey(`updateCode:${email}`)
+    // 判断有无找到
+    if (findRegEmail === null) {
+      return res.result(void 0, "请重新发送验证码~", false)
+    }
+
+    const { updateCode: findCode } = findRegEmail
+
+    // 判断验证码是否符合
+    if (findCode != code) {
+      return res.result(void 0, "验证码不正确~", false)
+    }
+
     // 开启事务
     const transaction = await db.sequelize.transaction()
     try {
-      const { account, pwd, email, avatar, signer, nickName } = req.body
-
       const id: number | string = req.auth.id
-
-      // 都没有时返回没有找到
-      if (
-        !account &&
-        !pwd &&
-        !email &&
-        // 可能为 null
-        avatar !== null &&
-        !avatar &&
-        // 可能为 null
-        signer !== null &&
-        !signer &&
-        !nickName
-      ) {
-        await transaction.rollback() // 回滚事务
-        return res.result(void 0, "修改用户失败哦~", false)
-      }
-
       // 查询
       const findUser = await findUserByPk(id as number)
 
@@ -71,34 +93,21 @@ router.put(
         return res.result(void 0, "没有找到对应用户信息~", false)
       }
 
-      // 提取需要的变量
-      const { account: userAccount, email: userEmail } = findUser.dataValues
+      const user = JSON.parse(JSON.stringify(findUser))
 
-      // 错误信息汇总
-      const erroArray: string[] = []
-      // 判断是否重复
-      if (account && account == userAccount)
-        erroArray.push("账号不能和旧的账号重复~")
-      // 通过 判断 是否传递账号
-      else account && findUser.set("account", account)
-
-      if (email && email == userEmail) erroArray.push("邮箱不能和旧的邮箱重复~")
-      // 通过 判断 是否传递邮箱
-      else email && findUser.set("email", email)
-
-      // 存在错误信息返回
-      if (erroArray.length) {
-        await transaction.rollback() // 回滚事务
-        return res.result(void 0, erroArray, false)
-      }
-
+      // 需要 和旧的不一样时 更新
+      account && account !== user.account && findUser.set("account", account)
+      email && email !== user.email && findUser.set("email", email)
       // 都通过加入更新
       nickName && findUser.set("nickName", nickName)
-      pwd && findUser.set("pwd", pwd)
+      password && findUser.set("pwd", password)
       // 可能为null
       ;(avatar == null || avatar) && findUser.set("avatar", avatar)
       // 可能为null
       ;(signer == null || signer) && findUser.set("signer", signer)
+
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findUser)
 
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
@@ -109,9 +118,8 @@ router.put(
       let token = null
       // 处理 token 字段 的roles
       const tokenSetRoles = ReturnRoles([findUser])
-
       // 改变了pwd 需要重新登录
-      if (pwd)
+      if (password)
         //删除token
         await delKey(`token:${id}`)
       // 没有 修改 密码 则不需要重新登录
@@ -122,10 +130,7 @@ router.put(
       // 删除对应用户信息缓存
       await resetUserInfo([findUser], isOwner(tokenSetRoles))
 
-      return res.result(
-        { token, isUser: id === req.auth.id },
-        "修改用户信息成功~"
-      )
+      return res.result({ token }, "修改用户信息成功~")
     } catch (error) {
       // 如果出现错误，回滚事务
       await transaction.rollback()
@@ -169,6 +174,9 @@ router.put(
       email && findUser.set("email", email)
       nickName && findUser.set("nickName", nickName)
 
+      // 验证 修改了的 属性字段
+      await validateChangedFields(findUser)
+
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
 
@@ -196,4 +204,7 @@ router.put(
     }
   }
 )
+
+// 邮箱发送接口
+router.use(update)
 export default router

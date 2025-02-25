@@ -64,7 +64,7 @@
           >
             <my-upload
               v-model="poster"
-              :remove="false"
+              :auto-remove="false"
               class="ml-10px"
             ></my-upload>
           </el-form-item>

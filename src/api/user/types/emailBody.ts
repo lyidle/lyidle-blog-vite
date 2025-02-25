@@ -1,4 +1,4 @@
-export interface RegEmailBody {
+export interface EmailBody {
   email: string
   [property: string]: any
 }
