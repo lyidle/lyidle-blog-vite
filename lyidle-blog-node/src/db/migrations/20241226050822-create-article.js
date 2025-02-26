@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       title: {
-        type: Sequelize.STRING(60),
+        type: Sequelize.STRING(25),
         allowNull: false,
       },
       content: {
@@ -22,7 +22,7 @@ module.exports = {
         allowNull: false,
       },
       category: {
-        type: Sequelize.STRING(12),
+        type: Sequelize.STRING(10),
         allowNull: false,
       },
       tags: {
