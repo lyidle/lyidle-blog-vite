@@ -141,8 +141,6 @@ import type { Datum } from "@/api/admin/types/getMenuList"
 import { mitt } from "@/utils/emitter"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-// 提取请求
-const { reqUserInfo } = useUserStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
 // 表格数据
@@ -174,15 +172,10 @@ let only = false
 // 发起请求
 const handlerReq = async () => {
   const result = await getAllMenuList()
-  // 重新获取用户数据
-  await reqUserInfo()
   // 只允许 修改时触发重载和权限判断
-  if (only) {
+  if (only)
     // 重新加载路由
     mitt.emit("route:reload")
-    // 重新判断权限
-    mitt.emit("authRoles", userRoles.value)
-  }
   only = true
   if (result) tableData.value = result
 }

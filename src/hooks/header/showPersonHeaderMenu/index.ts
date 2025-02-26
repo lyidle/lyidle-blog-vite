@@ -1,9 +1,12 @@
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { useSettingStore } from "@/store/setting"
 // 引入 unocss 图标
 import "./icons"
 // 引入类型
 import type { PersonMenuList } from "@/components/layout/header/types"
+
+// 引入 hooks
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 
 export type ReturnType = {
@@ -11,17 +14,18 @@ export type ReturnType = {
   style: { left: string; width: string }
 }
 export type headerItemReturnType = ComputedRef<ReturnType>
-
+let id = 0
 export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const { showAccount } = useShowUserinfo({ showAccount: true })
   // 提取 数据
   const { userToken, userRoles, userPermissions } = storeToRefs(useUserStore())
+  const { setScene, isShowPanel } = storeToRefs(useSettingStore())
   // 提取 函数
   const { userStoreReset } = useUserStore()
   // 默认的数据
   const normalData: PersonMenuList[] = [
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "关于",
       icon: { icon: "i-akar-icons:paper-airplane" },
       to: "/person/about",
@@ -32,7 +36,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const unLoginData: PersonMenuList[] = [
     ...normalData,
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "登录",
       icon: { icon: "i-material-symbols:login" },
       to: "/login",
@@ -48,7 +52,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const loginData: PersonMenuList[] = [
     ...normalData,
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "退出登录",
       icon: { icon: "i-material-symbols:login", style: { rotate: "180deg" } },
       to: "/",
@@ -58,17 +62,26 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
       },
     },
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "个人中心",
       icon: { icon: "i-charm:person" },
       to: `/user/space/${showAccount?.value}`,
+    },
+    {
+      id: `${++id}`,
+      name: "编辑用户",
+      icon: { icon: "i-basil:edit-outline" },
+      click: () => {
+        setScene.value = 1
+        isShowPanel.value = true
+      },
     },
   ]
 
   // 需要 docs 权限的
   const docs = [
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "发布文章",
       icon: { icon: "i-simple-line-icons:doc" },
       to: "/doc/publish",
@@ -78,7 +91,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   // 需要 admin 权限的
   const manager = [
     {
-      id: `${Math.random()}`,
+      id: `${++id}`,
       name: "管理页面",
       icon: { icon: "i-charm:person" },
       to: "/admin",

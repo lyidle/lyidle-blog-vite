@@ -9,7 +9,7 @@
     </template>
     <my-menu :data="data?.data" :triangle="true" :left="data?.style.left">
       <template #body="{ item: sub }: { item: PersonMenuList }">
-        <router-link
+        <my-anchor
           :to="sub.to"
           class="topnav-menu-item"
           :style="{ width: data?.style.width }"
@@ -17,7 +17,7 @@
         >
           <i :class="sub.icon.icon" :style="sub.icon.style"></i>
           <span>{{ sub.name }}</span>
-        </router-link>
+        </my-anchor>
       </template>
     </my-menu>
   </li>

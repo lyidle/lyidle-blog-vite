@@ -2,9 +2,11 @@
 export const asideData = [
   {
     name: "全局设置",
+    title: "个性化设置",
   },
   {
     name: "用户编辑",
+    title: "用户编辑",
   },
   {
     name: "test2",

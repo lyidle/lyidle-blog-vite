@@ -64,7 +64,9 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
 
   const showAvatar = createComputed("showAvatar", () => {
     const avatar = userToken.value ? userAvatar.value : adminAvatar.value
-    return avatar || "var(--default-avatar)" // 判断是否有值，无值返回默认值
+    return avatar
+      ? `url("${avatar?.replace(/\\/g, "/")}")`
+      : "var(--default-avatar)" // 判断是否有值，无值返回默认值
   })
 
   const showSigner = createComputed("showSigner", () =>

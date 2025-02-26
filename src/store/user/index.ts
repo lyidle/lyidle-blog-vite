@@ -14,6 +14,27 @@ import { filterManagerRoutes } from "@/router/permission/filterManagerRoutes"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 
+// 引入 常量 路由
+import { constantRoute, anyRoute } from "@/router/routes"
+
+// 处理 常量路由 和异步路由
+const handlerPath = () => {
+  const paths: string[] = []
+  const recur = (routes: RouteRecordRaw[]) => {
+    routes.reduce((pre, cur) => {
+      // path 存在
+      if (cur.path) pre.push(cur.path)
+      // children 存在
+      if (cur.children) recur(cur.children)
+      // 返回 paths
+      return pre
+    }, paths)
+  }
+  recur(constantRoute)
+  recur(anyRoute)
+  return Array.from(new Set([paths].flat(Infinity)))
+}
+
 export const useUserStore = defineStore(
   "User",
   () => {
@@ -29,11 +50,11 @@ export const useUserStore = defineStore(
     const routes = ref<RouteRecordRaw[]>()
     // 获取 公开的菜单数据
     const reqUserMenuList = async () => {
+      // 重置菜单信息
+      resetMenuList()
       try {
-        const result = await getMenuList(
-          userRoles.value?.length ? toRaw(userRoles.value) : ["user"]
-        )
-
+        const roles = (userRoles.value?.length && userRoles.value) || ["user"]
+        const result = await getMenuList(roles)
         // 调用函数 过滤出 仓库需要的信息
         const { _userBannerImg, _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result)
@@ -47,7 +68,9 @@ export const useUserStore = defineStore(
             .filter(Boolean) as GetMenuList["data"]) || []
 
         userBannerImg.value = _userBannerImg
-        whitelist.value = _whitelist
+        whitelist.value = Array.from(
+          new Set([_whitelist, handlerPath()].flat(Infinity))
+        ).filter(Boolean) as string[]
         routes.value = _routes
       } catch (error) {}
     }
@@ -71,28 +94,78 @@ export const useUserStore = defineStore(
     const userPages = ref<number>(0)
     const userTags = ref<number>(0)
     const userCategories = ref<number>(0)
+
+    // 获取 用户信息 使用 token 获取
     const reqUserInfo = async () => {
+      // 重置用户信息
+      resetUserInfo()
       try {
         const result = await getUserInfo()
+        const user = result?.[0]
         // 有用户信息 赋值
-        if (result) {
-          userIsBin.value = result?.[0]?.isBin
-          userPermissions.value = result?.[0]?.permissions
-          userRoles.value = result?.[0]?.roles || []
-          userAccount.value = result?.[0]?.account
-          userNickName.value = result?.[0]?.nickName
-          userEmail.value = result?.[0]?.email
-          userAvatar.value = result?.[0]?.avatar || null
-          userSigner.value = result?.[0]?.signer || null
+        if (user) {
+          userIsBin.value = user?.isBin
+          userPermissions.value = user?.permissions
+          userRoles.value = user?.roles || []
+          userAccount.value = user?.account
+          userNickName.value = user?.nickName
+          userEmail.value = user?.email
+          userAvatar.value = user?.avatar || null
+          userSigner.value = user?.signer || null
 
-          userPages.value = result?.[0].counts.pages
-          userTags.value = result?.[0].counts.tags
-          userCategories.value = result?.[0].counts.categories
-          // 重新加载路由
-          mitt.emit("route:reload")
+          userPages.value = user?.counts.pages
+          userTags.value = user?.counts.tags
+          userCategories.value = user?.counts.categories
           return
         }
       } catch (error) {}
+    }
+
+    // 通过 设置 token 重新获取 数据
+    const userInfoByToken = async (token: string) => {
+      userToken.value = token
+      // 重新加载路由
+      mitt.emit("route:reload")
+      // 判断 有无 token 是否修改了密码 修改了需要重新登录
+      if (!token) {
+        ElMessage.warning("修改密码后需要重新登录哦~")
+      }
+    }
+
+    // 重置用户信息 没有 重置 token
+    const resetUserInfo = () => {
+      // 用户信息
+      userAccount.value = ""
+      userIsBin.value = null
+      userNickName.value = ""
+      userEmail.value = ""
+      userAvatar.value = ""
+      userSigner.value = ""
+      userRoles.value = []
+      userPermissions.value = []
+      userPages.value = 0
+      userTags.value = 0
+      userCategories.value = 0
+    }
+
+    // 重置菜单信息
+    const resetMenuList = () => {
+      // 用户的菜单数据
+      userMenuList.value = []
+      // 管理页面的菜单数据
+      adminMenuList.value = []
+      // 用户的 焦点图信息
+      userBannerImg.value = {}
+      // 用户的 白名单路径
+      whitelist.value = []
+    }
+
+    // 重置 状态的函数
+    const resetStore = () => {
+      // 重置菜单信息
+      resetMenuList()
+      // 重置用户信息
+      resetUserInfo()
     }
 
     // 重置数据
@@ -100,36 +173,19 @@ export const useUserStore = defineStore(
       try {
         // 退出登录
         await reqLogout()
-        // 用户的菜单数据
-        userMenuList.value = []
-        // 管理页面的菜单数据
-        adminMenuList.value = []
-        // 用户的 焦点图信息
-        userBannerImg.value = {}
-        // 用户的 白名单路径
-        whitelist.value = []
-        // 用户信息
-        userIsBin.value = null
-        userAccount.value = ""
-        userNickName.value = ""
-        userEmail.value = ""
-        userAvatar.value = ""
-        userSigner.value = ""
-        userRoles.value = []
-        userPermissions.value = []
+        // 重置 状态
+        resetStore()
+        // 额外 重置 token
         userToken.value = ""
-        userPages.value = 0
-        userTags.value = 0
-        userCategories.value = 0
         ElMessage.success("退出登录成功~")
+        // 重新加载路由
+        mitt.emit("route:reload")
       } catch (error) {
         ElMessage.error({
           dangerouslyUseHTMLString: true,
-          message: "退出登录失败~<br/><br/>123",
+          message: "退出登录失败~",
         })
       }
-      // 重新加载路由
-      mitt.emit("route:reload")
     }
 
     return {
@@ -141,6 +197,7 @@ export const useUserStore = defineStore(
       userMenuList,
       routes,
       reqUserInfo,
+      resetStore,
       // 用户信息
       userAccount,
       userIsBin,
@@ -155,6 +212,9 @@ export const useUserStore = defineStore(
       userCategories,
       userToken,
       userStoreReset,
+      userInfoByToken,
+      resetUserInfo,
+      resetMenuList,
     }
   },
   {

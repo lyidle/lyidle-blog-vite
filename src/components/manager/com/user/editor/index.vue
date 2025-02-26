@@ -64,9 +64,8 @@ import { User } from "@/api/user/types/searchUserPagination"
 import { accountReg, emailReg, nickNameReg } from "@/RegExp/loginOrReg"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-// 提取数据
-const { userToken } = storeToRefs(useUserStore())
-
+// 导出 函数
+const { userInfoByToken } = useUserStore()
 const centerDialogVisible = ref(false)
 const createData = reactive<User>({
   account: "",
@@ -138,8 +137,8 @@ const handlerConfirm = async () => {
     const result = await managerUpdateUser(createData)
     // 修改到自身
     if (result?.isUser) {
-      // 重新赋值 token
-      userToken.value = result.token
+      // 重新获取信息
+      userInfoByToken(result?.token || "")
     }
     ElMessage.success("修改用户信息成功~")
     centerDialogVisible.value = false

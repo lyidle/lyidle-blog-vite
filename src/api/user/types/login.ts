@@ -3,7 +3,7 @@
  */
 export interface Login {
   code: number
-  data?: Data
+  data: Data
   message: string[] | string
   [property: string]: any
 }

@@ -15,8 +15,8 @@ import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 router.get("/", async (req, res, next) => {
   try {
     const { account: userAccount, password } = req.query
-    const account = (userAccount as string).trim()
-
+    // 去除左右空格
+    const account = (userAccount as string)?.trim()
     // 验证 账号
     if (!accountReg.reg.test(account)) {
       return res.result(void 0, accountReg.msg, false)

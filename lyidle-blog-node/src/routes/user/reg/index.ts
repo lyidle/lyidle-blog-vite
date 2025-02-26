@@ -24,9 +24,9 @@ router.post("/", async (req, res, next) => {
     confirmPassword,
   } = req.body
   // 去除左右空格
-  const account = userAccount.trim()
-  const nickName = userNickName.trim()
-  const email = userEmail.trim()
+  const account = userAccount?.trim()
+  const nickName = userNickName?.trim()
+  const email = userEmail?.trim()
   // 密码与确认密码不一致
   if (password !== confirmPassword)
     return res.result(void 0, "账号与密码不一致~", false)

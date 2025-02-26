@@ -8,16 +8,14 @@
 </template>
 
 <script setup lang="ts" name="MyInput">
-import { useExposeInstance } from "@/hooks/useExposeInstance"
-
+// 得到 实例
 const instance = ref()
+// 得到 slots
 const slots = defineSlots()
-
-// 使用 Hook
-const { exposed } = useExposeInstance(instance)
-
-// 在组件的 <script setup> 中调用 defineExpose
-defineExpose(exposed)
+// 暴露 instance 给父组件
+defineExpose({
+  instance,
+})
 </script>
 
 <style lang="scss">

@@ -47,8 +47,8 @@
       >
       </my-context-menu-item>
       <my-context-menu-item
-        :content="'个性化设置'"
-        :icon="'i-basil:edit-outline'"
+        :content="panelName"
+        :icon="panelIcon"
         @click="openSettings"
       ></my-context-menu-item>
       <my-context-menu-item
@@ -100,12 +100,22 @@ const menucontainer = ref()
 useContextMenu(menuInstance, menucontainer)
 
 // 判断 是打开那个个性化面板
-const props = defineProps<{ scene?: string | number }>()
+const props = withDefaults(
+  defineProps<{
+    panelScene?: number
+    panelName?: string
+    panelIcon?: string
+  }>(),
+  {
+    panelName: "面板界面",
+    panelIcon: "i-mynaui:panel-top",
+  }
+)
 
 // 打开 个性化设置
 const openSettings = () => {
   isShowPanel.value = true
-  if (props.scene) setScene.value = props.scene
+  if (props.panelScene) setScene.value = props.panelScene
 }
 
 const fullScreenEmit = () => {

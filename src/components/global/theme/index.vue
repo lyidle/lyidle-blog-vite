@@ -15,11 +15,11 @@
     titleHeight="var(--theme-panel-title-height)"
     class="theme-panel"
   >
-    <template #title>个性化设置</template>
+    <template #title>{{ asideData?.[setScene]?.title || "面板设置" }}</template>
     <template #content>
       <div class="panel-container">
         <ul class="side">
-          <template v-for="(item, index) in asideData" :key="item.name">
+          <template v-for="(item, index) in asideData" :key="index">
             <!-- 判断 索引 为用户编辑时 的 编辑选项是否显示 -->
             <li
               class="cur-pointer"

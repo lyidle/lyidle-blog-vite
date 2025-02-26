@@ -202,6 +202,9 @@ const handlerReg = throttle(async () => {
     toLogin()
   } catch (error) {}
 }, 1000)
+
+// 判断是否是 开发环境
+const isDev = import.meta.env.DEV
 // 发送验证码按钮
 const handlerCode = async () => {
   try {
@@ -212,6 +215,8 @@ const handlerCode = async () => {
     // 得到 过期时间
     const expire = formatMilliseconds(result.expire)
     ElMessage.success(`验证码发送成功，有效时间${expire}~`)
+    // 开发环境 直接赋值 code 结果 测试用
+    if (isDev) regData.code = `${result.regCode}` || ""
     // 处理成功的 事件
     codeIsActive.value = false
     const tim = setInterval(() => {

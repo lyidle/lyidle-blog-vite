@@ -24,7 +24,7 @@ export const handlerAsyncRoutes = (
     const redirect = to.redirectedFrom?.path
     const query = to.redirectedFrom?.query
     if (!redirect) return
-    // 再白名单则放行到对应的路由中
+    // 在白名单则放行到对应的路由中
     if (routes.value?.length && whitelist.value.includes(redirect)) {
       router.replace({ path: redirect, query })
     }

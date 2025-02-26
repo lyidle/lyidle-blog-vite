@@ -55,9 +55,9 @@ router.put(
       signer,
     } = req.body
     // 去除左右空格
-    const account = userAccount.trim()
-    const nickName = userNickName.trim()
-    const email = userEmail.trim()
+    const account = userAccount?.trim()
+    const nickName = userNickName?.trim()
+    const email = userEmail?.trim()
     // 密码与确认密码不一致
     if (password !== confirmPassword)
       return res.result(void 0, "账号与密码不一致~", false)
@@ -101,10 +101,9 @@ router.put(
       // 都通过加入更新
       nickName && findUser.set("nickName", nickName)
       password && findUser.set("pwd", password)
-      // 可能为null
-      ;(avatar == null || avatar) && findUser.set("avatar", avatar)
-      // 可能为null
-      ;(signer == null || signer) && findUser.set("signer", signer)
+      // 可能为 null 的字段
+      findUser.set("avatar", avatar || null)
+      findUser.set("signer", signer || null)
 
       // 验证 修改了的 属性字段
       await validateChangedFields(findUser)
@@ -130,6 +129,8 @@ router.put(
       // 删除对应用户信息缓存
       await resetUserInfo([findUser], isOwner(tokenSetRoles))
 
+      // 删除发送的 邮件 code 缓存 查询到的 原邮件
+      await delKey(`updateCode:${findUser.dataValues?.email}`)
       return res.result({ token }, "修改用户信息成功~")
     } catch (error) {
       // 如果出现错误，回滚事务

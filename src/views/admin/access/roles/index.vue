@@ -209,8 +209,6 @@ import { mitt } from "@/utils/emitter"
 import moment from "@/utils/moment"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-// 提取请求
-const { reqUserInfo } = useUserStore()
 // 提取数据
 const { userRoles } = storeToRefs(useUserStore())
 // 搜索 的key
@@ -280,12 +278,8 @@ const handlerReq = async () => {
   }
   // 默认是 当前页 和分页器的个数
   await reqAllRoles(cur, pageSize.value)
-  // 重新获取用户数据
-  await reqUserInfo()
   // 重新加载路由
   mitt.emit("route:reload")
-  // 重新判断权限
-  mitt.emit("authRoles", userRoles.value)
 }
 
 // 软删除

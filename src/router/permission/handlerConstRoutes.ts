@@ -27,7 +27,7 @@ export const handlerConstRoutes = (
   )
   // 没有 通过 角色、权限 判断
   if (!isAccess && !isAccessPermissions) {
-    router.replace("/")
+    router.push({ path: "/", replace: true })
     ElMessage.warning(
       `访问当前页面需要 ${to.meta.roles} ${
         (isAccess && "角色") || (isAccessPermissions && "权限")

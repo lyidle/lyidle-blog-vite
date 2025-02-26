@@ -9,3 +9,5 @@ const menuIcons = {
   留言板: "i-uil:message",
   友链: "i-heroicons-solid:link",
 }
+
+const panelIcon = ["i-basil:edit-outline", "i-mynaui:panel-top"]

@@ -5,20 +5,43 @@ import { findOneSetting } from "@/api/admin"
 import { Content as InfoContent } from "@/api/admin/types/Contact Info"
 export const useOwnerStore = defineStore("Owner", () => {
   // admin 信息
-  const adminAccount = ref<string>()
-  const adminNickName = ref<string>()
-  const adminAvatar = ref<string | null>()
-  const adminSigner = ref<string | null>()
-  const adminPages = ref<number>()
-  const adminTags = ref<number>()
-  const adminCategories = ref<number>()
+  const adminAccount = ref<string>("")
+  const adminNickName = ref<string>("")
+  const adminAvatar = ref<string | null>(null)
+  const adminSigner = ref<string | null>(null)
+  const adminPages = ref<number>(0)
+  const adminTags = ref<number>(0)
+  const adminCategories = ref<number>(0)
   // 网站设置信息
-  const ownerWeChat = ref<string>()
-  const ownerQQ = ref<string>()
-  const ownerBiliBili = ref<string>()
-  const ownerEmail = ref<string>()
+  const ownerWeChat = ref<string>("")
+  const ownerQQ = ref<string>("")
+  const ownerBiliBili = ref<string>("")
+  const ownerEmail = ref<string>("")
+
+  // 重置 用户信息
+  const resetUserInfo = () => {
+    // admin 信息
+    adminAccount.value = ""
+    adminNickName.value = ""
+    adminAvatar.value = null
+    adminSigner.value = null
+    adminPages.value = 0
+    adminTags.value = 0
+    adminCategories.value = 0
+  }
+
+  // 重置 联系方式
+  const resetOwnerInfo = () => {
+    ownerWeChat.value = ""
+    ownerQQ.value = ""
+    ownerEmail.value = ""
+    ownerBiliBili.value = ""
+  }
+
   // 发起请求
   const getAdminUserInfo = async () => {
+    // 先重置 用户信息
+    resetUserInfo()
     try {
       const adminResult = await searchCounts({ roles: "owner", isBin: "true" })
 
@@ -34,8 +57,11 @@ export const useOwnerStore = defineStore("Owner", () => {
       }
     } catch (error) {}
   }
+
   // 获取设置里的联系方式
   const getOwnerInfo = async () => {
+    // 先重置 联系方式
+    resetOwnerInfo()
     try {
       const result = await findOneSetting("联系方式")
       const content: InfoContent = result?.content as InfoContent
@@ -48,6 +74,7 @@ export const useOwnerStore = defineStore("Owner", () => {
       }
     } catch (error) {}
   }
+
   return {
     getAdminUserInfo,
     // 管理员的信息
@@ -64,5 +91,6 @@ export const useOwnerStore = defineStore("Owner", () => {
     ownerBiliBili,
     ownerEmail,
     getOwnerInfo,
+    resetUserInfo,
   }
 })

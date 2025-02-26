@@ -124,9 +124,7 @@ export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
 
 // 修改用户 需要 是本用户的id
 export const updateUser = (data: UpdateUserBody) =>
-  request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, {
-    data,
-  })
+  request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, data)
 
 // 不需要验证是本用户的id 需要传入 id
 // 登录用户需要拥有权限

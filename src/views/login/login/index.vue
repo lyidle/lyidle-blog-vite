@@ -51,9 +51,9 @@ import { reqLogin } from "@/api/user"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import throttle from "@/utils/throttle"
+// 导出 函数
+const { userInfoByToken } = useUserStore()
 
-// 导出对应数据
-const { userToken } = storeToRefs(useUserStore())
 const props = defineProps(["reg"])
 // 登录的表单数据
 const loginData = reactive({
@@ -100,7 +100,8 @@ const handlerLogin = throttle(async () => {
   try {
     await loginForm.value.validateField()
     const result = await reqLogin(loginData)
-    userToken.value = result?.token || ""
+    // 重新 得到信息
+    userInfoByToken(result.token)
     ElMessage.success("登录成功~")
     router.push("/")
   } catch (error) {}

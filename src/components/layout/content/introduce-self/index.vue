@@ -1,5 +1,9 @@
 <template>
-  <my-context-menu>
+  <my-context-menu
+    panel-name="编辑用户"
+    :panel-scene="1"
+    panel-icon="i-basil:edit-outline"
+  >
     <layout-content-aside-card>
       <template #body>
         <div class="aside-container aside-userinfo">
@@ -119,13 +123,6 @@ const {
   // 用户信息
   userToken,
 } = storeToRefs(useUserStore())
-// 提取请求
-const { reqUserInfo } = useUserStore()
-
-// 发起请求
-onMounted(async () => {
-  await reqUserInfo()
-})
 
 const copyToClipboard = async (type: string, text: string) => {
   try {

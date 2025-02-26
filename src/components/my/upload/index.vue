@@ -40,14 +40,14 @@ export type uploadFiles = UploadUserFile[]
 
 // 处理 默认的事情
 
-import { useExposeInstance } from "@/hooks/useExposeInstance"
+// 得到 实例
 const instance = ref()
+// 得到 slots
 const slots = defineSlots()
-// 使用 Hook
-const { exposed } = useExposeInstance(instance)
-
-// 在组件的 暴露 upload 的组件实例
-defineExpose(exposed)
+// 暴露 instance 给父组件
+defineExpose({
+  instance,
+})
 
 // 接收 v-model
 // 展示的图片

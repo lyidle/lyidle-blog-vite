@@ -25,9 +25,9 @@ router.post(
       password,
     } = req.body
     // 去除左右空格
-    const account = userAccount.trim()
-    const nickName = userNickName.trim()
-    const email = userEmail.trim()
+    const account = userAccount?.trim()
+    const nickName = userNickName?.trim()
+    const email = userEmail?.trim()
 
     try {
       const user = {

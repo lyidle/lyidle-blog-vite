@@ -18,11 +18,11 @@
               :prefix-icon="userIcon"
             ></my-input>
           </el-form-item>
-          <el-form-item label="用户名" prop="account">
+          <el-form-item label="用户名" prop="nickName">
             <my-input
               class="login-input"
               placeholder="Account or Email"
-              v-model.trim="userEditorData.account"
+              v-model.trim="userEditorData.nickName"
               :prefix-icon="userIcon"
             ></my-input>
           </el-form-item>
@@ -100,15 +100,27 @@ import {
   nickNameReg,
   pwdReg,
 } from "@/RegExp/loginOrReg"
-import { reqReg, reqRegEmail } from "@/api/user"
+import { updateUser, updateUserEmail } from "@/api/user"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
-// 提取需要的数据 不需要 响应式
-const { userAvatar, userAccount, userNickName, userEmail, userSigner } =
-  useUserStore()
+import { UpdateUserBody } from "@/api/user/types/updateUserBody"
+
+// 导入 默认的图片
+const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
+  .href
+
+// 提取需要的数据 和 方法 不需要 响应式
+const {
+  userAvatar,
+  userAccount,
+  userNickName,
+  userEmail,
+  userSigner,
+  userInfoByToken,
+} = useUserStore()
 
 // 表单 数据
-const userEditorData = reactive({
-  avatar: userAvatar || "/src/assets/images/avatar.jpg",
+const userEditorData = reactive<UpdateUserBody>({
+  avatar: userAvatar || default_avatar,
   account: userAccount,
   nickName: userNickName,
   email: userEmail,
@@ -117,7 +129,6 @@ const userEditorData = reactive({
   confirmPassword: "",
   code: "",
 })
-
 // 展示 的 头像
 const avatar = ref([{ name: "default", url: userEditorData.avatar }])
 // 确认密码验证回调
@@ -126,6 +137,7 @@ const validatorConfirm = (_: any, value: any, next: any) => {
     return next(new Error("确认密码需要与密码一致哦~"))
   next()
 }
+
 // 注册规则
 const formRules = reactive({
   account: [
@@ -187,17 +199,22 @@ const initCode = 5
 const code = ref(initCode)
 // 控制code按钮是否禁用
 const codeIsActive = ref(true)
+
+// 判断是否是 开发环境
+const isDev = import.meta.env.DEV
+
 // 发送验证码按钮
 const handlerCode = async () => {
   try {
     // 验证 邮箱
     await formInstance.value.validateField("email")
     // 发送 邮件
-    const result = await reqRegEmail({ email: userEditorData.email })
+    const result = await updateUserEmail({ email: userEditorData.email })
     // 得到 过期时间
     const expire = formatMilliseconds(result.expire)
     ElMessage.success(`验证码发送成功，有效时间${expire}~`)
-    userEditorData.code = `${result.regCode}` || ""
+    // 开发环境 直接赋值 code 结果 测试用
+    if (isDev) userEditorData.code = `${result.updateCode}` || ""
     // 处理成功的 事件
     codeIsActive.value = false
     const tim = setInterval(() => {
@@ -215,8 +232,16 @@ const handlerCode = async () => {
 const handlerUpdate = async () => {
   try {
     await formInstance.value.validate()
-    // await reqReg(regData)
-    ElMessage.success("注册成功~")
+    const uploadAvatar = avatar.value?.[0]?.url
+    // 处理 avatar 字段 存在 且不是默认的图片
+    const _avatar =
+      (uploadAvatar && uploadAvatar !== default_avatar && uploadAvatar) || null
+    userEditorData.avatar = _avatar
+    // 更新 数据
+    const result = await updateUser(userEditorData)
+    // 重新获取信息
+    userInfoByToken(result?.token || "")
+    ElMessage.success("修改成功~")
   } catch (error) {}
 }
 </script>

@@ -80,8 +80,9 @@ router.put(
       content && length && findArticle.set("length", length)
       category && findArticle.set("category", category)
       tags?.length && findArticle.set("tags", tags)
-      findArticle.set("desc", desc)
-      findArticle.set("poster", poster)
+      // 可能为 null 的字段
+      findArticle.set("desc", desc || null)
+      findArticle.set("poster", poster || null)
 
       // 验证 修改了的 属性字段
       await validateChangedFields(findArticle)

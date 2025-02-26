@@ -19,12 +19,6 @@
 import { useUserStore } from "@/store/user"
 // 提取变量
 const { adminMenuList } = storeToRefs(useUserStore())
-// 提取处理路由的函数
-const { reqAdminMenuList } = useUserStore()
-
-onMounted(() => {
-  reqAdminMenuList()
-})
 </script>
 <style scoped lang="scss">
 .manager-aside {

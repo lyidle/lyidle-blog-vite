@@ -5,7 +5,7 @@ export const useSettingStore = defineStore(
     // 面板的 显示与隐藏
     const isShowPanel = ref<boolean>(false)
     // 面板的场景
-    const setScene = ref<string | number>("0")
+    const setScene = ref<number>(0)
     const isSaveScene = ref<boolean>(true)
     // #endregion 面板相关设置
 

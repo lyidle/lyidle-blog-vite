@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer")
 const ms = require("ms")
 // 引入验证
 import { emailReg } from "@/RegExp/loginOrReg"
+import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 邮箱的配置
 const transporter = nodemailer.createTransport({
   host: process.env.email_host,
@@ -64,9 +65,10 @@ export default (
       if (result)
         return res.result(
           (!is_production && { ...result, expire: codeExpire }) || void 0,
-          `请${Math.floor(codeExpire / 1000)}秒后重新发送验证码~`,
+          `请${formatMilliseconds(codeExpire)}后重新发送验证码~`,
           false
         )
+
       // 生成6位随机验证码
       const code = Math.random().toString().slice(2, 8).padEnd(6, "0")
       // 生成邮件模板
