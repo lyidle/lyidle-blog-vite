@@ -139,10 +139,6 @@ import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import type { Datum } from "@/api/admin/types/getMenuList"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
-// 引入 仓库
-import { useUserStore } from "@/store/user"
-// 提取数据
-const { userRoles } = storeToRefs(useUserStore())
 // 表格数据
 const tableData = ref<GetMenuList["data"]>([])
 const toolBtnsWidth = ref()

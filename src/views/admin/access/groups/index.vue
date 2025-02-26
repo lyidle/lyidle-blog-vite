@@ -207,10 +207,6 @@ import { useMangerGroupsBase } from "@/hooks/manager/access/groups/useMangerGrou
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
-// 引入 仓库
-import { useUserStore } from "@/store/user"
-// 提取数据
-const { userRoles } = storeToRefs(useUserStore())
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置

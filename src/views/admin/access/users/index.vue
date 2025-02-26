@@ -215,11 +215,7 @@ import { useManagerUserBase } from "@/hooks/manager/access/user/useManagerUserBa
 import { managerRemoveUser, managerDeleteUser } from "@/api/user"
 // 引入 类型
 import type { User } from "@/api/user/types/searchUserPagination"
-// 引入 仓库
-import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
-// 提取数据
-const { userRoles } = storeToRefs(useUserStore())
 const searchKey = ref("")
 // 表格的信息 和 搜索
 const {
