@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       icon: DataTypes.TEXT,
       to: DataTypes.STRING,
       layout: DataTypes.JSON,
-      bannerImg: DataTypes.JSON,
       isBin: DataTypes.DATE,
       parentId: DataTypes.INTEGER,
     },

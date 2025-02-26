@@ -23,9 +23,6 @@ module.exports = {
       layout: {
         type: Sequelize.JSON,
       },
-      bannerImg: {
-        type: Sequelize.JSON,
-      },
       isBin: {
         type: Sequelize.DATE,
         allowNull: true,

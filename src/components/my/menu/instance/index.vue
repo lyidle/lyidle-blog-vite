@@ -1,6 +1,6 @@
 <template>
   <li class="custom-menu-trigger">
-    <my-anchor>
+    <my-anchor :to="data.to">
       <icon-parse :icon="data.icon"></icon-parse>
       {{ data.name }}
     </my-anchor>

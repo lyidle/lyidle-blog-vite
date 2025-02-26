@@ -10,8 +10,8 @@ export const filterUserMenuList = (
     return (
       menus &&
       menus.map((item) => {
-        // 过滤出白名单中的 菜单
-        if (item.to && whitelist.includes(item.to)) {
+        // 过滤出白名单中的 菜单 或者不存在 to 的名单
+        if (!item.to || whitelist.includes(item.to)) {
           // 有children 递归
           if (item.children?.length) {
             const children = filterMenuList(item.children)

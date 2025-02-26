@@ -23,7 +23,7 @@ router.put(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id, name, icon, to, layout, bannerImg, roles, parentId } = req.body
+    const { id, name, icon, to, layout, roles, parentId } = req.body
     // 没有 id、name 返回失败
     if (!id) return res.result(void 0, "id是必传项哦~", false)
 
@@ -63,7 +63,6 @@ router.put(
       findMenu.set("icon", icon || null)
       findMenu.set("to", to || null)
       findMenu.set("layout", layout || null)
-      findMenu.set("bannerImg", bannerImg || null)
       findMenu.set("parentId", parentId || null)
 
       // 验证 修改了的 属性字段

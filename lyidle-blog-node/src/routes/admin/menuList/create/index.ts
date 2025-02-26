@@ -18,7 +18,7 @@ router.post(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, icon, to, layout, bannerImg, roles, parentId } = req.body
+    const { name, icon, to, layout, roles, parentId } = req.body
 
     if (!name) return res.result(void 0, "创建菜单name是必须要有的哦~", false)
 
@@ -30,7 +30,6 @@ router.post(
         icon,
         to,
         layout,
-        bannerImg,
         parentId,
       }
 
