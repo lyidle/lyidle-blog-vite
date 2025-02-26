@@ -60,11 +60,49 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       false
     )
   }
+  // 数据库 unique 错误
+  if (err.name === "SequelizeUniqueConstraintError") {
+    const uniqueError = err
+    // 获取模型名称
+    const modelName = uniqueError.errors[0].instance.constructor.name
+    // 获取违反唯一性约束的字段
+    const uniqueFields = uniqueError.errors.map((err: any) => err.path)
+    // 处理 各个模型的 错误
+    switch (modelName) {
+      case "BannerImg":
+        res.result(void 0, "背景的路径名字不能重复哦~", false, 400)
+        break
+      case "Menu":
+        res.result(void 0, "菜单的名字不能重复哦~", false, 400)
+        break
+      case "Permission":
+        res.result(void 0, "权限的名字不能重复哦~", false, 400)
+        break
+      case "PermissionGroup":
+        res.result(void 0, "权限组的名字不能重复哦~", false, 400)
+        break
+      case "Role":
+        res.result(void 0, "角色的名字不能重复哦~", false, 400)
+        break
+      case "Setting":
+        res.result(void 0, "设置的名字不能重复哦~", false, 400)
+        break
+      case "User":
+        // 用户的 拥有 unique 字段的属性 有两个
+        const result: string[] = []
+        if (uniqueFields.includes("account"))
+          result.push("用户的名字不能重复哦~")
+        if (uniqueFields.includes("email")) result.push("用户的邮箱不能重复哦~")
+        res.result(void 0, result, false, 400)
+        break
+    }
+    return
+  }
+
   //token解析失败导致的错误
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)
-  if (err.name === "PermissionError")
-    return res.result(void 0, "没有权限访问页面~", false, 404)
+  // 其他 错误
   if ((err.name = "otherError"))
     return res.result(void 0, err.message, false, 400)
   // 打印其他错误

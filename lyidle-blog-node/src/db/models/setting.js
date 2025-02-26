@@ -17,12 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        validate: {
-          async isUnique(value) {
-            const find = await Setting.findOne({ where: { name: value } })
-            if (find) throw new Error("设置信息不能重复哦~")
-          },
-        },
       },
       content: DataTypes.JSON,
     },

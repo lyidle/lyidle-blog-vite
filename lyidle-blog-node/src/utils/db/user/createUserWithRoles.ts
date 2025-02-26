@@ -16,7 +16,7 @@ export const createUserWithRoles = async (userData: any, roles: string[]) => {
 
     // 确保用户和角色都存在
     if (!user) {
-      throw new myError("otherError", "创建用户时出错了哦~")
+      throw new myError("otherError", "创建用户时出错了哦，没有找到该用户~")
     }
 
     // 设置和创建权限
@@ -30,7 +30,6 @@ export const createUserWithRoles = async (userData: any, roles: string[]) => {
   } catch (error) {
     // 角色创建错误 删除用户
     await user?.destroy()
-    console.error("创建用户时出错:", error)
     throw error
   }
 }

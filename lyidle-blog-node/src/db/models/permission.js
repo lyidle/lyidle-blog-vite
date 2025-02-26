@@ -19,13 +19,6 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "权限名字不能为空哦~" },
           notEmpty: { msg: "权限名字不能为空哦~" },
           len: { args: [1, 32], msg: "权限名字长度必须在1-32之间哦~" },
-          async isUnique(value) {
-            const findOne = await sequelize.models.Permission.findOne({
-              where: { name: value },
-              paranoid: false,
-            })
-            if (findOne) throw new Error("权限名字已存在哦~")
-          },
         },
       },
       desc: {

@@ -41,13 +41,6 @@ module.exports = (sequelize, DataTypes) => {
             args: accountReg.reg,
             msg: accountReg.msg,
           },
-          async isUnique(value) {
-            const findOne = await sequelize.models.User.findOne({
-              where: { account: value },
-              paranoid: false,
-            })
-            if (findOne) throw new Error("用户已存在哦~")
-          },
         },
       },
       nickName: {
@@ -85,13 +78,6 @@ module.exports = (sequelize, DataTypes) => {
           is: {
             args: emailReg.reg,
             msg: emailReg.msg,
-          },
-          async isUnique(value) {
-            const findOne = await sequelize.models.User.findOne({
-              where: { email: value },
-              paranoid: false,
-            })
-            if (findOne) throw new Error("邮箱已存在~")
           },
         },
       },
