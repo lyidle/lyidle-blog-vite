@@ -10,7 +10,11 @@
       >
         <el-table-column prop="name" label="名称" width="160" />
         <el-table-column prop="roles" label="权限值" align="center" />
-        <el-table-column prop="updatedAt" label="修改时间" align="center" />
+        <el-table-column prop="updatedAt" label="修改时间" align="center">
+          <template #="{ row }">
+            {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="工具栏"
           :width="toolBtnsWidth"
@@ -139,6 +143,8 @@ import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import type { Datum } from "@/api/admin/types/getMenuList"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入 自制moment
+import moment from "@/utils/moment"
 // 表格数据
 const tableData = ref<GetMenuList["data"]>([])
 const toolBtnsWidth = ref()

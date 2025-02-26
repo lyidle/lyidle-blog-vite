@@ -1,3 +1,6 @@
+// 引入正则
+import { urlReg } from "@/RegExp/Url/isUrl"
+
 export const parsedIcon = (icon: string) => {
   const isBg = icon?.startsWith("background:")
   // 默认 图标
@@ -7,7 +10,7 @@ export const parsedIcon = (icon: string) => {
     const bg = icon.split("background:")[1]
     return {
       name: "bg",
-      data: !/^https?:/.test(bg) ? JSON.stringify(bg) : "",
+      data: !urlReg.test(bg) ? JSON.stringify(bg) : "",
     }
   }
 

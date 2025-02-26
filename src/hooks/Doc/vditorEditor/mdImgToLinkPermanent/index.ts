@@ -4,6 +4,7 @@ import { postImgPermanent } from "@/api/img"
 import { compressString } from "@/utils/compression"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 替换 md的 临时链接
 export const useMdReplaceImg = async (content: string, data: any) => {
   // 引入 前缀
@@ -74,7 +75,7 @@ export const useMdImgToLinkPermanent = async (
       if (successImg.length) {
         // 用于生成正则 替换用
         let origins = successImg
-          .map((item: any) => item.origin.replace(/\\/g, "\\\\"))
+          .map((item: any) => escapeUrlForRegExp(item.origin))
           .join("|")
         const reg = new RegExp(origins, "g")
         // 替换文本

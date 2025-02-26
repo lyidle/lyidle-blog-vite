@@ -1,4 +1,5 @@
 // 引入类型
+import { hasCSSUnit, isValidCSSUnitReg } from "@/RegExp/Css/isValidCSSUnit "
 import { directionType, MenuItem } from "./types"
 // 控制层级
 let index = 0
@@ -60,20 +61,17 @@ export const directionCallback = (
   return dir || local
 }
 
-// 取最大值
 export type numType = string | number | undefined
+// 取最大值 和 得到 宽度判断有无单位
 export const menuMathMax = (num1: numType, num2: numType) => {
   let result = num1
   const handlerNum1 = parseFloat(`${num1}`) || 0
   const handlerNum2 = parseFloat(`${num2}`) || 0
   if (Math.max(handlerNum1, handlerNum2) === handlerNum2) result = num2
-  // 判断处理后是否还没有单位
-  const isUnit = /^(?=[\d.]+[a-zA-Z%]+$)(\d*\.?\d+)([a-zA-Z%]+)$/.test(
-    `${result}`
-  )
-
-  // 没有单位的 加上px
-  if (!isUnit) {
+  // 判断 是否带有单位
+  const isValidate = hasCSSUnit(`${result}`)
+  // 没有单位 加上px
+  if (!isValidate) {
     return `${parseFloat(`${result}`) || 0}px`
   }
 

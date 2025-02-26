@@ -38,10 +38,16 @@
             ></my-tags>
           </el-form-item>
           <el-form-item label="图标" prop="icon">
-            <my-input
-              placeholder="请输入svg或项目中用到的iconify的class名(不是必填项)"
-              v-model="createData.icon"
-            ></my-input>
+            <el-tooltip
+              effect="dark"
+              content="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
+              placement="top"
+            >
+              <my-input
+                placeholder="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
+                v-model="createData.icon"
+              ></my-input>
+            </el-tooltip>
           </el-form-item>
           <el-form-item label="路径" prop="to">
             <my-input
@@ -49,9 +55,33 @@
               v-model="createData.to"
             ></my-input>
           </el-form-item>
+          <!-- Layout -->
+          <div
+            class="text-color-[var(--primary-color)] text-center text-20px mt-10px"
+          >
+            布局
+          </div>
+          <el-form-item label="宽度" prop="topnavWidth">
+            <my-input
+              placeholder="请输入菜单的宽度(不是必填项)"
+              v-model="createData.topnavWidth"
+            ></my-input>
+          </el-form-item>
+          <el-form-item label="方向" prop="topnavDirection">
+            <my-input
+              placeholder="请输入菜单的方向(不是必填项)"
+              v-model="createData.topnavDirection"
+            ></my-input>
+          </el-form-item>
           <!-- bannerImg -->
           <div class="text-color-[var(--primary-color)] text-center text-20px">
-            bannerImg
+            <el-tooltip
+              effect="dark"
+              content="背景的设置最终按照第一个查询到的路径为准哦~"
+              placement="top"
+            >
+              背景
+            </el-tooltip>
           </div>
           <el-form-item label="高度" prop="height">
             <my-input
@@ -59,16 +89,7 @@
               v-model="createData.height"
             ></my-input>
           </el-form-item>
-          <!-- <el-form-item label="白天" prop="light">
-            <my-input
-              placeholder="请输入路径名(需要是异步路由写了的,不是必填项)"
-              v-model="createData.light"
-            ></my-input>
-
-          </el-form-item> -->
-          <!-- <el-form-item label="暗夜" prop="dark">
-          </el-form-item> -->
-          <div class="flex justify-center gap-15px">
+          <div class="flex justify-center gap-15px mt-20px">
             <div class="flex items-center">
               白天:
               <my-upload
@@ -86,22 +107,6 @@
               ></my-upload>
             </div>
           </div>
-          <!-- Layout -->
-          <div class="text-color-[var(--primary-color)] text-center text-20px">
-            Layout
-          </div>
-          <el-form-item label="宽度" prop="topnavWidth">
-            <my-input
-              placeholder="请输入菜单的宽度(不是必填项)"
-              v-model="createData.topnavWidth"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="方向" prop="topnavDirection">
-            <my-input
-              placeholder="请输入菜单的方向(不是必填项)"
-              v-model="createData.topnavDirection"
-            ></my-input>
-          </el-form-item>
           <div class="flex justify-end mt-20px">
             <my-button
               class="w-unset"
@@ -120,27 +125,56 @@
 </template>
 
 <script setup lang="ts" name="MenuEditor">
-// 引入api
-import { updateMenuList } from "@/api/admin"
 // 引入 类型
 import type { UpdateMenuListBody } from "@/api/admin/types/updateMenuListBody"
 import type { Datum } from "@/api/admin/types/getMenuList"
+// 引入正则
+import { isValidCSSUnitReg } from "@/RegExp/Css/isValidCSSUnit "
+import { urlReg } from "@/RegExp/Url/isUrl"
+// 引入 api
+import { updateMenuList } from "@/api/admin"
+
 const centerDialogVisible = ref(false)
 const createData = reactive<UpdateMenuListBody>({
   id: -1,
   name: "",
+  icon: "",
+  to: "",
   roles: [],
   parentId: null,
   // bannerImg
   height: "",
-  light: "",
-  dark: "",
+  light: [],
+  dark: [],
   // Layout
   // 宽度
   topnavWidth: "",
   // 方向
   topnavDirection: "",
 })
+
+// 验证 icon
+const iconValidator = (rule: any, value: any, callback: any) => {
+  const isBg = value?.startsWith("background:")
+  // 是 database 图标
+  if (isBg) {
+    const bg = value.split("background:")[1]
+    if (urlReg.test(bg)) {
+      // 如果匹配 URL 正则表达式，则验证失败
+      callback(new Error("database图标不能是一个外链哦~"))
+    } else {
+      // 否则验证通过
+      callback()
+    }
+  }
+  if (urlReg.test(value)) {
+    // 如果匹配 URL 正则表达式，则验证失败
+    callback(new Error("不能是一个外链哦~"))
+  } else {
+    // 否则验证通过
+    callback()
+  }
+}
 
 // 创建规则
 const createRules = reactive({
@@ -151,7 +185,37 @@ const createRules = reactive({
       trigger: "change",
       min: 1,
       max: 32,
-      message: "菜单名字长度必须在1-32之间哦",
+      message: "菜单名字长度必须在1-32之间哦~",
+    },
+  ],
+  icon: [
+    {
+      trigger: "change",
+      validator: iconValidator, // 使用自定义验证函数
+    },
+  ],
+  // bannerImg 的高度
+  height: [
+    {
+      trigger: "change",
+      pattern: isValidCSSUnitReg,
+      message: "菜单的宽度，请输入一个正常的css单位信息~",
+    },
+  ],
+  // 菜单的宽度
+  topnavWidth: [
+    {
+      trigger: "change",
+      pattern: isValidCSSUnitReg,
+      message: "菜单的宽度，请输入一个正常的css单位信息~",
+    },
+  ],
+  // 菜单的方向
+  topnavDirection: [
+    {
+      trigger: "change",
+      pattern: /left|right/,
+      message: "菜单方向为left或right哦~",
     },
   ],
 })
@@ -195,19 +259,26 @@ const handlerConfirm = async () => {
     // 触发 tags的验证
     tagsInstance.value.validate?.()
     // 整理数据
-    // bannerImg
-    createData.bannerImg = {
-      height: createData.height,
-      light: createData.light,
-      dark: createData.dark,
+    const updateData = {
+      id: createData.id,
+      name: createData.name,
+      icon: createData.icon,
+      to: createData.to,
+      roles: createData.roles,
+      parentId: createData.parentId,
+      // bannerImg
+      bannerImg: {
+        height: createData.height,
+        light: createData.light?.[0]?.url,
+        dark: createData.dark?.[0]?.url,
+      },
+      // Layout
+      layout: {
+        topnavWidth: createData.topnavWidth,
+        topnavDirection: createData.topnavDirection,
+      },
     }
-    // Layout
-    createData.layout = {
-      topnavWidth: createData.topnavWidth,
-      topnavDirection: createData.topnavDirection,
-    }
-    console.log(createData)
-    // await updateMenuList(createData)
+    await updateMenuList(updateData)
     ElMessage.success(`修改菜单成功~`)
     centerDialogVisible.value = false
     // 重新请求
