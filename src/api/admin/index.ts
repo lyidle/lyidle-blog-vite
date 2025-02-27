@@ -24,6 +24,8 @@ import { CreateAnnounce } from "./types/createAnnounce"
 import { UpdateMenuListBody } from "./types/updateMenuListBody"
 import { GetBannerImg } from "./types/getBannerImg"
 import { UpdateBannerImg } from "./types/updateBannerImg"
+import { GetBannerImgPagination } from "./types/getBannerImgPagination"
+import { GetBannerImgPaginationQuery } from "./types/getBannerImgPaginationQuery"
 
 // 统一管理 api
 enum API {
@@ -62,6 +64,11 @@ enum API {
   managerRemovePermission = "/admin/permissionGroup/permission/bin/manager",
   // 背景
   bannerImg = "/admin/bannerImg",
+  bannerImgPagination = "/admin/bannerImg/manager",
+  // 禁用背景
+  bannerImgRecycle = "/admin/bannerImg/recycle",
+  // 恢复背景
+  bannerImgRestore = "/admin/bannerImg/restore",
 }
 
 // API 的 key 的类型
@@ -216,9 +223,31 @@ export const managerUpdatePermission = (data: UpdateRoleBody) =>
   request.put<any, void>(server + prefix + API.Permission, data)
 
 // 得到背景
-export const getBannerImg = () =>
-  request.get<any, GetBannerImg["data"]>(server + prefix + API.bannerImg)
+export const getBannerImg = (isBin: boolean = false) =>
+  request.get<any, GetBannerImg["data"]>(
+    server +
+      prefix +
+      API.bannerImg +
+      `/?isBin=${isBin ? JSON.stringify(true) : JSON.stringify(false)}`
+  )
 
+export const getBannerImgPagination = (data: GetBannerImgPaginationQuery) =>
+  request.get<any, GetBannerImgPagination["data"]>(
+    server +
+      prefix +
+      API.bannerImgPagination +
+      `/?isBin=${JSON.stringify(true)}` +
+      `&currentPage=${data.currentPage || 1}` +
+      `&pageSize=${data.pageSize || 10}`
+  )
 // 更新背景 登录用户需要拥有权限
 export const managerUpdateBannerImg = (data: UpdateBannerImg) =>
   request.put<any, void>(server + prefix + API.bannerImg, data)
+
+// 禁用背景 登录用户需要拥有权限
+export const managerRecycleBannerImg = (id: number) =>
+  request.put<any, void>(server + prefix + API.bannerImgRecycle + `/${id}`)
+
+// 恢复背景 登录用户需要拥有权限
+export const managerRestoreBannerImg = (id: number) =>
+  request.put<any, void>(server + prefix + API.bannerImgRestore + `/${id}`)

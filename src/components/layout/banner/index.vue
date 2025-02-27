@@ -69,6 +69,8 @@ import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"
 // 引入短诗接口
 import { getPoetry } from "@/api/admin"
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 
 // 欢迎词
 const welcome = import.meta.env.VITE_INITIAL_WELCOME
@@ -102,12 +104,20 @@ const bannerHeight = ref()
 watchEffect(() => {
   const banner = userBannerImg.value[route.path]
   if (isDark.value) {
-    bannerImg.value = banner?.dark || "var(--default-img)"
-    bannerHeight.value = banner?.height || "100vh"
+    bannerImg.value = banner?.dark
+      ? `url("${escapeUrlForRegExp(banner?.dark)}")`
+      : "var(--default-img)"
+    bannerHeight.value = banner?.height
+      ? `url("${escapeUrlForRegExp(banner?.height)}")`
+      : "100vh"
     return
   }
-  bannerImg.value = banner?.light || "var(--default-img)"
-  bannerHeight.value = banner?.height || "100vh"
+  bannerImg.value = banner?.light
+    ? `url("${escapeUrlForRegExp(banner?.light)}")`
+    : "var(--default-img)"
+  bannerHeight.value = banner?.height
+    ? `url("${escapeUrlForRegExp(banner?.height)}")`
+    : "100vh"
 })
 
 // 短诗

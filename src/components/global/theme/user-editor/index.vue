@@ -103,32 +103,33 @@ import {
 import { updateUser, updateUserEmail } from "@/api/user"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 import { UpdateUserBody } from "@/api/user/types/updateUserBody"
+import { postImgPermanent, removeFileStatic } from "@/api/img"
 
 // 导入 默认的图片
 const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
   .href
 
-// 提取需要的数据 和 方法 不需要 响应式
-const {
-  userAvatar,
-  userAccount,
-  userNickName,
-  userEmail,
-  userSigner,
-  userInfoByToken,
-} = useUserStore()
-
+// 提取需要的数据 和 方法
+const { userInfoByToken } = useUserStore()
+const { userAvatar, userAccount, userNickName, userEmail, userSigner } =
+  storeToRefs(useUserStore())
 // 表单 数据
-const userEditorData = reactive<UpdateUserBody>({
-  avatar: userAvatar || default_avatar,
-  account: userAccount,
-  nickName: userNickName,
-  email: userEmail,
-  signer: userSigner,
-  password: "",
-  confirmPassword: "",
-  code: "",
-})
+// @ts-ignore
+const userEditorData = reactive<UpdateUserBody>({})
+
+const initData = () => {
+  userEditorData.avatar = userAvatar.value || default_avatar
+  userEditorData.account = userAccount.value
+  userEditorData.nickName = userNickName.value
+  userEditorData.email = userEmail.value
+  userEditorData.signer = userSigner.value
+  userEditorData.password = ""
+  userEditorData.confirmPassword = ""
+  userEditorData.code = ""
+}
+// 初始化 数据
+initData()
+
 // 展示 的 头像
 const avatar = ref([{ name: "default", url: userEditorData.avatar }])
 // 确认密码验证回调
@@ -233,14 +234,65 @@ const handlerUpdate = async () => {
   try {
     await formInstance.value.validate()
     const uploadAvatar = avatar.value?.[0]?.url
-    // 处理 avatar 字段 存在 且不是默认的图片
+    // 处理 avatar 字段 存在 且不是默认的图片 且 不是原图
     const _avatar =
-      (uploadAvatar && uploadAvatar !== default_avatar && uploadAvatar) || null
-    userEditorData.avatar = _avatar
+      (uploadAvatar !== default_avatar &&
+        uploadAvatar !== userAvatar.value &&
+        uploadAvatar) ||
+      null
+
+    let isUpdateAvatar = false
+    // 存在 更新的图片 则转为永久 链接
+    if (_avatar) {
+      const tempImg = [_avatar]
+      const result = await postImgPermanent({
+        tempImg,
+        account: userAccount.value,
+        path: "/avatar",
+      })
+      if (result) {
+        const { successImg, tempImgNull } = result
+        // 临时图片失效的
+        if (tempImgNull.length) {
+          ElMessage.error("修改用户头像失败哦~")
+        }
+        // 得到 成功的poster
+        const _poster = successImg?.[0]?.url
+        // 修改 poster
+        if (_poster) {
+          userEditorData.avatar = _poster
+          isUpdateAvatar = true
+        }
+      }
+    }
+
+    // 判断 是否需要删除 原来的图片
+    const originAvatar = userAvatar.value
+
     // 更新 数据
     const result = await updateUser(userEditorData)
-    // 重新获取信息
-    userInfoByToken(result?.token || "")
+
+    // 判断 是否需要删除
+    const isRemove = originAvatar && isUpdateAvatar
+
+    // 重新获取信息 在 路由重载后 加载数据
+    userInfoByToken(result?.token || "", async () => {
+      // 需要 更新了 token 后删除 因为 需要 验证
+      // 判断 是否需要删除 原来的图片
+      if (isRemove) {
+        try {
+          await removeFileStatic([originAvatar])
+        } catch (error) {}
+      }
+      // 初始化 数据
+      initData()
+      // 在 微任务后执行
+      setTimeout(() => {
+        // 清除 验证
+        formInstance.value?.clearValidate()
+      }, 0)
+    })
+
     ElMessage.success("修改成功~")
   } catch (error) {}
 }

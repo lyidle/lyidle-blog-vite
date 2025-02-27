@@ -9,7 +9,7 @@
             backgroundSize: 'cover',
             // 转义url链接
             backgroundImage: article.poster
-              ? `url('${article.poster.replace(/\\/g, '/')}')`
+              ? `url('${escapeUrlForRegExp(article.poster)}')`
               : 'var(--default-img)',
           }"
           alt=""
@@ -83,6 +83,8 @@
 <script setup lang="ts" name="ContentCard">
 // 引入moment格式化时间
 import moment from "@/utils/moment"
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 类型
 import type { Article } from "@/api/article/types/getArticle"
 defineProps<{

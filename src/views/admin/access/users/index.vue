@@ -316,6 +316,7 @@ const handlerDelete = async (row: User) => {
 // 批量软删除
 const handlerAllRemove = async () => {
   let id: number
+  if (!userIds.value?.length) return ElMessage.warning("没有需要删除的用户哦~")
   try {
     await Promise.all(
       userIds.value.map(async (item) => {
@@ -339,6 +340,7 @@ const handlerAllRemove = async () => {
 // 批量删除
 const handlerAllDelete = async () => {
   let id: number
+  if (!userIds.value?.length) return ElMessage.warning("没有需要删除的用户哦~")
   try {
     await Promise.all(
       userIds.value.map(async (item) => {

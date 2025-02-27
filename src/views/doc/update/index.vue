@@ -101,7 +101,7 @@ import {
 // 引入 hooks
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 import { mitt } from "@/utils/emitter"
-import { postImgPermanent } from "@/api/img"
+import { postImgPermanent, removeFileStatic } from "@/api/img"
 const route = useRoute()
 const router = useRouter()
 // 上传的 poster图
@@ -252,6 +252,7 @@ const handerUpload = async () => {
 
     // 判断是否有更新的上传海报
     const newPoster = poster.value?.[0]?.url
+    let isUpdatePoster = false
     // 更新了 poster 则修改
     if (newPoster && newPoster !== originPoster) {
       const tempImg = [newPoster]
@@ -274,12 +275,22 @@ const handerUpload = async () => {
         // 得到 成功的poster
         const _poster = successImg?.[0]?.url
         // 修改 poster
-        if (_poster) data.poster = _poster
+        if (_poster) {
+          data.poster = _poster
+          isUpdatePoster = true
+        }
       }
     }
 
     // 更新
     await updateArticle(data)
+
+    // 更新了 原图 且原图存在 则删除
+    if (isUpdatePoster && originPoster) {
+      try {
+        await removeFileStatic([originPoster])
+      } catch (error) {}
+    }
 
     ElMessage.success("更新文章成功~")
 

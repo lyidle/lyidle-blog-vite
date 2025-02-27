@@ -87,6 +87,7 @@ declare module 'vue' {
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     Manager: typeof import('./src/components/manager/index.vue')['default']
     ManagerAside: typeof import('./src/components/manager/aside/index.vue')['default']
+    ManagerComBannerEditor: typeof import('./src/components/manager/com/banner/editor/index.vue')['default']
     ManagerComGroupAssignPermissions: typeof import('./src/components/manager/com/group/assign-permissions/index.vue')['default']
     ManagerComGroupcopyAssignPermissions: typeof import('./src/components/manager/com/group copy/assign-permissions/index.vue')['default']
     ManagerComGroupcopyCreate: typeof import('./src/components/manager/com/group copy/create/index.vue')['default']

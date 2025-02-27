@@ -73,40 +73,6 @@
               v-model="createData.topnavDirection"
             ></my-input>
           </el-form-item>
-          <!-- bannerImg -->
-          <div class="text-color-[var(--primary-color)] text-center text-20px">
-            <el-tooltip
-              effect="dark"
-              content="背景的设置最终按照第一个查询到的路径为准哦~"
-              placement="top"
-            >
-              背景
-            </el-tooltip>
-          </div>
-          <el-form-item label="高度" prop="height">
-            <my-input
-              placeholder="请输入背景高度(不是必填项)"
-              v-model="createData.height"
-            ></my-input>
-          </el-form-item>
-          <div class="flex justify-center gap-15px mt-20px">
-            <div class="flex items-center">
-              白天:
-              <my-upload
-                v-model="createData.light"
-                :auto-remove="false"
-                class="ml-10px"
-              ></my-upload>
-            </div>
-            <div class="flex items-center">
-              暗夜:
-              <my-upload
-                v-model="createData.dark"
-                :auto-remove="false"
-                class="ml-10px"
-              ></my-upload>
-            </div>
-          </div>
           <div class="flex justify-end mt-20px">
             <my-button
               class="w-unset"
@@ -142,10 +108,6 @@ const createData = reactive<UpdateMenuListBody>({
   to: "",
   roles: [],
   parentId: null,
-  // bannerImg
-  height: "",
-  light: [],
-  dark: [],
   // Layout
   // 宽度
   topnavWidth: "",
@@ -194,14 +156,6 @@ const createRules = reactive({
       validator: iconValidator, // 使用自定义验证函数
     },
   ],
-  // bannerImg 的高度
-  height: [
-    {
-      trigger: "change",
-      pattern: isValidCSSUnitReg,
-      message: "菜单的宽度，请输入一个正常的css单位信息~",
-    },
-  ],
   // 菜单的宽度
   topnavWidth: [
     {
@@ -227,10 +181,6 @@ const init = (row: Datum) => {
   const _row = JSON.parse(JSON.stringify(row))
   // 基础的赋值
   Object.assign(createData, _row)
-  // bannerImg
-  createData.height = _row.bannerImg?.height
-  createData.light = _row.bannerImg?.light
-  createData.dark = _row.bannerImg?.dark
   // Layout
   createData.topnavWidth = _row.layout?.topnavWidth
   createData.topnavDirection = _row.layout?.topnavDirection

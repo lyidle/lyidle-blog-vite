@@ -10,24 +10,14 @@ const asyncRoute = [
         roles: ["admin"],
       },
       {
-        name: "ArticleManagement",
-        to: "/admin/articles",
+        name: "Other",
+        to: "/admin/other",
         roles: ["admin"],
         children: [
           {
-            name: "ArticleList",
+            name: "BannerImg",
             roles: ["admin"],
-            to: "/admin/articles/list",
-          },
-          {
-            name: "CategoryManagement",
-            roles: ["admin"],
-            to: "/admin/articles/category",
-          },
-          {
-            name: "TagManagement",
-            roles: ["admin"],
-            to: "/admin/articles/tag",
+            to: "/admin/banner",
           },
         ],
       },

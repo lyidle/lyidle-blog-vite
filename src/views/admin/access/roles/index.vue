@@ -309,6 +309,7 @@ const handlerDelete = async (row: Role) => {
 // 批量软删除
 const handlerAllRemove = async () => {
   let id: number
+  if (!roleIds.value?.length) return ElMessage.warning("没有需要删除的角色哦~")
   try {
     await Promise.all(
       roleIds.value.map(async (item) => {
@@ -332,6 +333,7 @@ const handlerAllRemove = async () => {
 // 批量删除
 const handlerAllDelete = async () => {
   let id: number
+  if (!roleIds.value?.length) return ElMessage.warning("没有需要删除的角色哦~")
   try {
     await Promise.all(
       roleIds.value.map(async (item) => {

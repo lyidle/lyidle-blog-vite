@@ -27,7 +27,8 @@ const addRoute = async (
 // 移除路由
 const reloadRoute = async (
   routes: Ref<RouteRecordRaw[] | undefined>,
-  showInfo: () => void
+  showInfo: () => void,
+  callback?: () => void
 ) => {
   // 移除路由
   routes.value?.forEach((item) => {
@@ -41,6 +42,8 @@ const reloadRoute = async (
   await addRoute(routes, showInfo)
   // 重新进行 权限判断
   mitt.emit("authRoles")
+  // 有回调执行
+  callback && callback()
 }
 
 export const initMenuList = async () => {
@@ -74,7 +77,11 @@ export const initMenuList = async () => {
     // 添加路由
     await addRoute(routes, showInfo)
     // 监听是否重载路由
-    mitt.on("route:reload", async () => await reloadRoute(routes, showInfo))
+    mitt.on(
+      "route:reload",
+      async (callback?: () => void) =>
+        await reloadRoute(routes, showInfo, callback)
+    )
     isInitRoute = true
   }
 }

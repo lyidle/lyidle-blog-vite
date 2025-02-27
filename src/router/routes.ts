@@ -192,29 +192,16 @@ export const asyncRoute: RouteRecordRaw[] = [
         component: () => import("@/views/admin/dashboard/index.vue"),
       },
       {
-        name: "ArticleManagement",
-        path: "/admin/articles",
-        meta: { title: "文章管理", roles: ["admin"] },
-        redirect: "/admin/articles/list",
+        name: "Other",
+        path: "/admin/other",
+        meta: { title: "其他", roles: ["admin"] },
+        redirect: "/admin/banner",
         children: [
           {
-            name: "ArticleList",
-            path: "/admin/articles/list",
-            meta: { title: "文章列表", roles: ["admin"] },
-            component: () => import("@/views/admin/articles/list/index.vue"),
-          },
-          {
-            name: "CategoryManagement",
-            path: "/admin/articles/category",
-            meta: { title: "分类管理", roles: ["admin"] },
-            component: () =>
-              import("@/views/admin/articles/category/index.vue"),
-          },
-          {
-            name: "TagManagement",
-            path: "/admin/articles/tag",
-            meta: { title: "标签管理", roles: ["admin"] },
-            component: () => import("@/views/admin/articles/tag/index.vue"),
+            name: "BannerImg",
+            path: "/admin/banner",
+            meta: { title: "背景管理", roles: ["admin"] },
+            component: () => import("@/views/admin/other/banner/index.vue"),
           },
         ],
       },

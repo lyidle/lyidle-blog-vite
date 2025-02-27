@@ -58,6 +58,9 @@ export const useUserStore = defineStore(
         const { _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result)
 
+        // 赋值 路由
+        routes.value = _routes
+
         // 过滤掉后台管理的菜单
         userMenuList.value =
           (_userMenuList
@@ -66,20 +69,24 @@ export const useUserStore = defineStore(
             })
             .filter(Boolean) as GetMenuList["data"]) || []
 
+        // 处理 白名单
+        whitelist.value = Array.from(
+          new Set([_whitelist, handlerPath()].flat(Infinity))
+        ).filter(Boolean) as string[]
+
         // 得到 背景
         const banners = await getBannerImg()
         // 处理 背景
         if (banners?.length)
           userBannerImg.value = banners.reduce((pre, cur) => {
-            if (cur.dark || cur.light || cur.height) pre[cur.name] = cur
+            // 在 白名单 且有light或dark或height
+            if (
+              whitelist.value.includes(cur.name) &&
+              (cur.dark || cur.light || cur.height)
+            )
+              pre[cur.name] = cur
             return pre
           }, {} as bannerImgType)
-
-        // 处理 白名单
-        whitelist.value = Array.from(
-          new Set([_whitelist, handlerPath()].flat(Infinity))
-        ).filter(Boolean) as string[]
-        routes.value = _routes
       } catch (error) {}
     }
 
@@ -107,6 +114,8 @@ export const useUserStore = defineStore(
     const reqUserInfo = async () => {
       // 重置用户信息
       resetUserInfo()
+      // 没有 token 退出
+      if (!userToken.value) return
       try {
         const result = await getUserInfo()
         const user = result?.[0]
@@ -130,10 +139,10 @@ export const useUserStore = defineStore(
     }
 
     // 通过 设置 token 重新获取 数据
-    const userInfoByToken = async (token: string) => {
+    const userInfoByToken = (token: string, callback?: () => void) => {
       userToken.value = token
       // 重新加载路由
-      mitt.emit("route:reload")
+      mitt.emit("route:reload", callback)
       // 判断 有无 token 是否修改了密码 修改了需要重新登录
       if (!token) {
         ElMessage.warning("修改密码后需要重新登录哦~")

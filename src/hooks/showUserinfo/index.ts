@@ -1,7 +1,8 @@
-import { computed } from "vue"
-import { storeToRefs } from "pinia"
+// 引入 仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 
 // 定义选项类型
 type UseShowUserinfoOptions = {
@@ -65,7 +66,7 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
   const showAvatar = createComputed("showAvatar", () => {
     const avatar = userToken.value ? userAvatar.value : adminAvatar.value
     return avatar
-      ? `url("${avatar?.replace(/\\/g, "/")}")`
+      ? `url("${escapeUrlForRegExp(avatar)}")`
       : "var(--default-avatar)" // 判断是否有值，无值返回默认值
   })
 

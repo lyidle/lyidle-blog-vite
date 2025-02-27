@@ -11,7 +11,7 @@
                   backgroundSize: 'cover',
                   // 转义url链接
                   backgroundImage: item.poster
-                    ? `url('${item.poster.replace(/\\/g, '/')}')`
+                    ? `url('${escapeUrlForRegExp(item.poster)}')`
                     : 'var(--default-img)',
                 }"
                 class="scale-[1.01]"
@@ -50,6 +50,8 @@
 
 <script setup lang="ts" name="MyCarouselInstance">
 import moment from "@/utils/moment"
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入类型
 import type { Datum } from "@/api/article/types/getCarousel"
 </script>

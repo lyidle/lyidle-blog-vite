@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         afterCreate: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
+          let cacheKey2 = "bannerImg:bin:*"
           // 得到 to 字段
           const to = menu.to
           // 没有 to 则 退出
@@ -76,6 +77,7 @@ module.exports = (sequelize, DataTypes) => {
             if (created) {
               // 删除缓存
               await delKey(cacheKey)
+              await delKey(cacheKey2)
             }
           } catch (error) {
             console.error("在 Menu 的 afterCreate 钩子中发生错误:", error)
@@ -85,6 +87,7 @@ module.exports = (sequelize, DataTypes) => {
         afterUpdate: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
+          let cacheKey2 = "bannerImg:bin:*"
           // 检查 `to` 字段是否变化
           if (menu.changed("to")) {
             // 得到 新旧 to
@@ -137,6 +140,7 @@ module.exports = (sequelize, DataTypes) => {
                   )
                   // 删除缓存
                   await delKey(cacheKey)
+                  await delKey(cacheKey2)
                 } else {
                   // 没有  则 判断 newTO 没有则创建
                   // 根据 newTo 字段查找或创建 BannerImg 记录（包括软删除的记录）
@@ -155,6 +159,7 @@ module.exports = (sequelize, DataTypes) => {
                   if (created) {
                     // 删除缓存
                     await delKey(cacheKey)
+                    await delKey(cacheKey2)
                   }
                 }
               }
@@ -170,6 +175,7 @@ module.exports = (sequelize, DataTypes) => {
                   await bannerImg.destroy({ force: true })
                   // 删除缓存
                   await delKey(cacheKey)
+                  await delKey(cacheKey2)
                 }
               }
 
@@ -185,6 +191,7 @@ module.exports = (sequelize, DataTypes) => {
                   await bannerImg.destroy({ force: true })
                   // 删除缓存
                   await delKey(cacheKey)
+                  await delKey(cacheKey2)
                 }
               }
             } catch (error) {
@@ -196,6 +203,7 @@ module.exports = (sequelize, DataTypes) => {
         afterDestroy: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
+          let cacheKey2 = "bannerImg:bin:*"
           // 得到 to 字段
           const to = menu.to
           // 没有 to 则退出
@@ -231,11 +239,13 @@ module.exports = (sequelize, DataTypes) => {
               await bannerImg.destroy({ force: true })
               // 删除 缓存
               await delKey(cacheKey)
+              await delKey(cacheKey2)
             } else {
               // 如果是软删除，则使用软删除
               await bannerImg.destroy()
               // 删除 缓存
               await delKey(cacheKey)
+              await delKey(cacheKey2)
             }
           } catch (error) {
             console.error("在 Menu 的 afterDestroy 钩子中发生错误:", error)

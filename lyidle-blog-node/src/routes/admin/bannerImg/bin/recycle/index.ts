@@ -9,35 +9,33 @@ import { delKey } from "@/utils/redis"
 const { BannerImg } = require("@/db/models")
 const router = express.Router()
 
-// 更新 背景
+// 禁用背景
 router.put(
-  "/",
+  "/:id",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     // 获取 所有的 背景的 key
     let cacheKey = "bannerImg:*"
     let cacheKey2 = "bannerImg:bin:*"
-    const { id, dark, light, height } = req.body
-    if (!id) return res.result(void 0, "更新背景失败,id是必传项哦~", false)
+    const { id } = req.params
+    if (!id) return res.result(void 0, "禁用背景失败,id是必传项哦~", false)
 
     try {
-      const findBanner = await BannerImg.findByPk(id)
+      const findBanner = await BannerImg.findByPk(id, { paranoid: false })
+
       if (!findBanner)
-        return res.result(void 0, "更新背景失败,没有找到背景数据哦~", false)
-      // 更新 数据
-      await findBanner.set("dark", dark || null)
-      await findBanner.set("light", light || null)
-      await findBanner.set("height", height || null)
-      // 保存
-      await findBanner.save()
+        return res.result(void 0, "禁用背景失败,没有找到背景数据哦~", false)
+
+      // 软删除 背景
+      await findBanner.destroy()
 
       // 删除 缓存
       await delKey(cacheKey)
       await delKey(cacheKey2)
-      res.result(void 0, "更新背景成功~")
+      res.result(void 0, "禁用背景成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "更新背景失败~", false)
+        res.result(void 0, "禁用背景失败~", false)
       )
     }
   }

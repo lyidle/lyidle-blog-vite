@@ -41,7 +41,7 @@
                     backgroundSize: 'cover',
                     // 转义url链接
                     backgroundImage: article.poster
-                      ? `url('${article.poster.replace(/\\/g, '/')}')`
+                      ? `url('${escapeUrlForRegExp(article.poster)}')`
                       : 'var(--default-img)',
                   }"
                   class="scale-[1.01]"
@@ -168,14 +168,16 @@ import { searchCounts } from "@/api/user"
 import { deleteArticle, removeArticle, searchArticleExact } from "@/api/article"
 // 引入 类型
 import type { Counts } from "@/api/user/types/searchCountsById"
-import { Article } from "@/api/article/types/searchArticle"
+import type { Article } from "@/api/article/types/searchArticle"
+import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 // 引入 utils
 import { orderArticle } from "@/utils/doc/orderArticle"
 // 引入 moment
 import moment from "@/utils/moment"
+// 处理 时间
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
-import { Pagination } from "@/api/admin/types/findAllRolesPagination"
-
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 文章 的 数据
 // 个数
 const counts = ref<Counts>()

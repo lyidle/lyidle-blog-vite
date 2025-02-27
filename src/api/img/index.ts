@@ -13,6 +13,7 @@ export enum API {
   urlImgTemp = "/upload/img/temp",
   fileImgTemp = "/upload/files/img/temp",
   tempTOPermanent = "/upload/img/tempImgToPermanet",
+  managerTempTOPermanent = "/upload/img/tempImgToPermanet/manager",
   remove = "/upload/remove",
 }
 
@@ -53,6 +54,13 @@ export const postTempImgFiles = (files: File[]) => {
 export const postImgPermanent = (data: PostImgPermanentBody) =>
   request.post<any, PostImgPermanent["data"]>(
     server + prefix + API.tempTOPermanent,
+    data
+  )
+
+// 登录 的用户需要 拥有权限
+export const managerPostImgPermanent = (data: PostImgPermanentBody) =>
+  request.post<any, PostImgPermanent["data"]>(
+    server + prefix + API.managerTempTOPermanent,
     data
   )
 

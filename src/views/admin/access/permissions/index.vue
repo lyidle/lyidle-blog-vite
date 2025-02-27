@@ -216,10 +216,10 @@ const handlerCurrentPage = (num: number) => {
 }
 
 // 保存选中的 roleId
-const roleIds = ref<number[]>([])
+const permissionIds = ref<number[]>([])
 // 选择状态发生变化
 const handleSelectionChange = (role: Role[]) => {
-  roleIds.value = role.map((item) => item.id)
+  permissionIds.value = role.map((item) => item.id)
 }
 
 // 子组件实例
@@ -244,7 +244,7 @@ const handlerReq = async () => {
     return
   }
   // 处理批量删除时的逻辑
-  const len = roleIds.value?.length
+  const len = permissionIds.value?.length
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
@@ -288,9 +288,11 @@ const handlerDelete = async (row: Role) => {
 // 批量软删除
 const handlerAllRemove = async () => {
   let id: number
+  if (!permissionIds.value?.length)
+    return ElMessage.warning("没有需要删除的权限哦~")
   try {
     await Promise.all(
-      roleIds.value.map(async (item) => {
+      permissionIds.value.map(async (item) => {
         id = item
         try {
           // 软删除
@@ -311,9 +313,11 @@ const handlerAllRemove = async () => {
 // 批量删除
 const handlerAllDelete = async () => {
   let id: number
+  if (!permissionIds.value?.length)
+    return ElMessage.warning("没有需要删除的权限哦~")
   try {
     await Promise.all(
-      roleIds.value.map(async (item) => {
+      permissionIds.value.map(async (item) => {
         id = item
         try {
           // 彻底删除
