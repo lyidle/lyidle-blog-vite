@@ -8,7 +8,6 @@ export interface GetMenuList {
 }
 
 export interface Datum {
-  bannerImg?: null | PurpleBannerImg
   children?: Child[]
   icon?: string
   id?: number
@@ -18,18 +17,10 @@ export interface Datum {
   layout?: null | Layout
   name: string
   to: null | string
-  [property: string]: any
-}
-
-export interface PurpleBannerImg {
-  dark?: string
-  height?: string | number
-  light?: string
   [property: string]: any
 }
 
 export interface Child {
-  bannerImg?: null | PurpleBannerImg
   children?: Child[]
   icon?: string
   id?: number
@@ -39,13 +30,6 @@ export interface Child {
   layout?: null | Layout
   name: string
   to: null | string
-  [property: string]: any
-}
-
-export interface FluffyBannerImg {
-  dark?: string
-  height?: string
-  light?: string
   [property: string]: any
 }
 

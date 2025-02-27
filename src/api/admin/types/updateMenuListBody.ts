@@ -2,7 +2,6 @@
  * Request
  */
 export interface UpdateMenuListBody {
-  bannerImg?: BannerImg
   icon?: string
   id: number
   layout?: Layout
@@ -10,13 +9,6 @@ export interface UpdateMenuListBody {
   parentId: number | null
   roles?: string[]
   to?: string
-  [property: string]: any
-}
-
-export interface BannerImg {
-  dark?: string
-  height?: string
-  light?: string
   [property: string]: any
 }
 

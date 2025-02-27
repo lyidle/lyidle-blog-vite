@@ -1,12 +1,10 @@
 // 引入api
-import { getMenuList } from "@/api/admin"
+import { getBannerImg, getMenuList } from "@/api/admin"
 import { getUserInfo, reqLogout } from "@/api/user"
 // 引入类型
-import type {
-  GetMenuList,
-  PurpleBannerImg,
-} from "@/api/admin/types/getMenuList"
-import { RouteRecordRaw } from "vue-router"
+import type { GetMenuList } from "@/api/admin/types/getMenuList"
+import type { RouteRecordRaw } from "vue-router"
+import type { GetBannerImg } from "@/api/admin/types/getBannerImg"
 
 // 引入 路由过滤函数
 import { userStoreRoutesFilter } from "@/utils/routerFilter"
@@ -17,6 +15,7 @@ import { mitt } from "@/utils/emitter"
 // 引入 常量 路由
 import { constantRoute, anyRoute } from "@/router/routes"
 
+type bannerImgType = { [key in string]: GetBannerImg["data"][0] }
 // 处理 常量路由 和异步路由
 const handlerPath = () => {
   const paths: string[] = []
@@ -43,7 +42,7 @@ export const useUserStore = defineStore(
     //  后台管理的菜单
     const adminMenuList = ref<RouteRecordRaw[]>([])
     // 用户的 焦点图信息
-    const userBannerImg = ref<{ [key in string]: PurpleBannerImg }>({})
+    const userBannerImg = ref<bannerImgType>({})
     // 用户的 白名单路径
     const whitelist = ref<string[]>([])
     // 用户的 路由名单
@@ -56,7 +55,7 @@ export const useUserStore = defineStore(
         const roles = (userRoles.value?.length && userRoles.value) || ["user"]
         const result = await getMenuList(roles)
         // 调用函数 过滤出 仓库需要的信息
-        const { _userBannerImg, _whitelist, _userMenuList, _routes } =
+        const { _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result)
 
         // 过滤掉后台管理的菜单
@@ -67,7 +66,16 @@ export const useUserStore = defineStore(
             })
             .filter(Boolean) as GetMenuList["data"]) || []
 
-        userBannerImg.value = _userBannerImg
+        // 得到 背景
+        const banners = await getBannerImg()
+        // 处理 背景
+        if (banners?.length)
+          userBannerImg.value = banners.reduce((pre, cur) => {
+            if (cur.dark || cur.light || cur.height) pre[cur.name] = cur
+            return pre
+          }, {} as bannerImgType)
+
+        // 处理 白名单
         whitelist.value = Array.from(
           new Set([_whitelist, handlerPath()].flat(Infinity))
         ).filter(Boolean) as string[]

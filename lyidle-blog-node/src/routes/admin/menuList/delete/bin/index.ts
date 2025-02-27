@@ -8,27 +8,6 @@ import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入redis
 import { getKey } from "@/utils/redis"
 const router = express.Router()
-// 彻底删除
-router.delete(
-  "/",
-  [jwtMiddleware, isAdmin],
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { id: menuListId } = req.body
-      // 判断是否 移动到垃圾桶
-      const isBin = await getKey(`userMenusBin:${menuListId}`)
-      if (isBin)
-        return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
-
-      await remove(req, res, true)
-    } catch (error) {
-      res.validateAuth(error, next, () =>
-        res.result(void 0, "菜单移动到回收站失败~", false)
-      )
-    }
-  }
-)
-// 不需要验证 角色信息
 // 需要验证 登录用户拥有权限 admin
 router.delete(
   "/manager",
@@ -41,7 +20,7 @@ router.delete(
       if (isBin)
         return res.result(void 0, "菜单移动到垃圾桶了，请勿重复操作~", false)
 
-      await remove(req, res, true, false)
+      await remove(req, res, true)
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "菜单移动到回收站失败~", false)

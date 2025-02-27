@@ -30,7 +30,7 @@ router.delete("/", async (req, res, next) => {
     const result = await Visitor.findOne({ where: { name } })
     // 有值 去掉对应的标识
     if (!result) return res.result(void 0, "访客注销失败~")
-    result.destroy()
+    await result.destroy()
 
     // 获取到访客数量
     let touristCounts = +(await getKey("touristCounts"))

@@ -44,12 +44,7 @@ const deleted = async (
 }
 
 // 删除函数
-const remove = async (
-  req: any,
-  res: any,
-  bin: boolean = false,
-  isAuth = true
-) => {
+const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: roleId } = req.body
 
   if (!roleId) return res.result(void 0, "删除角色时，没有找到角色哦~", false)
@@ -95,18 +90,6 @@ const remove = async (
   const roles = deduplication(
     _Role.Users?.map((item: any) => item.Roles?.map((item: any) => item.name))
   ).filter(Boolean)
-
-  // 是否 权限 判断
-  if (isAuth) {
-    // 判断是否是该用户权限的角色
-    if (
-      !req.auth.roles.find((item: string) =>
-        roles.find(($item: string) => item.includes($item))
-      )
-    ) {
-      return res.result(void 0, "没有权限删除当前的角色哦~", false)
-    }
-  }
 
   // 回收到垃圾桶
   if (bin) {

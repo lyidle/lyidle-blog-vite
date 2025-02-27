@@ -1,19 +1,12 @@
 // 引入类型
-// 引入类型
-import type {
-  GetMenuList,
-  PurpleBannerImg,
-} from "@/api/admin/types/getMenuList"
-import { RouteRecordRaw } from "vue-router"
-// 引入 过滤banner 的函数
-import { filterBanner } from "./filterBanner"
+import type { GetMenuList } from "@/api/admin/types/getMenuList"
+import type { RouteRecordRaw } from "vue-router"
 // 引入 过滤白名单和添加异步路由的函数
 import { filterRoutes } from "./filterRoutes"
 // 引入 根据白名单过滤 用户菜单的函数
 import { filterUserMenuList } from "./filterUserMenuList"
 
 type routesFilterReturn = {
-  _userBannerImg: { [key in string]: PurpleBannerImg }
   _whitelist: string[]
   _userMenuList: GetMenuList["data"]
   _routes: RouteRecordRaw[]
@@ -40,8 +33,7 @@ export const userStoreRoutesFilter = (
 
   // 过滤出用户的菜单信息
   const _userMenuList = filterUserMenuList(result, _whitelist)
-  // 过滤出用户的 banner 信息设置
-  const _userBannerImg = filterBanner(result, _whitelist)
+
   // 返回处理完毕的信息
-  return { _userBannerImg, _whitelist, _userMenuList, _routes }
+  return { _whitelist, _userMenuList, _routes }
 }

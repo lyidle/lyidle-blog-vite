@@ -19,10 +19,11 @@ import { FindAllPermissions } from "./types/findAllPermissions"
 import { SetGroupPermissionsBody } from "./types/setGroupPermissionsBody"
 import { FindAllPermissionsPagination } from "./types/findAllPermissionsPagination"
 import { CreateMenuListBody } from "./types/createMenuListBody"
-import { CreateMenuList } from "./types/createMenuList"
 import { CreateAnnounceBody } from "./types/createAnnounceBody"
 import { CreateAnnounce } from "./types/createAnnounce"
 import { UpdateMenuListBody } from "./types/updateMenuListBody"
+import { GetBannerImg } from "./types/getBannerImg"
+import { UpdateBannerImg } from "./types/updateBannerImg"
 
 // 统一管理 api
 enum API {
@@ -59,6 +60,8 @@ enum API {
   // 删除
   managerDeletePermission = "/admin/permissionGroup/permission/clear/manager",
   managerRemovePermission = "/admin/permissionGroup/permission/bin/manager",
+  // 背景
+  bannerImg = "/admin/bannerImg",
 }
 
 // API 的 key 的类型
@@ -83,10 +86,10 @@ export const getAllMenuList = () =>
   request.get<any, GetMenuList["data"]>(server + prefix + API.allMenuList)
 // 创建菜单
 export const createMenuList = (data: CreateMenuListBody) =>
-  request.post<any, CreateMenuList>(server + prefix + API.menuList, data)
+  request.post<any, void>(server + prefix + API.menuList, data)
 // 更新菜单
 export const updateMenuList = (data: UpdateMenuListBody) =>
-  request.put<any, CreateMenuList>(server + prefix + API.menuList, data)
+  request.put<any, void>(server + prefix + API.menuList, data)
 // 软删除菜单
 export const managerRemoveMenuList = removeCallback("managerRemoveMenuList")
 // 彻底删除菜单
@@ -211,3 +214,11 @@ export const managerCreatePermission = (data: CreateRoleBody) =>
 // 更新权限组 登录用户需要拥有权限
 export const managerUpdatePermission = (data: UpdateRoleBody) =>
   request.put<any, void>(server + prefix + API.Permission, data)
+
+// 得到背景
+export const getBannerImg = () =>
+  request.get<any, GetBannerImg["data"]>(server + prefix + API.bannerImg)
+
+// 更新背景 登录用户需要拥有权限
+export const managerUpdateBannerImg = (data: UpdateBannerImg) =>
+  request.put<any, void>(server + prefix + API.bannerImg, data)

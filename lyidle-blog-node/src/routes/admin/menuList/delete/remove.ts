@@ -30,12 +30,7 @@ const deleted = async (delMenu: any, id: number, roles: string[]) => {
   await publicMenusRemove(roles)
 }
 // 删除函数
-const remove = async (
-  req: any,
-  res: any,
-  bin: boolean = false,
-  isAuth = true
-) => {
+const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: menuId } = req.body
 
   if (!menuId) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
@@ -60,18 +55,6 @@ const remove = async (
 
   // 得到 roles
   let roles = deduplication(ReturnRoles([findMenu]))
-
-  // 是否 权限 判断
-  if (isAuth) {
-    // 判断是否是该用户权限的菜单
-    if (
-      !req.auth.roles.find((item: string) =>
-        roles.find(($item: string) => item.includes($item))
-      )
-    ) {
-      return res.result(void 0, "没有权限删除当前的菜单哦~", false)
-    }
-  }
 
   // 回收到垃圾桶
   if (bin) {

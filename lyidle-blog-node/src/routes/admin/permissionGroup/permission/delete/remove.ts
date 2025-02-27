@@ -42,12 +42,7 @@ const deleted = async (
 }
 
 // 删除函数
-const remove = async (
-  req: any,
-  res: any,
-  bin: boolean = false,
-  isAuth = true
-) => {
+const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: permissionId } = req.body
 
   if (!permissionId)
@@ -108,18 +103,6 @@ const remove = async (
 
   // 找到提取需要的信息
   const { id } = findPermission.dataValues
-
-  // 是否 权限 判断
-  if (isAuth) {
-    // 判断是否是该用户权限的权限子菜单
-    if (
-      !req.auth.roles.find((item: string) =>
-        roles.find(($item: string) => item.includes($item))
-      )
-    ) {
-      return res.result(void 0, "没有权限删除当前的权限子菜单哦~", false)
-    }
-  }
 
   // 回收到垃圾桶
   if (bin) {

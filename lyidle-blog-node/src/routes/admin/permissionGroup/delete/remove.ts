@@ -46,12 +46,7 @@ const deleted = async (
 }
 
 // 删除函数
-const remove = async (
-  req: any,
-  res: any,
-  bin: boolean = false,
-  isAuth = true
-) => {
+const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: groupId } = req.body
 
   if (!groupId)
@@ -107,18 +102,6 @@ const remove = async (
   const roles = deduplication(
     users.map((item) => item.Roles?.map((item: any) => item.name))
   ).filter(Boolean) as string[]
-
-  // 是否 权限 判断
-  if (isAuth) {
-    // 判断是否是该用户权限的权限菜单
-    if (
-      !req.auth.roles.find((item: string) =>
-        roles.find(($item: string) => item.includes($item))
-      )
-    ) {
-      return res.result(void 0, "没有权限删除当前的权限菜单哦~", false)
-    }
-  }
 
   // 回收到垃圾桶
   if (bin) {

@@ -26,7 +26,7 @@ const processMenu = (menu, parentId = null) => {
     icon: menu.icon,
     to: menu.to,
     parentId,
-    layout: JSON.stringify(menu.layout),
+    layout: menu.layout,
     createdAt: new Date(),
     updatedAt: new Date(),
   })
