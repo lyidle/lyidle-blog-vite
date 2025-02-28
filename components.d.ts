@@ -116,6 +116,7 @@ declare module 'vue' {
     MyContextMenuItem: typeof import('./src/components/my/context-menu/item.vue')['default']
     MyDialog: typeof import('./src/components/my/dialog/index.vue')['default']
     MyDrawer: typeof import('./src/components/my/drawer/index.vue')['default']
+    MyEmpty: typeof import('./src/components/my/empty/index.vue')['default']
     MyInput: typeof import('./src/components/my/input/index.vue')['default']
     MyMenu: typeof import('./src/components/my/menu/index.vue')['default']
     MyMenuAccordion: typeof import('./src/components/my/menu/accordion/index.vue')['default']

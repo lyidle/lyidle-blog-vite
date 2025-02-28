@@ -58,6 +58,22 @@ html[themes="#{$theme}"] {
   --primary-input-placeholder: var(--primary-color);
   --primary-input-color: var(--primary-color);
   --primary-input-underline-bg: var(--primary-color);
+  // table
+  --table-bg: #0a2335;
+  --table-bg-hover: #071824;
+  --table-border: #424f58;
+  --table-color: var(--primary-color);
+  .my-empty {
+    --el-empty-fill-color-1: #0a2335;
+    --el-empty-fill-color-2: #194463;
+    --el-empty-fill-color-3: #092b44;
+    --el-empty-fill-color-4: #1f2a55;
+    --el-empty-fill-color-5: #1f2c61;
+    --el-empty-fill-color-6: #2a3d64;
+    --el-empty-fill-color-7: #0e2c4b;
+    --el-empty-fill-color-8: #05263e;
+    --el-empty-fill-color-9: #0a3452;
+  }
   // 切换按钮 primary
   $primary-switch-bg: #548aad;
   --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: 10%)};

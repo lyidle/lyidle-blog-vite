@@ -8,27 +8,27 @@
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
-      <el-table
+      <my-table
         :data="tableData"
         style="width: 100%"
         height="46vh"
         show-overflow-tooltip
       >
-        <el-table-column
+        <my-table-column
           width="40"
           prop="id"
           label="id"
           align="center"
           fixed="left"
         />
-        <el-table-column
+        <my-table-column
           width="200"
           prop="name"
           label="路径名"
           align="center"
           fixed="left"
         />
-        <el-table-column
+        <my-table-column
           min-width="100"
           prop="createdAt"
           label="创建时间"
@@ -37,8 +37,8 @@
           <template #="{ row }">
             {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
-        </el-table-column>
-        <el-table-column
+        </my-table-column>
+        <my-table-column
           min-width="100"
           prop="updatedAt"
           label="更新时间"
@@ -47,9 +47,9 @@
           <template #="{ row }">
             {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
-        </el-table-column>
+        </my-table-column>
         <!-- 工具栏 -->
-        <el-table-column width="130" label="工具栏" align="center">
+        <my-table-column width="130" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button
@@ -73,13 +73,13 @@
               </my-button>
             </div>
           </template>
-        </el-table-column>
+        </my-table-column>
         <template #empty>
           <div class="flex items-center justify-center h-100%">
-            <el-empty />
+            <my-empty />
           </div>
         </template>
-      </el-table>
+      </my-table>
       <my-pagination
         v-if="pagination?.total"
         background

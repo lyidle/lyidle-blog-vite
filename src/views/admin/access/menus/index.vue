@@ -6,21 +6,21 @@
           >添加菜单</my-button
         >
       </div>
-      <el-table
+      <my-table
         :data="tableData"
         style="width: 100%; margin-bottom: 20px"
         row-key="id"
         show-overflow-tooltip
         height="65vh"
       >
-        <el-table-column prop="name" label="菜单名" width="160" />
-        <el-table-column prop="roles" label="权限值" align="center" />
-        <el-table-column prop="updatedAt" label="修改时间" align="center">
+        <my-table-column prop="name" label="菜单名" width="160" />
+        <my-table-column prop="roles" label="权限值" align="center" />
+        <my-table-column prop="updatedAt" label="修改时间" align="center">
           <template #="{ row }">
             {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
-        </el-table-column>
-        <el-table-column
+        </my-table-column>
+        <my-table-column
           label="工具栏"
           :width="toolBtnsWidth"
           fixed="right"
@@ -118,13 +118,13 @@
               </el-popconfirm>
             </div>
           </template>
-        </el-table-column>
+        </my-table-column>
         <template #empty>
           <div class="flex items-center justify-center h-100%">
-            <el-empty />
+            <my-empty />
           </div>
         </template>
-      </el-table>
+      </my-table>
       <manager-com-menu-create
         ref="create"
         @req="handlerReq"

@@ -58,6 +58,12 @@ html[themes="#{$theme}"] {
   --primary-input-placeholder: var(--primary-color);
   --primary-input-color: var(--primary-color);
   --primary-input-underline-bg: var(--primary-color);
+  // table
+  --table-bg: white;
+  --table-bg-hover: rgb(241, 241, 241);
+  --table-border: rgb(231, 234, 238);
+  --table-color: var(--primary-color);
+
   // 切换按钮 primary
   $primary-switch-bg: #8dbcdc;
   --primary-switch-on: #{color.adjust($primary-switch-bg, $lightness: -20%)};

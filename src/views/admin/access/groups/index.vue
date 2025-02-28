@@ -30,30 +30,30 @@
           >批量删除</my-button
         >
       </div>
-      <el-table
+      <my-table
         :data="tableData"
         @selection-change="handleSelectionChange"
         style="width: 100%"
         height="46vh"
         show-overflow-tooltip
       >
-        <el-table-column type="selection" width="30" />
-        <el-table-column
+        <my-table-column type="selection" width="30" />
+        <my-table-column
           width="40"
           prop="id"
           label="id"
           align="center"
           fixed="left"
         />
-        <el-table-column
+        <my-table-column
           :width="accountsWidth"
           prop="name"
           label="权限组名"
           align="center"
           fixed="left"
         />
-        <el-table-column prop="desc" label="描述" align="center" />
-        <el-table-column
+        <my-table-column prop="desc" label="描述" align="center" />
+        <my-table-column
           min-width="100"
           prop="createdAt"
           label="创建时间"
@@ -62,8 +62,8 @@
           <template #="{ row }">
             {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
-        </el-table-column>
-        <el-table-column
+        </my-table-column>
+        <my-table-column
           min-width="100"
           prop="updatedAt"
           label="更新时间"
@@ -72,9 +72,9 @@
           <template #="{ row }">
             {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
-        </el-table-column>
+        </my-table-column>
         <!-- 工具栏 -->
-        <el-table-column :width="toolBtnsWidth" label="工具栏" align="center">
+        <my-table-column :width="toolBtnsWidth" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button
@@ -164,13 +164,13 @@
               </el-popconfirm>
             </div>
           </template>
-        </el-table-column>
+        </my-table-column>
         <template #empty>
           <div class="flex items-center justify-center h-100%">
-            <el-empty />
+            <my-empty />
           </div>
         </template>
-      </el-table>
+      </my-table>
       <my-pagination
         v-if="pagination?.total"
         background
