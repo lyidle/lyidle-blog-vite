@@ -18,8 +18,13 @@
     </template>
   </el-upload>
 
-  <el-dialog v-model="dialogVisible">
-    <img w-full :src="dialogImageUrl" alt="Preview Image" />
+  <el-dialog v-model="dialogVisible" class="upload-dialog">
+    <img
+      w-full
+      :src="dialogImageUrl"
+      class="w-100% h-100%"
+      alt="Preview Image"
+    />
   </el-dialog>
 </template>
 
@@ -147,5 +152,9 @@ const handlerUpload: UploadProps["httpRequest"] = async (options) => {
     align-items: center;
     cursor: var(--cursor-pointer);
   }
+}
+
+.upload-dialog {
+  width: min(70vh, 70vw);
 }
 </style>
