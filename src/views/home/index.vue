@@ -22,7 +22,7 @@
     </template>
     <template #content-end>
       <div class="flex justify-center m-t-[var(--content-gap)]">
-        <el-pagination
+        <my-pagination
           v-if="pagination?.total"
           background
           layout="prev, pager, next, sizes"

@@ -11,7 +11,6 @@
     >
       <el-form-item label="账号" prop="account">
         <my-input
-          class="login-input"
           placeholder="Account"
           v-model.trim="regData.account"
           :prefix-icon="userIcon"
@@ -19,7 +18,6 @@
       </el-form-item>
       <el-form-item label="用户名" prop="nickName">
         <my-input
-          class="login-input"
           placeholder="NickName"
           v-model.trim="regData.nickName"
           :prefix-icon="userIcon"
@@ -27,7 +25,6 @@
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <my-input
-          class="login-input"
           placeholder="E-Mail"
           v-model.trim="regData.email"
           :prefix-icon="emailIcon"
@@ -38,13 +35,13 @@
           <my-input
             placeholder="Code"
             v-model="regData.code"
-            class="login-input flex-1"
+            class="flex-1"
             :prefix-icon="codeIcon"
           >
           </my-input>
           <my-button
             type="primary"
-            class="w-50px ml-10px login-button"
+            class="w-50px ml-10px"
             :disabled="!codeIsActive"
             v-debounce="{ fn: handlerCode }"
           >
@@ -54,7 +51,6 @@
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <my-input
-          class="login-input"
           placeholder="Password"
           show-password
           v-model="regData.password"
@@ -64,7 +60,6 @@
       </el-form-item>
       <el-form-item label="确认密码" prop="confirmPassword">
         <my-input
-          class="login-input"
           placeholder="Confirm Password"
           show-password
           v-model="regData.confirmPassword"
@@ -72,10 +67,7 @@
           :prefix-icon="confirmPassIcon"
         ></my-input>
       </el-form-item>
-      <my-button
-        type="primary"
-        class="w-100% mt-5px login-button"
-        native-type="submit"
+      <my-button type="primary" class="w-100% mt-5px" native-type="submit"
         >注册</my-button
       >
     </el-form>

@@ -18,7 +18,7 @@ defineExpose({
 })
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 // button样式
 .el-button--primary {
   transition: background var(--primary-during);
@@ -35,13 +35,10 @@ defineExpose({
 }
 // 按钮
 // button样式
-.login-button.el-button--primary {
-  // active
-  transition: background var(--primary-during);
+.login-container .el-button--primary {
   --el-button-bg-color: var(--login-btn-bg);
   --el-button-border-color: var(--login-btn-bg);
   --el-button-text-color: var(--login-btn-color);
-  outline: none;
   --el-button-hover-bg-color: var(--login-btn-hover-bg);
   --el-button-hover-border-color: var(--login-btn-hover-bg);
   --el-button-hover-text-color: var(--login-btn-hover-color);

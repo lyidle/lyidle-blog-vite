@@ -149,7 +149,7 @@
     </template>
     <template #content-end>
       <div class="flex justify-center">
-        <el-pagination
+        <my-pagination
           v-if="pagination?.total"
           background
           layout="prev, pager, next, sizes"

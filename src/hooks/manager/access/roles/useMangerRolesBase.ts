@@ -6,6 +6,10 @@ import { findAllRolesPagination } from "@/api/admin"
 import type { Pagination, Role } from "@/api/admin/types/findAllRolesPagination"
 import { paginationQuery } from "@/api/types/paginationQuery"
 export const useMangerRolesBase = (searchKey: Ref<string>) => {
+  // 当前页
+  const currentPage = ref(1)
+  // 分页器个数
+  const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -14,6 +18,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
       searchKey.value = key
       tableData.value = result.roles
       pagination.value = result.pagination
+      currentPage.value = 1
       ElMessage.success("搜索成功~")
     } catch (error) {}
   }
@@ -21,6 +26,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
+    currentPage.value = 1
     await reqAllRoles()
   }
 
@@ -88,6 +94,8 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
     pagination,
     reqAllRoles,
     handlerReset,
+    currentPage,
+    pageSize,
 
     headerBtnsSize,
     accountsWidth,

@@ -17,7 +17,7 @@ const asyncRoute = [
           {
             name: "BannerImg",
             roles: ["admin"],
-            to: "/admin/banner",
+            to: "/admin/other/banner",
           },
         ],
       },

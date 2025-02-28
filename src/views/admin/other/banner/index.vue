@@ -22,13 +22,12 @@
           fixed="left"
         />
         <el-table-column
-          :width="accountsWidth"
+          width="200"
           prop="name"
-          label="name"
+          label="路径名"
           align="center"
           fixed="left"
         />
-        <el-table-column prop="desc" label="desc" align="center" />
         <el-table-column
           min-width="100"
           prop="createdAt"
@@ -50,7 +49,7 @@
           </template>
         </el-table-column>
         <!-- 工具栏 -->
-        <el-table-column label="工具栏" align="center">
+        <el-table-column width="130" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button
@@ -81,7 +80,7 @@
           </div>
         </template>
       </el-table>
-      <el-pagination
+      <my-pagination
         v-if="pagination?.total"
         background
         layout="prev, pager, next, sizes, jumper"
@@ -90,8 +89,8 @@
         @change="reqAllGroups"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
-        :default-current-page="currentPage"
-        :default-page-size="pageSize"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
         size="small"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
@@ -121,13 +120,10 @@ const {
   pagination,
   reqAllGroups,
   handlerReset,
-
-  accountsWidth,
+  currentPage,
+  pageSize,
 } = useMangerBannerBase(searchKey)
-// 当前页
-const currentPage = ref(1)
-// 分页器个数
-const pageSize = ref(10)
+
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num

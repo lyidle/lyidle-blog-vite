@@ -66,7 +66,7 @@ const centerDialogVisible = ref(false)
 const createData = reactive<CreateMenuListBody>({
   name: "",
   roles: [],
-  parentId: -1,
+  parentId: null,
 })
 
 // 创建规则
@@ -85,10 +85,13 @@ const createRules = reactive({
 
 // 初始化
 const init = (row: Datum) => {
-  const _row = JSON.parse(JSON.stringify(row))
-  createData.parentId = _row.id
-  createData.roles = _row.roles
   centerDialogVisible.value = true
+  // 有 传递数据
+  if (row) {
+    const _row = JSON.parse(JSON.stringify(row))
+    createData.parentId = _row.id
+    createData.roles = _row.roles
+  }
 }
 
 // 表单组件实例

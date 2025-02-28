@@ -7,6 +7,10 @@ import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import type { paginationQuery } from "@/api/types/paginationQuery"
 import type { Banner } from "@/api/admin/types/getBannerImgPagination"
 export const useMangerBannerBase = (searchKey: Ref<string>) => {
+  // 当前页
+  const currentPage = ref(1)
+  // 分页器个数
+  const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -15,6 +19,7 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
       searchKey.value = key
       tableData.value = result.banners
       pagination.value = result.pagination
+      currentPage.value = 1
       ElMessage.success("搜索成功~")
     } catch (error) {}
   }
@@ -22,23 +27,18 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
+    currentPage.value = 1
     await reqAllGroups()
   }
 
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
-  // 账号和用户名的 宽度
-  const accountsWidth = ref<number>()
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      // 账号和用户名的 宽度
-      accountsWidth.value = 150
       headerBtnsSize.value = "default"
       return
     }
-    // 账号和用户名的 宽度
-    accountsWidth.value = 100
     headerBtnsSize.value = "small"
   }
 
@@ -82,8 +82,9 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
     pagination,
     reqAllGroups,
     handlerReset,
+    currentPage,
+    pageSize,
 
     headerBtnsSize,
-    accountsWidth,
   }
 }

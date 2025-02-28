@@ -195,11 +195,11 @@ export const asyncRoute: RouteRecordRaw[] = [
         name: "Other",
         path: "/admin/other",
         meta: { title: "其他", roles: ["admin"] },
-        redirect: "/admin/banner",
+        redirect: "/admin/other/banner",
         children: [
           {
             name: "BannerImg",
-            path: "/admin/banner",
+            path: "/admin/other/banner",
             meta: { title: "背景管理", roles: ["admin"] },
             component: () => import("@/views/admin/other/banner/index.vue"),
           },

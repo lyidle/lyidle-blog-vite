@@ -11,7 +11,6 @@
     >
       <el-form-item label="账号" prop="account">
         <el-input
-          class="login-input"
           placeholder="Account or Email"
           v-model.trim="loginData.account"
           :prefix-icon="userIcon"
@@ -19,7 +18,6 @@
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input
-          class="login-input"
           placeholder="Password"
           v-model="loginData.password"
           show-password
@@ -27,9 +25,7 @@
           :prefix-icon="passIcon"
         ></el-input>
       </el-form-item>
-      <my-button class="w-100% mt-5px login-button" native-type="submit">
-        登录
-      </my-button>
+      <my-button class="w-100% mt-5px" native-type="submit"> 登录 </my-button>
     </el-form>
     <div class="tip text-center">
       <span>没有账号？</span>

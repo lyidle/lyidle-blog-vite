@@ -4,7 +4,7 @@
 @use "sass:color";
 
 // 内容 区域 共同的 变量
-$pages-card-bg: #272b2e;
+$pages-card-bg: #0a2335;
 html[themes="#{$theme}"] {
   .manager-container {
     --primary-color: #{$primary-color};
@@ -23,7 +23,7 @@ html[themes="#{$theme}"] {
     --header-topnav-mask-color: #95adca;
     // 手风琴 菜单
     $accordion-bg-hover: #35516c;
-    $accordion-color: #9db5c4;
+    $accordion-color: #c0d4e1;
     $accordion-color-hover: #c3d9e7;
     --accordion-title-bg: transparent;
     --accordion-title-bg-hover: #{$accordion-bg-hover};

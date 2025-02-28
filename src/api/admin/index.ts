@@ -238,7 +238,8 @@ export const getBannerImgPagination = (data: GetBannerImgPaginationQuery) =>
       API.bannerImgPagination +
       `/?isBin=${JSON.stringify(true)}` +
       `&currentPage=${data.currentPage || 1}` +
-      `&pageSize=${data.pageSize || 10}`
+      `&pageSize=${data.pageSize || 10}` +
+      `${data.name ? `&name=${data.name}` : ""}`
   )
 // 更新背景 登录用户需要拥有权限
 export const managerUpdateBannerImg = (data: UpdateBannerImg) =>

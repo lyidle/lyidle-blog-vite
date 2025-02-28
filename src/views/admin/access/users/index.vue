@@ -177,7 +177,7 @@
           </div>
         </template>
       </el-table>
-      <el-pagination
+      <my-pagination
         v-if="pagination?.total"
         background
         layout="prev, pager, next, sizes, jumper"
@@ -186,9 +186,10 @@
         @change="reqUsers"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
-        :default-current-page="currentPage"
-        :default-page-size="pageSize"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
         size="small"
+        :dark="true"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
     </my-card>
@@ -226,6 +227,8 @@ const {
   userIds,
   handlerReset,
   headerBtnsSize,
+  currentPage,
+  pageSize,
 
   accountsWidth,
   handlerSearch,
@@ -239,10 +242,6 @@ const assignRole = ref()
 const editor = ref()
 // 创建用户
 const create = ref()
-// 当前是第几页
-const currentPage = ref(1)
-// 存储每页显示的个数
-const pageSize = ref(10)
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num

@@ -1,14 +1,19 @@
 <template>
   <div class="admin-container">
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
+      <div class="admin-header-btns">
+        <my-button @click="create.init()" :size="headerBtnsSize" class="!w-90px"
+          >添加菜单</my-button
+        >
+      </div>
       <el-table
         :data="tableData"
         style="width: 100%; margin-bottom: 20px"
         row-key="id"
         show-overflow-tooltip
-        height="70vh"
+        height="65vh"
       >
-        <el-table-column prop="name" label="名称" width="160" />
+        <el-table-column prop="name" label="菜单名" width="160" />
         <el-table-column prop="roles" label="权限值" align="center" />
         <el-table-column prop="updatedAt" label="修改时间" align="center">
           <template #="{ row }">
@@ -147,14 +152,18 @@ import { mitt } from "@/utils/emitter"
 import moment from "@/utils/moment"
 // 表格数据
 const tableData = ref<GetMenuList["data"]>([])
+// 大小
 const toolBtnsWidth = ref()
+const headerBtnsSize = ref()
 // 处理 窗口变化 的事件
 const handlerResize = () => {
   if (window.innerWidth > 870) {
     toolBtnsWidth.value = 340
+    headerBtnsSize.value = "default"
     return
   }
   toolBtnsWidth.value = 150
+  headerBtnsSize.value = "small"
 }
 
 // 监听窗口变化

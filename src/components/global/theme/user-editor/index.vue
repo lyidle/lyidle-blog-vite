@@ -12,7 +12,6 @@
         >
           <el-form-item label="账号" prop="account">
             <my-input
-              class="login-input"
               placeholder="Account or Email"
               v-model.trim="userEditorData.account"
               :prefix-icon="userIcon"
@@ -20,7 +19,6 @@
           </el-form-item>
           <el-form-item label="用户名" prop="nickName">
             <my-input
-              class="login-input"
               placeholder="Account or Email"
               v-model.trim="userEditorData.nickName"
               :prefix-icon="userIcon"
@@ -28,7 +26,6 @@
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <my-input
-              class="login-input"
               placeholder="Account or Email"
               v-model.trim="userEditorData.email"
               :prefix-icon="userIcon"
@@ -39,7 +36,7 @@
               <my-input
                 placeholder="Code"
                 v-model="userEditorData.code"
-                class="login-input flex-1"
+                class="flex-1"
                 :prefix-icon="codeIcon"
               >
               </my-input>
@@ -55,7 +52,6 @@
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <my-input
-              class="login-input"
               placeholder="Password"
               v-model="userEditorData.password"
               show-password
@@ -65,7 +61,6 @@
           </el-form-item>
           <el-form-item label="确认密码" prop="confirmPassword">
             <my-input
-              class="login-input"
               placeholder="Confirm Password"
               v-model="userEditorData.confirmPassword"
               show-password

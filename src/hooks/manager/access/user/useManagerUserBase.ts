@@ -10,6 +10,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 分页器
   const pagination = ref<searchData["pagination"]>()
 
+  // 当前是第几页
+  const currentPage = ref(1)
+  // 存储每页显示的个数
+  const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
     try {
@@ -18,12 +22,14 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       searchKey.value = key
       tableData.value = result?.users || []
       pagination.value = result?.pagination
+      currentPage.value = 1
       ElMessage.success("搜索成功~")
     } catch (error) {}
   }
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
+    currentPage.value = 1
     await reqUsers()
   }
 
@@ -97,6 +103,8 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     handleSelectionChange,
     reqUsers,
     handlerReset,
+    currentPage,
+    pageSize,
 
     headerBtnsSize,
     accountsWidth,

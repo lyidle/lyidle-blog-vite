@@ -1,5 +1,6 @@
 import { getKey, setKey } from "@/utils/redis"
 import express, { NextFunction, Request, Response } from "express"
+import { Op } from "sequelize"
 // 引入 模型
 const { BannerImg } = require("@/db/models")
 
@@ -39,7 +40,7 @@ router.get(
   "/manager",
   async (req: Request, res: Response, next: NextFunction) => {
     // 判断是否 读取 垃圾桶的 信息
-    const { isBin } = req.query
+    const { isBin, name } = req.query
     const { query } = req
     /**
      * @pagesize 每页显示条目个数
@@ -55,7 +56,11 @@ router.get(
         limit: pageSize,
         offset,
         paranoid: !_bool,
+        where: name && {
+          name: { [Op.like]: `%${name}%` },
+        },
       })
+      console.log(name)
 
       if (!count) {
         return res.result(void 0, "获取背景失败~", false)

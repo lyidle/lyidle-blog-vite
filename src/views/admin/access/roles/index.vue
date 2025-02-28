@@ -48,11 +48,11 @@
         <el-table-column
           :width="accountsWidth"
           prop="name"
-          label="name"
+          label="角色名"
           align="center"
           fixed="left"
         />
-        <el-table-column prop="desc" label="desc" align="center" />
+        <el-table-column prop="desc" label="描述" align="center" />
         <el-table-column
           min-width="100"
           prop="createdAt"
@@ -171,7 +171,7 @@
           </div>
         </template>
       </el-table>
-      <el-pagination
+      <my-pagination
         v-if="pagination?.total"
         background
         layout="prev, pager, next, sizes, jumper"
@@ -180,8 +180,8 @@
         @change="reqAllRoles"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
-        :default-current-page="currentPage"
-        :default-page-size="pageSize"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
         size="small"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
@@ -216,16 +216,14 @@ const {
   pagination,
   reqAllRoles,
   handlerReset,
+  currentPage,
+  pageSize,
 
   headerBtnsSize,
   accountsWidth,
   toolBtnsWidth,
   isSmall,
 } = useMangerRolesBase(searchKey)
-// 当前页
-const currentPage = ref(1)
-// 分页器个数
-const pageSize = ref(10)
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num
