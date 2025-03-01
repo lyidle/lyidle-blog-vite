@@ -42,7 +42,7 @@ export const useSettingStore = defineStore(
 
     // #region 移动特效设置
     // 是否开启 移动效果
-    const moveEffect = ref<boolean>(false)
+    const moveEffect = ref<boolean>(true)
     // 移动特效 的值
     const moves = ref("normal")
     // 移动特效 选择

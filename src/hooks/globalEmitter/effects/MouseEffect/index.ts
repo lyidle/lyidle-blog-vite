@@ -1,7 +1,5 @@
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 // 引入 类型
 import type { effectReturnType } from "@/utils/effect"
 // 引入 特效
@@ -12,42 +10,29 @@ import { useStarFragmentsMoveEffect } from "./move/Star Fragments"
 let clickEventStore: effectReturnType | null = null
 let moveEventStore: null | effectReturnType = null
 
-// 移动特效事件的回调 保存当前特效到 对应的 store变量中
-const moveCb = ($moveEventStore: effectReturnType) => {
-  moveEventStore = $moveEventStore
-}
-
-// 点击特效事件的回调 保存当前特效到 对应的 store变量中
-const clickCb = ($clickEventStore: effectReturnType) => {
-  clickEventStore = $clickEventStore
-}
-
 export const useMouseEffect = () => {
-  // 使用点击特效
-
-  // 绽放的点击特效
-  useUnfoldClickEffect()
-
-  // 使用 移动特效
-  useStarFragmentsMoveEffect()
-  // 碎星的移动特效
-
   // 提取数据
   const { clickEffect, moveEffect, clicks, moves } = storeToRefs(
     useSettingStore()
   )
 
+  let clickClose = () => {}
   // 监听 clickEffect
   watch(
     () => clickEffect.value,
     (newVal) => {
-      watch(
+      clickEventStore && clickEventStore.onUnMounted()
+      if (!newVal) return
+      // 清除上一次的
+      clickClose()
+      clickClose = watch(
         () => clicks.value,
         (newV) => {
           // 卸载其他 点击特效
           clickEventStore && clickEventStore.onUnMounted()
           if (newV === "normal") {
-            mitt.emit("clickEffect:normal", { newV: newVal, cb: clickCb })
+            // 绽放的点击特效
+            clickEventStore = useUnfoldClickEffect()
           }
         },
         {
@@ -60,17 +45,23 @@ export const useMouseEffect = () => {
     }
   )
 
+  let moveClose = () => {}
   // 监听 moveEffect
   watch(
     () => moveEffect.value,
     (newVal) => {
-      watch(
+      moveEventStore && moveEventStore.onUnMounted()
+      if (!newVal) return
+      // 清除上一次的
+      moveClose()
+      moveClose = watch(
         () => moves.value,
         (newV) => {
           // 卸载其他 点击特效
           moveEventStore && moveEventStore.onUnMounted()
           if (newV === "normal") {
-            mitt.emit("moveEffect:normal", { newV: newVal, cb: moveCb })
+            // 碎星的移动特效
+            moveEventStore = useStarFragmentsMoveEffect()
           }
         },
         {
