@@ -103,7 +103,6 @@ const open = () => {
   // 判断 是否超出
   if (+left + rect.width > innerWidth) left = "0"
   if (+top + rect.height > innerHeight) top = "0"
-  console.log(left)
 
   // 初始化位置
   wrap.style.left = left + "px"

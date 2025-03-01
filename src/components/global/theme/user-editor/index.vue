@@ -68,6 +68,7 @@
               :prefix-icon="passIcon"
             ></my-input>
           </el-form-item>
+          <my-button @click="handlerUpdate"> 更新用户 </my-button>
         </el-form>
       </div>
       <!-- 头像 -->
@@ -75,9 +76,9 @@
         <div class="text-20px">头像</div>
         <!-- 头像 -->
         <my-upload v-model="avatar" :auto-remove="false"></my-upload>
+        <my-button @click="updateAvatar"> 更新头像 </my-button>
       </div>
     </div>
-    <my-button @click="handlerUpdate"> 更新用户 </my-button>
   </div>
 </template>
 
@@ -88,6 +89,7 @@ import { useUserStore } from "@/store/user"
 import userIcon from "@/components/icon/login/user.vue"
 import passIcon from "@/components/icon/login/pass.vue"
 import codeIcon from "@/components/icon/login/code.vue"
+// 引入 正则
 import {
   accountReg,
   codeReg,
@@ -95,10 +97,19 @@ import {
   nickNameReg,
   pwdReg,
 } from "@/RegExp/loginOrReg"
-import { updateUser, updateUserEmail } from "@/api/user"
-import { formatMilliseconds } from "@/utils/times/timeFormatter"
-import { UpdateUserBody } from "@/api/user/types/updateUserBody"
+// 引入 api 更新用户
+import { updateUser, updateUserAvatar, updateUserEmail } from "@/api/user"
+// 引入 api 处理头像
 import { postImgPermanent, removeFileStatic } from "@/api/img"
+// 引入 类型
+import type { UpdateUserBody } from "@/api/user/types/updateUserBody"
+// 处理时间
+import { formatMilliseconds } from "@/utils/times/timeFormatter"
+// 引入仓库
+import { useSettingStore } from "@/store/setting"
+
+// 初始化仓库中用到的值
+const { isShowPanel } = storeToRefs(useSettingStore())
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 
@@ -108,14 +119,19 @@ const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
 
 // 提取需要的数据 和 方法
 const { userInfoByToken } = useUserStore()
-const { userAvatar, userAccount, userNickName, userEmail, userSigner } =
-  storeToRefs(useUserStore())
+const {
+  userAvatar,
+  userAccount,
+  userNickName,
+  userEmail,
+  userSigner,
+  userToken,
+} = storeToRefs(useUserStore())
 // 表单 数据
 // @ts-ignore
 const userEditorData = reactive<UpdateUserBody>({})
 
 const initData = () => {
-  userEditorData.avatar = userAvatar.value || default_avatar
   userEditorData.account = userAccount.value
   userEditorData.nickName = userNickName.value
   userEditorData.email = userEmail.value
@@ -127,8 +143,12 @@ const initData = () => {
 // 初始化 数据
 initData()
 
+// 初始化头像的 函数
+const avatarInit = () => userAvatar.value || default_avatar
+
 // 展示 的 头像
-const avatar = ref([{ name: "default", url: userEditorData.avatar }])
+const avatar = ref([{ name: "default", url: avatarInit() }])
+
 // 确认密码验证回调
 const validatorConfirm = (_: any, value: any, next: any) => {
   if (value !== userEditorData.password)
@@ -233,56 +253,15 @@ const handlerCode = async () => {
 const handlerUpdate = async () => {
   try {
     await formInstance.value.validate()
-    const uploadAvatar = avatar.value?.[0]?.url
-    // 处理 avatar 字段 存在 且不是默认的图片 且 不是原图
-    const _avatar =
-      (uploadAvatar !== default_avatar &&
-        uploadAvatar !== userAvatar.value &&
-        uploadAvatar) ||
-      null
-
-    let isUpdateAvatar = false
-    // 存在 更新的图片 则转为永久 链接
-    if (_avatar) {
-      const tempImg = [_avatar]
-      const result = await postImgPermanent({
-        tempImg,
-        account: userAccount.value,
-        path: "/avatar",
-      })
-      if (result) {
-        const { successImg, tempImgNull } = result
-        // 临时图片失效的
-        if (tempImgNull.length) {
-          ElMessage.error("修改用户头像失败")
-        }
-        // 得到 成功的poster
-        const _poster = successImg?.[0]?.url
-        // 修改 poster
-        if (_poster) {
-          userEditorData.avatar = _poster
-          isUpdateAvatar = true
-        }
-      }
-    }
-
-    // 判断 是否需要删除 原来的图片
-    const originAvatar = userAvatar.value
 
     // 更新 数据
     const result = await updateUser(userEditorData)
 
-    // 判断 是否需要删除
-    const isRemove = originAvatar && isUpdateAvatar
-
     // 重新获取信息 在 路由重载后 加载数据
     userInfoByToken(result?.token || "", async () => {
-      // 需要 更新了 token 后删除 因为 需要 验证
-      // 判断 是否需要删除 原来的图片
-      if (isRemove) {
-        try {
-          await removeFileStatic([originAvatar])
-        } catch (error) {}
+      // 没有 token了 关闭 面板
+      if (!result?.token) {
+        isShowPanel.value = false
       }
       // 初始化 数据
       initData()
@@ -297,6 +276,83 @@ const handlerUpdate = async () => {
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("更新用户信息失败~")
+  }
+}
+
+// 更新头像的回调
+const updateAvatar = async () => {
+  try {
+    const uploadAvatar = avatar.value?.[0]?.url
+    // 处理 avatar 字段 存在 且不是默认的图片 且 不是原图
+    const _avatar =
+      (uploadAvatar !== default_avatar &&
+        uploadAvatar !== userAvatar.value &&
+        uploadAvatar) ||
+      null
+    if (!_avatar) return ElMessage.warning("没有更新头像~")
+    // 是否 更新
+    let isUpdateAvatar = false
+
+    // 判断 是否需要删除 原来的图片
+    const originAvatar = userAvatar.value
+
+    // 存储新的头像地址
+    let newAvatar = ""
+
+    // 存在 更新的图片 则转为永久 链接
+    if (_avatar) {
+      const tempImg = [_avatar]
+      const result = await postImgPermanent({
+        tempImg,
+        account: userAccount.value,
+        path: "/avatar",
+      })
+      if (result) {
+        const { successImg, tempImgNull } = result
+        // 临时图片失效的
+        if (tempImgNull.length) {
+          ElMessage.error("更新用户头像失败")
+          return
+        }
+        // 得到 成功的poster
+        const _img = successImg?.[0]?.url
+        // 修改 poster
+        if (_img) {
+          newAvatar = _img
+          isUpdateAvatar = true
+        }
+      }
+    }
+
+    // 存储token
+    let token = userToken.value
+    // 更新 头像
+    if (newAvatar) {
+      const result = await updateUserAvatar(newAvatar)
+      console.log(result)
+      if (result?.token) token = result.token
+    }
+
+    // 判断 是否需要删除
+    const isRemove = originAvatar && isUpdateAvatar
+
+    // 重新获取信息 在 路由重载后 加载数据
+    userInfoByToken(token || "", async () => {
+      // 需要 更新了 token 后删除 因为 需要 验证
+      // 判断 是否需要删除 原来的图片
+      if (isRemove) {
+        try {
+          await removeFileStatic([originAvatar])
+        } catch (error) {}
+      }
+      avatar.value = [{ name: "default", url: avatarInit() }]
+    })
+
+    ElMessage.success("更新用户头像成功~")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("更新用户头像失败~")
+    avatar.value = [{ name: "default", url: avatarInit() }]
   }
 }
 </script>

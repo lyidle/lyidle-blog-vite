@@ -66,6 +66,7 @@ declare module 'vue' {
     IconSwitchUnfixed: typeof import('./src/components/icon/switch/unfixed.vue')['default']
     IconSwitchUnmove: typeof import('./src/components/icon/switch/unmove.vue')['default']
     Layout: typeof import('./src/components/layout/index.vue')['default']
+    LayoutArticleTree: typeof import('./src/components/layout/article/tree/index.vue')['default']
     LayoutBanner: typeof import('./src/components/layout/banner/index.vue')['default']
     LayoutContent: typeof import('./src/components/layout/content/index.vue')['default']
     LayoutContentAnnounce: typeof import('./src/components/layout/content/announce/index.vue')['default']

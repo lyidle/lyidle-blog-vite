@@ -44,7 +44,9 @@ export const jwtMiddleware = async (
     if (error instanceof jwt.JsonWebTokenError) {
       return next(new myError("UnauthorizedError"))
     }
-    next(error) // 捕获其他可能的错误
+    // 打印其他可能的错误
+    console.error("jwt出错", error)
+    return next(new myError("UnauthorizedError"))
   }
 }
 

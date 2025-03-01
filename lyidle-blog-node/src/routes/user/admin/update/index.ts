@@ -15,7 +15,8 @@ import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
 import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 发送 邮箱 的 api
 import update from "@/routes/email/update"
-
+// 引入 修改头像的 api
+import avatar from "./avatar"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
@@ -51,7 +52,6 @@ router.put(
       code,
       password,
       confirmPassword,
-      avatar,
       signer,
     } = req.body
     // 去除左右空格
@@ -101,8 +101,6 @@ router.put(
       // 都通过加入更新
       nickName && findUser.set("nickName", nickName)
       password && findUser.set("pwd", password)
-      // 可能为 null 的字段
-      findUser.set("avatar", avatar || null)
       findUser.set("signer", signer || null)
 
       // 验证 修改了的 属性字段
@@ -206,6 +204,7 @@ router.put(
   }
 )
 
+router.use("/avatar", avatar)
 // 邮箱发送接口
 router.use(update)
 export default router

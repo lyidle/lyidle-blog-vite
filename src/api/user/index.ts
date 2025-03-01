@@ -34,6 +34,7 @@ enum API {
   removeUser = "/user/admin/bin",
   deleteUser = "/user/admin/clear",
   updateUser = "/user/admin/update",
+  updateAvatar = "/user/admin/update/avatar",
   // 邮箱 发送
   updateUserEmail = "/user/admin/update/email",
   // 管理 面板api
@@ -125,6 +126,11 @@ export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
 // 修改用户 需要 是本用户的id
 export const updateUser = (data: UpdateUserBody) =>
   request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, data)
+// 修改用户头像 需要 是本用户的id
+export const updateUserAvatar = (avatar: string) =>
+  request.put<any, UpdateUser["data"]>(server + prefix + API.updateAvatar, {
+    avatar,
+  })
 
 // 不需要验证是本用户的id 需要传入 id
 // 登录用户需要拥有权限

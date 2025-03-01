@@ -18,7 +18,7 @@ router.get(
     try {
       // 得到id
       const id = req.auth.id
-      if (!id) throw new myError("otherError", "获取用户信息时 jwt 出错没有id")
+      if (!id) return next(new myError("UnauthorizedError"))
 
       // 缓存用户信息
       const cacheValue = await getKey(`userInfo:bin:${id}`)
@@ -26,14 +26,12 @@ router.get(
       // 查询对应id的信息
       const findUser = await search({ id }, res, true, true, false, true)
       // 不存在
-      if (!findUser) return
+      if (!findUser) return next(new myError("UnauthorizedError"))
       // 存储用户信息 到 redis
       await setKey(`userInfo:bin:${id}`, findUser)
       return res.result(findUser, "获取用户信息成功~")
     } catch (error) {
-      res.validateAuth(error, next, () =>
-        res.result(void 0, "获取用户信息失败~", false)
-      )
+      next(new myError("UnauthorizedError"))
     }
   }
 )
