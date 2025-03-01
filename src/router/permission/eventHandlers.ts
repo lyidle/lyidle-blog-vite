@@ -2,7 +2,7 @@ import { mitt } from "@/utils/emitter"
 import { useUserStore } from "@/store/user"
 
 // 错误信息去重处理
-let onlyOne = ""
+// let onlyOne = ""
 
 /**
  * 配置全局事件处理
@@ -24,15 +24,15 @@ export const routerEventHandlered = (router: any) => {
   })
 
   mitt.on("handler request error", ({ msg, type }) => {
-    if (onlyOne === msg) return
-    onlyOne = msg
+    // if (onlyOne === msg) return
+    // onlyOne = msg
     ElMessage({ message: msg, type: type || "error" })
   })
 
   // 订阅路由变化
   mitt.on("router changed", () => {
     // 重置 错误信息
-    onlyOne = ""
+    // onlyOne = ""
   })
 
   // 重新 判断权限是否通过 需要 在 route:reload 后执行

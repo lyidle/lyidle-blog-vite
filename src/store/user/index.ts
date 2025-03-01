@@ -198,10 +198,7 @@ export const useUserStore = defineStore(
         // 重新加载路由
         mitt.emit("route:reload")
       } catch (error) {
-        ElMessage.error({
-          dangerouslyUseHTMLString: true,
-          message: "退出登录失败~",
-        })
+        ElMessage.error("退出登录失败~")
       }
     }
 
