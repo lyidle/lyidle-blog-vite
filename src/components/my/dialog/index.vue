@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShowPanel" class="dialog-wrapper">
+  <div v-if="isShowPanel" class="dialog-wrapper" ref="wrapper">
     <div class="dialog-container" ref="containter">
       <div
         class="title cur-move"
@@ -27,6 +27,8 @@
 
 <script setup lang="ts" name="MyDialog">
 import { mitt } from "@/utils/emitter"
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
 
 const isShowPanel = defineModel()
 // 初始化 props
@@ -68,52 +70,63 @@ let savedPanelLeft = defineModel("left")
 let savedPanelTop = defineModel("top")
 let isPanelPositionSaved = defineModel("isSave")
 
+// 存储 事件
+let eventMousedown: null | (() => void) = null
+let eventMousemove: null | (() => void) = null
+let eventMouseup: null | (() => void) = null
 // 监听 是否隐藏 面板
 //  面板显示
 const open = () => {
+  if (!isShowPanel.value) return
   document.documentElement.style.overflow = "hidden"
-  // 需要页面渲染后 才能获取到元素 绑定移动事件
-  nextTick(() => {
-    const tar = title.value as HTMLDivElement
-    const wrap = containter.value as HTMLDivElement
-    // 绑定 鼠标 按下事件
-    tar.addEventListener("mousedown", handlerMousedown)
-    // 得到几何信息
-    const rect = wrap.getBoundingClientRect()
-    // 得到 宽高的 一半
-    const width = rect.width / 2
-    const height = rect.height / 2
-    // 得到 窗口的 width 和 height
-    const innerWidth = window.innerWidth
-    const innerHeight = window.innerHeight
-    // 初始 left 和 top
-    let left = `${
-      (isPanelPositionSaved.value && savedPanelLeft.value) ||
-      innerWidth / 2 - width
-    }`
-    let top = `${
-      (isPanelPositionSaved.value && savedPanelTop.value) ||
-      innerHeight / 2 - height
-    }`
+  const wrap = containter.value as HTMLDivElement
+  // 绑定 鼠标 按下事件
+  eventMousedown = useEventListener(title, "mousedown", handlerMousedown)
+  // 得到几何信息
+  const rect = wrap.getBoundingClientRect()
+  // 得到 宽高的 一半
+  const width = rect.width / 2
+  const height = rect.height / 2
+  // 得到 窗口的 width 和 height
+  const innerWidth = window.innerWidth
+  const innerHeight = window.innerHeight
+  // 初始 left 和 top
+  let left = `${
+    (isPanelPositionSaved.value && savedPanelLeft.value) ||
+    innerWidth / 2 - width
+  }`
+  let top = `${
+    (isPanelPositionSaved.value && savedPanelTop.value) ||
+    innerHeight / 2 - height
+  }`
 
-    // 判断 是否超出
-    if (+left + rect.width > innerWidth) left = "0"
-    if (+top + rect.height > innerHeight) top = "0"
-    // 初始化位置
-    wrap.style.left = left + "px"
-    wrap.style.top = top + "px"
-  })
+  // 判断 是否超出
+  if (+left + rect.width > innerWidth) left = "0"
+  if (+top + rect.height > innerHeight) top = "0"
+  console.log(left)
+
+  // 初始化位置
+  wrap.style.left = left + "px"
+  wrap.style.top = top + "px"
 }
 
 //  面板隐藏
 const close = () => {
   document.documentElement.style.overflow = "unset"
   // 解绑事件
-  const tar = title.value as HTMLDivElement
-  tar?.removeEventListener("mousedown", handlerMousedown)
+  eventMousedown?.()
 }
+
+// 重载
+const reload = () => {
+  close()
+  open()
+}
+
+const wrapper = ref()
+// 监听 容器 来判断是否加载 对话框
 watch(
-  () => isShowPanel.value,
+  () => wrapper.value,
   (newV) => {
     if (newV) {
       open()
@@ -160,9 +173,9 @@ const handlerMousedown = ($e: Event) => {
   wrapTop = wrap.offsetTop
   wrapLeft = wrap.offsetLeft
   // 添加移动的事件监听
-  window.addEventListener("mousemove", move)
+  eventMousemove = useEventListener("mousemove", move)
   // 监听 window 的鼠标抬起事件
-  window.addEventListener("mouseup", handlerMouseup)
+  eventMouseup = useEventListener("mouseup", handlerMouseup)
 }
 
 // 鼠标 抬起
@@ -171,8 +184,8 @@ const handlerMouseup = ($e: Event) => {
   // 判断是否是鼠标左键
   if (e.button !== 0) return
   // 移除移动的事件监听
-  window.removeEventListener("mousemove", move)
-  window.removeEventListener("mouseup", handlerMouseup)
+  eventMousemove?.()
+  eventMouseup?.()
 }
 // 移动的回调
 const move = ($e: Event) => {
@@ -200,14 +213,14 @@ const move = ($e: Event) => {
 
 // 监听 窗口变化事件
 // 处理 窗口变化时的 边界超出问题
-mitt.on("window:resize", open)
+mitt.on("window:resize", reload)
 
 onBeforeUnmount(() => {
   // 移除移动的事件监听
-  window.removeEventListener("mousemove", move)
-  window.removeEventListener("mouseup", handlerMouseup)
+  eventMousemove?.()
+  eventMouseup?.()
   // 解除监控
-  mitt.off("window:resize", open)
+  mitt.off("window:resize", reload)
 })
 </script>
 

@@ -67,7 +67,11 @@
 </template>
 
 <script setup lang="ts" name="MyCarousel">
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
+// 引入 自制 setInterval
 import reqSetInterval from "@/utils/reqSetInterval"
+// 引入 节流
 import throttle from "@/utils/throttle"
 const props = withDefaults(
   defineProps<{
@@ -155,6 +159,11 @@ const btnMove = (num: number) => {
 // 切换按钮的组件实例
 const arrow = ref()
 
+// 存储 事件
+let eventWindowBlur: null | (() => void) = null
+let eventWindowFocus: null | (() => void) = null
+let eventWindWheel: null | (() => void) = null
+
 // 自动轮播的回调
 const initAutoPlay = () => {
   // 判断是否自动轮播
@@ -164,9 +173,9 @@ const initAutoPlay = () => {
     rollPlay(1)
   }, gap)
   // 失焦 取消轮播
-  window.addEventListener("blur", windowBlur)
+  eventWindowBlur = useEventListener("blur", windowBlur)
   // 聚焦 轮播
-  window.addEventListener("focus", windowFocus)
+  eventWindowFocus = useEventListener("focus", windowFocus)
 }
 
 // 浏览器 聚焦的回调
@@ -187,8 +196,8 @@ const unAutoPlay = () => {
   // 调用浏览器失去焦点的函数
   windowBlur()
   // 清除事件
-  window.removeEventListener("blur", windowBlur)
-  window.removeEventListener("focus", windowFocus)
+  eventWindowBlur?.()
+  eventWindowFocus?.()
 }
 
 // 鼠标移入 函数
@@ -214,16 +223,17 @@ const leaveCb = () => {
 
 // 鼠标滚轮事件函数
 const initScroll = () => {
-  window.addEventListener("wheel", scrollCb, { passive: false })
+  eventWindWheel = useEventListener("wheel", scrollCb, { passive: false })
 }
 
 // 取消鼠标滚轮事件函数
 const unScroll = () => {
-  window.removeEventListener("wheel", scrollCb)
+  eventWindWheel?.()
 }
 
 // 鼠标滚轮事件的回调函数
-const scrollCb = (e: WheelEvent) => {
+const scrollCb = ($e: Event) => {
+  const e = $e as WheelEvent
   e.preventDefault()
   if (!e.deltaY) return
   // 往下滚动

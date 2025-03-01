@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts" name="GenerateMenuTree">
-// 引入 类型
 import { mitt } from "@/utils/emitter"
 import { TocNode } from "@/views/doc/review/types"
 defineProps<{ menuData?: TocNode[] }>()
@@ -76,25 +75,10 @@ const scrollTo = (e: MouseEvent, id: string) => {
 
   // 无缓存则保存后滚动
   scrollToHeight.set(id, toScroll)
-  window.addEventListener("animationend", () => {})
   window.scrollTo({
     top: toScroll,
     behavior: "smooth",
   })
-
-  // 用于 监听 滚动是否完成
-  let timeoutId: setTimout | null = null
-  const onScroll = () => {
-    if (timeoutId) clearTimeout(timeoutId)
-    // 设置一个延迟，当滚动停止后触发回调
-    timeoutId = setTimeout(() => {
-      window.removeEventListener("scroll", onScroll) // 移除监听
-      // 高亮完毕 继续监听
-      mitt.emit("headinsObserver", true)
-    }, 100) // 等待 100ms 后确认滚动完成
-  }
-
-  window.addEventListener("scroll", onScroll)
 }
 
 onBeforeUnmount(() => {

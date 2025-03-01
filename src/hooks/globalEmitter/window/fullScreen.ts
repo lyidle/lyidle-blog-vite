@@ -1,5 +1,7 @@
 import { useSettingStore } from "@/store/setting"
 import { mitt } from "@/utils/emitter"
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
 
 export const useFullScreen = () => {
   const { isFullscreen } = storeToRefs(useSettingStore())
@@ -30,7 +32,8 @@ export const useFullScreen = () => {
   }
 
   // 劫持 F10 实现 元素的全屏
-  const proxyF10Down = (e: KeyboardEvent) => {
+  const proxyF10Down = ($e: Event) => {
+    const e = $e as KeyboardEvent
     if (e.key === "F11") e.preventDefault()
     if (e.key === "F10") {
       e.preventDefault() // 禁用默认的 F10 行为
@@ -38,13 +41,15 @@ export const useFullScreen = () => {
     }
   }
 
+  // 存储 事件
+  let eventWindowKeydown: null | (() => void) = null
   onMounted(() => {
-    window.addEventListener("keydown", proxyF10Down)
+    eventWindowKeydown = useEventListener("keydown", proxyF10Down)
     mitt.on("fullScreenChange", toggle)
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener("keydown", proxyF10Down)
+    eventWindowKeydown?.()
     mitt.off("fullScreenChange", toggle)
   })
 }

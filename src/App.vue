@@ -10,18 +10,11 @@
 </template>
 
 <script setup lang="ts" name="App">
-// 引入utils 设置网页标签信息 离开和回来
-import { setTitleTip } from "@/utils/effect"
 // 引入 全局的事件 变更
 import { useGlobalEmitter } from "@/hooks/globalEmitter"
 // 中文化
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 
-// 全局的 监听事件 使用 mitt 管理
+// 全局的 监听事件 使用 mitt 管理 和 效果等
 useGlobalEmitter()
-
-onMounted(async () => {
-  // 初始化标题
-  setTitleTip()
-})
 </script>

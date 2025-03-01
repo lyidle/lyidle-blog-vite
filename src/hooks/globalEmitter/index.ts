@@ -1,3 +1,5 @@
+// 引入 设置网页标签信息 离开和回来
+import { useSetTitleTip } from "../useSetTitleTip"
 // 引入 鼠标 特效相关 事件
 import { useMouseEffect } from "./effects/MouseEffect"
 // 引入 主题切换相关 事件
@@ -10,6 +12,8 @@ import { useFullScreen } from "./window/fullScreen"
 import { useResize } from "./window/resize"
 // 暴露 全局的 emitter
 export const useGlobalEmitter = () => {
+  // 初始化标题
+  useSetTitleTip()
   // 挂载鼠标特效
   useMouseEffect()
   // 挂载主题切换相关事件

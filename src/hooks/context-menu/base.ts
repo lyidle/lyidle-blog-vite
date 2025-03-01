@@ -4,6 +4,8 @@ import { useSettingStore } from "@/store/setting"
 import { useIsContextMenu } from "./isContextMenu"
 // 引入 复制到剪贴板的方法
 import { getSelectedText } from "@/hooks/context-menu/copyToClipboard"
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
 export const useContextMenu = (
   menu: Ref<HTMLDivElement>,
   container: Ref<HTMLDivElement>
@@ -14,7 +16,8 @@ export const useContextMenu = (
   const menuHeigh = ref()
   const menuWidth = ref()
   // 打开菜单
-  const open = async (e: MouseEvent) => {
+  const open = async ($e: Event) => {
+    const e = $e as MouseEvent
     // 阻止默认事件 和  冒泡
     e.preventDefault()
     e.stopPropagation()
@@ -44,7 +47,7 @@ export const useContextMenu = (
     menu.value.style.left = `${x}px`
   }
   // 关闭菜单
-  const close = (e: MouseEvent) => {
+  const close = () => {
     // 高度重置
     if (menu.value) menu.value.style.height = "0"
   }
@@ -66,22 +69,26 @@ export const useContextMenu = (
     onMount()
   }
 
+  // 存储 事件
+  let eventContextmenu: null | (() => void) = null
+  let eventClick: null | (() => void) = null
+  let eventWindowContextmenu: null | (() => void) = null
   // 加载
   const onMount = () => {
     nextTick(() => {
       geometricinfo()
-      container?.value?.addEventListener("contextmenu", open)
+      eventContextmenu = useEventListener(container, "contextmenu", open)
       //使用捕获 先关闭 再打开菜单 防止多个菜单出现
-      window.addEventListener("click", close, true)
-      window.addEventListener("contextmenu", close, true)
+      eventClick = useEventListener("click", close, true)
+      eventWindowContextmenu = useEventListener("contextmenu", close, true)
     })
   }
 
   // 卸载
   const onUnMount = () => {
-    container?.value?.removeEventListener("contextmenu", open)
-    window.removeEventListener("click", close, true)
-    window.removeEventListener("contextmenu", close, true)
+    eventContextmenu?.()
+    eventClick?.()
+    eventWindowContextmenu?.()
   }
 
   // 监听 鼠标是否开启

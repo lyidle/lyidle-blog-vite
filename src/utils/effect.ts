@@ -1,3 +1,5 @@
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
 export type effectReturnType = {
   onUnMounted: () => void
   onMounted: () => void
@@ -6,6 +8,10 @@ export type effectReturnType = {
 export class clickEffectFn {
   onUnMounted: () => void
   onMounted: () => void
+  eventWindowResize: null | (() => void) = null
+  eventWindowMousedown: null | (() => void) = null
+  eventWindowMouseup: null | (() => void) = null
+  eventWindowMousemove: null | (() => void) = null
   constructor() {
     interface BallType {
       x: number
@@ -102,15 +108,22 @@ export class clickEffectFn {
       )
       pointer.classList.add("pointer")
       document.body.appendChild(pointer)
-
-      if (canvas.getContext && window.addEventListener) {
+      if (canvas.getContext) {
         ctx = canvas.getContext("2d")
         updateSize()
-        window.addEventListener("resize", updateSize, false)
+        this.eventWindowResize = useEventListener("resize", updateSize, false)
         loop()
-        window.addEventListener("mousedown", onMousedown, false)
-        window.addEventListener("mouseup", onMouseup, false)
-        window.addEventListener("mousemove", onMousemove, false)
+        this.eventWindowMousedown = useEventListener(
+          "mousedown",
+          onMousedown,
+          false
+        )
+        this.eventWindowMouseup = useEventListener("mouseup", onMouseup, false)
+        this.eventWindowMousemove = useEventListener(
+          "mousemove",
+          onMousemove,
+          false
+        )
       } else {
         console.log("canvas or addEventListener is unsupported!")
       }
@@ -157,7 +170,8 @@ export class clickEffectFn {
       }
     }
     // 鼠标事件
-    const onMousedown = (e: MouseEvent) => {
+    const onMousedown = ($e: Event) => {
+      const e = $e as MouseEvent
       pushBalls(clickEffectFn.randBetween(10, 20), e.clientX, e.clientY)
       document.body.classList.add("is-pressed")
       longPress = setTimeout(function () {
@@ -165,7 +179,8 @@ export class clickEffectFn {
         longPressed = true
       }, 500)
     }
-    const onMouseup = (e: MouseEvent) => {
+    const onMouseup = ($e: Event) => {
+      const e = $e as MouseEvent
       clearTimeout(longPress)
       if (longPressed == true) {
         document.body.classList.remove("is-longpress")
@@ -181,7 +196,8 @@ export class clickEffectFn {
       }
       document.body.classList.remove("is-pressed")
     }
-    const onMousemove = (e: MouseEvent) => {
+    const onMousemove = ($e: Event) => {
+      const e = $e as MouseEvent
       let x = e.clientX
       let y = e.clientY
       pointer.style.top = y + "px"
@@ -196,13 +212,15 @@ export class clickEffectFn {
 export class moveEffectFn {
   onMounted: () => void
   onUnMounted: () => void
+  eventWindowResize: null | (() => void) = null
+  eventWindowMousemove: null | (() => void) = null
   constructor() {
     // 挂载特效
     this.onMounted = () => {
       // 监听屏幕变化事件
-      window.addEventListener("resize", resizeCanvas)
+      this.eventWindowResize = useEventListener("resize", resizeCanvas)
       // 监听鼠标移动事件
-      window.addEventListener("mousemove", onMousemove)
+      this.eventWindowMousemove = useEventListener("mousemove", onMousemove)
     }
     // 卸载特效
     this.onUnMounted = () => {
@@ -332,7 +350,8 @@ export class moveEffectFn {
         color: colours[Math.floor(Math.random() * colours.length)],
       })
     }
-    function onMousemove(e: MouseEvent) {
+    function onMousemove($e: Event) {
+      const e = $e as MouseEvent
       // 添加星星数据
       addStarts(e)
       //设置100毫秒内效果
@@ -353,53 +372,4 @@ export class moveEffectFn {
       }
     }
   }
-}
-// 离开窗口和回来的提示标题
-export const setTitleTip = () => {
-  // 设置标题离开和回来的提示语
-  let temp: string
-  let tipFlag = JSON.parse(import.meta.env.VITE_TITLE_TIP_SHOW) ?? true
-  const leaveTip = import.meta.env.VITE_LEAVE_TITLE_TIP || "不要离开~"
-  const enterTip = import.meta.env.VITE_ENTER_TITLE_TIP || "欢迎回来~"
-  const envDur = parseFloat(import.meta.env.VITE_TITLE_TIP_DURING)
-  const tipDuring = isNaN(envDur) ? 1 : envDur
-  let enterTimer: any
-  let leaveTimer: any
-  // 窗口获取焦点的回调
-  const enterCallback = () => {
-    // 非空判断
-    if (!temp) return
-    // 回来时都要清除离开的定时器避免错乱
-    clearTimeout(leaveTimer)
-    // 提示
-    document.title = enterTip
-    enterTimer = setTimeout(() => {
-      // 恢复
-      document.title = temp
-      // 清除定时器
-      clearTimeout(enterTimer)
-    }, tipDuring * 1000)
-  }
-  // 窗口失去焦点的回调
-  const leaveCallback = () => {
-    // 非空判断
-    if (!document.title) return
-    // 离开时记录
-    if (document.title !== leaveTip && document.title !== enterTip)
-      temp = document.title
-    // 提示
-    document.title = leaveTip
-    leaveTimer = setTimeout(() => {
-      // 恢复
-      document.title = temp
-      // 清除定时器
-      clearTimeout(leaveTimer)
-    }, tipDuring * 1000)
-  }
-  nextTick(() => {
-    if (tipFlag) {
-      window.addEventListener("focus", enterCallback)
-      window.addEventListener("blur", leaveCallback)
-    }
-  })
 }

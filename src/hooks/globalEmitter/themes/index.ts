@@ -2,6 +2,8 @@
 import { useSettingStore } from "@/store/setting"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
+// 引入 hooks
+import { useEventListener } from "@/hooks/useEventListener"
 export const useSwitchThemes = () => {
   // 提取数据
   const { isDark, themes, lights, darks } = storeToRefs(useSettingStore())
@@ -13,6 +15,9 @@ export const useSwitchThemes = () => {
       isDark.value ? darks.value + "-dark" : lights.value + "-light"
     )
   }
+  // 存储 事件
+  let eventWindowPrefers: null | (() => void) = null
+
   // 跟随系统 切换主题
   const prefers = matchMedia("(prefers-color-scheme: dark)")
   const follow = () => {
@@ -25,11 +30,12 @@ export const useSwitchThemes = () => {
     // 跟随系统切换
     if (themes.value === "auto") {
       follow()
-      prefers.addEventListener("change", follow)
+      eventWindowPrefers = useEventListener(prefers, "change", follow)
       return
     }
+    // 移除 跟随系统切换 的监听事件
+    eventWindowPrefers?.()
     // 判断是暗夜与否
-    prefers.removeEventListener("change", follow)
     themes.value === "light" ? (isDark.value = false) : (isDark.value = true)
   }
 

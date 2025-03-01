@@ -6,6 +6,18 @@ const { clear } = require("../../utils/redis/js")
 // 引入 处理好的信息
 const { users } = require("../mock/handlerUsers")
 
+const fs = require("fs")
+const path = require("path")
+
+const content1 = fs.readFileSync(
+  path.join(__dirname, "../mock/article.md"),
+  "utf8"
+)
+const content2 = fs.readFileSync(
+  path.join(__dirname, "../mock/article2.md"),
+  "utf8"
+)
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     if (!users.length) {
@@ -25,23 +37,41 @@ module.exports = {
       ["学习", "考试"],
     ]
 
-    for (let i = 1; i <= articleCounts; i++) {
+    const contentRender = (i) => {
+      let content = `这是示例文章${i}的内容，包含一些随机文本。`
+      if (i === 1) content = content1
+      if (i === 2) content = content2
+      return content
+    }
+    const lengthRender = (i) => {
+      let length = 20 + i
+      if (i === 1) length = content1.length
+      if (i === 2) length = content2.length
+      return length
+    }
+    const userIdRender = (i) => {
       // 只随机出 前 5 个 的用户生成数据
-      const randomUser = users[Math.floor(Math.random() * 5)]
+      let randomUser = users[Math.floor(Math.random() * 5)]
+      if (i === 1) randomUser = users[0]
+      if (i === 2) randomUser = users[0]
+      return randomUser
+    }
+
+    for (let i = 1; i <= articleCounts; i++) {
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
-
+      const user = userIdRender(i)
       articles.push({
         title: `文章的title${i}`,
-        content: `这是示例文章${i}的内容，包含一些随机文本。`,
-        author: randomUser.account,
+        content: contentRender(i),
+        author: user.account,
         category: randomCategory,
         tags: JSON.stringify(randomTags),
         carousel: Math.random() > 0.5 ? 1 : 0,
         desc: `文章的描述内容${i}`,
         // poster: `https://example.com/poster${i}.jpg`,
-        length: 20 + i,
-        userId: randomUser.id,
+        length: lengthRender(i),
+        userId: user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
