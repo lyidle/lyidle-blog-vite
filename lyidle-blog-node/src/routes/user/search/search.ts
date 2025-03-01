@@ -76,6 +76,7 @@ export default async (
     ],
     attributes: { exclude: ["pwd"] }, //排除密码
     distinct: true, // 避免重复计数
+    where: {},
   }
 
   if (isPagination) {

@@ -164,7 +164,11 @@
 
 <script setup lang="ts" name="FindAllUserPages">
 // 引入 api
-import { deleteArticle, removeArticle, searchArticleExact } from "@/api/article"
+import {
+  deleteArticle,
+  removeArticle,
+  searchArticleMergeExact,
+} from "@/api/article"
 // 引入 类型
 import type { Article } from "@/api/article/types/searchArticle"
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
@@ -192,7 +196,7 @@ const handlerArticles = async (
   currentPage: number = 1,
   pageSize: number = 10
 ) => {
-  const result = await searchArticleExact({
+  const result = await searchArticleMergeExact({
     author: account,
     currentPage,
     pageSize,

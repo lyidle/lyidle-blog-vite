@@ -41,6 +41,7 @@ const search = async (
       ["createdAt", "desc"],
       ["id", "desc"],
     ],
+    where: {},
   }
 
   if (!(id || author || title || desc || category || tags))
@@ -74,7 +75,6 @@ const search = async (
 
   // 回调函数
   callBack && callBack(commend)
-  console.log({ author })
   // 查询用户的所有文章
   const { count, rows } = await Article.findAndCountAll(commend)
 
