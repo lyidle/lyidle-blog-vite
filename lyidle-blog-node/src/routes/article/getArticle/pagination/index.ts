@@ -19,22 +19,12 @@ router.get("/", async (req, res, next) => {
   const cacheValue = await getKey(
     `articlePagination:${currentPage},${pageSize}`
   )
-  if (cacheValue) return res.result(cacheValue, "获取所有tags成功~")
+  if (cacheValue) return res.result(cacheValue, "获取文章成功~")
 
   try {
     const { count, rows } = await Article.findAndCountAll({
-      attributes: [
-        "id",
-        "author",
-        "poster",
-        "desc",
-        "title",
-        "createdAt",
-        "updatedAt",
-        "category",
-        "tags",
-        "userId",
-      ],
+      attributes: { exclude: ["UserId"] },
+      order: [["carousel", "desc"], [["id", "desc"]]],
       limit: pageSize,
       offset,
     })

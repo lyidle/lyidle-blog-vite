@@ -30,12 +30,18 @@
           </div>
           <div class="tools">
             <!-- 关注 -->
-            <my-button class="p-0px w-125px h-35px pr-5px">
+            <my-button
+              class="p-0px w-125px h-35px pr-5px"
+              v-if="userAccount !== userInfo?.account"
+            >
               <i class="i-mynaui:plus size-18px"></i>
               <span>关注</span>
             </my-button>
 
-            <my-button class="p-0px w-125px h-35px pr-5px">
+            <my-button
+              class="p-0px w-125px h-35px pr-5px"
+              v-if="userAccount !== userInfo?.account"
+            >
               <i class="i-mynaui:plus size-18px"></i>
               <span>发消息</span>
             </my-button>
@@ -92,7 +98,7 @@ import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 // 提取需要的数据
-const { userToken } = storeToRefs(useUserStore())
+const { userToken, userAccount } = storeToRefs(useUserStore())
 const layoutRef = ref()
 
 // 切换 到编辑用户界面

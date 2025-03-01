@@ -19,8 +19,7 @@ router.get("/", async (req, res) => {
       attributes: ["tags"],
     })
 
-    if (!Articles?.dataValues?.length)
-      return res.result(void 0, "获取所有tags失败~")
+    if (!Articles?.length) return res.result(void 0, "获取所有tags失败~")
 
     // 得到 tags
     const tagsMap = new Map()

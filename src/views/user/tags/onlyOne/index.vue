@@ -1,7 +1,7 @@
 <template>
   <layout-article-tree
     :account
-    :title="`标签：《${handlerTitle()}》总览`"
+    :title="`标签：${handlerTitle()} `"
   ></layout-article-tree>
 </template>
 
@@ -16,9 +16,7 @@ const account = route.query.author as string
 
 // 处理标题
 const handlerTitle = () => {
-  console.log(tags)
   if (typeof tags === "string") return tags
-
   return tags.join(" · ")
 }
 

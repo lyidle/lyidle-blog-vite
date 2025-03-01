@@ -22,25 +22,10 @@ const search = async (
   const offset = (currentPage - 1) * pageSize
 
   const commend: any = {
-    attributes: [
-      "id",
-      "author",
-      "title",
-      "desc",
-      "category",
-      "tags",
-      "userId",
-      "poster",
-      "length",
-      "createdAt",
-      "updatedAt",
-    ],
+    attributes: { exclude: ["UserId"] },
     limit: pageSize,
     offset,
-    order: [
-      ["createdAt", "desc"],
-      ["id", "desc"],
-    ],
+    order: [["carousel", "desc"], [["id", "desc"]]],
     where: {},
   }
 

@@ -2,7 +2,7 @@ import { mitt } from "@/utils/emitter"
 import { useUserStore } from "@/store/user"
 
 // 错误信息去重处理
-// let onlyOne = ""
+let onlyTokenmsg = ""
 
 /**
  * 配置全局事件处理
@@ -14,7 +14,14 @@ export const routerEventHandlered = (router: any) => {
     // 清除数据
     const { userStoreReset } = useUserStore()
     await userStoreReset()
-    ElMessage.warning("token 过期,请重新登录~")
+    const msg = "token 过期,请重新登录~"
+    if (onlyTokenmsg === msg) return
+    ElMessage.warning(msg)
+    onlyTokenmsg = msg
+    const tim = setTimeout(() => {
+      onlyTokenmsg = ""
+      clearTimeout(tim)
+    }, 1000)
     router.push({ path: "/", replace: true })
   })
 

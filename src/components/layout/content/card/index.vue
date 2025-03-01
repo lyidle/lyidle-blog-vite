@@ -17,7 +17,7 @@
       </router-link>
       <div class="mask">
         <div class="poster-container line-clamp-2">『{{ article.desc }}』</div>
-        <div class="pin">
+        <div class="pin" v-if="article.carousel">
           <i class="i-mynaui:pin-solid"></i>
         </div>
       </div>

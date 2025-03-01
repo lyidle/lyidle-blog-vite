@@ -4,7 +4,7 @@ import type { Request, Response, NextFunction } from "express"
 import initialEnvironment from "@/utils/initial"
 import { resolve } from "path"
 // 引入 redis
-import { clear } from "./utils/redis"
+// import { clear } from "./utils/redis"
 // 导入环境变量
 require("dotenv").config()
 

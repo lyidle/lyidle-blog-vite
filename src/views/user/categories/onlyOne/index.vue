@@ -1,7 +1,7 @@
 <template>
   <layout-article-tree
     :account
-    :title="`分类：《${category}》总览`"
+    :title="`分类：${category} `"
   ></layout-article-tree>
 </template>
 

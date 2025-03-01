@@ -18,8 +18,7 @@ router.get("/", async (req, res) => {
       // 只需要 category
       attributes: ["category"],
     })
-    if (!Articles?.dataValues?.length)
-      return res.result(void 0, "获取所有categories失败~")
+    if (!Articles?.length) return res.result(void 0, "获取所有categories失败~")
     // 得到 category
     const categoriesMap = new Map()
 
