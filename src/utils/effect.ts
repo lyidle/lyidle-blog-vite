@@ -124,8 +124,6 @@ export class clickEffectFn {
           onMousemove,
           false
         )
-      } else {
-        console.log("canvas or addEventListener is unsupported!")
       }
 
       function loop() {
