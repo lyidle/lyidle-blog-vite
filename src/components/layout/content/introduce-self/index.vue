@@ -23,7 +23,7 @@
               '--pin-left': '13px',
               '--pin-top': '15px',
             }"
-            @click="showPanel"
+            @click="userEditorScene"
             v-if="showIsBin"
           ></div>
           <div class="userInfo">
@@ -95,21 +95,20 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
-import { useSettingStore } from "@/store/setting"
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
+// 引入 hooks
+// 切换 到编辑用户界面
+import { useUserEditorScene } from "@/hooks/useUserEditorScene"
+// 切换 到编辑用户界面
+const userEditorScene = useUserEditorScene()
 // 提取需要展示的信息
 const { showNickName, showSigner, showIsBin } = useShowUserinfo({
   showNickName: true,
   showSigner: true,
   showIsBin: true,
 })
-const { isShowPanel, setScene } = storeToRefs(useSettingStore())
-// 切换到编辑页面
-const showPanel = () => {
-  isShowPanel.value = true
-  setScene.value = 1
-}
+
 const {
   // 网站 所有者信息
   adminAccount,

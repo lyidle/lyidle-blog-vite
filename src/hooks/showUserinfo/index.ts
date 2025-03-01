@@ -86,10 +86,6 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     userToken.value ? userCategories.value : adminCategories.value
   )
 
-  const isAccount = createComputed("isAccount", () => {
-    return !!(userToken.value || adminAccount.value)
-  })
-
   // 返回启用的 computed 数据
   return {
     showAccount,
@@ -99,7 +95,6 @@ export const useShowUserinfo = (options: UseShowUserinfoOptions = {}) => {
     showPages,
     showTags,
     showCategories,
-    isAccount,
     showIsBin,
   }
 }

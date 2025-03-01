@@ -5,7 +5,7 @@
         <!-- 头部 文章总览 -->
         <div class="flex justify-between my-1.25rem">
           <div class="text-[1.875rem] font-bold cur-text">
-            文章总览 - {{ counts?.pages }}
+            文章总览 - {{ pagination?.total }}
           </div>
           <div class="flex gap-10px items-center">
             <el-tooltip
@@ -164,10 +164,8 @@
 
 <script setup lang="ts" name="FindAllUserPages">
 // 引入 api
-import { searchCounts } from "@/api/user"
 import { deleteArticle, removeArticle, searchArticleExact } from "@/api/article"
 // 引入 类型
-import type { Counts } from "@/api/user/types/searchCountsById"
 import type { Article } from "@/api/article/types/searchArticle"
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 // 引入 utils
@@ -178,17 +176,6 @@ import moment from "@/utils/moment"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
-// 文章 的 数据
-// 个数
-const counts = ref<Counts>()
-// 获取文章个数
-const handlerCounts = async (account: string) => {
-  // 获取用户文章信息
-  const result = await searchCounts({ account, isBin: "true" })
-  if (result?.length) {
-    counts.value = result[0].counts
-  }
-}
 
 // 所有文章
 // 定义按年份分组的类型
@@ -259,8 +246,7 @@ const handlerRemove = async (id: string | number) => {
 // 删除文章的回调
 const handlerDelete = async (id: string | number) => {
   try {
-    const result = await deleteArticle(id)
-    console.log(result)
+    await deleteArticle(id)
     ElMessage.success(`成功删除文章~`)
     // 获取所有文章
     await handlerArticles()
@@ -268,8 +254,6 @@ const handlerDelete = async (id: string | number) => {
 }
 onMounted(async () => {
   try {
-    // 获取文章个数
-    await handlerCounts(account)
     // 获取所有文章
     await handlerArticles()
   } catch (error) {}

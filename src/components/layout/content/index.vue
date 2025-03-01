@@ -136,11 +136,12 @@ watch(
     newV && mitt.emit("isAside")
   }
 )
-
 onBeforeUnmount(() => {
   mitt.off("articleMenu")
   mitt.off("articleMenu:destroy")
 })
+
+defineExpose({ contentNum })
 </script>
 <style scoped lang="scss">
 // 左右间距

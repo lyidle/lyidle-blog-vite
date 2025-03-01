@@ -95,6 +95,7 @@ defineProps<{
 <style scoped lang="scss">
 // 高度
 $content-height: 350px;
+$translate-y: -5px;
 $header-height: 200px;
 // 底部信息高度
 $content-info-height: $content-height - $header-height;
@@ -112,11 +113,27 @@ $meta-gap: 5px;
   justify-content: space-between;
   border-radius: var(--pages-card-radius);
   overflow: hidden;
+  // 悬浮效果
+  &:hover {
+    transform: translateY($translate-y);
+    .poster {
+      transform: scale($pages-poster-scale);
+    }
+  }
+  transition: transform var(--primary-during);
+  .poster {
+    transition: transform var(--primary-during);
+  }
   // 头部
   .content-header {
     position: relative;
     overflow: hidden;
     height: $header-height;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
     // 头部遮罩 图片
     .mask {
       position: absolute;

@@ -29,21 +29,17 @@ const { showAccount, showAvatar } = useShowUserinfo({
   showAccount: true,
   showAvatar: true,
 })
-withDefaults(
-  defineProps<{ size?: string; isTo?: boolean; isCursor?: boolean }>(),
-  {
-    size: "100px",
-    isTo: true,
-    isCursor: true,
-  }
-)
+withDefaults(defineProps<{ isTo?: boolean; isCursor?: boolean }>(), {
+  isTo: true,
+  isCursor: true,
+})
 </script>
 
 <style scoped lang="scss">
-$avater-size: v-bind(size);
 .avatar {
-  width: $avater-size;
-  height: $avater-size;
+  --avatar-size: 100px;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
   border-radius: 50%;
   position: relative;
   left: 50%;

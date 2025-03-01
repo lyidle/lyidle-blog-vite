@@ -37,6 +37,7 @@
               '--pin-left': '13px',
               '--pin-top': '15px',
             }"
+            @click="userEditorScene"
             v-if="showIsBin"
           ></div>
           <!-- 头像 -->
@@ -58,6 +59,10 @@ import { useOwnerStore } from "@/store/owner"
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 import { mitt } from "@/utils/emitter"
+// 引入 hooks
+import { useUserEditorScene } from "@/hooks/useUserEditorScene"
+// 切换 到编辑用户界面
+const userEditorScene = useUserEditorScene()
 // 提取需要展示的信息
 const { showIsBin } = useShowUserinfo({
   showIsBin: true,
