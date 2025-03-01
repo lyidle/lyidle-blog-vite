@@ -81,7 +81,7 @@ const getMenuList = async (
     const result = buildMenuTree(menus)
 
     if (!menus.length) {
-      return res.result([], "暂无权限访问任何菜单哦~")
+      return res.result([], "暂无权限访问任何菜单")
     }
     // 设置 缓存
     await setKey(cacheKey, result)

@@ -76,7 +76,7 @@ router.post(
       const isImage = contentType && contentType.startsWith("image/")
 
       // 不是图片
-      if (!isImage) return res.result(void 0, "上传的不是一个图片哦~", false)
+      if (!isImage) return res.result(void 0, "上传的不是一个图片", false)
 
       // 扩展名字
       const extension = contentType.replace("image/", "")

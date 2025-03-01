@@ -87,7 +87,9 @@ export const useUserStore = defineStore(
               pre[cur.name] = cur
             return pre
           }, {} as bannerImgType)
-      } catch (error) {}
+      } catch (error) {
+        ElMessage.error("获取菜单失败~")
+      }
     }
 
     // 处理 管理页面的菜单 数据
@@ -135,7 +137,9 @@ export const useUserStore = defineStore(
           userCategories.value = user?.counts.categories
           return
         }
-      } catch (error) {}
+      } catch (error) {
+        ElMessage.error("获取用户信息失败")
+      }
     }
 
     // 通过 设置 token 重新获取 数据
@@ -145,7 +149,7 @@ export const useUserStore = defineStore(
       mitt.emit("route:reload", callback)
       // 判断 有无 token 是否修改了密码 修改了需要重新登录
       if (!token) {
-        ElMessage.warning("修改密码后需要重新登录哦~")
+        ElMessage.warning("修改密码后需要重新登录")
       }
     }
 

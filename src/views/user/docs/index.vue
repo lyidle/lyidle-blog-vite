@@ -241,22 +241,28 @@ const handlerRemove = async (id: string | number) => {
     }
     // 获取所有文章
     await handlerArticles()
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.error("软删除文章失败~")
+  }
 }
 // 删除文章的回调
 const handlerDelete = async (id: string | number) => {
   try {
     await deleteArticle(id)
-    ElMessage.success(`成功删除文章~`)
+    ElMessage.success(`彻底删除文章成功~`)
     // 获取所有文章
     await handlerArticles()
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.error("彻底删除文章失败~")
+  }
 }
 onMounted(async () => {
   try {
     // 获取所有文章
     await handlerArticles()
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.error("获取用户的文章失败~")
+  }
 })
 </script>
 

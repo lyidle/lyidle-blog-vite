@@ -20,7 +20,7 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, icon, to, layout, roles, parentId } = req.body
 
-    if (!name) return res.result(void 0, "创建菜单name是必须要有的哦~", false)
+    if (!name) return res.result(void 0, "创建菜单name是必须要有的", false)
 
     // 开启事务
     const transaction = await db.sequelize.transaction()

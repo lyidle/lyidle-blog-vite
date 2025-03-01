@@ -23,18 +23,6 @@ export const routerEventHandlered = (router: any) => {
     msg && ElMessage.warning(msg)
   })
 
-  mitt.on("handler request error", ({ msg, type }) => {
-    // if (onlyOne === msg) return
-    // onlyOne = msg
-    ElMessage({ message: msg, type: type || "error" })
-  })
-
-  // 订阅路由变化
-  mitt.on("router changed", () => {
-    // 重置 错误信息
-    // onlyOne = ""
-  })
-
   // 重新 判断权限是否通过 需要 在 route:reload 后执行
   mitt.on("authRoles", () => {
     // 得到 roles
@@ -44,15 +32,21 @@ export const routerEventHandlered = (router: any) => {
     // 判断 路径是否在 白名单中
     if (whitelist && !whitelist.includes(cur)) {
       router.push({ path: "/", replace: true })
-      ElMessage.warning("权限丢失了哦~")
+      ElMessage.warning("权限丢失了")
     }
   })
 
   // 处理 Not Found 跳转
-  mitt.on("NotFound", (res) => {
-    if (res.message?.includes("没有查找到文章哦~"))
-      console.log("需要跳转没有文章的404页")
-
-    router.push({ path: "/404", replace: true })
+  mitt.on("NotFound", (msg: string) => {
+    switch (msg) {
+      case "not article":
+        console.error("需要调整到没有文章的404页面~")
+        ElMessage.error("获取文章失败")
+        // router.push({ path: "/404", replace: true })
+        break
+      default:
+        router.push({ path: "/404", replace: true })
+        break
+    }
   })
 }

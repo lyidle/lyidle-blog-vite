@@ -32,7 +32,7 @@ router.put(
     const { id, name, desc } = req.body
 
     // 没有 id、name 返回失败
-    if (!id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项", false)
 
     try {
       // 存储查询到的结果
@@ -67,7 +67,7 @@ router.put(
       })
 
       if (!findGroup)
-        return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
+        return res.result(void 0, "没有找到需要更新的权限菜单", false)
 
       // 得到查询到的  name
       const _name = findGroup.dataValues?.name
@@ -106,7 +106,7 @@ router.put(
 
       // 限制指定的name 不能修改
       if (_name === default_owner || _name === default_admin)
-        return res.result(_name, `不可修改名字为${_name}的权限组哦~`)
+        return res.result(_name, `不可修改名字为${_name}的权限组`)
 
       res.result(void 0, "更新权限菜单成功~")
     } catch (error) {

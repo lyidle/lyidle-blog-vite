@@ -73,7 +73,7 @@ export const reqReg = (data: RegBody) =>
 // 登录
 export const reqLogin = (data: LoginQuery) =>
   request.get<any, Login["data"]>(
-    server + prefix + API.login + `?${new URLSearchParams(data)}`
+    server + prefix + API.login + `/?${new URLSearchParams(data)}`
   )
 
 // 退出登录
@@ -87,7 +87,7 @@ export const getUserInfo = () =>
 // 搜索文章的回调
 const searchUserCallback = (api: APIKeysType) => (data?: SearchUserQuery) =>
   request.get<any, SearchUserPagination["data"]>(
-    server + prefix + API[api] + `?${new URLSearchParams(data)}`
+    server + prefix + API[api] + `/?${new URLSearchParams(data)}`
   )
 
 // 模糊搜索用户信息
@@ -98,7 +98,7 @@ export const searchExactUser = searchUserCallback("exactSearch")
 // 搜索用户通过id、account、roles 且统计个数
 export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
   request.get<any, SearchCountsById["data"]>(
-    server + prefix + API.searchCounts + `?${new URLSearchParams(data)}`
+    server + prefix + API.searchCounts + `/?${new URLSearchParams(data)}`
   )
 
 // 删除的回调

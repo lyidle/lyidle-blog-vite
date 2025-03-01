@@ -29,15 +29,14 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
 
     // 判断是否有 角色
-    if (!roles?.length)
-      return res.result(void 0, "服务器角色未初始化哦~", false)
+    if (!roles?.length) return res.result(void 0, "服务器角色未初始化", false)
 
     // 返回并设置缓存
     await setKey(cacheKey, roles)
     res.result(roles, "获取所有角色成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取所有角色失败哦~", false)
+      res.result(void 0, "获取所有角色失败", false)
     )
   }
 })

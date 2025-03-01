@@ -4,6 +4,8 @@ import { searchUser } from "@/api/user"
 import type { searchData } from "@/api/user/types/searchUserPagination"
 import { SearchUserQuery } from "@/api/user/types/searchUserQuery"
 import { mitt } from "@/utils/emitter"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
   const tableData = ref<searchData["users"]>([])
@@ -23,8 +25,11 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       tableData.value = result?.users || []
       pagination.value = result?.pagination
       currentPage.value = 1
-      ElMessage.success("搜索成功~")
-    } catch (error) {}
+      ElMessage.success("搜索用户成功~")
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("搜索用户失败~")
+    }
   }
   const handlerReset = async () => {
     // 重置 key
@@ -79,7 +84,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       const result = await searchUser(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
-    } catch (error) {}
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("查询用户失败~")
+    }
   }
 
   onMounted(async () => {

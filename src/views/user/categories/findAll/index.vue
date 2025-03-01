@@ -113,7 +113,9 @@ onMounted(async () => {
     categories.value = result
     // 更新 chart 配置
     setPieOption()
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.error("获取所有分类失败~")
+  }
 })
 </script>
 

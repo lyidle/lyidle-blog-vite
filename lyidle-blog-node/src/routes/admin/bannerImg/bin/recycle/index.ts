@@ -18,13 +18,13 @@ router.put(
     let cacheKey = "bannerImg:*"
     let cacheKey2 = "bannerImg:bin:*"
     const { id } = req.params
-    if (!id) return res.result(void 0, "禁用背景失败,id是必传项哦~", false)
+    if (!id) return res.result(void 0, "禁用背景失败,id是必传项", false)
 
     try {
       const findBanner = await BannerImg.findByPk(id, { paranoid: false })
 
       if (!findBanner)
-        return res.result(void 0, "禁用背景失败,没有找到背景数据哦~", false)
+        return res.result(void 0, "禁用背景失败,没有找到背景数据", false)
 
       // 软删除 背景
       await findBanner.destroy()

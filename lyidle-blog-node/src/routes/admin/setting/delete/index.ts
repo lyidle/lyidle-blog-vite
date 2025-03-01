@@ -17,7 +17,7 @@ router.delete(
       const { name } = req.query
 
       // 汇总 错误信息
-      if (!name) return res.result(void 0, "name是必传项哦~", false)
+      if (!name) return res.result(void 0, "name是必传项", false)
       const findSetting = await Setting.findOne({ where: { name } })
       if (!findSetting)
         return res.result(void 0, "没有找到对应的设置信息~", false)

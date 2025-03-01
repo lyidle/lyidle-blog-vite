@@ -22,15 +22,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "权限组名字不能为空哦~" },
-          notEmpty: { msg: "权限组名字不能为空哦~" },
-          len: { args: [1, 32], msg: "权限组名字长度必须在1-32之间哦~" },
+          notNull: { msg: "权限组名字不能为空" },
+          notEmpty: { msg: "权限组名字不能为空" },
+          len: { args: [1, 32], msg: "权限组名字长度必须在1-32之间" },
         },
       },
       desc: {
         type: DataTypes.STRING,
         validate: {
-          len: { args: [0, 255], msg: "权限组描述长度必须在0-255之间哦~" },
+          len: { args: [0, 255], msg: "权限组描述长度必须在0-255之间" },
         },
       },
       isBin: DataTypes.DATE,

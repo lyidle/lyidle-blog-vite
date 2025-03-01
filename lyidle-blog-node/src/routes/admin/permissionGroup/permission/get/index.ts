@@ -15,7 +15,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     const findPermission = await Permission.findAll()
 
     if (!findPermission.length) {
-      return res.result(void 0, "子权限菜单未初始化哦~", false)
+      return res.result(void 0, "子权限菜单未初始化", false)
     }
 
     // 设置 缓存

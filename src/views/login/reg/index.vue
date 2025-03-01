@@ -97,6 +97,8 @@ import {
 } from "@/RegExp/loginOrReg"
 // 引入 时间转换 转换 code 过期时间提示
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 引入api
 import { reqRegEmail, reqReg } from "@/api/user"
 import throttle from "@/utils/throttle"
@@ -126,13 +128,13 @@ const toLogin = () => {
 // 确认密码验证回调
 const validatorConfirm = (_: any, value: any, next: any) => {
   if (value !== regData.password)
-    return next(new Error("确认密码需要与密码一致哦~"))
+    return next(new Error("确认密码需要与密码一致"))
   next()
 }
 // 注册规则
 const regRules = reactive({
   account: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -141,7 +143,7 @@ const regRules = reactive({
     },
   ],
   nickName: [
-    { required: true, trigger: "change", message: "用户名是必填项哦~" },
+    { required: true, trigger: "change", message: "用户名是必填项" },
     {
       required: true,
       trigger: "change",
@@ -150,13 +152,13 @@ const regRules = reactive({
     },
   ],
   password: [
-    { required: true, trigger: "change", message: "密码是必填项哦~" },
+    { required: true, trigger: "change", message: "密码是必填项" },
     {
       required: true,
       trigger: "change",
       min: 6,
       max: 12,
-      message: "密码必须要在6-12位哦~",
+      message: "密码必须要在6-12位",
     },
     {
       required: true,
@@ -192,7 +194,10 @@ const handlerReg = throttle(async () => {
     await reqReg(regData)
     ElMessage.success("注册成功~")
     toLogin()
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("注册失败~")
+  }
 }, 1000)
 
 // 判断是否是 开发环境
@@ -219,7 +224,10 @@ const handlerCode = async () => {
         clearInterval(tim)
       }
     }, 1000)
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "warning")
+    if (!err) ElMessage.error("发送验证码失败")
+  }
 }
 defineExpose({ reg })
 </script>

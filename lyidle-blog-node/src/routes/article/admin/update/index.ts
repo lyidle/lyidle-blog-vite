@@ -22,7 +22,7 @@ router.put(
       const { id: articleId } = req.body
 
       if (!articleId)
-        return res.result(void 0, "修改文章时，没有找到文章哦~", false)
+        return res.result(void 0, "修改文章时，没有找到文章", false)
 
       // 查找是否有文章
       const findArticle = await Article.findByPk(articleId, {
@@ -45,14 +45,14 @@ router.put(
 
       // 没有找到文章
       if (!findArticle)
-        return res.result(void 0, "修改文章时，没有找到文章哦~", false)
+        return res.result(void 0, "修改文章时，没有找到文章", false)
 
       // 找到提取
       const { userId } = findArticle
 
       // 判断是否是用户的文章
       if (req.auth.id !== userId) {
-        return res.result(void 0, "修改文章时，不能修改他人的文章哦~", false)
+        return res.result(void 0, "修改文章时，不能修改他人的文章", false)
       }
 
       // 提取body 信息
@@ -70,7 +70,7 @@ router.put(
       )
         return res.result(
           void 0,
-          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc、poster哦~",
+          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc、poster",
           false
         )
 

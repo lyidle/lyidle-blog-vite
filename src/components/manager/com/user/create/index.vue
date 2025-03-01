@@ -68,6 +68,9 @@ import { managerCreateUser } from "@/api/user"
 import { CreateUserBody } from "@/api/user/types/createUserBody"
 // 引入 正则
 import { accountReg, emailReg, nickNameReg, pwdReg } from "@/RegExp/loginOrReg"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
+
 const centerDialogVisible = ref(false)
 
 const createData = reactive<CreateUserBody>({
@@ -80,7 +83,7 @@ const createData = reactive<CreateUserBody>({
 // 创建规则
 const createRules = reactive({
   account: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -89,7 +92,7 @@ const createRules = reactive({
     },
   ],
   nickName: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -106,13 +109,13 @@ const createRules = reactive({
     },
   ],
   password: [
-    { required: true, trigger: "change", message: "密码是必填项哦~" },
+    { required: true, trigger: "change", message: "密码是必填项" },
     {
       required: true,
       trigger: "change",
       min: 6,
       max: 12,
-      message: "密码必须要在6-12位哦~",
+      message: "密码必须要在6-12位",
     },
     {
       required: true,
@@ -151,7 +154,10 @@ const handlerConfirm = async () => {
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("创建用户失败~")
+  }
 }
 
 // 暴露

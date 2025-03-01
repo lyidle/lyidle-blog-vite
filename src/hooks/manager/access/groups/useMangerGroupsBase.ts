@@ -6,6 +6,8 @@ import { findAllGroupsPagination } from "@/api/admin"
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import type { Group } from "@/api/admin/types/findAllGroupsPagination"
 import { paginationQuery } from "@/api/types/paginationQuery"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   // 当前页
   const currentPage = ref(1)
@@ -20,8 +22,11 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
       tableData.value = result.groups
       pagination.value = result.pagination
       currentPage.value = 1
-      ElMessage.success("搜索成功~")
-    } catch (error) {}
+      ElMessage.success("搜索权限组成功~")
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("搜索权限组失败~")
+    }
   }
 
   const handlerReset = async () => {
@@ -73,7 +78,10 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
       const result = await findAllGroupsPagination(search)
       tableData.value = result.groups
       pagination.value = result.pagination
-    } catch (error) {}
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("查询权限组失败~")
+    }
   }
 
   // 监听窗口变化

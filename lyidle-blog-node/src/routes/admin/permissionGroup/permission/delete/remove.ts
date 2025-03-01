@@ -46,7 +46,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: permissionId } = req.body
 
   if (!permissionId)
-    return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单哦~", false)
+    return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单", false)
 
   // 查找是否有权限子菜单
   // 逐级查询到缓存 的 Users
@@ -99,7 +99,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
 
   // 没有找到权限子菜单
   if (!findPermission)
-    return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单哦~", false)
+    return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单", false)
 
   // 找到提取需要的信息
   const { id } = findPermission.dataValues

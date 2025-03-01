@@ -54,10 +54,10 @@ const props = withDefaults(
   {
     min: 1,
     max: 10,
-    error: "标签个数需要在1-10之间哦~",
+    error: "标签个数需要在1-10之间",
     itemReg: () => /^.{1,10}$/,
     itemError: "标签长度需要在1-10之间哦",
-    repeatError: "标签不能重复哦~",
+    repeatError: "标签不能重复",
     left: "",
   }
 )

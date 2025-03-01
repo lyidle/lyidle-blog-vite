@@ -29,7 +29,7 @@ router.post(
       if (!id || !permissions?.length)
         return res.result(
           void 0,
-          "设置权限组的权限时,id和permissions是必传项哦~",
+          "设置权限组的权限时,id和permissions是必传项",
           false
         )
 

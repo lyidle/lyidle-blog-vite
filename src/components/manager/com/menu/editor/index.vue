@@ -31,7 +31,7 @@
               v-model="createData.roles"
               min="0"
               max="5"
-              error="标签个数需要在0-5之间哦~"
+              error="标签个数需要在0-5之间"
               ref="tagsInstance"
               class="mr-10px"
               left="10px"
@@ -99,6 +99,8 @@ import { isValidCSSUnitReg } from "@/RegExp/Css/isValidCSSUnit "
 import { urlReg } from "@/RegExp/Url/isUrl"
 // 引入 api
 import { updateMenuList } from "@/api/admin"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 const centerDialogVisible = ref(false)
 const createData = reactive<UpdateMenuListBody>({
@@ -123,7 +125,7 @@ const iconValidator = (rule: any, value: any, callback: any) => {
     const bg = value.split("background:")[1]
     if (urlReg.test(bg)) {
       // 如果匹配 URL 正则表达式，则验证失败
-      callback(new Error("database图标不能是一个外链哦~"))
+      callback(new Error("database图标不能是一个外链"))
     } else {
       // 否则验证通过
       callback()
@@ -131,7 +133,7 @@ const iconValidator = (rule: any, value: any, callback: any) => {
   }
   if (urlReg.test(value)) {
     // 如果匹配 URL 正则表达式，则验证失败
-    callback(new Error("不能是一个外链哦~"))
+    callback(new Error("不能是一个外链"))
   } else {
     // 否则验证通过
     callback()
@@ -141,13 +143,13 @@ const iconValidator = (rule: any, value: any, callback: any) => {
 // 创建规则
 const createRules = reactive({
   name: [
-    { required: true, trigger: "change", message: "菜单名是必填项哦~" },
+    { required: true, trigger: "change", message: "菜单名是必填项" },
     {
       required: true,
       trigger: "change",
       min: 1,
       max: 32,
-      message: "菜单名字长度必须在1-32之间哦~",
+      message: "菜单名字长度必须在1-32之间",
     },
   ],
   icon: [
@@ -169,7 +171,7 @@ const createRules = reactive({
     {
       trigger: "change",
       pattern: /left|right/,
-      message: "菜单方向为left或right哦~",
+      message: "菜单方向为left或right",
     },
   ],
 })
@@ -233,7 +235,10 @@ const handlerConfirm = async () => {
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("修改菜单失败~")
+  }
 }
 
 // 暴露

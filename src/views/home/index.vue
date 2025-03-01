@@ -65,10 +65,8 @@ const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
 }
 // 初始化数据
 onMounted(async () => {
-  try {
-    await reqCarousel()
-    await reqArticles()
-  } catch (error) {}
+  await reqCarousel()
+  await reqArticles()
 })
 </script>
 <style scoped lang="scss"></style>

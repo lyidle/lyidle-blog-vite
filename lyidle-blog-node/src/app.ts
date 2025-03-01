@@ -75,29 +75,28 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     // 处理 各个模型的 错误
     switch (modelName) {
       case "BannerImg":
-        res.result(void 0, "背景的路径名字不能重复哦~", false, 400)
+        res.result(void 0, "背景的路径名字不能重复", false, 400)
         break
       case "Menu":
-        res.result(void 0, "菜单的名字不能重复哦~", false, 400)
+        res.result(void 0, "菜单的名字不能重复", false, 400)
         break
       case "Permission":
-        res.result(void 0, "权限的名字不能重复哦~", false, 400)
+        res.result(void 0, "权限的名字不能重复", false, 400)
         break
       case "PermissionGroup":
-        res.result(void 0, "权限组的名字不能重复哦~", false, 400)
+        res.result(void 0, "权限组的名字不能重复", false, 400)
         break
       case "Role":
-        res.result(void 0, "角色的名字不能重复哦~", false, 400)
+        res.result(void 0, "角色的名字不能重复", false, 400)
         break
       case "Setting":
-        res.result(void 0, "设置的名字不能重复哦~", false, 400)
+        res.result(void 0, "设置的名字不能重复", false, 400)
         break
       case "User":
         // 用户的 拥有 unique 字段的属性 有两个
         const result: string[] = []
-        if (uniqueFields.includes("account"))
-          result.push("用户的名字不能重复哦~")
-        if (uniqueFields.includes("email")) result.push("用户的邮箱不能重复哦~")
+        if (uniqueFields.includes("account")) result.push("用户的名字不能重复")
+        if (uniqueFields.includes("email")) result.push("用户的邮箱不能重复")
         res.result(void 0, result, false, 400)
         break
     }

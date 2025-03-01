@@ -25,7 +25,7 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id, name, icon, to, layout, roles, parentId } = req.body
     // 没有 id、name 返回失败
-    if (!id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项", false)
 
     // 开启事务
     const transaction = await db.sequelize.transaction()
@@ -47,7 +47,7 @@ router.put(
 
       if (!findMenu) {
         await transaction.rollback() // 回滚事务
-        return res.result(void 0, "没有找到需要更新的菜单哦~", false)
+        return res.result(void 0, "没有找到需要更新的菜单", false)
       }
 
       const menu = JSON.parse(JSON.stringify(findMenu))

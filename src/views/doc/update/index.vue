@@ -43,7 +43,7 @@
             <my-tags
               v-model="docsFormData.tags"
               ref="tagsInstance"
-              repeatError="标签不能重复哦~"
+              repeatError="标签不能重复"
               :error="tagsReg.msg"
               class="ml-0.625rem"
             ></my-tags>
@@ -102,6 +102,8 @@ import {
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 import { mitt } from "@/utils/emitter"
 import { postImgPermanent, removeFileStatic } from "@/api/img"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 const route = useRoute()
 const router = useRouter()
 // 上传的 poster图
@@ -143,7 +145,12 @@ const reqArticle = async () => {
     vditorHookReturn.Mounted()
   } catch (error) {
     // 触发路由守卫 账户不一致事件
-    mitt.emit("account inconsistent")
+    const err = handlerReqErr(error, (err) => {
+      if (err?.includes("没有查找到文章")) {
+        mitt.emit("account inconsistent", "无权限更新当前文章~")
+      }
+    })
+    if (!err) mitt.emit("account inconsistent", "获取文章失败~")
   }
 }
 
@@ -174,7 +181,7 @@ const rules = reactive({
   title: [
     {
       required: true,
-      message: "标题不能为空哦~",
+      message: "标题不能为空",
       trigger: "change",
     },
     {
@@ -186,7 +193,7 @@ const rules = reactive({
   category: [
     {
       required: true,
-      message: "文章分类不能为空哦~",
+      message: "文章分类不能为空",
       trigger: "change",
     },
     {
@@ -198,7 +205,7 @@ const rules = reactive({
   desc: [
     {
       required: true,
-      message: "文章描述不能为空哦~",
+      message: "文章描述不能为空",
       trigger: "change",
     },
     {
@@ -295,7 +302,11 @@ const handerUpload = async () => {
     ElMessage.success("更新文章成功~")
 
     router.replace(`/doc/${docId}`)
-  } catch (error) {}
+  } catch (error) {
+    // 触发路由守卫 账户不一致事件
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("更新文章失败~")
+  }
 }
 
 // 使用 编辑器是否全屏的hook

@@ -47,6 +47,8 @@ import { reqLogin } from "@/api/user"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import throttle from "@/utils/throttle"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 导出 函数
 const { userInfoByToken } = useUserStore()
 
@@ -60,7 +62,7 @@ const loginData = reactive({
 // 登录规则
 const loginRules = reactive({
   account: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -69,13 +71,13 @@ const loginRules = reactive({
     },
   ],
   password: [
-    { required: true, trigger: "change", message: "密码是必填项哦~" },
+    { required: true, trigger: "change", message: "密码是必填项" },
     {
       required: true,
       trigger: "change",
       min: 6,
       max: 12,
-      message: "密码必须要在6-12位哦~",
+      message: "密码必须要在6-12位",
     },
     {
       required: true,
@@ -100,7 +102,10 @@ const handlerLogin = throttle(async () => {
     userInfoByToken(result.token)
     ElMessage.success("登录成功~")
     router.push("/")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("登录失败~")
+  }
 }, 1000)
 // 前往注册的切换动画
 const toReg = () => {

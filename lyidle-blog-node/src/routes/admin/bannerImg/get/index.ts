@@ -40,7 +40,7 @@ router.get(
   "/manager",
   async (req: Request, res: Response, next: NextFunction) => {
     // 判断是否 读取 垃圾桶的 信息
-    const { isBin, name } = req.query
+    const { name } = req.query
     const { query } = req
     /**
      * @pagesize 每页显示条目个数
@@ -50,17 +50,15 @@ router.get(
     const pageSize = Math.abs(Number(query.pageSize)) || 10
     const offset = (currentPage - 1) * pageSize
     try {
-      const _bool = JSON.parse(isBin as string)
       // 查询 所有的 bannerImg
       const { count, rows } = await BannerImg.findAndCountAll({
         limit: pageSize,
         offset,
-        paranoid: !_bool,
+        paranoid: false,
         where: name && {
           name: { [Op.like]: `%${name}%` },
         },
       })
-      console.log(name)
 
       if (!count) {
         return res.result(void 0, "获取背景失败~", false)

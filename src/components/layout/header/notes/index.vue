@@ -17,22 +17,26 @@ const data = ref<MenuData>([])
 
 // 获取菜单项 tags
 const reqTags = async (category: string, name: string = category) => {
-  // 得到 tags 是全站文章的 category 个数默认是 10个
-  const result = await searchArticleExact({ category })
-  // 处理成需要的格式
-  const handler =
-    // 去重
-    [...new Set([result.article.map((item) => item.tags)].flat(Infinity))]
-      // 处理成需要的格式
-      .map((item) => ({
-        name: item,
-      })) as MenuData
+  try {
+    // 得到 tags 是全站文章的 category 个数默认是 10个
+    const result = await searchArticleExact({ category })
+    // 处理成需要的格式
+    const handler =
+      // 去重
+      [...new Set([result.article.map((item) => item.tags)].flat(Infinity))]
+        // 处理成需要的格式
+        .map((item) => ({
+          name: item,
+        })) as MenuData
 
-  // 添加数据
-  data.value.push({
-    name,
-    children: handler,
-  })
+    // 添加数据
+    data.value.push({
+      name,
+      children: handler,
+    })
+  } catch (error) {
+    ElMessage.warning(`获取分类：${category}失败~`)
+  }
 }
 
 // 挂载

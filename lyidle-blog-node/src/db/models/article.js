@@ -24,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(25),
         allowNull: false,
         validate: {
-          notNull: { msg: "文章标题不能为空哦~" },
-          notEmpty: { msg: "文章标题不能为空哦~" },
+          notNull: { msg: "文章标题不能为空" },
+          notEmpty: { msg: "文章标题不能为空" },
           // 正则限制
           is: {
             args: titleReg.reg,
@@ -37,20 +37,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {
-          notNull: { msg: "文章内容不能为空哦~" },
-          notEmpty: { msg: "文章内容不能为空哦~" },
+          notNull: { msg: "文章内容不能为空" },
+          notEmpty: { msg: "文章内容不能为空" },
         },
       },
       author: {
         type: DataTypes.STRING(32),
         allowNull: false,
         validate: {
-          notNull: { msg: "文章作者不能为空哦~" },
-          notEmpty: { msg: "文章作者不能为空哦~" },
+          notNull: { msg: "文章作者不能为空" },
+          notEmpty: { msg: "文章作者不能为空" },
           // 正则限制
           is: {
             args: accountReg.reg,
-            msg: "文章作者长度必须在1-32之间哦~",
+            msg: "文章作者长度必须在1-32之间",
           },
         },
       },
@@ -58,8 +58,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(10),
         allowNull: false,
         validate: {
-          notNull: { msg: "文章分类不能为空哦~" },
-          notEmpty: { msg: "文章分类不能为空哦~" },
+          notNull: { msg: "文章分类不能为空" },
+          notEmpty: { msg: "文章分类不能为空" },
           // 正则限制
           is: {
             args: categoryReg.reg,
@@ -71,17 +71,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: false,
         validate: {
-          notNull: { msg: "文章标签不能为空哦~" },
-          notEmpty: { msg: "文章标签不能为空哦~" },
+          notNull: { msg: "文章标签不能为空" },
+          notEmpty: { msg: "文章标签不能为空" },
           // 自定义验证逻辑
           isArray(value) {
             if (!Array.isArray(value)) {
-              throw new Error("文章标签必须是一个数组哦~")
+              throw new Error("文章标签必须是一个数组")
             }
           },
           isNotEmpty(value) {
             if (!value.length) {
-              throw new Error("文章标签至少要有一个哦~")
+              throw new Error("文章标签至少要有一个")
             }
           },
           // 个数
@@ -130,18 +130,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: "文章字数不能为空哦~" },
-          notEmpty: { msg: "文章字数不能为空哦~" },
-          isInt: { msg: "文章字数必须要是个整数哦~" },
+          notNull: { msg: "文章字数不能为空" },
+          notEmpty: { msg: "文章字数不能为空" },
+          isInt: { msg: "文章字数必须要是个整数" },
         },
       },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notNull: { msg: "用户id不能为空哦~" },
-          notEmpty: { msg: "用户id不能为空哦~" },
-          isInt: { msg: "用户id必须要是个整数哦~" },
+          notNull: { msg: "用户id不能为空" },
+          notEmpty: { msg: "用户id不能为空" },
+          isInt: { msg: "用户id必须要是个整数" },
         },
       },
       isBin: DataTypes.DATE,

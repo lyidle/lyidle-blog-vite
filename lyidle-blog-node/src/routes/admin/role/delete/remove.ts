@@ -47,7 +47,7 @@ const deleted = async (
 const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: roleId } = req.body
 
-  if (!roleId) return res.result(void 0, "删除角色时，没有找到角色哦~", false)
+  if (!roleId) return res.result(void 0, "删除角色时，没有找到角色", false)
 
   // 查找是否有角色
   // 逐级查询到缓存 的 Users
@@ -71,13 +71,13 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
     ],
   })
   // 没有找到角色
-  if (!findRole) return res.result(void 0, "删除角色时，没有找到角色哦~", false)
+  if (!findRole) return res.result(void 0, "删除角色时，没有找到角色", false)
 
   // 得到 name
   const name = findRole.dataValues?.name
   // 限制指定的name 不能修改
   if (name === default_owner || name === default_admin)
-    return res.result(void 0, `不可删除名字为${name}的角色哦~`, false)
+    return res.result(void 0, `不可删除名字为${name}的角色`, false)
 
   // 找到提取需要的信息
   const { id } = findRole.dataValues

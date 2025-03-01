@@ -18,12 +18,12 @@ router.put(
     let cacheKey = "bannerImg:*"
     let cacheKey2 = "bannerImg:bin:*"
     const { id, dark, light, height } = req.body
-    if (!id) return res.result(void 0, "更新背景失败,id是必传项哦~", false)
+    if (!id) return res.result(void 0, "更新背景失败,id是必传项", false)
 
     try {
       const findBanner = await BannerImg.findByPk(id)
       if (!findBanner)
-        return res.result(void 0, "更新背景失败,没有找到背景数据哦~", false)
+        return res.result(void 0, "更新背景失败,没有找到背景数据", false)
       // 更新 数据
       await findBanner.set("dark", dark || null)
       await findBanner.set("light", light || null)

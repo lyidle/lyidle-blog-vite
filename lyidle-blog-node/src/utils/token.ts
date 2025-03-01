@@ -14,7 +14,7 @@ export const setToken = async (userInfo: typeof request.auth) => {
   let tokenData: Partial<typeof request.auth> = {}
 
   if (!Object.keys(userInfo).length) {
-    throw new myError("otherError", "生成用户token时出错了哦~")
+    throw new myError("otherError", "生成用户token时出错了")
   }
 
   tokenData.id = userInfo.id

@@ -33,7 +33,7 @@ export const uploadImgTempFile = () => {
       if (res.code !== 200 && res.code !== 401) {
         result.code = 1 //失败
         result.msg = "上传图片失败"
-        ElMessage.error("上传图片失败哦~")
+        ElMessage.error("上传图片失败")
       }
 
       if (result.code === 200)
@@ -63,7 +63,7 @@ export const uploadImgTempFile = () => {
       // 成功
       if (res.code === 200) {
         res.data?.errFiles?.forEach((item: string) =>
-          ElMessage.error(`${item}上传失败哦~`)
+          ElMessage.error(`${item}上传失败`)
         )
         for (const msg in res.data?.succMap) {
           ElMessage.success(`${msg}上传成功~`)
@@ -82,11 +82,11 @@ export const uploadImgTempFile = () => {
       }
 
       res.data?.errFiles?.map((item: string) => {
-        ElMessage.error(`${item}上传失败哦~`)
+        ElMessage.error(`${item}上传失败`)
       })
 
       errorResult.data.errFiles?.forEach((item) =>
-        ElMessage.error(`${item}上传失败哦~`)
+        ElMessage.error(`${item}上传失败`)
       )
       return JSON.stringify(errorResult)
     },

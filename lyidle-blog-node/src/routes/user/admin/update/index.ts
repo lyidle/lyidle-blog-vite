@@ -158,7 +158,7 @@ router.put(
       // 都没有时返回没有找到
       if (!account && !email && !nickName) {
         await transaction.rollback() // 回滚事务
-        return res.result(void 0, "修改用户失败哦~", false)
+        return res.result(void 0, "修改用户失败", false)
       }
 
       // 查询

@@ -31,7 +31,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     const { count, rows } = await Role.findAndCountAll(commend)
 
     // 判断是否有 角色
-    if (!count) return res.result(void 0, "服务器角色未初始化哦~", false)
+    if (!count) return res.result(void 0, "服务器角色未初始化", false)
 
     const result = {
       pagination: {
@@ -45,7 +45,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     res.result(result, "获取所有角色成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取所有角色失败哦~", false)
+      res.result(void 0, "获取所有角色失败", false)
     )
   }
 })

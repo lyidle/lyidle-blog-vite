@@ -18,8 +18,7 @@ router.get(
     try {
       // 得到id
       const id = req.auth.id
-      if (!id)
-        throw new myError("otherError", "获取用户信息时 jwt 出错没有id哦~")
+      if (!id) throw new myError("otherError", "获取用户信息时 jwt 出错没有id")
 
       // 缓存用户信息
       const cacheValue = await getKey(`userInfo:bin:${id}`)

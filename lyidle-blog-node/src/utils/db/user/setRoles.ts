@@ -7,10 +7,7 @@ import myError from "@/utils/error/myError"
 // 设置和创建权限 权限没有时才创建
 export const setRoles = async (roles: string[]) => {
   if (!(roles && Array.isArray(roles))) {
-    throw new myError(
-      "otherError",
-      "设置和创建角色时，roles必须要是一个数组哦~"
-    )
+    throw new myError("otherError", "设置和创建角色时，roles必须要是一个数组")
   }
   // 去重 加过滤
   const _roles = deduplication(roles).filter(Boolean)

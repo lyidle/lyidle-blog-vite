@@ -306,49 +306,47 @@ const handlerDelete = async (row: Role) => {
 
 // 批量软删除
 const handlerAllRemove = async () => {
-  let id: number
-  if (!roleIds.value?.length) return ElMessage.warning("没有需要删除的角色哦~")
+  if (!roleIds.value?.length) return ElMessage.warning("没有需要软删除的角色")
   try {
     await Promise.all(
       roleIds.value.map(async (item) => {
-        id = item
         try {
           // 软删除
-          await managerRemoveRole(id)
-        } catch (error) {}
+          await managerRemoveRole(item)
+        } catch (error) {
+          ElMessage.warning(`批量软删除时,id:${item}删除失败~`)
+        }
       })
     )
     // 重新请求
     await handlerReq()
-    ElMessage.success(`批量删除成功,已成功移动到垃圾桶~`)
+    ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
   } catch (error) {
     // 重新请求
     await handlerReq()
-    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
-  let id: number
-  if (!roleIds.value?.length) return ElMessage.warning("没有需要删除的角色哦~")
+  if (!roleIds.value?.length) return ElMessage.warning("没有需要彻底删除的角色")
   try {
     await Promise.all(
       roleIds.value.map(async (item) => {
-        id = item
         try {
           // 彻底删除
-          await managerDeleteRole(id)
-        } catch (error) {}
+          await managerDeleteRole(item)
+        } catch (error) {
+          ElMessage.warning(`批量彻底删除时,id:${item}删除失败~`)
+        }
       })
     )
     // 重新请求
     await handlerReq()
-    ElMessage.success(`批量删除成功,已成功删除~`)
+    ElMessage.success(`批量彻底删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
     await handlerReq()
-    ElMessage.warning(`批量删除时,id:${id!}删除失败~`)
   }
 }
 </script>

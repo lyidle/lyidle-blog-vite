@@ -11,11 +11,34 @@ interface ApiResponse {
   [property: string]: any
 }
 
+// 处理 错误请求
+export const handlerReqErr = (
+  error: any,
+  typeOrCallback:
+    | "warning"
+    | "info"
+    | "error"
+    | ((err: string[] | undefined) => void)
+): boolean => {
+  const err =
+    Array.isArray(error?.message) && error.message.length && error.message
+  if (err) {
+    if (typeof typeOrCallback === "function") {
+      typeOrCallback(err)
+      return true
+    }
+    err.forEach((msg: string) => {
+      ElMessage({ message: msg, type: typeOrCallback })
+    })
+    return true
+  }
+  return false
+}
+
 /**
  * 处理成功响应中的错误提示信息
  * @param response - 后端返回的响应数据
  */
-
 export const handlerSuccessErrorMessage = (response: {
   data: ApiResponse
 }): void | any => {

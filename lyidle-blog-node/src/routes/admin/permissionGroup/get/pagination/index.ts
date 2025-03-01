@@ -32,7 +32,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     const { count, rows } = await PermissionGroup.findAndCountAll(commend)
 
     // 判断是否有 权限组
-    if (!count) return res.result(void 0, "服务器权限组未初始化哦~", false)
+    if (!count) return res.result(void 0, "服务器权限组未初始化", false)
 
     const result = {
       pagination: {
@@ -46,7 +46,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     res.result(result, "获取所有权限组成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取所有权限组失败哦~", false)
+      res.result(void 0, "获取所有权限组失败", false)
     )
   }
 })

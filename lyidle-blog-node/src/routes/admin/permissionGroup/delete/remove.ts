@@ -50,7 +50,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: groupId } = req.body
 
   if (!groupId)
-    return res.result(void 0, "删除权限菜单时，没有找到权限菜单哦~", false)
+    return res.result(void 0, "删除权限菜单时，没有找到权限菜单", false)
 
   // 查找是否有权限组菜单
   // 逐级查询到缓存 的 Users
@@ -82,13 +82,13 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   })
   // 没有找到权限组菜单
   if (!findGroup)
-    return res.result(void 0, "删除权限菜单时，没有找到权限菜单哦~", false)
+    return res.result(void 0, "删除权限菜单时，没有找到权限菜单", false)
 
   // 得到 name
   const name = findGroup.dataValues?.name
   // 限制指定的name 不能修改
   if (name === default_owner || name === default_admin)
-    return res.result(void 0, `不可删除名字为${name}的权限组哦~`, false)
+    return res.result(void 0, `不可删除名字为${name}的权限组`, false)
 
   // 找到提取需要的信息
   const { id } = findGroup.dataValues

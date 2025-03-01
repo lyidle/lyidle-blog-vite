@@ -21,24 +21,20 @@ const handlerTransform = async (
 
   // 判断 有无需要转换的 图片
   if (Array.isArray(tempImg) && !tempImg.length)
-    return res.result(void 0, "没有需要转换的图片哦~", false)
+    return res.result(void 0, "没有需要转换的图片", false)
 
   // 没有 作者 和 路径
   if (isAccount && (!account || !path)) {
     return res.result(
       void 0,
-      "临时图片转永久图片，作者和路径是必须要有的参数哦~",
+      "临时图片转永久图片，作者和路径是必须要有的参数",
       false
     )
   }
 
   // 不需要传入 account参数 path 不存在
   if (!isAccount && !path) {
-    return res.result(
-      void 0,
-      "临时图片转永久图片，路径是必须要有的参数哦~",
-      false
-    )
+    return res.result(void 0, "临时图片转永久图片，路径是必须要有的参数", false)
   }
 
   // 存在 account 判断是否真实存在
@@ -53,7 +49,7 @@ const handlerTransform = async (
     if (fndAccount === null)
       return res.result(
         void 0,
-        "临时图片转永久图片，用户不存在或在垃圾桶里哦~",
+        "临时图片转永久图片，用户不存在或在垃圾桶里",
         false
       )
   }
@@ -79,7 +75,7 @@ const handlerTransform = async (
   } catch (error) {
     return res.result(
       { tempImgNull: [], successImg: [] },
-      "图片转换失败哦~",
+      "图片转换失败",
       false
     )
   }

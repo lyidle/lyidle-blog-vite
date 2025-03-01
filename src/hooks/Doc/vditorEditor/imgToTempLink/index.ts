@@ -16,7 +16,7 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
     click: throttle(async () => {
       // 获取 md的信息
       const value = vditor.value?.getValue()
-      if (!value?.trim()) return ElMessage.warning("没有需要处理的图片哦~")
+      if (!value?.trim()) return ElMessage.warning("没有需要处理的图片")
       let match: RegExpExecArray | null
       const urls = new Set<string>()
       // 判断有无值
@@ -35,7 +35,7 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
       urls.clear()
 
       // 如果数组为空，直接返回警告
-      if (!arr.length) return ElMessage.warning("没有需要处理的图片哦~")
+      if (!arr.length) return ElMessage.warning("没有需要处理的图片")
 
       // 使用 map 和 Promise.all 并发处理图片请求
       try {
@@ -50,8 +50,10 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
                 }
               }
             } catch (error) {
+              ElMessage.warning(`转换${item}为链接失败~`)
               return null
             }
+            ElMessage.warning(`转换${item}为链接失败~`)
             return null
           })
         )
@@ -65,7 +67,7 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
           .join("|")
 
         // 如果没有需要处理的图片，则退出
-        if (!Origins) return ElMessage.warning("没有需要处理的图片哦~")
+        if (!Origins) return ElMessage.warning("没有需要处理的图片")
 
         // 构造正则表达式匹配多个 origin
         const reg = new RegExp(Origins, "g")
@@ -79,8 +81,10 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
 
         // 处理完后替换内容
         vditor.value?.setValue(contentValue)
-        ElMessage.success("图片链接替换成功~")
-      } catch (error) {}
+        ElMessage.success("批量图片转链接成功~")
+      } catch (error) {
+        ElMessage.warning("批量图片转链接失败~")
+      }
     }, 1000),
   }
 }

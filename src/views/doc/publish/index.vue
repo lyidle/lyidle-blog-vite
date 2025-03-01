@@ -47,7 +47,7 @@
             <my-tags
               v-model="docsFormData.tags"
               ref="tagsInstance"
-              repeatError="标签不能重复哦~"
+              repeatError="标签不能重复"
               :error="tagsReg.msg"
               class="ml-0.625rem"
             ></my-tags>
@@ -137,7 +137,7 @@ const resetDoc = async () => {
           // 删除失败 说明临时图片没有了
           poster.value = []
           ElMessage.warning({
-            message: `删除文件${url}失败,临时图片被销毁了哦~`,
+            message: `删除文件${url}失败,临时图片被销毁了`,
             customClass: "selectMessage",
           })
         },
@@ -167,7 +167,7 @@ const rules = reactive({
   title: [
     {
       required: true,
-      message: "标题不能为空哦~",
+      message: "标题不能为空",
       trigger: "change",
     },
     {
@@ -179,7 +179,7 @@ const rules = reactive({
   category: [
     {
       required: true,
-      message: "文章分类不能为空哦~",
+      message: "文章分类不能为空",
       trigger: "change",
     },
     {
@@ -191,7 +191,7 @@ const rules = reactive({
   desc: [
     {
       required: true,
-      message: "文章描述不能为空哦~",
+      message: "文章描述不能为空",
       trigger: "change",
     },
     {
@@ -288,8 +288,10 @@ const handerUpload = async () => {
       router.replace(`/doc/${docId}`)
       mdAndFormReset()
     }
-    ElMessage.success("上传文章成功~")
-  } catch (error) {}
+    ElMessage.success("发布文章成功~")
+  } catch (error) {
+    ElMessage.error("发布文章失败~")
+  }
 }
 
 // 使用 编辑器是否全屏的hook

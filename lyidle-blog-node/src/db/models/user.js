@@ -35,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "账号不能为空哦~" },
-          notEmpty: { msg: "账号不能为空哦~" },
+          notNull: { msg: "账号不能为空" },
+          notEmpty: { msg: "账号不能为空" },
           is: {
             args: accountReg.reg,
             msg: accountReg.msg,
@@ -47,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(32),
         allowNull: false,
         validate: {
-          notNull: { msg: "用户名不能为空哦~" },
-          notEmpty: { msg: "用户名不能为空哦~" },
+          notNull: { msg: "用户名不能为空" },
+          notEmpty: { msg: "用户名不能为空" },
           is: {
             args: nickNameReg.reg,
             msg: nickNameReg.msg,
@@ -59,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: { msg: "密码不能为空哦~" },
-          notEmpty: { msg: "密码不能为空哦~" },
+          notNull: { msg: "密码不能为空" },
+          notEmpty: { msg: "密码不能为空" },
         },
         // 使用hash加密
         set(value) {
@@ -73,8 +73,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "邮箱不能为空哦~" },
-          notEmpty: { msg: "邮箱不能为空哦~" },
+          notNull: { msg: "邮箱不能为空" },
+          notEmpty: { msg: "邮箱不能为空" },
           is: {
             args: emailReg.reg,
             msg: emailReg.msg,

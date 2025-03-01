@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "访客标识不能为空哦~" },
-          notEmpty: { msg: "访客标识不能为空哦~" },
+          notNull: { msg: "访客标识不能为空" },
+          notEmpty: { msg: "访客标识不能为空" },
         },
       },
     },

@@ -18,15 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "角色名字不能为空哦~" },
-          notEmpty: { msg: "角色名字不能为空哦~" },
-          len: { args: [1, 32], msg: "角色名字长度必须在1-32之间哦~" },
+          notNull: { msg: "角色名字不能为空" },
+          notEmpty: { msg: "角色名字不能为空" },
+          len: { args: [1, 32], msg: "角色名字长度必须在1-32之间" },
         },
       },
       desc: {
         type: DataTypes.STRING,
         validate: {
-          len: { args: [0, 255], msg: "角色描述长度必须在0-255之间哦~" },
+          len: { args: [0, 255], msg: "角色描述长度必须在0-255之间" },
         },
       },
       isBin: DataTypes.DATE,

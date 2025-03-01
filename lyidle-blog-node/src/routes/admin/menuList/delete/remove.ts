@@ -33,7 +33,7 @@ const deleted = async (delMenu: any, id: number, roles: string[]) => {
 const remove = async (req: any, res: any, bin: boolean = false) => {
   const { id: menuId } = req.body
 
-  if (!menuId) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
+  if (!menuId) return res.result(void 0, "删除菜单时，没有找到菜单", false)
 
   // 查找是否有菜单
   const findMenu = await Menu.findByPk(menuId, {
@@ -48,7 +48,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
     ],
   })
   // 没有找到菜单
-  if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单哦~", false)
+  if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单", false)
 
   // 找到提取需要的信息
   const { id } = findMenu.dataValues

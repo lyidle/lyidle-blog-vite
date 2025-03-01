@@ -21,7 +21,7 @@ enum API {
   searchArticle = "/article/search",
   searchArticleExact = "/article/search/exact",
   searchArticleMerge = "/article/search/merge",
-  searchArticleMergeExact = "/api/article/search/merge/exact",
+  searchArticleMergeExact = "/article/search/merge/exact",
   // 通过id搜索
   getOneArticle = "/article/get/id",
   // 通过 id和作者搜索
@@ -50,42 +50,26 @@ const server = import.meta.env.VITE_SERVE
 // 获取焦点轮播图
 export const getCarousel = (data?: GetCarouselQuery) =>
   request.get<any, GetCarousel["data"]>(
-    `${server + prefix + API.getCarousel}${
-      data?.limit ? `/?limit=${data?.limit}` : ""
-    }`
+    `${server + prefix + API.getCarousel}` + `/?${new URLSearchParams(data)}`
   )
 
 // 获取文章
 export const getArticle = (data: GetArticleQuery) =>
   request.get<any, GetArticle["data"]>(
-    `${server + prefix + API.getArticle}${
-      data.currentPage && data.pageSize
-        ? `/?currentPage=${data.currentPage}&pageSize=${data.pageSize}`
-        : ""
-    }`
+    `${server + prefix + API.getArticle}` + `/?${new URLSearchParams(data)}`
   )
 
 // 获取最新文章
 export const getRecentPages = (data?: GetRecentPagesQuery) =>
   request.get<any, GetRecentPages["data"]>(
-    `${server + prefix + API.getRecentPages}${
-      data?.limit ? `/?limit=${data?.limit}` : ""
-    }`
+    `${server + prefix + API.getRecentPages}` + `/?${new URLSearchParams(data)}`
   )
 
 // 搜索文章的回调
 const searchArticleCallback =
   (api: APIKeysType) => (data: SearchArticleQuery) =>
     request.get<any, SearchArticle["data"]>(
-      `${server + prefix + API[api]}` +
-        `${data.id ? `/?id=${data.id}` : ""}` +
-        `${data.author ? `/?author=${data.author}` : ""}` +
-        `${data.category ? `/?category=${data.category}` : ""}` +
-        `${data.desc ? `/?desc=${data.desc}` : ""}` +
-        `${data.tags ? `/?tags=${data.tags}` : ""}` +
-        `${data.title ? `/?title=${data.title}` : ""}` +
-        `${data.currentPage ? `&currentPage=${data.currentPage}` : ""}` +
-        `${data.pageSize ? `&pageSize=${data.pageSize}` : ""}`
+      `${server + prefix + API[api]}` + `/?${new URLSearchParams(data)}`
     )
 
 // 模糊搜索文章
@@ -111,9 +95,8 @@ export const getOneArticle = (id: string | number) =>
 // 按照 作者 和 文章id 获取文章
 export const getArticleByAuthorAndId = (data: GetArticleByAuthorAndIdQuery) =>
   request.get<any, GetOneArticle["data"]>(
-    `${server + prefix + API.getArticleByAuthorAndId}/?author=${
-      data.author
-    }&id=${data.id}`
+    `${server + prefix + API.getArticleByAuthorAndId}` +
+      `/?${new URLSearchParams(data)}`
   )
 
 // 增加文章

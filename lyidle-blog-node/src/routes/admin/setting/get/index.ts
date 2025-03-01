@@ -20,7 +20,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     // 汇总 错误信息
-    if (!name) return res.result(void 0, "name是必传项哦~", false)
+    if (!name) return res.result(void 0, "name是必传项", false)
     const { dataValues } = await Setting.findOne({ where: { name } })
 
     // 成功设置缓存

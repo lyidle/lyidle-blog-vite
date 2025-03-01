@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "背景的路径名字不能为空哦~" },
-          notEmpty: { msg: "背景的路径名字不能为空哦~" },
+          notNull: { msg: "背景的路径名字不能为空" },
+          notEmpty: { msg: "背景的路径名字不能为空" },
           async isMenuExist(value) {
             const findOne = await sequelize.models.Menu.findOne({
               where: { to: value },
               paranoid: false,
             })
-            if (!findOne) throw new Error("背景的路径在菜单中不存在哦~")
+            if (!findOne) throw new Error("背景的路径在菜单中不存在")
           },
         },
       },

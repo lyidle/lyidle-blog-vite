@@ -27,7 +27,7 @@ export const saveMenuCache = (roles: string[] | string) => {
   if (roles === "*") return `menu:*`
   // 不在 预期之类 报错
   if (typeof roles === "string") {
-    throw new myError("otherError", `缓存menu时出错,保存的键是预期之外的键哦~`)
+    throw new myError("otherError", `缓存menu时出错,保存的键是预期之外的键`)
   }
   return genCacheKey("menu:", roles)
 }

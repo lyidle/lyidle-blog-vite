@@ -31,7 +31,7 @@
               v-model="createData.roles"
               min="0"
               max="5"
-              error="标签个数需要在0-5之间哦~"
+              error="标签个数需要在0-5之间"
               ref="tagsInstance"
               class="mr-10px"
               left="10px"
@@ -60,7 +60,8 @@
 import type { Datum } from "@/api/admin/types/getMenuList"
 import type { CreateMenuListBody } from "@/api/admin/types/createMenuListBody"
 import { createMenuList } from "@/api/admin"
-
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 const centerDialogVisible = ref(false)
 
 const createData = reactive<CreateMenuListBody>({
@@ -72,7 +73,7 @@ const createData = reactive<CreateMenuListBody>({
 // 创建规则
 const createRules = reactive({
   name: [
-    { required: true, trigger: "change", message: "菜单名是必填项哦~" },
+    { required: true, trigger: "change", message: "菜单名是必填项" },
     {
       required: true,
       trigger: "change",
@@ -117,11 +118,14 @@ const handlerConfirm = async () => {
     // 触发 tags的验证
     tagsInstance.value.validate?.()
     await createMenuList(createData)
-    ElMessage.success(`创建角色成功~`)
+    ElMessage.success(`创建菜单成功~`)
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("创建菜单失败~")
+  }
 }
 
 // 暴露

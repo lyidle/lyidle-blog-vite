@@ -8,7 +8,7 @@ router.get("/", async (req, res, next) => {
   const id = req.query.id
   const author = req.query.author
   if (!id || !author)
-    return res.result(void 0, "id、author是必传项哦~", false, 404)
+    return res.result(void 0, "id、author是必传项", false, 404)
 
   const cacheKey = `ArticlefindAuthorAndId:${author}:${id}`
   // 获取缓存 有直接返回
@@ -20,9 +20,9 @@ router.get("/", async (req, res, next) => {
       where: { id, author },
     })
 
-    if (!result) return res.result(void 0, "没有查找到文章哦~", false, 404)
+    if (!result) return res.result(void 0, "没有查找到文章", false, 404)
     if (result.dataValues.isBin)
-      return res.result(void 0, "文章被删除了哦~", false, 404)
+      return res.result(void 0, "文章被删除了", false, 404)
 
     // 获取成功时 设置缓存
     await setKey(cacheKey, result)
@@ -30,7 +30,7 @@ router.get("/", async (req, res, next) => {
     res.result(result, "获取文章成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取文章失败哦~", false, 404)
+      res.result(void 0, "获取文章失败", false, 404)
     )
   }
 })

@@ -22,7 +22,7 @@ router.post(
       const { id, roles } = req.body
 
       if (!id || !roles?.length)
-        return res.result(void 0, "设置用户权限时,id和roles是必传项哦~", false)
+        return res.result(void 0, "设置用户权限时,id和roles是必传项", false)
 
       // 查询对应id的信息
       const findUser = await User.findByPk(id, {

@@ -99,6 +99,8 @@ import { updateUser, updateUserEmail } from "@/api/user"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 import { UpdateUserBody } from "@/api/user/types/updateUserBody"
 import { postImgPermanent, removeFileStatic } from "@/api/img"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 导入 默认的图片
 const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
@@ -130,14 +132,14 @@ const avatar = ref([{ name: "default", url: userEditorData.avatar }])
 // 确认密码验证回调
 const validatorConfirm = (_: any, value: any, next: any) => {
   if (value !== userEditorData.password)
-    return next(new Error("确认密码需要与密码一致哦~"))
+    return next(new Error("确认密码需要与密码一致"))
   next()
 }
 
 // 注册规则
 const formRules = reactive({
   account: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -146,7 +148,7 @@ const formRules = reactive({
     },
   ],
   nickName: [
-    { required: true, trigger: "change", message: "用户名是必填项哦~" },
+    { required: true, trigger: "change", message: "用户名是必填项" },
     {
       required: true,
       trigger: "change",
@@ -155,12 +157,12 @@ const formRules = reactive({
     },
   ],
   password: [
-    { trigger: "change", message: "密码是必填项哦~" },
+    { trigger: "change", message: "密码是必填项" },
     {
       trigger: "change",
       min: 6,
       max: 12,
-      message: "密码必须要在6-12位哦~",
+      message: "密码必须要在6-12位",
     },
     {
       trigger: "change",
@@ -221,7 +223,10 @@ const handlerCode = async () => {
         clearInterval(tim)
       }
     }, 1000)
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "warning")
+    if (!err) ElMessage.error("发送验证码失败")
+  }
 }
 
 // 更新的 回调
@@ -249,7 +254,7 @@ const handlerUpdate = async () => {
         const { successImg, tempImgNull } = result
         // 临时图片失效的
         if (tempImgNull.length) {
-          ElMessage.error("修改用户头像失败哦~")
+          ElMessage.error("修改用户头像失败")
         }
         // 得到 成功的poster
         const _poster = successImg?.[0]?.url
@@ -288,8 +293,11 @@ const handlerUpdate = async () => {
       }, 0)
     })
 
-    ElMessage.success("修改成功~")
-  } catch (error) {}
+    ElMessage.success("更新用户信息成功~")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("更新用户信息失败~")
+  }
 }
 </script>
 

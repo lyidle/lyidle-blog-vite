@@ -116,7 +116,7 @@ export const getPoetry = () =>
 // 获取设置信息
 export const findOneSetting = (name: string) =>
   request.get<any, FindOneSetting["data"]>(
-    server + prefix + API.findOneSetting + `?name=${name}`
+    server + prefix + API.findOneSetting + `/?name=${name}`
   )
 
 // 获取 所有的角色信息
@@ -129,10 +129,7 @@ export const findAllRolesPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllRolesPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${
-        data?.pageSize || 10
-      }` +
-      `${data?.name ? `&name=${data.name}` : ""}`
+      `/?${new URLSearchParams(data)}`
   )
 
 // 创建角色 登录用户需要拥有权限
@@ -163,10 +160,7 @@ export const findAllGroupsPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllGroupsPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${
-        data?.pageSize || 10
-      }` +
-      `${data?.name ? `&name=${data.name}` : ""}`
+      `/?${new URLSearchParams(data)}`
   )
 
 // 彻底删除权限组 登录用户需要拥有权限
@@ -202,10 +196,7 @@ export const findAllPermissionsPagination = (data?: paginationQuery) =>
     server +
       prefix +
       API.findAllPermissionsPagination +
-      `/?currentPage=${data?.currentPage || 1}&pageSize=${
-        data?.pageSize || 10
-      }` +
-      `${data?.name ? `&name=${data.name}` : ""}`
+      `/?${new URLSearchParams(data)}`
   )
 
 // 彻底删除权限 登录用户需要拥有权限
@@ -233,13 +224,7 @@ export const getBannerImg = (isBin: boolean = false) =>
 
 export const getBannerImgPagination = (data: GetBannerImgPaginationQuery) =>
   request.get<any, GetBannerImgPagination["data"]>(
-    server +
-      prefix +
-      API.bannerImgPagination +
-      `/?isBin=${JSON.stringify(true)}` +
-      `&currentPage=${data.currentPage || 1}` +
-      `&pageSize=${data.pageSize || 10}` +
-      `${data.name ? `&name=${data.name}` : ""}`
+    server + prefix + API.bannerImgPagination + `/?${new URLSearchParams(data)}`
   )
 // 更新背景 登录用户需要拥有权限
 export const managerUpdateBannerImg = (data: UpdateBannerImg) =>

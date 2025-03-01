@@ -64,6 +64,9 @@ import { User } from "@/api/user/types/searchUserPagination"
 import { accountReg, emailReg, nickNameReg } from "@/RegExp/loginOrReg"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
+
 // 导出 函数
 const { userInfoByToken } = useUserStore()
 const centerDialogVisible = ref(false)
@@ -82,7 +85,7 @@ const createData = reactive<User>({
 // 编辑规则
 const editorRules = reactive({
   account: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -91,7 +94,7 @@ const editorRules = reactive({
     },
   ],
   nickName: [
-    { required: true, trigger: "change", message: "账号是必填项哦~" },
+    { required: true, trigger: "change", message: "账号是必填项" },
     {
       required: true,
       trigger: "change",
@@ -144,7 +147,10 @@ const handlerConfirm = async () => {
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("修改用户信息失败~")
+  }
 }
 // 暴露
 defineExpose({ init })

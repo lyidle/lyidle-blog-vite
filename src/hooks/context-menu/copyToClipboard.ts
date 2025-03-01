@@ -34,7 +34,7 @@ export const handleContextMenu = async (event: MouseEvent): Promise<void> => {
       ElMessage.success(`文本已成功复制到剪贴板~`)
       return
     }
-    ElMessage.warning("没有选中的文本哦~")
+    ElMessage.warning("没有选中的文本")
   } catch (error) {
     ElMessage.error(`复制失败了哦，错误是:${error}`)
   }

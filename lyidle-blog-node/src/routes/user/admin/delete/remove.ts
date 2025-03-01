@@ -35,7 +35,7 @@ const deleted = async (findUser: any, articles: any[]) => {
   // 越界判断
   if (num < 0) {
     num = 0
-    console.warn("删除用户时,redis的缓存出现负数的情况哦~")
+    console.warn("删除用户时,redis的缓存出现负数的情况")
   }
 
   // 设置用户数量
@@ -78,12 +78,12 @@ const remove = async (
   let { id } = req.body
   if (_id) id = _id
 
-  if (!id) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
+  if (!id) return res.result(void 0, "删除用户时，没有找到用户", false)
 
   // 查找是否有用户
   const findUser = await findUserByPk(id)
   // 没有找到用户
-  if (!findUser) return res.result(void 0, "删除用户时，没有找到用户哦~", false)
+  if (!findUser) return res.result(void 0, "删除用户时，没有找到用户", false)
 
   // 找到提取需要的信息
   const { id: userId } = findUser.dataValues
@@ -95,7 +95,7 @@ const remove = async (
   if (isAuth) {
     // 判断是否是用户的用户
     if (req.auth.id !== userId) {
-      return res.result(void 0, "删除用户时，不能删除他人的用户哦~", false)
+      return res.result(void 0, "删除用户时，不能删除他人的用户", false)
     }
   }
 

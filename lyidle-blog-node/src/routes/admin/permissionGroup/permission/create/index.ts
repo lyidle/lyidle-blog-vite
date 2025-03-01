@@ -18,7 +18,7 @@ router.post(
     let cacheKey = `permissions:*`
 
     if (!name)
-      return res.result(void 0, "创建权限子菜单name是必须要有的哦~", false)
+      return res.result(void 0, "创建权限子菜单name是必须要有的", false)
 
     try {
       const setData = {

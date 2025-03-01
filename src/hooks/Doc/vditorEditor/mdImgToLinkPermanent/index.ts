@@ -91,5 +91,7 @@ export const useMdImgToLinkPermanent = async (
         return result
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.warning("临时图片转为永久链接失败~")
+  }
 }

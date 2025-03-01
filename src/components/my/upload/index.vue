@@ -134,8 +134,9 @@ const handlerUpload: UploadProps["httpRequest"] = async (options) => {
       fileList.value = []
       response.errFiles.forEach((item) => ElMessage.error(`${item} 上传失败~`))
     }
-  } catch (error: any) {
+  } catch (error) {
     fileList.value = []
+    ElMessage.error(`上传文件失败`)
   }
 }
 </script>

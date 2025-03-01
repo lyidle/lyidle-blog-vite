@@ -61,20 +61,18 @@
           >
           </layout-content-card>
         </div>
-      </my-card>
-    </template>
 
-    <template #content-end>
-      <div class="flex justify-center">
-        <my-pagination
-          v-if="pagination?.total"
-          background
-          layout="prev, pager, next, sizes"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 30]"
-          @change="reqArticles"
-        />
-      </div>
+        <div class="flex justify-center mt-30px">
+          <my-pagination
+            v-if="pagination?.total"
+            background
+            layout="prev, pager, next, sizes"
+            :total="pagination.total"
+            :page-sizes="[10, 20, 30]"
+            @change="reqArticles"
+          />
+        </div>
+      </my-card>
     </template>
   </layout-content>
 </template>

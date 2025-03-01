@@ -29,7 +29,7 @@ router.put(
     const { id, name, desc } = req.body
 
     // 没有 id、name 返回失败
-    if (!id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项", false)
 
     try {
       // 存储查询到的结果
@@ -72,7 +72,7 @@ router.put(
       })
 
       if (!findPermission)
-        return res.result(void 0, "没有找到需要更新的权限菜单哦~", false)
+        return res.result(void 0, "没有找到需要更新的权限菜单", false)
 
       // 找到 了 则更新
       name && findPermission.set("name", name)

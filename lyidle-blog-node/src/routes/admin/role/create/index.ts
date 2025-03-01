@@ -20,7 +20,7 @@ router.post(
       if (name === default_owner)
         return res.result(
           void 0,
-          `创建角色失败哦，不能创建${default_owner}角色哦~`,
+          `创建角色失败哦，不能创建${default_owner}角色`,
           false
         )
 
@@ -40,7 +40,7 @@ router.post(
       res.result(result, "创建角色成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "创建角色失败哦~", false)
+        res.result(void 0, "创建角色失败", false)
       )
     }
   }

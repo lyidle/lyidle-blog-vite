@@ -55,7 +55,9 @@ export const useOwnerStore = defineStore("Owner", () => {
         adminTags.value = adminResult?.[0].counts.tags
         adminCategories.value = adminResult?.[0].counts.categories
       }
-    } catch (error) {}
+    } catch (error) {
+      ElMessage.error("网站所有者账号未初始化")
+    }
   }
 
   // 获取设置里的联系方式

@@ -47,7 +47,9 @@ onMounted(async () => {
     const result = await getTagsAll(author)
     // 得到 tags
     tags.value = result
-  } catch (error) {}
+  } catch (error) {
+    ElMessage.error("获取用户的所有标签失败~")
+  }
 })
 </script>
 

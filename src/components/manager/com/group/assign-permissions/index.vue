@@ -47,6 +47,8 @@ import { findAllPermissions, managerSetGroupPermissions } from "@/api/admin"
 // 引入 类型
 import type { CheckboxValueType } from "element-plus"
 import type { Group } from "@/api/admin/types/findAllGroupsPagination"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 // drawer是否显示
 const drawer = ref<boolean>(false)
 // 选中的数据
@@ -118,7 +120,11 @@ const handlerConfirm = async () => {
     await emit("req")
     drawer.value = false
     ElMessage.success("分配权限组的权限成功~")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("分配权限组的权限失败~")
+    return
+  }
 }
 
 defineExpose({ init })

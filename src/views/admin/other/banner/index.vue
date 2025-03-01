@@ -174,6 +174,8 @@ const toggleBanner = async (row: Banner) => {
     await handlerReq()
     ElMessage.success(`${isBin ? "恢复" : "禁用"}${name}背景成功~`)
   } catch (error) {
+    // 重新请求
+    await handlerReq()
     ElMessage.warning(`${isBin ? "恢复" : "禁用"}${name}背景失败~`)
   }
 }

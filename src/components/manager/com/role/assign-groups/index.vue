@@ -46,6 +46,8 @@
 import { findAllGroups, managerSetRoleGroups } from "@/api/admin"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 import type { CheckboxValueType } from "element-plus"
 // drawer是否显示
@@ -117,7 +119,10 @@ const handlerConfirm = async () => {
     await emit("req")
     drawer.value = false
     ElMessage.success("分配权限组的权限组成功~")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("分配权限组的权限组失败~")
+  }
 }
 
 defineExpose({ init })

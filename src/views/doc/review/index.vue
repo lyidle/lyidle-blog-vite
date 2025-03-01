@@ -154,6 +154,10 @@ import { useVditorPreview } from "@/hooks/Doc/vditorPreview"
 import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
 // 解压缩
 import { decompressString } from "@/utils/compression"
+// 引入 mitt
+import { mitt } from "@/utils/emitter"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
@@ -174,7 +178,10 @@ onBeforeMount(async () => {
           (decompressString(articles.content) as string) || articles.content
     } catch (error) {}
     article.value = articles
-  } catch (error) {}
+  } catch (error) {
+    handlerReqErr(error, "error")
+    mitt.emit("NotFound", "not article")
+  }
 })
 
 // 存储目录树

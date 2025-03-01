@@ -48,6 +48,8 @@ import { managerSetUserRoles } from "@/api/user"
 // 引入 类型
 import { User } from "@/api/user/types/searchUserPagination"
 import type { CheckboxValueType } from "element-plus"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 // drawer是否显示
 const drawer = ref<boolean>(false)
 // 选中的数据
@@ -115,7 +117,10 @@ const handlerConfirm = async () => {
     await emit("req")
     drawer.value = false
     ElMessage.success("分配用户的角色成功~")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("分配用户的角色失败~")
+  }
 }
 
 defineExpose({ init })

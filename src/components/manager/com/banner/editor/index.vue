@@ -27,7 +27,9 @@
             ></my-input>
           </el-form-item>
           <!-- bannerImg -->
-          <div class="text-color-[var(--primary-color)] text-center text-20px">
+          <div
+            class="text-color-[var(--primary-color)] text-center text-20px mt-20px"
+          >
             背景
           </div>
           <div class="flex justify-between mt-20px">
@@ -74,6 +76,8 @@ import type { UploadUserFile } from "element-plus"
 import { isValidCSSUnitReg } from "@/RegExp/Css/isValidCSSUnit "
 import { managerPostImgPermanent, removeFileStatic } from "@/api/img"
 import { managerUpdateBannerImg } from "@/api/admin"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 const centerDialogVisible = ref(false)
 
@@ -154,7 +158,7 @@ const updateImg = async (
     const { successImg, tempImgNull } = result
     // 临时图片失效的
     if (tempImgNull.length) {
-      ElMessage.error(`${StartWithMap[startWith]}的图片更新失败哦~`)
+      ElMessage.error(`${StartWithMap[startWith]}的图片更新失败`)
     }
     // 得到 成功的 img
     const _img = successImg?.[0]?.url
@@ -200,7 +204,10 @@ const handlerConfirm = async () => {
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
-  } catch (error) {}
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("修改背景图失败~")
+  }
 }
 // 暴露
 defineExpose({ init })

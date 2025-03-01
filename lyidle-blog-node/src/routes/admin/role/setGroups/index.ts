@@ -27,11 +27,7 @@ router.post(
       const { id, groups } = req.body
 
       if (!id || !groups?.length)
-        return res.result(
-          void 0,
-          "设置角色权限组时,id和groups是必传项哦~",
-          false
-        )
+        return res.result(void 0, "设置角色权限组时,id和groups是必传项", false)
 
       // 查询对应id的信息
       const findRole = await Role.findByPk(id, {

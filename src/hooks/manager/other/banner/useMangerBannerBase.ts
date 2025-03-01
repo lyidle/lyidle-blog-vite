@@ -6,6 +6,9 @@ import { getBannerImgPagination } from "@/api/admin"
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import type { paginationQuery } from "@/api/types/paginationQuery"
 import type { Banner } from "@/api/admin/types/getBannerImgPagination"
+// 引入 处理错误的 请求函数
+import { handlerReqErr } from "@/utils/request/error/successError"
+
 export const useMangerBannerBase = (searchKey: Ref<string>) => {
   // 当前页
   const currentPage = ref(1)
@@ -20,8 +23,11 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
       tableData.value = result.banners
       pagination.value = result.pagination
       currentPage.value = 1
-      ElMessage.success("搜索成功~")
-    } catch (error) {}
+      ElMessage.success("搜索背景图成功~")
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("搜索背景图失败~")
+    }
   }
 
   const handlerReset = async () => {
@@ -59,7 +65,10 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
       const result = await getBannerImgPagination(search)
       tableData.value = result.banners
       pagination.value = result.pagination
-    } catch (error) {}
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("查询背景图失败~")
+    }
   }
 
   // 监听窗口变化

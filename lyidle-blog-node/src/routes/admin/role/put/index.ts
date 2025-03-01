@@ -31,7 +31,7 @@ router.put(
     const cacheKey = "roles:*"
     const { id, name, desc } = req.body
     // 没有 id、name 返回失败
-    if (!id) return res.result(void 0, "id是必传项哦~", false)
+    if (!id) return res.result(void 0, "id是必传项", false)
 
     try {
       // 通过id 查找
@@ -55,8 +55,7 @@ router.put(
         ],
       })
 
-      if (!findRole)
-        return res.result(void 0, "没有找到需要更新的角色哦~", false)
+      if (!findRole) return res.result(void 0, "没有找到需要更新的角色", false)
 
       // 得到 name
       const _name = findRole.dataValues?.name
@@ -93,7 +92,7 @@ router.put(
 
       // 限制指定的name 不能修改
       if (_name === default_owner || _name === default_admin)
-        return res.result(_name, `不可修改名字为${_name}的角色哦~`)
+        return res.result(_name, `不可修改名字为${_name}的角色`)
 
       res.result(void 0, "更新角色成功~")
     } catch (error) {

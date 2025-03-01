@@ -42,8 +42,7 @@ const remove = async (
 ) => {
   const { id: articleId } = req.body
 
-  if (!articleId)
-    return res.result(void 0, "删除文章时，没有找到文章哦~", false)
+  if (!articleId) return res.result(void 0, "删除文章时，没有找到文章", false)
 
   // 查找是否有文章
   const findArticle = await Article.findByPk(articleId, {
@@ -65,8 +64,7 @@ const remove = async (
     ],
   })
   // 没有找到文章
-  if (!findArticle)
-    return res.result(void 0, "删除文章时，没有找到文章哦~", false)
+  if (!findArticle) return res.result(void 0, "删除文章时，没有找到文章", false)
   // 得到 user
   const user = JSON.parse(JSON.stringify(findArticle)).User
 
@@ -77,7 +75,7 @@ const remove = async (
   if (isAuth) {
     // 判断是否是用户的文章
     if (req.auth.id !== userId) {
-      return res.result(void 0, "删除文章时，不能删除他人的文章哦~", false)
+      return res.result(void 0, "删除文章时，不能删除他人的文章", false)
     }
   }
 
