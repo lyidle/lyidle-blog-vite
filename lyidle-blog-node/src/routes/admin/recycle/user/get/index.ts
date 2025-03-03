@@ -19,6 +19,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 查询命令
     const commend = {
+      paranoid: false,
       attributes: { exclude: ["pwd"] }, //排除密码
       where: {
         isBin: {

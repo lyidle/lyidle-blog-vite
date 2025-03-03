@@ -20,6 +20,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 查询命令
     const commend = {
+      paranoid: false,
       where: {
         isBin: {
           [Op.not]: null, // 不是 NULL

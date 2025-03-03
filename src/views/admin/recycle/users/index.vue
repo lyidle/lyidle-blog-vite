@@ -211,7 +211,7 @@
 <script setup lang="ts" name="AdminAccessUsers">
 import moment from "@/utils/moment"
 // 引入 hooks
-import { useManagerUserBase } from "@/hooks/manager/access/user/useManagerUserBase"
+import { useManagerUserBase } from "@/hooks/manager/recycle/user/useManagerUserBase"
 // 引入 接口api
 import { managerRemoveUser, managerDeleteUser } from "@/api/user"
 // 引入 类型
