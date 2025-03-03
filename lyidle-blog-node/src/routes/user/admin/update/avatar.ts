@@ -61,9 +61,6 @@ router.put(
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
 
-      // 提交事务
-      await transaction.commit()
-
       // 处理 token 字段 的roles
       const tokenSetRoles = ReturnRoles([findUser])
       // 重新生成 token
@@ -72,6 +69,8 @@ router.put(
       // 删除对应用户信息缓存
       await resetUserInfo([findUser], isOwner(tokenSetRoles))
 
+      // 提交事务
+      await transaction.commit()
       return res.result({ token }, "修改用户头像成功~")
     } catch (error) {
       // 如果出现错误，回滚事务

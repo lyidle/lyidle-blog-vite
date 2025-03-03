@@ -19,8 +19,9 @@ import update from "@/routes/email/update"
 import avatar from "./avatar"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
+import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入 模型
-const { User, Role } = require("@/db/models")
+const { User, Role, Article } = require("@/db/models")
 
 const db = require("@/db/models")
 const router = express.Router()
@@ -35,6 +36,12 @@ const findUserByPk = async (id: number) => {
         paranoid: false,
         attributes: ["name"], // 只获取角色名称
         through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+      },
+      {
+        model: Article,
+        as: "articles",
+        paranoid: false,
+        attributes: ["id", "author"],
       },
     ],
   })
@@ -104,13 +111,10 @@ router.put(
       findUser.set("signer", signer || null)
 
       // 验证 修改了的 属性字段
-      await validateChangedFields(findUser)
+      const changedFields = await validateChangedFields(findUser)
 
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
-
-      // 提交事务
-      await transaction.commit()
 
       let token = null
       // 处理 token 字段 的roles
@@ -126,9 +130,19 @@ router.put(
 
       // 删除对应用户信息缓存
       await resetUserInfo([findUser], isOwner(tokenSetRoles))
+      // 更改了 account
+      if (changedFields?.includes?.("account")) {
+        // 找到 articles
+        const findArticles = JSON.parse(JSON.stringify(findUser))?.articles
+        // 清除 对应的文章缓存
+        await resetArticle(findArticles, true)
+      }
 
       // 删除发送的 邮件 code 缓存 查询到的 原邮件
       await delKey(`updateCode:${findUser.dataValues?.email}`)
+
+      // 提交事务
+      await transaction.commit()
       return res.result({ token }, "修改用户信息成功~")
     } catch (error) {
       // 如果出现错误，回滚事务
@@ -174,13 +188,10 @@ router.put(
       nickName && findUser.set("nickName", nickName)
 
       // 验证 修改了的 属性字段
-      await validateChangedFields(findUser)
+      const changedFields = await validateChangedFields(findUser)
 
       // 更新数据库
       const { dataValues } = await findUser.save({ transaction })
-
-      // 提交事务
-      await transaction.commit()
 
       // 处理 token 字段 的roles
       const tokenSetRoles = ReturnRoles([findUser])
@@ -189,7 +200,16 @@ router.put(
 
       // 删除对应用户信息缓存
       await resetUserInfo([findUser], isOwner(tokenSetRoles))
+      // 更改了 account
+      if (changedFields?.includes?.("account")) {
+        // 找到 articles
+        const findArticles = JSON.parse(JSON.stringify(findUser))?.articles
+        // 清除 对应的文章缓存
+        await resetArticle(findArticles, true)
+      }
 
+      // 提交事务
+      await transaction.commit()
       return res.result(
         { token, isUser: id === req.auth.id },
         "修改用户信息成功~"

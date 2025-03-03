@@ -13,4 +13,5 @@ export const validateChangedFields = async (instance: any) => {
   if (changedFields && changedFields.length > 0) {
     await instance.validate({ fields: changedFields }) // 只验证被修改的字段
   }
+  return changedFields
 }

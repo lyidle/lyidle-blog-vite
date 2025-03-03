@@ -34,12 +34,24 @@ export const routerEventHandlered = (router: any) => {
   mitt.on("authRoles", () => {
     // 得到 roles
     const { whitelist } = useUserStore()
-    // 得到 当前 路径的 roles
-    const cur = router.currentRoute.value.path
-    // 判断 路径是否在 白名单中
-    if (whitelist && !whitelist.includes(cur)) {
-      router.push({ path: "/", replace: true })
-      ElMessage.warning("权限丢失了")
+    if (whitelist) {
+      // 判断是否通过白名单
+      let isAccess = false
+      // 得到 匹配的路由
+      const matched = router.currentRoute.value?.matched
+      if (matched) {
+        for (const value of matched) {
+          // 判断 路径是否在 白名单中
+          if (whitelist.includes(value.path)) {
+            isAccess = true
+            return
+          }
+        }
+      }
+      if (!isAccess) {
+        router.push({ path: "/", replace: true })
+        ElMessage.warning("权限丢失了")
+      }
     }
   })
 

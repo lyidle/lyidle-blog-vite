@@ -17,7 +17,7 @@ export const publicUserRemove = async (findUser: any, articles: any[]) => {
   // 删除对应用户信息缓存
   await resetUserInfo([findUser])
   // 删除 对应的 文章的缓存
-  await resetArticle(articles)
+  await resetArticle(articles, true)
   // 删除用户的临时垃圾桶变量
   await delKey(`userArticleBin`)
   // 删除文章的缓存
