@@ -2,9 +2,9 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="背景"
+      label="路径"
       :reset="handlerReset"
-      placeholder="请输入背景名"
+      placeholder="请输入路径名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
@@ -94,7 +94,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqAllGroups"
+        @change="reqAllBanners"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -126,7 +126,7 @@ const {
   handlerSearch,
   tableData,
   pagination,
-  reqAllGroups,
+  reqAllBanners,
   handlerReset,
   currentPage,
   pageSize,
@@ -158,11 +158,11 @@ const handlerReq = async () => {
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqAllGroups(pre, pageSize.value)
+    await reqAllBanners(pre, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqAllGroups(cur, pageSize.value)
+  await reqAllBanners(cur, pageSize.value)
   // 重新加载路由
   mitt.emit("route:reload")
 }

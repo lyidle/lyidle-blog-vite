@@ -4,7 +4,7 @@ import { mitt } from "@/utils/emitter"
 import { findAllRolesPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination, Role } from "@/api/admin/types/findAllRolesPagination"
-import { paginationQuery } from "@/api/types/paginationQuery"
+import type { OrdinarySearchQuery } from "@/api/types/ordinarySearchQuery"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 
@@ -15,18 +15,10 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
-    try {
-      const result = await findAllRolesPagination({ name: key })
-      // 保存 key
-      searchKey.value = key
-      tableData.value = result.roles
-      pagination.value = result.pagination
-      currentPage.value = 1
-      ElMessage.success("搜索角色成功~")
-    } catch (error) {
-      const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索角色失败~")
-    }
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    await reqAllRoles()
   }
 
   const handlerReset = async () => {
@@ -71,7 +63,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
     pageSize: number = 10
   ) => {
     try {
-      const search = { currentPage, pageSize } as paginationQuery
+      const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
       if (searchKey) search.name = searchKey.value
       const result = await findAllRolesPagination(search)

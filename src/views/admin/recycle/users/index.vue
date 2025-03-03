@@ -2,32 +2,19 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="用户名"
+      label="账号名"
       :reset="handlerReset"
-      placeholder="请输入用户名"
+      placeholder="请输入账号名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
-          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
-          @click="create.init()"
-          >添加用户</my-button
-        >
-        <my-button
-          :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="handlerAllRemove"
           >批量软删除</my-button
-        >
-        <my-button
-          :size="headerBtnsSize"
-          type="danger"
-          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
-          @click="handlerAllDelete"
-          >批量删除</my-button
         >
       </div>
       <my-table
@@ -81,73 +68,23 @@
           </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column :width="toolBtnsWidth" label="工具栏" align="center">
+        <my-table-column width="90" fixed="right" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
-              <my-button
-                size="small"
-                class="w-80px !m-0"
-                @click="assignRole.init(row)"
-                >分配角色</my-button
-              >
-              <my-button
-                size="small"
-                class="!m-0"
-                :style="{ width: isSmall ? '80px' : '50px' }"
-                type="warning"
-                @click="editor.init(row)"
-                >编辑</my-button
-              >
               <!-- 软删除 -->
               <el-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要把《${row.account}》回收到垃圾桶么?`"
+                :title="`确认要恢复《${row.account}》么?`"
                 placement="top"
                 @confirm="handlerRemove(row)"
               >
                 <template #reference>
                   <my-button
-                    class="!m-0"
-                    :style="{ width: isSmall ? '80px' : '50px' }"
                     size="small"
-                    type="danger"
-                    >软删除</my-button
-                  >
-                </template>
-                <template #actions="{ confirm, cancel }">
-                  <my-button
-                    type="default"
-                    class="w-unset"
-                    size="small"
-                    @click="cancel"
-                    >否</my-button
-                  >
-                  <my-button
-                    class="w-unset"
-                    type="danger"
-                    size="small"
-                    @click="confirm"
-                  >
-                    是
-                  </my-button>
-                </template>
-              </el-popconfirm>
-              <!-- 删除 -->
-              <el-popconfirm
-                width="220"
-                icon-color="#F56C6C"
-                :title="`确认要彻底删除《${row.account}》么?`"
-                placement="top"
-                @confirm="handlerDelete(row)"
-              >
-                <template #reference>
-                  <my-button
-                    class="!m-0"
-                    :style="{ width: isSmall ? '80px' : '50px' }"
-                    size="small"
-                    type="danger"
-                    >删除</my-button
+                    class="w-80px !m-0"
+                    @click="assignRole.init(row)"
+                    >恢复用户</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -193,18 +130,6 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
     </my-card>
-    <manager-com-user-assign-roles
-      ref="assignRole"
-      @req="handlerReq"
-    ></manager-com-user-assign-roles>
-    <manager-com-user-editor
-      ref="editor"
-      @req="handlerReq"
-    ></manager-com-user-editor>
-    <manager-com-user-create
-      ref="create"
-      @req="handlerReq"
-    ></manager-com-user-create>
   </div>
 </template>
 
@@ -232,16 +157,10 @@ const {
 
   accountsWidth,
   handlerSearch,
-  toolBtnsWidth,
-  isSmall,
 } = useManagerUserBase(searchKey)
 
 // 获取子组件示例 用于分配角色按钮的点击事件
 const assignRole = ref()
-// 编辑用户
-const editor = ref()
-// 创建用户
-const create = ref()
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num
@@ -284,7 +203,7 @@ const handlerReq = async () => {
   mitt.emit("route:reload")
 }
 
-// 软删除
+// 恢复
 const handlerRemove = async (row: User) => {
   const { id, account } = row
   try {
@@ -298,21 +217,7 @@ const handlerRemove = async (row: User) => {
   }
 }
 
-// 删除
-const handlerDelete = async (row: User) => {
-  const { id, account } = row
-  try {
-    // 彻底删除
-    await managerDeleteUser(id)
-    // 重新请求
-    await handlerReq()
-    ElMessage.success(`彻底删除${account}用户成功~`)
-  } catch (error) {
-    ElMessage.warning(`彻底删除${account}用户失败~`)
-  }
-}
-
-// 批量软删除
+// 批量恢复
 const handlerAllRemove = async () => {
   if (!userIds.value?.length) return ElMessage.warning("没有需要软删除的用户")
   try {
@@ -329,29 +234,6 @@ const handlerAllRemove = async () => {
     // 重新请求
     await handlerReq()
     ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
-  } catch (error) {
-    // 重新请求
-    await handlerReq()
-  }
-}
-
-// 批量删除
-const handlerAllDelete = async () => {
-  if (!userIds.value?.length) return ElMessage.warning("没有需要彻底删除的用户")
-  try {
-    await Promise.all(
-      userIds.value.map(async (item) => {
-        try {
-          // 彻底删除
-          await managerDeleteUser(item)
-        } catch (error) {
-          ElMessage.warning(`批量彻底删除时,id:${item}删除失败~`)
-        }
-      })
-    )
-    // 重新请求
-    await handlerReq()
-    ElMessage.success(`批量彻底删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
     await handlerReq()

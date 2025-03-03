@@ -2,12 +2,13 @@
 import { recycleAllUsers } from "@/api/recycle"
 // 引入类型
 import type { searchData } from "@/api/user/types/searchUserPagination"
-import type { GetRecycleUser } from "@/api/recycle/types/getRecycleUser"
 import type { SearchUserQuery } from "@/api/recycle/types/searchUserQuery"
+import type { GetRecycleUser } from "@/api/recycle/types/getRecycleUser"
 
 import { mitt } from "@/utils/emitter"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+
 export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
   const tableData = ref<GetRecycleUser["data"]["users"]>([])
@@ -20,18 +21,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
-    try {
-      const result = await recycleAllUsers({ account: key })
-      // 保存 key
-      searchKey.value = key
-      tableData.value = result?.users || []
-      pagination.value = result?.pagination
-      currentPage.value = 1
-      ElMessage.success("搜索用户成功~")
-    } catch (error) {
-      const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索用户失败~")
-    }
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    await reqUsers()
   }
   const handlerReset = async () => {
     // 重置 key

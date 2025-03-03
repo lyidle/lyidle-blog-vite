@@ -5,7 +5,7 @@ import { findAllGroupsPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
 import type { Group } from "@/api/admin/types/findAllGroupsPagination"
-import { paginationQuery } from "@/api/types/paginationQuery"
+import type { OrdinarySearchQuery } from "@/api/types/ordinarySearchQuery"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 export const useMangerGroupsBase = (searchKey: Ref<string>) => {
@@ -15,18 +15,10 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
-    try {
-      const result = await findAllGroupsPagination({ name: key })
-      // 保存 key
-      searchKey.value = key
-      tableData.value = result.groups
-      pagination.value = result.pagination
-      currentPage.value = 1
-      ElMessage.success("搜索权限组成功~")
-    } catch (error) {
-      const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索权限组失败~")
-    }
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    await reqAllGroups()
   }
 
   const handlerReset = async () => {
@@ -72,7 +64,7 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
     pageSize: number = 10
   ) => {
     try {
-      const search = { currentPage, pageSize } as paginationQuery
+      const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
       if (searchKey) search.name = searchKey.value
       const result = await findAllGroupsPagination(search)

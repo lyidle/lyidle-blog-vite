@@ -18,18 +18,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
-    try {
-      const result = await searchUser({ account: key })
-      // 保存 key
-      searchKey.value = key
-      tableData.value = result?.users || []
-      pagination.value = result?.pagination
-      currentPage.value = 1
-      ElMessage.success("搜索用户成功~")
-    } catch (error) {
-      const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索用户失败~")
-    }
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    await reqUsers()
   }
   const handlerReset = async () => {
     // 重置 key

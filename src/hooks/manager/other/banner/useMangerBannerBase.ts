@@ -4,7 +4,7 @@ import { mitt } from "@/utils/emitter"
 import { getBannerImgPagination } from "@/api/admin"
 // 引入 类型
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
-import type { paginationQuery } from "@/api/types/paginationQuery"
+import type { OrdinarySearchQuery } from "@/api/types/ordinarySearchQuery"
 import type { Banner } from "@/api/admin/types/getBannerImgPagination"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
@@ -16,25 +16,17 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
   const pageSize = ref(10)
   // 搜索回调
   const handlerSearch = async (key: string) => {
-    try {
-      const result = await getBannerImgPagination({ name: key })
-      // 保存 key
-      searchKey.value = key
-      tableData.value = result.banners
-      pagination.value = result.pagination
-      currentPage.value = 1
-      ElMessage.success("搜索背景图成功~")
-    } catch (error) {
-      const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索背景图失败~")
-    }
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    await reqAllBanners()
   }
 
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqAllGroups()
+    await reqAllBanners()
   }
 
   // 头部 搜索 按钮大小
@@ -54,12 +46,16 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
 
   // pagination  的回调
   // 获取权限组
-  const reqAllGroups = async (
+  const reqAllBanners = async (
     currentPage: number = 1,
     pageSize: number = 10
   ) => {
     try {
-      const search = { currentPage, pageSize, isBinL: true } as paginationQuery
+      const search = {
+        currentPage,
+        pageSize,
+        isBin: true,
+      } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
       if (searchKey) search.name = searchKey.value
       const result = await getBannerImgPagination(search)
@@ -75,7 +71,7 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
     // 得到 用户
-    await reqAllGroups()
+    await reqAllBanners()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -89,7 +85,7 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
     handlerSearch,
     tableData,
     pagination,
-    reqAllGroups,
+    reqAllBanners,
     handlerReset,
     currentPage,
     pageSize,

@@ -26,6 +26,7 @@ import { GetBannerImg } from "./types/getBannerImg"
 import { UpdateBannerImg } from "./types/updateBannerImg"
 import { GetBannerImgPagination } from "./types/getBannerImgPagination"
 import { GetBannerImgPaginationQuery } from "./types/getBannerImgPaginationQuery"
+import { OrdinarySearchQuery } from "../types/ordinarySearchQuery"
 
 // 统一管理 api
 enum API {
@@ -124,7 +125,7 @@ export const findAllRoles = () =>
   request.get<any, FindAllRoles["data"]>(server + prefix + API.findAllRoles)
 
 // 获取 所有的角色信息 分页器
-export const findAllRolesPagination = (data?: paginationQuery) =>
+export const findAllRolesPagination = (data?: OrdinarySearchQuery) =>
   request.get<any, FindAllRolesPagination["data"]>(
     server +
       prefix +

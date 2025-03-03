@@ -5,7 +5,7 @@ import request from "@/utils/request"
 
 // 引入类型
 import type { GetRecycleUser } from "./types/getRecycleUser"
-import type { GetRecycleRole } from "./types/GetRecycleRole"
+import type { GetRecycleRole } from "./types/getRecycleRole"
 import type { GetRecycleGroup } from "./types/getRecycleGroup"
 import type { GetRecyclePermission } from "./types/getRecyclePermission"
 import type { GetRecycleMenu } from "./types/getRecycleMenu"

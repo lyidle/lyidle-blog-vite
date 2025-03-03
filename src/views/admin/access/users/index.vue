@@ -2,9 +2,9 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="用户名"
+      label="账号名"
       :reset="handlerReset"
-      placeholder="请输入用户名"
+      placeholder="请输入账号名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
