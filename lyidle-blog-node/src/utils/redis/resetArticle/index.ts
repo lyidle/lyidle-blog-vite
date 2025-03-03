@@ -1,13 +1,16 @@
 // 引入 去重的函数
 import { deduplication } from "@/utils/array/deduplication"
 // 批量删除 redis 缓存
-import { delKeys } from ".."
+import { delKey, delKeys } from ".."
 
 /**
  * 重置文章的缓存
  * @param findArticles 查询到达文章 是一个数组
  */
-export const resetArticle = async (findArticles: any[]) => {
+export const resetArticle = async (
+  findArticles: any[],
+  isResetCarousel?: boolean
+) => {
   const deleteArr = deduplication(
     JSON.parse(JSON.stringify(findArticles)).map((item: any) => [
       item.id,
@@ -26,6 +29,8 @@ export const resetArticle = async (findArticles: any[]) => {
       (item: string | number) => typeof item === "string" && item
     )
     // 删除 缓存
+    // 删除总字数统计缓存
+    await delKey("webTotalWords")
     // 按照 id
     await delKeys("ArticlefindByPk:", ids, (keys) => keys)
     // 按照 作者和id 所以只需要以作者开头
@@ -38,8 +43,8 @@ export const resetArticle = async (findArticles: any[]) => {
     await delKeys(`allCategories:`, accounts, (keys) => keys)
     // 获取文章 按照分页器 的格式返回
     await delKeys(`articlePagination:`)
-    // // 获取 文章的 轮播图 焦点图 字段为 recommend true的
-    // 设置 recommend 时清除
-    // await delKeys(`carousel:`)
+    if (isResetCarousel)
+      // 清除缓存
+      await delKeys(`carousel:`)
   }
 }

@@ -59,18 +59,26 @@
                 @click="editor.init(row)"
                 >编辑</my-button
               >
-
-              <!-- 禁用 与 恢复 -->
-              <my-button
-                class="!m-0 w-30px"
-                size="small"
-                :type="row.isBin ? 'info' : 'primary'"
-                @click="toggleBanner(row)"
+              <el-tooltip
+                class="box-item"
+                effect="dark"
+                :content="row.isBin ? '恢复' : '禁用'"
+                placement="top"
               >
-                <template #icon>
-                  <i :class="row.isBin ? 'i-ep:top' : 'i-ep:bottom'"></i>
-                </template>
-              </my-button>
+                <div class="cur-text">
+                  <!-- 禁用 与 恢复 -->
+                  <my-button
+                    class="!m-0 w-30px"
+                    size="small"
+                    :type="row.isBin ? 'info' : 'primary'"
+                    @click="toggleBanner(row)"
+                  >
+                    <template #icon>
+                      <i :class="row.isBin ? 'i-ep:top' : 'i-ep:bottom'"></i>
+                    </template>
+                  </my-button>
+                </div>
+              </el-tooltip>
             </div>
           </template>
         </my-table-column>

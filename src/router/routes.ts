@@ -195,22 +195,7 @@ export const asyncRoute: RouteRecordRaw[] = [
         name: "Articles",
         path: "/admin/article",
         meta: { title: "文章管理", roles: ["admin"] },
-        redirect: "/admin/article/manager",
-        children: [
-          {
-            name: "Articles Manager",
-            path: "/admin/article/manager",
-            meta: { title: "文章管理", roles: ["admin"] },
-            component: () => import("@/views/admin/articles/manager/index.vue"),
-          },
-          {
-            name: "Carousel Manager",
-            path: "/admin/article/carousel",
-            meta: { title: "焦点图管理", roles: ["admin"] },
-            component: () =>
-              import("@/views/admin/articles/carousel/index.vue"),
-          },
-        ],
+        component: () => import("@/views/admin/articles/manager/index.vue"),
       },
       {
         name: "AccessManagement",
@@ -247,6 +232,45 @@ export const asyncRoute: RouteRecordRaw[] = [
             name: "MenuManagement",
             path: "/admin/access/menus",
             meta: { title: "菜单管理", roles: ["admin"] },
+            component: () => import("@/views/admin/access/menus/index.vue"),
+          },
+        ],
+      },
+      {
+        name: "RecycleManager",
+        path: "/admin/recycle",
+        meta: { title: "回收站", roles: ["admin"] },
+        component: () => import("@/views/admin/articles/manager/index.vue"),
+        children: [
+          {
+            name: "UserRecycle",
+            path: "/admin/recycle/users",
+            meta: { title: "用户回收站", roles: ["admin"] },
+            component: () => import("@/views/admin/access/users/index.vue"),
+          },
+          {
+            name: "RoleRecycle",
+            path: "/admin/recycle/roles",
+            meta: { title: "角色回收站", roles: ["admin"] },
+            component: () => import("@/views/admin/access/roles/index.vue"),
+          },
+          {
+            name: "GroupRecycle",
+            path: "/admin/recycle/groups",
+            meta: { title: "权限组回收站", roles: ["admin"] },
+            component: () => import("@/views/admin/access/groups/index.vue"),
+          },
+          {
+            name: "PermissionRecycle",
+            path: "/admin/recycle/permissions",
+            meta: { title: "权限回收站理", roles: ["admin"] },
+            component: () =>
+              import("@/views/admin/access/permissions/index.vue"),
+          },
+          {
+            name: "MenuRecycle",
+            path: "/admin/recycle/menus",
+            meta: { title: "菜单回收站", roles: ["admin"] },
             component: () => import("@/views/admin/access/menus/index.vue"),
           },
         ],

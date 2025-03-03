@@ -37,8 +37,6 @@ router.post(
       await setKey("webTotalPages", +webTotalPages + 1)
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
-      // 删除总字数统计缓存
-      await delKey("webTotalWords")
 
       // 得到 id
       const id = createArticle.dataValues?.id

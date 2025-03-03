@@ -20,6 +20,13 @@ module.exports = {
       author: {
         type: Sequelize.STRING(32),
         allowNull: false,
+        primaryKey: true,
+        references: {
+          model: "Users",
+          key: "account",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       category: {
         type: Sequelize.STRING(10),

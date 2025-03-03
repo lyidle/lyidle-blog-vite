@@ -29,13 +29,6 @@ const search = async (
     where: {},
   }
 
-  if (!(id || author || title || desc || category || tags))
-    return res.result(
-      void 0,
-      "请至少传入id、author、title、desc、category、tags中的一个参数~",
-      false
-    )
-
   const addCondition = (key: string, value: string, isExact = false) => {
     if (!merge) {
       commend.where = { [key]: isExact ? value : { [Op.like]: `%${value}%` } }

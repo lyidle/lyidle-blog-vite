@@ -33,6 +33,11 @@ enum API {
   // 删除 获取的 req.auth.id 为 userId
   binArticle = "/article/admin/bin",
   clearArticle = "/article/admin/clear",
+  // 后退后台管理的api
+  managerBinArticle = "/article/admin/bin/manager",
+  managerClearArticle = "/article/admin/clear/manager",
+  managerSetCarousel = "/article/admin/setCarousel",
+  // 获取 所有tags
   // 获取 所有tags
   getTagsAll = "/article/getTags/all",
   // 获取 所有categories
@@ -118,6 +123,20 @@ export const deleteArticle = (id: number | string) =>
   request.delete<any, number>(server + prefix + API.clearArticle, {
     data: { id },
   })
+// 软删除文章 有后悔期间 后台管理的 api 需要有权限
+export const managerRemoveArticle = (id: number | string) =>
+  request.delete<any, number>(server + prefix + API.managerBinArticle, {
+    data: { id },
+  })
+
+// 彻底删除文章 无后悔期间 后台管理的 api 需要有权限
+export const managerDeleteArticle = (id: number | string) =>
+  request.delete<any, number>(server + prefix + API.managerClearArticle, {
+    data: { id },
+  })
+// 更新文章轮播图和置顶状态
+export const managerUpdateArticle = (data: { id: number; carousel: boolean }) =>
+  request.put<any, void>(server + prefix + API.managerSetCarousel, data)
 
 // 获取所有 tags
 export const getTagsAll = (author: string) =>

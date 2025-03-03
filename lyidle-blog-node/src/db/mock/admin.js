@@ -13,18 +13,6 @@ const asyncRoute = [
         name: "Articles",
         to: "/admin/article",
         roles: ["admin"],
-        children: [
-          {
-            name: "Articles Manager",
-            roles: ["admin"],
-            path: "/admin/article/manager",
-          },
-          {
-            name: "Carousel Manager",
-            roles: ["admin"],
-            path: "/admin/article/carousel",
-          },
-        ],
       },
       {
         name: "Other",
@@ -67,6 +55,38 @@ const asyncRoute = [
             name: "MenuManagement",
             roles: ["admin"],
             to: "/admin/access/menus",
+          },
+        ],
+      },
+      {
+        name: "RecycleManager",
+        to: "/admin/recycle",
+        roles: ["admin"],
+        children: [
+          {
+            name: "UserRecycle",
+            roles: ["admin"],
+            to: "/admin/recycle/users",
+          },
+          {
+            name: "RoleRecycle",
+            roles: ["admin"],
+            to: "/admin/recycle/roles",
+          },
+          {
+            name: "GroupRecycle",
+            roles: ["admin"],
+            to: "/admin/recycle/groups",
+          },
+          {
+            name: "PermissionRecycle",
+            roles: ["admin"],
+            to: "/admin/recycle/permissions",
+          },
+          {
+            name: "MenuRecycle",
+            roles: ["admin"],
+            to: "/admin/recycle/menus",
           },
         ],
       },

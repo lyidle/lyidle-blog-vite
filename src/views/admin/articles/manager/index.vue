@@ -2,19 +2,13 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="权限组"
+      label="文章"
       :reset="handlerReset"
-      placeholder="请输入权限组名"
+      placeholder="请输入文章名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
-        <my-button
-          :size="headerBtnsSize"
-          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
-          @click="create.init()"
-          >添加权限组</my-button
-        >
         <my-button
           :size="headerBtnsSize"
           type="danger"
@@ -47,8 +41,15 @@
         />
         <my-table-column
           :width="accountsWidth"
-          prop="name"
-          label="权限组名"
+          prop="author"
+          label="作者"
+          align="center"
+          fixed="left"
+        />
+        <my-table-column
+          :width="accountsWidth"
+          prop="title"
+          label="标题"
           align="center"
           fixed="left"
         />
@@ -77,26 +78,33 @@
         <my-table-column :width="toolBtnsWidth" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
-              <my-button
-                size="small"
-                class="w-80px !m-0"
-                @click="assignGroup.init(row)"
-                >分配权限</my-button
+              <el-tooltip
+                class="box-item"
+                effect="dark"
+                :content="!row.carousel ? '设置轮播和置顶' : '取消轮播和置顶'"
+                placement="top"
               >
-              <my-button
-                size="small"
-                class="!m-0"
-                :style="{ width: isSmall ? '80px' : '50px' }"
-                type="warning"
-                @click="editor.init(row)"
-                >编辑</my-button
-              >
-
+                <div class="cur-text">
+                  <!-- 禁用 与 恢复 -->
+                  <my-button
+                    size="small"
+                    :type="!row.carousel ? 'info' : 'primary'"
+                    :style="{ width: isSmall ? '80px' : '30px' }"
+                    @click="toggleBanner(row)"
+                  >
+                    <template #icon>
+                      <i
+                        :class="!row.carousel ? 'i-ep:top' : 'i-ep:bottom'"
+                      ></i>
+                    </template>
+                  </my-button>
+                </div>
+              </el-tooltip>
               <!-- 软删除 -->
               <el-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要把《${row.name}》回收到垃圾桶么?`"
+                :title="`确认要把《${row.title}》回收到垃圾桶么?`"
                 placement="top"
                 @confirm="handlerRemove(row)"
               >
@@ -131,7 +139,7 @@
               <el-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要彻底删除《${row.name}》么?`"
+                :title="`确认要彻底删除《${row.title}》么?`"
                 placement="top"
                 @confirm="handlerDelete(row)"
               >
@@ -185,28 +193,26 @@
         size="small"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
-
-      <manager-com-group-create ref="create" @req="handlerReq" />
-      <manager-com-group-editor ref="editor" @req="handlerReq" />
-      <manager-com-group-assign-permissions
-        ref="assignGroup"
-        @req="handlerReq"
-      ></manager-com-group-assign-permissions>
     </my-card>
   </div>
 </template>
 
 <script setup lang="ts" name="ArticleManager">
 // 引入 api
-import { managerDeleteGroups, managerRemoveGroups } from "@/api/admin"
+import {
+  managerDeleteArticle,
+  managerRemoveArticle,
+  managerUpdateArticle,
+} from "@/api/article"
 // 引入 类型
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
-import { useMangerGroupsBase } from "@/hooks/manager/access/groups/useMangerGroupsBase"
+import { useArticleManager } from "@/hooks/manager/article/useArticleManager"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
+import { Article } from "@/api/article/types/getArticle"
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置
@@ -223,7 +229,7 @@ const {
   accountsWidth,
   toolBtnsWidth,
   isSmall,
-} = useMangerGroupsBase(searchKey)
+} = useArticleManager(searchKey)
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num
@@ -240,10 +246,6 @@ const handleSelectionChange = (role: Role[]) => {
   groupIds.value = role.map((item) => item.id)
 }
 
-// 子组件实例
-const create = ref()
-const editor = ref()
-const assignGroup = ref()
 // 请求的逻辑
 const handlerReq = async () => {
   // 只有一条数据时
@@ -281,12 +283,12 @@ const handlerRemove = async (row: Role) => {
   const { id, name } = row
   try {
     // 回收到垃圾桶
-    await managerRemoveGroups(id)
+    await managerRemoveArticle(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
+    ElMessage.success(`移动${name}文章到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}权限组到垃圾桶失败~`)
+    ElMessage.warning(`移动${name}文章到垃圾桶失败~`)
   }
 }
 
@@ -295,25 +297,24 @@ const handlerDelete = async (row: Role) => {
   const { id, name } = row
   try {
     // 彻底删除
-    await managerDeleteGroups(id)
+    await managerDeleteArticle(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`彻底删除${name}权限组成功~`)
+    ElMessage.success(`彻底删除${name}文章成功~`)
   } catch (error) {
-    ElMessage.warning(`彻底删除${name}权限组失败~`)
+    ElMessage.warning(`彻底删除${name}文章失败~`)
   }
 }
 
 // 批量软删除
 const handlerAllRemove = async () => {
-  if (!groupIds.value?.length)
-    return ElMessage.warning("没有需要软删除的权限组")
+  if (!groupIds.value?.length) return ElMessage.warning("没有需要软删除的文章")
   try {
     await Promise.all(
       groupIds.value.map(async (item) => {
         try {
           // 软删除
-          await managerRemoveGroups(item)
+          await managerRemoveArticle(item)
         } catch (error) {
           ElMessage.warning(`批量软删除时,id:${item}删除失败~`)
         }
@@ -331,13 +332,13 @@ const handlerAllRemove = async () => {
 // 批量删除
 const handlerAllDelete = async () => {
   if (!groupIds.value?.length)
-    return ElMessage.warning("没有需要彻底删除的权限组")
+    return ElMessage.warning("没有需要彻底删除的文章")
   try {
     await Promise.all(
       groupIds.value.map(async (item) => {
         try {
           // 彻底删除
-          await managerDeleteGroups(item)
+          await managerDeleteArticle(item)
         } catch (error) {
           ElMessage.warning(`批量彻底删除时,id:${item}删除失败~`)
         }
@@ -349,6 +350,26 @@ const handlerAllDelete = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+  }
+}
+
+// 取消 与 设置 轮播和置顶
+const toggleBanner = async (row: Article) => {
+  const { id, title, carousel } = row
+  try {
+    // 对 carousel 取反进行设置
+    await managerUpdateArticle({ id, carousel: !carousel })
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(
+      `${!carousel ? "设置轮播和置顶" : "取消轮播和置顶"}${title}背景成功~`
+    )
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.warning(
+      `${!carousel ? "设置轮播和置顶" : "取消轮播和置顶"}${title}背景失败~`
+    )
   }
 }
 </script>

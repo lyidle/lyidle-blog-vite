@@ -1,9 +1,9 @@
 import express from "express"
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
+import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
-import { setKey, delKey } from "@/utils/redis"
+import { delKeys, setKey } from "@/utils/redis"
 // 引入 清除 user 的缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
@@ -16,13 +16,13 @@ const { Article, User, Role } = require("@/db/models")
 const router = express.Router()
 router.put(
   "/",
-  [jwtMiddleware],
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id: articleId } = req.body
 
       if (!articleId)
-        return res.result(void 0, "修改文章时，没有找到文章", false)
+        return res.result(void 0, "修改文章置顶状态时，没有找到文章", false)
 
       // 查找是否有文章
       const findArticle = await Article.findByPk(articleId, {
@@ -45,50 +45,19 @@ router.put(
 
       // 没有找到文章
       if (!findArticle)
-        return res.result(void 0, "修改文章时，没有找到文章", false)
-
-      // 找到提取
-      const { userId } = findArticle
-
-      // 判断是否是用户的文章
-      if (req.auth.id !== userId) {
-        return res.result(void 0, "修改文章时，不能修改他人的文章", false)
-      }
+        return res.result(void 0, "修改文章置顶状态时，没有找到文章", false)
 
       // 提取body 信息
-      const { title, content, length, category, tags, desc, poster } = req.body
+      const { carousel } = req.body
 
-      // 非空判断
-      if (
-        !title &&
-        !content &&
-        !length &&
-        !category &&
-        !tags &&
-        !desc &&
-        !poster
-      )
-        return res.result(
-          void 0,
-          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc、poster",
-          false
-        )
-
-      // 检查并赋值字段
-      title && findArticle.set("title", title)
-      content && length && findArticle.set("content", content)
-      content && length && findArticle.set("length", length)
-      category && findArticle.set("category", category)
-      tags?.length && findArticle.set("tags", tags)
       // 可能为 null 的字段
-      findArticle.set("desc", desc || null)
-      findArticle.set("poster", poster || null)
+      findArticle.set("carousel", +!!carousel)
 
       // 验证 修改了的 属性字段
       await validateChangedFields(findArticle)
 
       // 更新数据
-      const result = await findArticle.save()
+      await findArticle.save()
 
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
@@ -99,12 +68,12 @@ router.put(
       // 删除对应用户信息缓存
       await resetUserInfo([user])
       // 删除 对应的用户的文章缓存
-      await resetArticle([findArticle])
+      await resetArticle([findArticle], true)
 
-      res.result(result, "修改文章成功~")
+      res.result(void 0, "修改文章置顶状态成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, "修改文章失败~", false)
+        res.result(void 0, "修改文章置顶状态失败~", false)
       )
     }
   }
