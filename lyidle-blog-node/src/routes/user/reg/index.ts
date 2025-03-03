@@ -70,5 +70,5 @@ router.post("/", async (req, res, next) => {
   }
 })
 // 邮箱发送接口
-router.use(email)
+router.use("/", email)
 export default router

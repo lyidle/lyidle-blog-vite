@@ -226,5 +226,5 @@ router.put(
 
 router.use("/avatar", avatar)
 // 邮箱发送接口
-router.use(update)
+router.use("/", update)
 export default router

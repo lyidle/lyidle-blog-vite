@@ -9,7 +9,7 @@ import addArticle from "@/routes/article/admin/addArticle"
 import setCarousel from "./setCarousel"
 const router = express.Router()
 // 挂载函数
-router.use(deleted)
+router.use("/", deleted)
 router.use("/add", addArticle)
 router.use("/update", updated)
 router.use("/setCarousel", setCarousel)

@@ -15,6 +15,8 @@ import sentence from "@/routes/admin/sentence"
 import settings from "@/routes/admin/setting"
 // 引入 api/admin/initial
 import initials from "@/routes/admin/initial"
+// 引入 api/admin/recycle
+import recycle from "@/routes/admin/recycle"
 const router = express.Router()
 // 挂载路由
 router.use("/announce", announce)
@@ -24,5 +26,6 @@ router.use("/bannerImg", bannerImg)
 router.use("/permissionGroup", permissionGroup)
 router.use("/settings", settings)
 router.use("/initial", initials)
-router.use(sentence)
+router.use("/", sentence)
+router.use("/recycle", recycle)
 export default router

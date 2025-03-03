@@ -9,8 +9,8 @@ import putPermission from "./put"
 // 删除
 import deletePermission from "./delete"
 const router = express.Router()
-router.use(getPermission)
-router.use(createPermission)
-router.use(putPermission)
-router.use(deletePermission)
+router.use("/", getPermission)
+router.use("/", createPermission)
+router.use("/", putPermission)
+router.use("/", deletePermission)
 export default router

@@ -7,7 +7,7 @@ import putBannerImg from "./put"
 // 改变 状态
 import bin from "./bin"
 const router = express.Router()
-router.use(getBannerImg)
-router.use(putBannerImg)
-router.use(bin)
+router.use("/", getBannerImg)
+router.use("/", putBannerImg)
+router.use("/", bin)
 export default router

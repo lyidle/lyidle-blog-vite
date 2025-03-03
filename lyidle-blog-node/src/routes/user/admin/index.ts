@@ -6,7 +6,7 @@ import create from "@/routes/user/admin/create"
 import setRoles from "@/routes/user/admin/setRoles"
 const router = express.Router()
 // 挂载api
-router.use(deleted)
+router.use("/", deleted)
 router.use("/setRoles", setRoles)
 router.use("/update", update)
 router.use("/create", create)

@@ -3,6 +3,6 @@ import express from "express"
 import getAnnounce from "./get"
 import setAnnounce from "./set"
 const router = express.Router()
-router.use(getAnnounce)
-router.use(setAnnounce)
+router.use("/", getAnnounce)
+router.use("/", setAnnounce)
 export default router
