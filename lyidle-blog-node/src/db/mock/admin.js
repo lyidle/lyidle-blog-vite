@@ -10,6 +10,23 @@ const asyncRoute = [
         roles: ["admin"],
       },
       {
+        name: "Articles",
+        to: "/admin/article",
+        roles: ["admin"],
+        children: [
+          {
+            name: "Articles Manager",
+            roles: ["admin"],
+            path: "/admin/article/manager",
+          },
+          {
+            name: "Carousel Manager",
+            roles: ["admin"],
+            path: "/admin/article/carousel",
+          },
+        ],
+      },
+      {
         name: "Other",
         to: "/admin/other",
         roles: ["admin"],

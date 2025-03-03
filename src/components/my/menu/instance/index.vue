@@ -12,7 +12,7 @@
           class="custom-menu-item"
           :style="{ width: menuMathMax(parentMaxWidth, itemWidth) }"
         >
-          <icon-parse :icon="data.icon"></icon-parse>
+          <icon-parse :icon="item.icon"></icon-parse>
           <span class="text-nowrap">{{ item.name }}</span>
           <i
             v-if="item.children?.length"

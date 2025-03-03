@@ -39,8 +39,10 @@ export const useUserStore = defineStore(
   () => {
     // 用户的菜单数据
     const userMenuList = ref<GetMenuList["data"]>([])
-    //  后台管理的菜单
+    //  后台管理的菜单 本地的 路由
     const adminMenuList = ref<RouteRecordRaw[]>([])
+    //  后台管理的菜单 请求的数据
+    const adminMenuListRaw = ref<GetMenuList["data"]>([])
     // 用户的 焦点图信息
     const userBannerImg = ref<bannerImgType>({})
     // 用户的 白名单路径
@@ -66,6 +68,7 @@ export const useUserStore = defineStore(
           (_userMenuList
             ?.map((item) => {
               if (!item.roles?.includes("admin")) return item
+              adminMenuListRaw.value = [item]
             })
             .filter(Boolean) as GetMenuList["data"]) || []
 
@@ -175,6 +178,8 @@ export const useUserStore = defineStore(
       userMenuList.value = []
       // 管理页面的菜单数据
       adminMenuList.value = []
+      //  后台管理的菜单 请求的数据
+      adminMenuListRaw.value = []
       // 用户的 焦点图信息
       userBannerImg.value = {}
       // 用户的 白名单路径
@@ -209,6 +214,7 @@ export const useUserStore = defineStore(
     return {
       reqUserMenuList,
       adminMenuList,
+      adminMenuListRaw,
       reqAdminMenuList,
       userBannerImg,
       whitelist,

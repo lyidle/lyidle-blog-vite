@@ -192,16 +192,23 @@ export const asyncRoute: RouteRecordRaw[] = [
         component: () => import("@/views/admin/dashboard/index.vue"),
       },
       {
-        name: "Other",
-        path: "/admin/other",
-        meta: { title: "其他", roles: ["admin"] },
-        redirect: "/admin/other/banner",
+        name: "Articles",
+        path: "/admin/article",
+        meta: { title: "文章管理", roles: ["admin"] },
+        redirect: "/admin/article/manager",
         children: [
           {
-            name: "BannerImg",
-            path: "/admin/other/banner",
-            meta: { title: "背景管理", roles: ["admin"] },
-            component: () => import("@/views/admin/other/banner/index.vue"),
+            name: "Articles Manager",
+            path: "/admin/article/manager",
+            meta: { title: "文章管理", roles: ["admin"] },
+            component: () => import("@/views/admin/articles/manager/index.vue"),
+          },
+          {
+            name: "Carousel Manager",
+            path: "/admin/article/carousel",
+            meta: { title: "焦点图管理", roles: ["admin"] },
+            component: () =>
+              import("@/views/admin/articles/carousel/index.vue"),
           },
         ],
       },
@@ -241,6 +248,20 @@ export const asyncRoute: RouteRecordRaw[] = [
             path: "/admin/access/menus",
             meta: { title: "菜单管理", roles: ["admin"] },
             component: () => import("@/views/admin/access/menus/index.vue"),
+          },
+        ],
+      },
+      {
+        name: "Other",
+        path: "/admin/other",
+        meta: { title: "其他", roles: ["admin"] },
+        redirect: "/admin/other/banner",
+        children: [
+          {
+            name: "BannerImg",
+            path: "/admin/other/banner",
+            meta: { title: "背景管理", roles: ["admin"] },
+            component: () => import("@/views/admin/other/banner/index.vue"),
           },
         ],
       },
