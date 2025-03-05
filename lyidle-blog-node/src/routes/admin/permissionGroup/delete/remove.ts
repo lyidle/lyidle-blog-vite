@@ -22,8 +22,11 @@ const default_admin = process.env.default_admin!
 export const publicUserRemove = async (users: any[], roles: string[]) => {
   // 获取全部时保存 redis 的键
   let cacheKey = `permissionGroup:*`
+  // 获取所有角色 保存的键
+  const cacheKeyRole = "roles:*"
   // 删除 缓存
   await delKey(cacheKey)
+  await delKey(cacheKeyRole)
   // 删除找到的users的缓存
   await resetUserInfo(users)
   // 删除找到的menus的缓存

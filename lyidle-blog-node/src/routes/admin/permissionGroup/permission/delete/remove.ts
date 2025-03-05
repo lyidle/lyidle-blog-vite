@@ -18,8 +18,14 @@ const { PermissionGroup, Permission, Role, User } = require("@/db/models")
 export const publicUserRemove = async (users: any[], roles: string[]) => {
   // 获取全部时保存 redis 的键
   let cacheKey = `permissions:*`
+  // 获取所有角色 保存的键
+  const cacheKeyRole = "roles:*"
+  // 获取所有权限组 保存的键
+  const cacheKeyGroup = `permissionGroup:*`
   // 删除 缓存
   await delKey(cacheKey)
+  await delKey(cacheKeyRole)
+  await delKey(cacheKeyGroup)
   // 删除找到的users的缓存
   await resetUserInfo(users)
   // 删除找到的roles的缓存

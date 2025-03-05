@@ -25,6 +25,10 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     // 保存 redis 的键
     let cacheKey = `permissions:*`
+    // 获取所有角色 保存的键
+    const cacheKeyRole = "roles:*"
+    // 获取所有权限组 保存的键
+    const cacheKeyGroup = `permissionGroup:*`
     // 删除缓存 redis 的键
     const { id, name, desc } = req.body
 
@@ -101,6 +105,8 @@ router.put(
 
       // 删除 缓存
       await delKey(cacheKey)
+      await delKey(cacheKeyRole)
+      await delKey(cacheKeyGroup)
       res.result(void 0, "更新权限菜单成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

@@ -16,6 +16,8 @@ router.post(
 
     // 保存 redis 的键
     let cacheKey = `permissionGroup:*`
+    // 获取所有角色 保存的键
+    const cacheKeyRole = "roles:*"
 
     if (!name) return res.result(void 0, "创建权限菜单name是必须要有的", false)
 
@@ -30,6 +32,7 @@ router.post(
 
       // 删除 缓存
       await delKey(cacheKey)
+      await delKey(cacheKeyRole)
       res.result(newPermissionGroup, "创建权限菜单成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

@@ -29,6 +29,8 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     // 删除缓存 redis 的键
     let cacheKey = `permissionGroup:*`
+    // 获取所有角色 保存的键
+    const cacheKeyRole = "roles:*"
     const { id, name, desc } = req.body
 
     // 没有 id、name 返回失败
@@ -103,6 +105,7 @@ router.put(
 
       // 删除缓存
       await delKey(cacheKey)
+      await delKey(cacheKeyRole)
 
       // 限制指定的name 不能修改
       if (_name === default_owner || _name === default_admin)

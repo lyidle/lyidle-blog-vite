@@ -22,6 +22,8 @@ router.post(
     try {
       // 删除缓存 redis 的键
       const cacheKey = `permissionGroup:*`
+      // 获取所有角色 保存的键
+      const cacheKeyRole = "roles:*"
 
       // 得到id
       const { id, permissions } = req.body
@@ -95,6 +97,7 @@ router.post(
 
       // 返回并 删除缓存
       await delKey(cacheKey)
+      await delKey(cacheKeyRole)
       return res.result(findGroup, "获取权限组的权限成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>
