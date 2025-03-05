@@ -44,9 +44,7 @@
           label="更新时间"
           align="center"
         >
-          <template #="{ row }">
-            {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
-          </template>
+          <template #="{ row }"> {{ row.light }}--{{ row.dark }} </template>
         </my-table-column>
         <!-- 工具栏 -->
         <my-table-column width="130" label="工具栏" align="center">

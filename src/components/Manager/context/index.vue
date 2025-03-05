@@ -35,6 +35,8 @@ $crumb-color-hover: var(--header-crumb-color-hover);
 .breadcrumb {
   display: flex;
   .crumb-item {
+    user-select: text;
+    cursor: var(--cursor-text);
     // 没有激活的
     --el-text-color-regular: #{$crumb-unable-color};
     // 激活的
@@ -43,6 +45,8 @@ $crumb-color-hover: var(--header-crumb-color-hover);
     --el-color-primary: #{$crumb-color-hover};
     span {
       font-weight: normal;
+      user-select: text;
+      cursor: var(--cursor-text);
     }
   }
 }
