@@ -11,10 +11,9 @@
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
-          type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="handlerAllRemove"
-          >批量软删除</my-button
+          >批量恢复</my-button
         >
       </div>
       <my-table
@@ -77,13 +76,10 @@
                 icon-color="#F56C6C"
                 :title="`确认要恢复《${row.account}》么?`"
                 placement="top"
-                @confirm="handlerRemove(row)"
+                @confirm="handlerRestore(row)"
               >
                 <template #reference>
-                  <my-button
-                    size="small"
-                    class="w-80px !m-0"
-                    @click="assignRole.init(row)"
+                  <my-button size="small" class="w-80px !m-0"
                     >恢复用户</my-button
                   >
                 </template>
@@ -133,12 +129,12 @@
   </div>
 </template>
 
-<script setup lang="ts" name="AdminAccessUsers">
+<script setup lang="ts" name="AdminRecycleUsers">
 import moment from "@/utils/moment"
 // 引入 hooks
 import { useManagerUserBase } from "@/hooks/manager/recycle/user/useManagerUserBase"
 // 引入 接口api
-import { managerRemoveUser, managerDeleteUser } from "@/api/user"
+import { managerRestoreUser } from "@/api/recycle"
 // 引入 类型
 import type { User } from "@/api/user/types/searchUserPagination"
 import { mitt } from "@/utils/emitter"
@@ -159,8 +155,6 @@ const {
   handlerSearch,
 } = useManagerUserBase(searchKey)
 
-// 获取子组件示例 用于分配角色按钮的点击事件
-const assignRole = ref()
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num
@@ -204,36 +198,34 @@ const handlerReq = async () => {
 }
 
 // 恢复
-const handlerRemove = async (row: User) => {
+const handlerRestore = async (row: User) => {
   const { id, account } = row
   try {
-    // 回收到垃圾桶
-    await managerRemoveUser(id)
+    await managerRestoreUser(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`移动${account}用户到垃圾桶成功~`)
+    ElMessage.success(`恢复用户${account}成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${account}用户到垃圾桶失败~`)
+    ElMessage.warning(`恢复用户${account}失败~`)
   }
 }
 
 // 批量恢复
 const handlerAllRemove = async () => {
-  if (!userIds.value?.length) return ElMessage.warning("没有需要软删除的用户")
+  if (!userIds.value?.length) return ElMessage.warning("没有需要恢复的用户")
   try {
     await Promise.all(
       userIds.value.map(async (item) => {
         try {
-          // 软删除
-          await managerRemoveUser(item)
+          await managerRestoreUser(item)
         } catch (error) {
-          ElMessage.warning(`批量软删除时,id:${item}删除失败~`)
+          ElMessage.warning(`批量恢复时,id:${item}恢复失败~`)
         }
       })
     )
     // 重新请求
     await handlerReq()
-    ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
+    ElMessage.success(`批量恢复成功~`)
   } catch (error) {
     // 重新请求
     await handlerReq()

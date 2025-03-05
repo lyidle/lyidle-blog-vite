@@ -16,9 +16,11 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
+  // 提取 query
+  const { name } = query
   try {
     // 查询命令
-    const commend = {
+    const commend: any = {
       paranoid: false,
       where: {
         isBin: {
@@ -28,6 +30,12 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
       limit: pageSize,
       offset,
     }
+
+    // 判断是否 查询
+    if (name)
+      commend.where.name = {
+        [Op.like]: `%${name}%`,
+      }
     // 查询 所有 软删除的 角色
     const { count, rows } = await Role.findAndCountAll(commend)
 
