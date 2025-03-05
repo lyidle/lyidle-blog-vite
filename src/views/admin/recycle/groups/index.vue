@@ -24,18 +24,11 @@
         @selection-change="handleSelectionChange"
       >
         <my-table-column type="selection" width="30" />
-        <my-table-column
-          width="40"
-          prop="id"
-          label="id"
-          fixed="left"
-          align="center"
-        />
+        <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
           :width="accountsWidth"
           prop="name"
           label="权限组名"
-          fixed="left"
           align="center"
         />
         <my-table-column

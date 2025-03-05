@@ -38,19 +38,12 @@
         show-overflow-tooltip
       >
         <my-table-column type="selection" width="30" />
-        <my-table-column
-          width="40"
-          prop="id"
-          label="id"
-          align="center"
-          fixed="left"
-        />
+        <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
           :width="accountsWidth"
           prop="name"
           label="角色名"
           align="center"
-          fixed="left"
         />
         <my-table-column prop="desc" label="描述" align="center" />
         <my-table-column
@@ -74,7 +67,12 @@
           </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column :width="toolBtnsWidth" label="工具栏" align="center">
+        <my-table-column
+          :width="toolBtnsWidth"
+          fixed="right"
+          label="工具栏"
+          align="center"
+        >
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button

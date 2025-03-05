@@ -24,21 +24,19 @@
         @selection-change="handleSelectionChange"
       >
         <my-table-column type="selection" width="30" />
-        <my-table-column
-          width="40"
-          prop="id"
-          label="id"
-          fixed="left"
-          align="center"
-        />
+        <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
           prop="name"
           label="菜单名"
           width="150"
-          fixed="left"
           align="center"
         />
         <my-table-column prop="to" label="路径" align="center" />
+        <my-table-column prop="icon" width="60" label="图标" align="center">
+          <template #="{ row }">
+            <icon-parse :icon="row.icon"></icon-parse>
+          </template>
+        </my-table-column>
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -60,7 +58,7 @@
           </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column width="90" label="工具栏" align="center">
+        <my-table-column width="90" fixed="right" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <!-- 软删除 -->

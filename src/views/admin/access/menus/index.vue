@@ -15,6 +15,11 @@
       >
         <my-table-column prop="name" label="菜单名" width="160" />
         <my-table-column prop="to" label="路径" align="center" />
+        <my-table-column prop="icon" width="60" label="图标" align="center">
+          <template #="{ row }">
+            <icon-parse :icon="row.icon"></icon-parse>
+          </template>
+        </my-table-column>
         <my-table-column prop="roles" label="权限值" align="center" />
         <my-table-column prop="updatedAt" label="修改时间" align="center">
           <template #="{ row }">

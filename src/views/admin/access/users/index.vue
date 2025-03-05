@@ -38,25 +38,17 @@
         @selection-change="handleSelectionChange"
       >
         <my-table-column type="selection" width="30" />
-        <my-table-column
-          width="40"
-          prop="id"
-          label="id"
-          fixed="left"
-          align="center"
-        />
+        <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
           :width="accountsWidth"
           prop="account"
           label="账号"
-          fixed="left"
           align="center"
         />
         <my-table-column
           :width="accountsWidth"
           prop="nickName"
           label="用户名"
-          fixed="left"
           align="center"
         />
         <my-table-column width="200" prop="email" label="邮箱" align="center" />
@@ -81,7 +73,12 @@
           </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column :width="toolBtnsWidth" label="工具栏" align="center">
+        <my-table-column
+          :width="toolBtnsWidth"
+          fixed="right"
+          label="工具栏"
+          align="center"
+        >
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button

@@ -37,14 +37,12 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      // 账号和用户名的 宽度
       accountsWidth.value = 150
       headerBtnsSize.value = "default"
       toolBtnsWidth.value = 290
 
       return
     }
-    // 账号和用户名的 宽度
     accountsWidth.value = 100
     headerBtnsSize.value = "small"
     toolBtnsWidth.value = 100
