@@ -14,6 +14,7 @@
         height="65vh"
       >
         <my-table-column prop="name" label="菜单名" width="160" />
+        <my-table-column prop="to" label="路径" align="center" />
         <my-table-column prop="roles" label="权限值" align="center" />
         <my-table-column prop="updatedAt" label="修改时间" align="center">
           <template #="{ row }">
@@ -162,7 +163,7 @@ const handlerResize = () => {
     headerBtnsSize.value = "default"
     return
   }
-  toolBtnsWidth.value = 150
+  toolBtnsWidth.value = 100
   headerBtnsSize.value = "small"
 }
 

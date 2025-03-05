@@ -37,10 +37,6 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   const headerBtnsSize = ref<string>()
   // 账号和用户名的 宽度
   const accountsWidth = ref<number>()
-  // 右侧 工具栏
-  const toolBtnsWidth = ref<number>()
-  // 是否是小屏
-  const isSmall = ref<boolean>()
 
   // 处理 窗口变化 的事件
   const handlerResize = () => {
@@ -48,15 +44,11 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       // 账号和用户名的 宽度
       accountsWidth.value = 130
       headerBtnsSize.value = "default"
-      toolBtnsWidth.value = 290
-      isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
     accountsWidth.value = 70
     headerBtnsSize.value = "small"
-    toolBtnsWidth.value = 100
-    isSmall.value = true
   }
 
   // 监听窗口变化
@@ -111,7 +103,5 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
 
     headerBtnsSize,
     accountsWidth,
-    toolBtnsWidth,
-    isSmall,
   }
 }

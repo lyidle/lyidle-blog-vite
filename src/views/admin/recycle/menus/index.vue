@@ -2,9 +2,9 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="账号名"
+      label="菜单名"
       :reset="handlerReset"
-      placeholder="请输入账号名"
+      placeholder="菜单名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
@@ -32,20 +32,13 @@
           align="center"
         />
         <my-table-column
-          :width="accountsWidth"
-          prop="account"
-          label="账号"
+          prop="name"
+          label="菜单名"
+          width="150"
           fixed="left"
           align="center"
         />
-        <my-table-column
-          :width="accountsWidth"
-          prop="nickName"
-          label="用户名"
-          fixed="left"
-          align="center"
-        />
-        <my-table-column width="200" prop="email" label="邮箱" align="center" />
+        <my-table-column prop="to" label="路径" align="center" />
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -67,20 +60,20 @@
           </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column width="90" fixed="right" label="工具栏" align="center">
+        <my-table-column width="90" label="工具栏" align="center">
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <!-- 软删除 -->
               <el-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要恢复《${row.account}》么?`"
+                :title="`确认要恢复《${row.name}》么?`"
                 placement="top"
                 @confirm="handlerRestore(row)"
               >
                 <template #reference>
                   <my-button size="small" class="w-80px !m-0"
-                    >恢复用户</my-button
+                    >恢复菜单</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -132,11 +125,11 @@
 <script setup lang="ts" name="AdminRecycleMenus">
 import moment from "@/utils/moment"
 // 引入 hooks
-import { useManagerUserBase } from "@/hooks/manager/recycle/user/useManagerUserBase"
+import { useMangerMenusBase } from "@/hooks/manager/recycle/menus/useMangerGroupsBase"
 // 引入 接口api
-import { managerRestoreUser } from "@/api/recycle"
+import { managerRestoreMenu } from "@/api/recycle"
 // 引入 类型
-import type { User } from "@/api/user/types/searchUserPagination"
+import type { Menu } from "@/api/recycle/types/getRecycleMenu"
 import { mitt } from "@/utils/emitter"
 const searchKey = ref("")
 // 表格的信息 和 搜索
@@ -147,13 +140,12 @@ const {
   reqUsers,
   userIds,
   handlerReset,
-  headerBtnsSize,
   currentPage,
   pageSize,
-
-  accountsWidth,
   handlerSearch,
-} = useManagerUserBase(searchKey)
+
+  headerBtnsSize,
+} = useMangerMenusBase(searchKey)
 
 // 个数变化
 const handlerSizeChange = (num: number) => {
@@ -198,26 +190,26 @@ const handlerReq = async () => {
 }
 
 // 恢复
-const handlerRestore = async (row: User) => {
-  const { id, account } = row
+const handlerRestore = async (row: Menu) => {
+  const { id, name } = row
   try {
-    await managerRestoreUser(id)
+    await managerRestoreMenu(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`恢复用户${account}成功~`)
+    ElMessage.success(`恢复菜单${name}成功~`)
   } catch (error) {
-    ElMessage.warning(`恢复用户${account}失败~`)
+    ElMessage.warning(`恢复菜单${name}失败~`)
   }
 }
 
 // 批量恢复
 const handlerAllRemove = async () => {
-  if (!userIds.value?.length) return ElMessage.warning("没有需要恢复的用户")
+  if (!userIds.value?.length) return ElMessage.warning("没有需要恢复的菜单")
   try {
     await Promise.all(
       userIds.value.map(async (item) => {
         try {
-          await managerRestoreUser(item)
+          await managerRestoreMenu(item)
         } catch (error) {
           ElMessage.warning(`批量恢复时,id:${item}恢复失败~`)
         }

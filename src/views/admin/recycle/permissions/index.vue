@@ -2,9 +2,9 @@
   <div class="admin-container">
     <my-search-admin
       :submit="handlerSearch"
-      label="账号名"
+      label="权限名"
       :reset="handlerReset"
-      placeholder="请输入账号名"
+      placeholder="权限名"
     >
     </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
@@ -33,19 +33,17 @@
         />
         <my-table-column
           :width="accountsWidth"
-          prop="account"
-          label="账号"
+          prop="name"
+          label="权限名"
           fixed="left"
           align="center"
         />
         <my-table-column
           :width="accountsWidth"
-          prop="nickName"
-          label="用户名"
-          fixed="left"
+          prop="desc"
+          label="描述"
           align="center"
         />
-        <my-table-column width="200" prop="email" label="邮箱" align="center" />
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -74,13 +72,13 @@
               <el-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要恢复《${row.account}》么?`"
+                :title="`确认要恢复《${row.name}》么?`"
                 placement="top"
                 @confirm="handlerRestore(row)"
               >
                 <template #reference>
                   <my-button size="small" class="w-80px !m-0"
-                    >恢复用户</my-button
+                    >恢复权限</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -132,11 +130,11 @@
 <script setup lang="ts" name="AdminRecyclePermissions">
 import moment from "@/utils/moment"
 // 引入 hooks
-import { useManagerUserBase } from "@/hooks/manager/recycle/user/useManagerUserBase"
+import { useMangerPermissionsBase } from "@/hooks/manager/recycle/permissions/useMangerPermissionsBase"
 // 引入 接口api
-import { managerRestoreUser } from "@/api/recycle"
+import { managerRestorePermission } from "@/api/recycle"
 // 引入 类型
-import type { User } from "@/api/user/types/searchUserPagination"
+import type { Permission } from "@/api/recycle/types/getRecyclePermission"
 import { mitt } from "@/utils/emitter"
 const searchKey = ref("")
 // 表格的信息 和 搜索
@@ -147,13 +145,13 @@ const {
   reqUsers,
   userIds,
   handlerReset,
-  headerBtnsSize,
   currentPage,
   pageSize,
-
-  accountsWidth,
   handlerSearch,
-} = useManagerUserBase(searchKey)
+
+  headerBtnsSize,
+  accountsWidth,
+} = useMangerPermissionsBase(searchKey)
 
 // 个数变化
 const handlerSizeChange = (num: number) => {
@@ -198,26 +196,26 @@ const handlerReq = async () => {
 }
 
 // 恢复
-const handlerRestore = async (row: User) => {
-  const { id, account } = row
+const handlerRestore = async (row: Permission) => {
+  const { id, name } = row
   try {
-    await managerRestoreUser(id)
+    await managerRestorePermission(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`恢复用户${account}成功~`)
+    ElMessage.success(`恢复权限${name}成功~`)
   } catch (error) {
-    ElMessage.warning(`恢复用户${account}失败~`)
+    ElMessage.warning(`恢复权限${name}失败~`)
   }
 }
 
 // 批量恢复
 const handlerAllRemove = async () => {
-  if (!userIds.value?.length) return ElMessage.warning("没有需要恢复的用户")
+  if (!userIds.value?.length) return ElMessage.warning("没有需要恢复的权限")
   try {
     await Promise.all(
       userIds.value.map(async (item) => {
         try {
-          await managerRestoreUser(item)
+          await managerRestorePermission(item)
         } catch (error) {
           ElMessage.warning(`批量恢复时,id:${item}恢复失败~`)
         }

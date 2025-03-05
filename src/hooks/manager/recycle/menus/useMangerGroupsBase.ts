@@ -1,16 +1,16 @@
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 api
-import { recycleAllPermissions } from "@/api/recycle"
+import { recycleAllMenus } from "@/api/recycle"
 // 引入 类型
 import type { OrdinarySearchQuery } from "@/api/types/ordinarySearchQuery"
-import type { GetRecyclePermission } from "@/api/recycle/types/getRecyclePermission"
+import type { GetRecycleMenu } from "@/api/recycle/types/getRecycleMenu"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 
-export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
+export const useMangerMenusBase = (searchKey: Ref<string>) => {
   // 表格
-  const tableData = ref<GetRecyclePermission["data"]["users"]>([])
+  const tableData = ref<GetRecycleMenu["data"]["menus"]>([])
   // 分页器
   const pagination = ref<OrdinarySearchQuery>()
 
@@ -34,19 +34,13 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
 
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
-  // 账号和权限名的 宽度
-  const accountsWidth = ref<number>()
 
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      // 账号和权限名的 宽度
-      accountsWidth.value = 130
       headerBtnsSize.value = "default"
       return
     }
-    // 账号和权限名的 宽度
-    accountsWidth.value = 70
     headerBtnsSize.value = "small"
   }
 
@@ -56,30 +50,28 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 选中的 userId
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
-  const handleSelectionChange = (
-    user: GetRecyclePermission["data"]["permissions"]
-  ) => {
+  const handleSelectionChange = (user: GetRecycleMenu["data"]["menus"]) => {
     // 得到 选择的user的id
     userIds.value = user.map((item) => item.id)
   }
 
-  // 获取权限
+  // 获取菜单
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
       const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
       if (searchKey) search.name = searchKey.value
-      const result = await recycleAllPermissions(search)
-      tableData.value = result?.permissions || []
+      const result = await recycleAllMenus(search)
+      tableData.value = result?.menus || []
       pagination.value = result?.pagination
     } catch (error) {
       const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("查询权限失败~")
+      if (!err) ElMessage.error("查询菜单失败~")
     }
   }
 
   onMounted(async () => {
-    // 得到 权限
+    // 得到 菜单
     await reqUsers()
     // 处理 窗口变化 的事件
     handlerResize()
@@ -103,6 +95,5 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     pageSize,
 
     headerBtnsSize,
-    accountsWidth,
   }
 }
