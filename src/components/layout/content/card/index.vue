@@ -2,8 +2,8 @@
   <my-card class="layout-content card_style">
     <div class="content-header">
       <router-link :to="`/doc/${article.id}`">
-        <img
-          class="poster scale-[1.01]"
+        <div
+          class="poster-img"
           :style="{
             background: 'no-repeat center',
             backgroundSize: 'cover',
@@ -12,7 +12,6 @@
               ? `url('${escapeUrlForRegExp(article.poster)}')`
               : 'var(--default-img)',
           }"
-          alt=""
         />
       </router-link>
       <div class="mask">
@@ -116,12 +115,12 @@ $meta-gap: 5px;
   // 悬浮效果
   &:hover {
     transform: translateY($translate-y);
-    .poster {
+    .poster-img {
       transform: scale($pages-poster-scale);
     }
   }
   transition: transform var(--primary-during);
-  .poster {
+  .poster-img {
     transition: transform var(--primary-during);
   }
   // 头部
@@ -129,7 +128,7 @@ $meta-gap: 5px;
     position: relative;
     overflow: hidden;
     height: $header-height;
-    img {
+    .poster-img {
       display: block;
       width: 100%;
       height: 100%;

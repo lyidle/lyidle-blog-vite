@@ -9,7 +9,7 @@
         <template v-if="item.id">
           <div class="poster">
             <router-link :to="`/doc/${item.id}`">
-              <img
+              <div
                 :style="{
                   background: 'no-repeat center',
                   backgroundSize: 'cover',
@@ -18,8 +18,7 @@
                     ? `url('${item.poster.replace(/\\/g, '/')}')`
                     : 'var(--default-img)',
                 }"
-                class="scale-[1.01]"
-                alt=""
+                class="poster-img"
               />
               <div class="mask"></div>
             </router-link>
@@ -83,7 +82,7 @@ $container-gap: $content-gap;
         overflow: hidden;
         border-radius: $poster-radius;
         position: relative;
-        img {
+        .poster-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -98,7 +97,7 @@ $container-gap: $content-gap;
           background-image: var(--content-mask);
         }
       }
-      &:hover .poster img {
+      &:hover .poster .poster-img {
         transform: scale($pages-poster-scale);
       }
       > .content {

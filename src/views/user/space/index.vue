@@ -4,7 +4,7 @@
       <my-card class="card_style allDocs">
         <div class="header">
           <div class="avatar-container">
-            <img
+            <div
               :style="{
                 background: 'no-repeat center',
                 backgroundSize: 'cover',
@@ -12,8 +12,6 @@
                   ? `url('${userInfo?.avatar}')`
                   : 'var(--default-avatar)',
               }"
-              alt=""
-              v-bind="$attrs"
               class="avatar w-100% h-100% block"
             />
             <div

@@ -7,7 +7,7 @@
         cursor: !isCursor ? 'unset!important' : 'var(--cursor-pointer)',
       }"
     >
-      <img
+      <div
         :style="{
           background: 'no-repeat center',
           backgroundSize: 'cover',

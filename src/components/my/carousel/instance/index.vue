@@ -5,7 +5,7 @@
         <div class="data-item">
           <div class="poster">
             <router-link :to="`/doc/${item.id}`">
-              <img
+              <div
                 :style="{
                   background: 'no-repeat center',
                   backgroundSize: 'cover',
@@ -14,8 +14,7 @@
                     ? `url('${escapeUrlForRegExp(item.poster)}')`
                     : 'var(--default-img)',
                 }"
-                class="scale-[1.01]"
-                alt=""
+                class="poster-img"
               />
               <div class="mask"></div>
             </router-link>
@@ -109,7 +108,7 @@ $mini-dur: 0.5s;
     @include setCardStyle;
     transition: height $mini-dur;
     &:hover {
-      img {
+      .poster-img {
         transform: scale($pages-poster-scale);
       }
     }
@@ -128,7 +127,7 @@ $mini-dur: 0.5s;
       border-radius: var(--pages-card-radius);
       position: relative;
       margin-left: $poster-ml;
-      img {
+      .poster-img {
         width: 100%;
         height: 100%;
         object-fit: cover;

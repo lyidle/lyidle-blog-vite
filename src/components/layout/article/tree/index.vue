@@ -35,7 +35,7 @@
           <div class="item" v-for="article in item.articles" :key="article.id">
             <div class="poster">
               <router-link :to="`/doc/${article.id}`">
-                <img
+                <div
                   :style="{
                     background: 'no-repeat center',
                     backgroundSize: 'cover',
@@ -44,8 +44,7 @@
                       ? `url('${escapeUrlForRegExp(article.poster)}')`
                       : 'var(--default-img)',
                   }"
-                  class="scale-[1.01]"
-                  alt=""
+                  class="poster-img"
                 />
                 <div class="mask"></div>
               </router-link>
@@ -384,7 +383,7 @@ $circle-bg-dur: var(--primary-during);
         overflow: hidden;
         border-radius: $poster-radius;
         position: relative;
-        img {
+        .poster-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -399,7 +398,7 @@ $circle-bg-dur: var(--primary-during);
           background-image: var(--content-mask);
         }
       }
-      &:hover .poster img {
+      &:hover .poster .poster-img {
         transform: scale($pages-poster-scale);
       }
       .info {
