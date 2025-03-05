@@ -133,7 +133,6 @@ onMounted(async () => {
   await reqArticles()
 })
 </script>
-
 <style scoped lang="scss">
 // 左右间距
 $item-gap: var(--content-gap);
@@ -197,6 +196,8 @@ $translate-y: -5px;
     @include media(sm) {
       justify-content: center;
     }
+    // 设置 卡片 样式
+    @include setCardStyle(--pages, false);
     // 内容区的卡片
     ::v-deep(.layout-content) {
       flex: 0 0 calc(100% / var(--pages-card-contentNum) - $item-gap);
