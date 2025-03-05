@@ -14,40 +14,60 @@
         height="46vh"
         show-overflow-tooltip
       >
-        <my-table-column
-          width="40"
-          prop="id"
-          label="id"
-          align="center"
-          fixed="left"
-        />
+        <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
           width="200"
           prop="name"
           label="路径名"
           align="center"
-          fixed="left"
         />
         <my-table-column
-          min-width="100"
-          prop="createdAt"
-          label="创建时间"
+          min-width="130px"
+          prop="light"
+          label="白天背景"
           align="center"
         >
           <template #="{ row }">
-            {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
+            <div
+              :style="{
+                background: 'no-repeat center',
+                backgroundSize: 'cover',
+                backgroundImage: row.light
+                  ? `url('${escapeUrlForRegExp(row.light)}')`
+                  : `url('${default_light}')`,
+              }"
+              alt=""
+              class="avatar w-100px h-100px block m-auto"
+            />
           </template>
         </my-table-column>
         <my-table-column
-          min-width="100"
-          prop="updatedAt"
-          label="更新时间"
+          min-width="130px"
+          prop="dark"
+          label="暗夜背景"
           align="center"
         >
-          <template #="{ row }"> {{ row.light }}--{{ row.dark }} </template>
+          <template #="{ row }">
+            <div
+              :style="{
+                background: 'no-repeat center',
+                backgroundSize: 'cover',
+                backgroundImage: row.dark
+                  ? `url('${escapeUrlForRegExp(row.dark)}')`
+                  : `url('${default_dark}')`,
+              }"
+              alt=""
+              class="avatar w-100px h-100px block m-auto"
+            />
+          </template>
         </my-table-column>
         <!-- 工具栏 -->
-        <my-table-column width="130" label="工具栏" align="center">
+        <my-table-column
+          width="130"
+          fixed="right"
+          label="工具栏"
+          align="center"
+        >
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button
@@ -113,10 +133,21 @@ import { managerRecycleBannerImg, managerRestoreBannerImg } from "@/api/admin"
 import { Banner } from "@/api/admin/types/getBannerImgPagination"
 // 引入 基础配置
 import { useMangerBannerBase } from "@/hooks/manager/other/banner/useMangerBannerBase"
+// url转义
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
-// 引入 自制moment
-import moment from "@/utils/moment"
+// 引入 默认banner 图片
+// 导入 默认的图片
+const default_light = new URL(
+  "@/assets/images/base-bg-light.png",
+  import.meta.url
+).href
+const default_dark = new URL(
+  "@/assets/images/base-bg-dark.png",
+  import.meta.url
+).href
+
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置

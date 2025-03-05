@@ -18,6 +18,7 @@ router.put(
     let cacheKey = "bannerImg:*"
     let cacheKey2 = "bannerImg:bin:*"
     const { id, dark, light, height } = req.body
+
     if (!id) return res.result(void 0, "更新背景失败,id是必传项", false)
 
     try {

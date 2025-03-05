@@ -108,7 +108,6 @@ const editorRules = reactive({
 const init = (row: UpdateBannerImg) => {
   centerDialogVisible.value = true
   const _row = JSON.parse(JSON.stringify(row))
-
   if (_row?.light) {
     light.value = [{ name: "default", url: _row?.light }]
   }
@@ -146,7 +145,11 @@ const updateImg = async (
   startWith: "light" | "dark" = "light",
   url: string | undefined
 ): Promise<boolean> => {
-  if (!url) return false
+  // 没有的话置空
+  if (!url) {
+    createData[startWith] = ""
+    return true
+  }
   const tempImg = [url]
   const result = await managerPostImgPermanent({
     tempImg,
@@ -193,11 +196,15 @@ const handlerConfirm = async () => {
 
     // 判断 是否删除了原图
     if (isUpdateLight && originLight) {
-      await removeFileStatic([originLight])
+      try {
+        await removeFileStatic([originLight])
+      } catch (error) {}
     }
     // 判断 是否删除了原图
     if (isUpdateDark && originDark) {
-      await removeFileStatic([originDark])
+      try {
+        await removeFileStatic([originDark])
+      } catch (error) {}
     }
 
     ElMessage.success("修改背景信息成功~")
