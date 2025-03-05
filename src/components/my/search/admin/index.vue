@@ -24,9 +24,11 @@
               @click="handlerRest"
               >重置</my-button
             >
+            <slot name="item"></slot>
           </div>
         </div>
       </el-form-item>
+      <slot></slot>
     </el-form>
   </my-card>
 </template>
@@ -88,6 +90,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .admin-search {
+  position: relative;
   .el-form-item__label {
     font-size: 1rem;
     color: inherit;

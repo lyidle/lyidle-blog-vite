@@ -55,9 +55,11 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
         currentPage,
         pageSize,
         isBin: true,
+        // 不搜索 包含admin 的
+        notName: "admin",
       } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey) search.name = searchKey.value
+      if (searchKey.value) search.name = searchKey.value
       const result = await getBannerImgPagination(search)
       tableData.value = result.banners
       pagination.value = result.pagination

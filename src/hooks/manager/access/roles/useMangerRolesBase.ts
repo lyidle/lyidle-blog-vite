@@ -65,7 +65,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
     try {
       const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey) search.name = searchKey.value
+      if (searchKey.value) search.name = searchKey.value
       const result = await findAllRolesPagination(search)
       tableData.value = result.roles
       pagination.value = result.pagination

@@ -66,7 +66,7 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
     try {
       const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey) search.name = searchKey.value
+      if (searchKey.value) search.name = searchKey.value
       const result = await findAllGroupsPagination(search)
       tableData.value = result.groups
       pagination.value = result.pagination

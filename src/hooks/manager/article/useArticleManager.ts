@@ -74,7 +74,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
     try {
       const search = { currentPage, pageSize } as paginationQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey) search.author = searchKey.value
+      if (searchKey.value) search.author = searchKey.value
       const result = await searchArticleMerge(search)
       tableData.value = result.article
       pagination.value = result.pagination

@@ -67,7 +67,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     try {
       const search = { currentPage, pageSize } as SearchUserQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey) search.account = searchKey.value
+      if (searchKey.value) search.account = searchKey.value
       const result = await recycleAllUsers(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
