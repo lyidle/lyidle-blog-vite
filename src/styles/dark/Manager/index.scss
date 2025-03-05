@@ -40,5 +40,12 @@ html[themes="#{$theme}"] {
     --header-crumb-unable-color: #a1aab5;
     --header-crumb-color: #{$primary-color};
     --header-crumb-color-hover: var(--primary-links-hover);
+
+    // banner 遮罩
+    --banner-mask: linear-gradient(
+      to right,
+      rgba(52, 52, 52, 0.5),
+      rgba(52, 52, 52, 0.3)
+    );
   }
 }

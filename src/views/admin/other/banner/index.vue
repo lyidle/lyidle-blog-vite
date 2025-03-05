@@ -33,8 +33,10 @@
                 background: 'no-repeat center',
                 backgroundSize: 'cover',
                 backgroundImage: row.light
-                  ? `url('${escapeUrlForRegExp(row.light)}')`
-                  : `url('${default_light}')`,
+                  ? `var(--banner-mask) , url('${escapeUrlForRegExp(
+                      row.light
+                    )}')`
+                  : `var(--banner-mask) , url('${default_light}')`,
               }"
               alt=""
               class="avatar w-100px h-100px block m-auto"
@@ -53,8 +55,10 @@
                 background: 'no-repeat center',
                 backgroundSize: 'cover',
                 backgroundImage: row.dark
-                  ? `url('${escapeUrlForRegExp(row.dark)}')`
-                  : `url('${default_dark}')`,
+                  ? `var(--banner-mask) , url('${escapeUrlForRegExp(
+                      row.dark
+                    )}')`
+                  : `var(--banner-mask) , url('${default_dark}')`,
               }"
               alt=""
               class="avatar w-100px h-100px block m-auto"
