@@ -197,7 +197,7 @@ const handlerRestore = async (row: Group) => {
     await handlerReq()
     ElMessage.success(`恢复权限组${name}成功~`)
   } catch (error) {
-    ElMessage.warning(`恢复权限组${name}失败~`)
+    ElMessage.error(`恢复权限组${name}失败~`)
   }
 }
 
@@ -210,7 +210,7 @@ const handlerAllRemove = async () => {
         try {
           await managerRestoreGroup(item)
         } catch (error) {
-          ElMessage.warning(`批量恢复时,id:${item}恢复失败~`)
+          ElMessage.error(`批量恢复时,id:${item}恢复失败~`)
         }
       })
     )
@@ -220,6 +220,7 @@ const handlerAllRemove = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+    ElMessage.error(`批量恢复失败~`)
   }
 }
 </script>

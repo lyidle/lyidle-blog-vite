@@ -205,9 +205,9 @@ const handlerRemove = async (row: Datum) => {
     await managerRemoveMenuList(id as number)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
+    ElMessage.success(`移动${name}菜单到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}权限组到垃圾桶失败~`)
+    ElMessage.error(`移动${name}菜单到垃圾桶失败~`)
   }
 }
 
@@ -219,9 +219,9 @@ const handlerDelete = async (row: Datum) => {
     await managerDeleteMenuList(id as number)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`彻底删除${name}权限组成功~`)
+    ElMessage.success(`彻底删除${name}菜单成功~`)
   } catch (error) {
-    ElMessage.warning(`彻底删除${name}权限组失败~`)
+    ElMessage.error(`彻底删除${name}菜单失败~`)
   }
 }
 

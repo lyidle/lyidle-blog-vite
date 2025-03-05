@@ -11,6 +11,19 @@
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
+          class="!w-unset"
+          @click="setSelectBanner"
+          >批量设置轮播和置顶</my-button
+        >
+        <my-button
+          :size="headerBtnsSize"
+          type="default"
+          class="!w-unset"
+          @click="unsetSelectBanner"
+          >批量取消轮播和置顶</my-button
+        >
+        <my-button
+          :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="handlerAllRemove"
@@ -288,7 +301,7 @@ const handlerRemove = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`移动${name}文章到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}文章到垃圾桶失败~`)
+    ElMessage.error(`移动${name}文章到垃圾桶失败~`)
   }
 }
 
@@ -302,7 +315,7 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}文章成功~`)
   } catch (error) {
-    ElMessage.warning(`彻底删除${name}文章失败~`)
+    ElMessage.error(`彻底删除${name}文章失败~`)
   }
 }
 
@@ -316,7 +329,7 @@ const handlerAllRemove = async () => {
           // 软删除
           await managerRemoveArticle(item)
         } catch (error) {
-          ElMessage.warning(`批量软删除时,id:${item}删除失败~`)
+          ElMessage.error(`批量软删除时,id:${item}删除失败~`)
         }
       })
     )
@@ -326,13 +339,14 @@ const handlerAllRemove = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+    ElMessage.error(`批量软删除失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
   if (!groupIds.value?.length)
-    return ElMessage.warning("没有需要彻底删除的文章")
+    return ElMessage.warning("没有需要彻底删除的文章~")
   try {
     await Promise.all(
       groupIds.value.map(async (item) => {
@@ -340,7 +354,7 @@ const handlerAllDelete = async () => {
           // 彻底删除
           await managerDeleteArticle(item)
         } catch (error) {
-          ElMessage.warning(`批量彻底删除时,id:${item}删除失败~`)
+          ElMessage.error(`批量彻底删除时,id:${item}删除失败~`)
         }
       })
     )
@@ -350,6 +364,7 @@ const handlerAllDelete = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+    ElMessage.error(`批量彻底删除失败~`)
   }
 }
 
@@ -367,9 +382,59 @@ const toggleBanner = async (row: Article) => {
   } catch (error) {
     // 重新请求
     await handlerReq()
-    ElMessage.warning(
+    ElMessage.error(
       `${!carousel ? "设置轮播和置顶" : "取消轮播和置顶"}${title}背景失败~`
     )
+  }
+}
+
+// 批量 设置轮播图和置顶
+const setSelectBanner = async () => {
+  if (!groupIds.value?.length)
+    return ElMessage.warning("没有需要设置轮播图和置顶的文章~")
+  try {
+    await Promise.all(
+      groupIds.value.map(async (item) => {
+        try {
+          // 对 carousel 取反进行设置
+          await managerUpdateArticle({ id: item, carousel: false })
+        } catch (error) {
+          ElMessage.error(`批量设置轮播图和置顶时,id:${item}设置失败~`)
+        }
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量设置轮播图和置顶成功~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.error(`批量设置轮播图和置顶失败~`)
+  }
+}
+
+// 批量 取消设置轮播图和置顶
+const unsetSelectBanner = async () => {
+  if (!groupIds.value?.length)
+    return ElMessage.warning("没有需要取消轮播图和置顶的文章~")
+  try {
+    await Promise.all(
+      groupIds.value.map(async (item) => {
+        try {
+          // 对 carousel 取反进行设置
+          await managerUpdateArticle({ id: item, carousel: false })
+        } catch (error) {
+          ElMessage.error(`批量取消轮播图和置顶时,id:${item}取消失败~`)
+        }
+      })
+    )
+    // 重新请求
+    await handlerReq()
+    ElMessage.success(`批量取消轮播图和置顶成功~`)
+  } catch (error) {
+    // 重新请求
+    await handlerReq()
+    ElMessage.error(`批量取消轮播图和置顶失败~`)
   }
 }
 </script>

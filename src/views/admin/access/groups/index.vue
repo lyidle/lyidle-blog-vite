@@ -284,7 +284,7 @@ const handlerRemove = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.warning(`移动${name}权限组到垃圾桶失败~`)
+    ElMessage.error(`移动${name}权限组到垃圾桶失败~`)
   }
 }
 
@@ -298,7 +298,7 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}权限组成功~`)
   } catch (error) {
-    ElMessage.warning(`彻底删除${name}权限组失败~`)
+    ElMessage.error(`彻底删除${name}权限组失败~`)
   }
 }
 
@@ -313,7 +313,7 @@ const handlerAllRemove = async () => {
           // 软删除
           await managerRemoveGroups(item)
         } catch (error) {
-          ElMessage.warning(`批量软删除时,id:${item}删除失败~`)
+          ElMessage.error(`批量软删除时,id:${item}删除失败~`)
         }
       })
     )
@@ -323,6 +323,7 @@ const handlerAllRemove = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+    ElMessage.error(`批量软删除失败~`)
   }
 }
 
@@ -337,7 +338,7 @@ const handlerAllDelete = async () => {
           // 彻底删除
           await managerDeleteGroups(item)
         } catch (error) {
-          ElMessage.warning(`批量彻底删除时,id:${item}删除失败~`)
+          ElMessage.error(`批量彻底删除时,id:${item}删除失败~`)
         }
       })
     )
@@ -347,6 +348,7 @@ const handlerAllDelete = async () => {
   } catch (error) {
     // 重新请求
     await handlerReq()
+    ElMessage.error(`批量彻底删除失败~`)
   }
 }
 </script>
