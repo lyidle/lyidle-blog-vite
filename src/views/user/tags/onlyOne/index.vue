@@ -1,7 +1,7 @@
 <template>
   <layout-article-tree
     :account
-    :title="`标签：${handlerTitle()} `"
+    :title="`${$route.meta.title || '标签'}：${handlerTitle()} `"
   ></layout-article-tree>
 </template>
 

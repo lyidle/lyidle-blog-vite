@@ -28,137 +28,142 @@
             >
           </div>
         </div>
-        <!-- 时间树形结构 -->
-        <div v-for="item in articles" :key="item.year" class="card-container">
-          <div class="years cur-text text-[1.625rem] my-0.9375rem">
-            {{ item.year }}
-          </div>
-          <div class="item" v-for="article in item.articles" :key="article.id">
-            <div class="poster">
-              <router-link :to="`/doc/${article.id}`">
-                <div
-                  :style="{
-                    background: 'no-repeat center',
-                    backgroundSize: 'cover',
-                    // 转义url链接
-                    backgroundImage: article.poster
-                      ? `url('${escapeUrlForRegExp(article.poster)}')`
-                      : 'var(--default-img)',
-                  }"
-                  class="poster-img"
-                />
-                <div class="mask"></div>
-              </router-link>
+        <template v-if="pagination?.total">
+          <!-- 时间树形结构 -->
+          <div v-for="item in articles" :key="item.year" class="card-container">
+            <div class="years cur-text text-[1.625rem] my-0.9375rem">
+              {{ item.year }}
             </div>
-            <div class="flex flex-col justify-center info w-100%">
-              <div class="cur-text">{{ article.createdAt }}</div>
-              <div class="title line-clamp-2 w-100% route-link">
+            <div
+              class="item"
+              v-for="article in item.articles"
+              :key="article.id"
+            >
+              <div class="poster">
                 <router-link :to="`/doc/${article.id}`">
-                  {{ article.title }}
+                  <div
+                    :style="{
+                      background: 'no-repeat center',
+                      backgroundSize: 'cover',
+                      // 转义url链接
+                      backgroundImage: article.poster
+                        ? `url('${escapeUrlForRegExp(article.poster)}')`
+                        : 'var(--default-img)',
+                    }"
+                    class="poster-img"
+                  />
+                  <div class="mask"></div>
                 </router-link>
               </div>
-            </div>
-            <!-- 每一项的按钮 -->
-            <div class="flex">
-              <!-- 修改 -->
-              <my-button
-                class="w-80px"
-                size="small"
-                @click="
-                  $router.push(
-                    `/doc/update?author=${article.author}&id=${article.id}`
-                  )
-                "
-                v-if="isRestore"
-                v-author="{ author: article.author }"
-                >修改文章</my-button
-              >
-              <!-- 软删除 -->
-              <my-popconfirm
-                width="220"
-                icon-color="#F56C6C"
-                :title="`确认要把《${article.title}》回收到垃圾桶么?`"
-                placement="top"
-                @confirm="handlerRemove(article.id)"
-              >
-                <template #reference>
-                  <my-button
-                    class="w-80px"
-                    size="small"
-                    type="danger"
-                    v-if="isRestore"
-                    v-author="{ author: article.author }"
-                    >软删除文章</my-button
-                  >
-                </template>
-                <template #actions="{ confirm, cancel }">
-                  <my-button
-                    class="w-unset"
-                    type="default"
-                    size="small"
-                    @click="cancel"
-                    >否</my-button
-                  >
-                  <my-button
-                    class="w-unset"
-                    type="danger"
-                    size="small"
-                    @click="confirm"
-                  >
-                    是
-                  </my-button>
-                </template>
-              </my-popconfirm>
-              <!-- 删除 -->
-              <my-popconfirm
-                width="220"
-                icon-color="#F56C6C"
-                :title="`确认要彻底删除《${article.title}》么?`"
-                placement="top"
-                @confirm="handlerDelete(article.id)"
-              >
-                <template #reference>
-                  <my-button
-                    class="w-80px"
-                    size="small"
-                    type="danger"
-                    v-author="{ author: article.author }"
-                    >删除文章</my-button
-                  >
-                </template>
-                <template #actions="{ confirm, cancel }">
-                  <my-button
-                    class="w-unset"
-                    type="default"
-                    size="small"
-                    @click="cancel"
-                    >否</my-button
-                  >
-                  <my-button
-                    class="w-unset"
-                    type="danger"
-                    size="small"
-                    @click="confirm"
-                  >
-                    是
-                  </my-button>
-                </template>
-              </my-popconfirm>
-              <slot name="btns" :row="article"></slot>
+              <div class="flex flex-col justify-center info w-100%">
+                <div class="cur-text">{{ article.createdAt }}</div>
+                <div class="title line-clamp-2 w-100% route-link">
+                  <router-link :to="`/doc/${article.id}`">
+                    {{ article.title }}
+                  </router-link>
+                </div>
+              </div>
+              <!-- 每一项的按钮 -->
+              <div class="flex">
+                <!-- 修改 -->
+                <my-button
+                  class="w-80px"
+                  size="small"
+                  @click="
+                    $router.push(
+                      `/doc/update?author=${article.author}&id=${article.id}`
+                    )
+                  "
+                  v-if="isRestore"
+                  v-author="{ author: article.author }"
+                  >修改文章</my-button
+                >
+                <!-- 软删除 -->
+                <my-popconfirm
+                  width="220"
+                  icon-color="#F56C6C"
+                  :title="`确认要把《${article.title}》回收到垃圾桶么?`"
+                  placement="top"
+                  @confirm="handlerRemove(article.id)"
+                >
+                  <template #reference>
+                    <my-button
+                      class="w-80px"
+                      size="small"
+                      type="danger"
+                      v-if="isRestore"
+                      v-author="{ author: article.author }"
+                      >软删除文章</my-button
+                    >
+                  </template>
+                  <template #actions="{ confirm, cancel }">
+                    <my-button
+                      class="w-unset"
+                      type="default"
+                      size="small"
+                      @click="cancel"
+                      >否</my-button
+                    >
+                    <my-button
+                      class="w-unset"
+                      type="danger"
+                      size="small"
+                      @click="confirm"
+                    >
+                      是
+                    </my-button>
+                  </template>
+                </my-popconfirm>
+                <!-- 删除 -->
+                <my-popconfirm
+                  width="220"
+                  icon-color="#F56C6C"
+                  :title="`确认要彻底删除《${article.title}》么?`"
+                  placement="top"
+                  @confirm="handlerDelete(article.id)"
+                >
+                  <template #reference>
+                    <my-button
+                      class="w-80px"
+                      size="small"
+                      type="danger"
+                      v-author="{ author: article.author }"
+                      >删除文章</my-button
+                    >
+                  </template>
+                  <template #actions="{ confirm, cancel }">
+                    <my-button
+                      class="w-unset"
+                      type="default"
+                      size="small"
+                      @click="cancel"
+                      >否</my-button
+                    >
+                    <my-button
+                      class="w-unset"
+                      type="danger"
+                      size="small"
+                      @click="confirm"
+                    >
+                      是
+                    </my-button>
+                  </template>
+                </my-popconfirm>
+                <slot name="btns" :row="article"></slot>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="flex justify-center mt-40px">
-          <my-pagination
-            v-if="pagination?.total"
-            background
-            layout="prev, pager, next, sizes"
-            :total="pagination.total"
-            :page-sizes="[10, 20, 30]"
-            @change="handlerArticles"
-          />
-        </div>
+          <div class="flex justify-center mt-40px">
+            <my-pagination
+              background
+              layout="prev, pager, next, sizes"
+              :total="pagination.total"
+              :page-sizes="[10, 20, 30]"
+              @change="handlerArticles"
+            />
+          </div>
+        </template>
+        <my-empty v-else></my-empty>
       </my-card>
     </template>
     <template #content-end> </template>

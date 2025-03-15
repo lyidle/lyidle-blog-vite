@@ -1,7 +1,7 @@
 <template>
   <layout-article-tree
     :account
-    :title="`分类：${category} `"
+    :title="`${$route.meta.title || '分类'}：${category} `"
   ></layout-article-tree>
 </template>
 

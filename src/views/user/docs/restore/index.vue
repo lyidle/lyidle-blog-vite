@@ -38,6 +38,11 @@
 <script setup lang="ts" name="FindAllUserPagesRestore">
 // 引入 api
 import { deleteArticle, searchArticleMergeExact } from "@/api/article"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+import { mitt } from "@/utils/emitter"
+// 提取需要的数据
+const { userAccount } = storeToRefs(useUserStore())
 
 // 使用 路由 hook
 const route = useRoute()
@@ -70,6 +75,13 @@ const restoreArticle = async (id: string | number) => {
     ElMessage.error("恢复文章失败~")
   }
 }
+onMounted(() => {
+  // 账号和本地的不一样
+  if (userAccount.value !== account) {
+    mitt.emit("account inconsistent", "无权限访问当前文章回收站~")
+    return
+  }
+})
 // 提供方法
 provide("req", handlerArticles)
 </script>

@@ -2,33 +2,47 @@
   <layout-content>
     <template #content-start>
       <my-card class="card_style allCategories">
-        <div class="flex justify-center">
-          <h1 class="cur-text w-fit">{{ $route.meta.title }}(只显示10个)</h1>
-        </div>
-        <my-chart
-          v-model="pieOption"
-          class="mb-40px"
-          :click="handlerPie"
-        ></my-chart>
-        <!-- 词海 -->
-        <div class="flex justify-center">
-          <h1 class="cur-text w-fit">{{ $route.meta.title }}(词海)</h1>
-        </div>
-        <div class="cloud-words-container">
-          <div class="item" v-for="(key, value) in categories" :key="value">
-            <router-link
-              class="cloud-words block"
-              :style="{
-                color: randomColor(),
-              }"
-              :to="`/user/tags?author=${author}&category=${value}`"
-            >
-              <span :style="{ fontSize: calculateFontSize(key) + 'px' }">{{
-                value
-              }}</span>
-              <sup class="">{{ key }}</sup>
-            </router-link>
+        <div v-if="categories && Object.keys(categories).length">
+          <div class="flex justify-center">
+            <h1 class="cur-text w-fit">
+              {{ $route.meta.title || "分类总览" }}(只显示10个)
+            </h1>
           </div>
+          <my-chart
+            v-model="pieOption"
+            class="mb-40px"
+            :click="handlerPie"
+          ></my-chart>
+          <!-- 词海 -->
+          <div class="flex justify-center">
+            <h1 class="cur-text w-fit">
+              {{ $route.meta.title || "分类总览" }}(词海)
+            </h1>
+          </div>
+          <div class="cloud-words-container">
+            <div class="item" v-for="(key, value) in categories" :key="value">
+              <router-link
+                class="cloud-words block"
+                :style="{
+                  color: randomColor(),
+                }"
+                :to="`/user/tags?author=${author}&category=${value}`"
+              >
+                <span :style="{ fontSize: calculateFontSize(key) + 'px' }">{{
+                  value
+                }}</span>
+                <sup class="">{{ key }}</sup>
+              </router-link>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <div class="flex justify-center">
+            <h1 class="cur-text w-fit">
+              {{ $route.meta.title || "分类总览" }}
+            </h1>
+          </div>
+          <my-empty />
         </div>
       </my-card>
     </template>

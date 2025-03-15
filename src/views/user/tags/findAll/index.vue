@@ -3,10 +3,13 @@
     <template #content-start>
       <my-card class="card_style allTags">
         <div class="flex justify-center">
-          <h1 class="cur-text w-fit">标签总览</h1>
+          <h1 class="cur-text w-fit">{{ $route.meta.title || "标签总览" }}</h1>
         </div>
         <!-- 词海 -->
-        <div class="cloud-words-container">
+        <div
+          class="cloud-words-container"
+          v-if="tags && Object.keys(tags).length"
+        >
           <div class="item" v-for="(key, value) in tags" :key="value">
             <router-link
               class="cloud-words block"
@@ -22,6 +25,7 @@
             </router-link>
           </div>
         </div>
+        <my-empty v-else />
       </my-card>
     </template>
   </layout-content>
