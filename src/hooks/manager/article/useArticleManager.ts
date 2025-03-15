@@ -40,8 +40,6 @@ export const useArticleManager = (searchKey: Ref<string>) => {
   const headerBtnsSize = ref<string>()
   // 账号和用户名的 宽度
   const accountsWidth = ref<number>()
-  // 右侧 工具栏
-  const toolBtnsWidth = ref<number>()
   // 是否是小屏
   const isSmall = ref<boolean>()
   // 处理 窗口变化 的事件
@@ -50,14 +48,12 @@ export const useArticleManager = (searchKey: Ref<string>) => {
       // 账号和用户名的 宽度
       accountsWidth.value = 150
       headerBtnsSize.value = "default"
-      toolBtnsWidth.value = 290
       isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
     accountsWidth.value = 100
     headerBtnsSize.value = "small"
-    toolBtnsWidth.value = 100
     isSmall.value = true
   }
 
@@ -109,7 +105,6 @@ export const useArticleManager = (searchKey: Ref<string>) => {
 
     headerBtnsSize,
     accountsWidth,
-    toolBtnsWidth,
     isSmall,
   }
 }
