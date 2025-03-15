@@ -17,7 +17,7 @@
             <div
               class="mask cur-pointer"
               @click="userEditorScene"
-              v-if="userToken"
+              v-author="{ author: account }"
             >
               更换头像
             </div>
@@ -99,7 +99,7 @@ import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
 // 提取需要的数据
-const { userToken, userAccount } = storeToRefs(useUserStore())
+const { userAccount } = storeToRefs(useUserStore())
 const layoutRef = ref()
 
 // 切换 到编辑用户界面
@@ -109,7 +109,6 @@ const route = useRoute()
 const account = route.params.author as string
 // 存储 用户信息
 const userInfo = ref<userInfoType>()
-
 // 得到 用户的信息
 const reqUserInfo = async () => {
   if (account) {

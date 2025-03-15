@@ -23,6 +23,7 @@
               size="small"
               @click=""
               v-tip="{ type: 'warning', msg: '开发中~~' }"
+              v-author="{ author: account }"
               >回收站</my-button
             >
           </div>

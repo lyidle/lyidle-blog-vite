@@ -11,10 +11,10 @@ interface customDivELement extends HTMLDivElement {
 }
 export const vAuthor: Directive<customDivELement, DevTipOptions> = {
   mounted(el, options) {
-    const { userAccount } = storeToRefs(useUserStore())
+    const { userAccount, userToken } = storeToRefs(useUserStore())
     const { author } = options.value
     // 作者不一致
-    if (author !== userAccount.value) {
+    if (!userToken.value || author !== userAccount.value) {
       el.remove()
     }
   },
