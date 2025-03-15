@@ -20,4 +20,26 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.el-pagination {
+  // 中间部分按钮
+  // 字体颜色
+  --el-text-color-primary: var(--pagination-color);
+  --el-pagination-hover-color: var(--pagination-color-hover);
+  // 填充颜色
+  --el-fill-color: var(--pagination-bg);
+  // 填充颜色 激活的按钮
+  --el-color-primary: var(--pagination-bg-active);
+
+  // 左右按钮disabled
+  // 字体颜色
+  --el-text-color-placeholder: var(--pagination-color-disabled);
+  --el-disabled-bg-color: var(--pagination-bg-disabled);
+  ::v-deep(.el-pagination__goto) {
+    color: var(--primary-color);
+  }
+  ::v-deep(.el-pagination__classifier) {
+    color: var(--primary-color);
+  }
+}
+</style>

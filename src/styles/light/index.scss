@@ -107,6 +107,14 @@ html[themes="#{$theme}"] {
     )};
   --accordion-subtitle-color: var(--primary-color);
   --accordion-subtitle-color-hover: #{$accordion-color-hover};
+  // pagination
+  --pagination-bg: #689aba;
+  --pagination-color: #d2edff;
+  --pagination-color-hover: #f4fbff;
+  --pagination-bg-active: #a4cbe3;
+  // pagination 左右按钮 disabled
+  --pagination-bg-disabled: #bfd2dd;
+  --pagination-color-disabled: #fcfeff;
   // drawer
   --drawer-bg: white;
   --drawer-mask: #0000005a;
