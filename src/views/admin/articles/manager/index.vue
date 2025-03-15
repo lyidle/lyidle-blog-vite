@@ -74,7 +74,7 @@
         >
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
-              <el-tooltip
+              <my-tooltip
                 class="box-item"
                 effect="dark"
                 :content="!row.carousel ? '设置轮播和置顶' : '取消轮播和置顶'"
@@ -94,7 +94,7 @@
                     </template>
                   </my-button>
                 </div>
-              </el-tooltip>
+              </my-tooltip>
             </div>
           </template>
         </my-table-column>

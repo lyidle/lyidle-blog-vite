@@ -125,6 +125,10 @@ html[themes="#{$theme}"] {
   // pagination 左右按钮 disabled
   --pagination-bg-disabled: #9dbfd3;
   --pagination-color-disabled: #fcfeff;
+  // tooltip
+  --tooltip-bg: #3d5b6e;
+  --tooltip-color: var(--primary-color);
+  --tooltip-border-color: rgb(108 122 139);
   // drawer
   --drawer-bg: #3d5b6e;
   --drawer-mask: #0000005a;

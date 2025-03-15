@@ -38,7 +38,7 @@
             ></my-tags>
           </el-form-item>
           <el-form-item label="图标" prop="icon">
-            <el-tooltip
+            <my-tooltip
               effect="dark"
               content="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
               placement="top"
@@ -47,7 +47,7 @@
                 placeholder="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
                 v-model="createData.icon"
               ></my-input>
-            </el-tooltip>
+            </my-tooltip>
           </el-form-item>
           <el-form-item label="路径" prop="to">
             <my-input

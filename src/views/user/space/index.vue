@@ -26,7 +26,7 @@
             <div class="nickName text-24px">{{ userInfo?.nickName }}</div>
             <div class="signer text-18px">{{ userInfo?.signer }}</div>
           </div>
-          <div class="tools">
+          <div class="tools" v-if="false">
             <!-- 关注 -->
             <my-button
               class="p-0px w-125px h-35px pr-5px"

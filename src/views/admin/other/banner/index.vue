@@ -81,7 +81,7 @@
                 @click="editor.init(row)"
                 >编辑</my-button
               >
-              <el-tooltip
+              <my-tooltip
                 class="box-item"
                 effect="dark"
                 :content="row.isBin ? '恢复' : '禁用'"
@@ -100,7 +100,7 @@
                     </template>
                   </my-button>
                 </div>
-              </el-tooltip>
+              </my-tooltip>
             </div>
           </template>
         </my-table-column>

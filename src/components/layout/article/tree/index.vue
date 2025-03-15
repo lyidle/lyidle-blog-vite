@@ -8,7 +8,7 @@
             {{ title }} - {{ pagination?.total || 0 }}
           </div>
           <div class="flex gap-10px items-center">
-            <el-tooltip
+            <my-tooltip
               class="box-item"
               effect="dark"
               content="作者"
@@ -17,7 +17,7 @@
               <div class="cur-text">
                 {{ account }}
               </div>
-            </el-tooltip>
+            </my-tooltip>
             <my-button
               class="w-70px"
               size="small"
