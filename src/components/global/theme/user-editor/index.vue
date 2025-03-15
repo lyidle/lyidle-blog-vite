@@ -156,7 +156,7 @@ const validatorConfirm = (_: any, value: any, next: any) => {
   next()
 }
 
-// 注册规则
+// 规则
 const formRules = reactive({
   account: [
     { required: true, trigger: "change", message: "账号是必填项" },
@@ -283,25 +283,31 @@ const handlerUpdate = async () => {
 const updateAvatar = async () => {
   try {
     const uploadAvatar = avatar.value?.[0]?.url
-    // 处理 avatar 字段 存在 且不是默认的图片 且 不是原图
-    const _avatar =
+
+    // 判断是否更新
+    if (uploadAvatar === default_avatar) {
+      ElMessage.warning("头像没有更新哦~")
+      return
+    }
+
+    // 存储新的头像地址
+    let newAvatar = uploadAvatar || default_avatar || ""
+    // 判断是否更新
+    const isUpdate =
       (uploadAvatar !== default_avatar &&
         uploadAvatar !== userAvatar.value &&
         uploadAvatar) ||
       null
-    if (!_avatar) return ElMessage.warning("没有更新头像~")
+
     // 是否 更新
     let isUpdateAvatar = false
 
     // 判断 是否需要删除 原来的图片
     const originAvatar = userAvatar.value
 
-    // 存储新的头像地址
-    let newAvatar = ""
-
     // 存在 更新的图片 则转为永久 链接
-    if (_avatar) {
-      const tempImg = [_avatar]
+    if (isUpdate) {
+      const tempImg = [isUpdate]
       const result = await postImgPermanent({
         tempImg,
         account: userAccount.value,
@@ -327,11 +333,8 @@ const updateAvatar = async () => {
     // 存储token
     let token = userToken.value
     // 更新 头像
-    if (newAvatar) {
-      const result = await updateUserAvatar(newAvatar)
-      console.log(result)
-      if (result?.token) token = result.token
-    }
+    const result = await updateUserAvatar(newAvatar)
+    if (result?.token) token = result.token
 
     // 判断 是否需要删除
     const isRemove = originAvatar && isUpdateAvatar

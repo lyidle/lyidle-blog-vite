@@ -9,7 +9,7 @@
                 background: 'no-repeat center',
                 backgroundSize: 'cover',
                 backgroundImage: userInfo?.avatar
-                  ? `url('${userInfo?.avatar}')`
+                  ? `url('${escapeUrlForRegExp(userInfo?.avatar)}')`
                   : 'var(--default-avatar)',
               }"
               class="avatar w-100% h-100% block"
@@ -85,6 +85,8 @@
 // 引入 api
 import { searchArticleExact } from "@/api/article"
 import { searchCounts } from "@/api/user"
+// 处理 url
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
 import type {
