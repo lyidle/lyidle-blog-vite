@@ -126,4 +126,8 @@ const handlerConfirm = async () => {
 defineExpose({ init })
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+::v-deep(.el-checkbox__label) {
+  color: var(--primary-color);
+}
+</style>

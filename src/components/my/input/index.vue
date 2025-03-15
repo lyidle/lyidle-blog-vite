@@ -26,8 +26,9 @@ defineExpose({
   &:hover {
     box-shadow: unset;
   }
-  background-color: unset;
+  background-color: transparent !important;
   box-shadow: unset;
+  --el-disabled-border-color: none;
   border-radius: unset;
   border-bottom: 1px solid var(--primary-input-underline-bg);
   margin: 0.0625rem 0.6875rem;
@@ -43,7 +44,8 @@ defineExpose({
     width: 100%;
     font-size: 0.8125rem;
     transition: font-size var(--primary-during);
-    color: var(--primary-input-color);
+    color: var(--primary-input-color) !important;
+    -webkit-text-fill-color: var(--primary-input-color) !important;
     &:focus {
       font-size: 0.9375rem;
     }
@@ -61,7 +63,8 @@ defineExpose({
   border-bottom: 1px solid var(--login-input-underline-bg);
   input {
     transition: font-size var(--primary-during);
-    color: var(--login-input-color);
+    color: var(--login-input-color) !important;
+    -webkit-text-fill-color: var(--login-input-color) !important;
     &::placeholder {
       color: var(--login-input-placeholder);
     }
