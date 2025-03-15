@@ -62,7 +62,7 @@
             <div class="flex">
               <!-- 修改 -->
               <my-button
-                class="w-50px"
+                class="w-80px"
                 size="small"
                 @click="
                   $router.push(
@@ -71,7 +71,7 @@
                 "
                 v-if="isRestore"
                 v-author="{ author: article.author }"
-                >修改</my-button
+                >修改文章</my-button
               >
               <!-- 软删除 -->
               <my-popconfirm
@@ -83,12 +83,12 @@
               >
                 <template #reference>
                   <my-button
-                    class="w-50px"
+                    class="w-80px"
                     size="small"
                     type="danger"
                     v-if="isRestore"
                     v-author="{ author: article.author }"
-                    >软删除</my-button
+                    >软删除文章</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -119,11 +119,11 @@
               >
                 <template #reference>
                   <my-button
-                    class="w-50px"
+                    class="w-80px"
                     size="small"
                     type="danger"
                     v-author="{ author: article.author }"
-                    >删除</my-button
+                    >删除文章</my-button
                   >
                 </template>
                 <template #actions="{ confirm, cancel }">
@@ -144,6 +144,7 @@
                   </my-button>
                 </template>
               </my-popconfirm>
+              <slot name="btns" :row="article"></slot>
             </div>
           </div>
         </div>
@@ -209,7 +210,7 @@ const handlerArticles = async (
 ) => {
   if (!reqArticles) return
   const result = await reqArticles(currentPage, pageSize)
-  if (result?.article?.length) {
+  if (result?.article) {
     // 处理排序
     const sortedArticles = orderArticle(result.article, true) as Article[]
     // 处理时间

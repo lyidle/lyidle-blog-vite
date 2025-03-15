@@ -1,5 +1,5 @@
 <template>
-  <template v-if="data.length">
+  <template v-if="data?.[0]?.children?.length">
     <my-menu-instance
       :data="item"
       :name="item.name"
@@ -34,9 +34,7 @@ const reqTags = async (category: string, name: string = category) => {
       name,
       children: handler,
     })
-  } catch (error) {
-    ElMessage.warning(`获取分类：${category}失败~`)
-  }
+  } catch (error) {}
 }
 
 // 挂载
