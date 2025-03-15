@@ -97,6 +97,7 @@ import type {
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { mitt } from "@/utils/emitter"
 // 提取需要的数据
 const { userToken, userAccount } = storeToRefs(useUserStore())
 const layoutRef = ref()
@@ -130,9 +131,15 @@ const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
   articles.value = result.article
   pagination.value = result.pagination
 }
+
+mitt.on("reloadUserInfo", reqUserInfo)
 onMounted(async () => {
   await reqUserInfo()
   await reqArticles()
+})
+
+onBeforeUnmount(() => {
+  mitt.off("reloadUserInfo", reqUserInfo)
 })
 </script>
 <style scoped lang="scss">

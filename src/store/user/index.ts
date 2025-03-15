@@ -138,6 +138,7 @@ export const useUserStore = defineStore(
           userPages.value = user?.counts.pages
           userTags.value = user?.counts.tags
           userCategories.value = user?.counts.categories
+          mitt.emit("reloadUserInfo")
           return
         }
       } catch (error) {
