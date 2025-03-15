@@ -19,11 +19,9 @@ defineExpose({
 </script>
 
 <style lang="scss">
-.el-popover {
+.el-popover.el-popper {
   --el-popover-bg-color: var(--popconfirm-bg);
   --el-popover-border-color: var(--popconfirm-bg);
-  --el-text-color-regular: var(--primary-color);
-  --el-bg-color-overlay: var(--popconfirm-bg);
-  --el-border-color-light: var(--popconfirm-bg);
+  color: var(--primary-color);
 }
 </style>

@@ -37,9 +37,8 @@ useGlobalEmitter()
 /* 背景 */
 .el-popper.is-light,
 .el-popper.is-light > .el-popper__arrow:before {
-  --el-text-color-regular: var(--pagination-color);
-  --el-bg-color-overlay: var(--pagination-bg);
-  --el-border-color-light: var(--pagination-bg);
+  --el-bg-color-overlay: var(--popconfirm-bg);
+  --el-border-color-light: var(--popconfirm-bg);
 }
 /* 悬浮背景 */
 .el-select-dropdown__item.is-hovering {
