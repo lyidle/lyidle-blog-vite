@@ -21,9 +21,9 @@
             <my-button
               class="w-70px"
               size="small"
-              @click=""
-              v-tip="{ type: 'warning', msg: '开发中~~' }"
+              v-if="isRestore"
               v-author="{ author: account }"
+              @click="$router.push(`/user/docs/restore/${account}`)"
               >回收站</my-button
             >
           </div>
@@ -69,6 +69,7 @@
                     `/doc/update?author=${article.author}&id=${article.id}`
                   )
                 "
+                v-if="isRestore"
                 v-author="{ author: article.author }"
                 >修改</my-button
               >
@@ -85,6 +86,7 @@
                     class="w-50px"
                     size="small"
                     type="danger"
+                    v-if="isRestore"
                     v-author="{ author: article.author }"
                     >软删除</my-button
                   >
@@ -176,6 +178,10 @@ import moment from "@/utils/moment"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+
+// 判断是否是回收站页面
+const route = useRoute()
+const isRestore = !route.path.includes("restore")
 
 // 所有文章
 // 定义按年份分组的类型

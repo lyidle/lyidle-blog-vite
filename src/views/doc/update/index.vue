@@ -323,6 +323,7 @@ onMounted(async () => {
     mitt.emit("account inconsistent", "无权限更新当前文章~")
     return
   }
+
   await reqArticle()
 })
 

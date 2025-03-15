@@ -94,6 +94,18 @@ export const constantRoute: RouteRecordRaw[] = [
           pagesMt: "-30vh",
         },
         component: () => import("@/views/user/docs/index.vue"),
+      }, // 用户查询 所有文章
+      {
+        path: "/user/docs/restore/:author",
+        name: "FindAllUserDocsRestore",
+        meta: {
+          title: "文章回收站",
+          bannerWel: "文章回收站",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
+        component: () => import("@/views/user/docs/restore/index.vue"),
       },
       // 用户查询 所有标签
       {

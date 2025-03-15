@@ -1,11 +1,11 @@
 <template>
   <layout-article-tree
     :account
-    :title="$route.meta.title || '文章总览'"
+    :title="$route.meta.title || '文章回收站'"
   ></layout-article-tree>
 </template>
 
-<script setup lang="ts" name="FindAllUserPages">
+<script setup lang="ts" name="FindAllUserPagesRestore">
 // 引入 api
 import { searchArticleMergeExact } from "@/api/article"
 
@@ -24,6 +24,7 @@ const handlerArticles = async (
       author: account,
       currentPage,
       pageSize,
+      restore: "true",
     })
     return result
   } catch (error) {}
