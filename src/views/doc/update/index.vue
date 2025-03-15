@@ -104,6 +104,10 @@ import { mitt } from "@/utils/emitter"
 import { postImgPermanent, removeFileStatic } from "@/api/img"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+// 提取需要的数据
+const { userAccount } = storeToRefs(useUserStore())
 const route = useRoute()
 const router = useRouter()
 // 上传的 poster图
@@ -314,6 +318,11 @@ useIsFullscreen(vditorEditor)
 
 // 挂载
 onMounted(async () => {
+  // 账号和本地的不一样
+  if (userAccount.value !== docAuthor) {
+    mitt.emit("account inconsistent", "无权限更新当前文章~")
+    return
+  }
   await reqArticle()
 })
 

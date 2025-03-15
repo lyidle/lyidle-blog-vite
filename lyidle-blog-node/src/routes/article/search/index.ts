@@ -12,7 +12,7 @@ const search = async (
   callBack?: (commend: any) => void
 ) => {
   const { query } = req
-  const { id, author, title, desc, category, tags } = query
+  const { id, author, title, desc, category, tags, restore } = query
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
@@ -28,7 +28,6 @@ const search = async (
     order: [["carousel", "desc"], [["id", "desc"]]],
     where: {},
   }
-
   const addCondition = (key: string, value: string, isExact = false) => {
     if (!merge) {
       commend.where = { [key]: isExact ? value : { [Op.like]: `%${value}%` } }
@@ -53,6 +52,16 @@ const search = async (
 
   // 回调函数
   callBack && callBack(commend)
+
+  try {
+    if (restore && JSON.parse(restore)) {
+      commend.where.isBin = {
+        [Op.not]: null, // 不是 NULL
+      }
+      commend.paranoid = false
+    }
+  } catch (error) {}
+
   // 查询用户的所有文章
   const { count, rows } = await Article.findAndCountAll(commend)
 
