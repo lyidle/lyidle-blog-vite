@@ -63,7 +63,7 @@
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
               <!-- 软删除 -->
-              <el-popconfirm
+              <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
                 :title="`确认要恢复《${row.account}》么?`"
@@ -92,7 +92,7 @@
                     是
                   </my-button>
                 </template>
-              </el-popconfirm>
+              </my-popconfirm>
             </div>
           </template>
         </my-table-column>

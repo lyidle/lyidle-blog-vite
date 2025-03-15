@@ -53,7 +53,7 @@
               >
 
               <!-- 软删除 -->
-              <el-popconfirm
+              <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
                 :title="`确认要把《${row.name}》回收到垃圾桶么?`"
@@ -86,9 +86,9 @@
                     是
                   </my-button>
                 </template>
-              </el-popconfirm>
+              </my-popconfirm>
               <!-- 删除 -->
-              <el-popconfirm
+              <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
                 :title="`确认要彻底删除《${row.name}》么?`"
@@ -121,7 +121,7 @@
                     是
                   </my-button>
                 </template>
-              </el-popconfirm>
+              </my-popconfirm>
             </div>
           </template>
         </my-table-column>
