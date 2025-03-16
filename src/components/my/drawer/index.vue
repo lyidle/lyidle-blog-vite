@@ -1,15 +1,13 @@
 <template>
   <teleport to="body">
-    <my-context-menu>
-      <div :class="name">
-        <div class="drawer-mask" @click="close" v-if="drawer"></div>
-        <transition name="drawer">
-          <div class="drawer-content" v-if="drawer">
-            <slot name="body"></slot>
-          </div>
-        </transition>
-      </div>
-    </my-context-menu>
+    <div :class="name">
+      <div class="drawer-mask" @click="close" v-if="drawer"></div>
+      <transition name="drawer">
+        <div class="drawer-content" v-if="drawer">
+          <slot name="body"></slot>
+        </div>
+      </transition>
+    </div>
   </teleport>
 </template>
 

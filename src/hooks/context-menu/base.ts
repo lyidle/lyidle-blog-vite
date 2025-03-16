@@ -6,10 +6,7 @@ import { useIsContextMenu } from "./isContextMenu"
 import { getSelectedText } from "@/hooks/context-menu/copyToClipboard"
 // 引入 hooks
 import { useEventListener } from "@/hooks/useEventListener"
-export const useContextMenu = (
-  menu: Ref<HTMLDivElement>,
-  container: Ref<HTMLDivElement>
-) => {
+export const useContextMenu = () => {
   // 提取需要的变量
   const { isCopyText } = storeToRefs(useSettingStore())
   // 菜单的高宽
@@ -17,12 +14,16 @@ export const useContextMenu = (
   const menuWidth = ref()
   // 打开菜单
   const open = async ($e: Event) => {
+    isClosed = false
+    if (!menu) return
+    // 初始化高度
+    geometricinfo()
     const e = $e as MouseEvent
     // 阻止默认事件 和  冒泡
     e.preventDefault()
     e.stopPropagation()
     // 重置高度
-    menu.value.style.height = "0"
+    menu.style.height = "0"
     // 判断有无选中文本
     const text = await getSelectedText()
 
@@ -41,26 +42,31 @@ export const useContextMenu = (
     x >= windowX ? (x = windowX) : x
     y >= windowY ? (y = windowY) : y
     // 展开 加过度 和 位置
-    menu.value.style.height = menuHeigh.value
-    menu.value.style.transition = "height .5s"
-    menu.value.style.top = `${y}px`
-    menu.value.style.left = `${x}px`
+    menu.style.height = menuHeigh.value
+    menu.style.transition = "height .5s"
+    menu.style.top = `${y}px`
+    menu.style.left = `${x}px`
   }
+  let isClosed = true
   // 关闭菜单
   const close = () => {
+    isContent.value = false
+    isUserEditor.value = false
+    isClosed = true
     // 高度重置
-    if (menu.value) menu.value.style.height = "0"
+    if (!menu) return
+    menu.style.height = "0"
   }
 
   // 初始化高度
   const geometricinfo = () => {
-    nextTick(() => {
-      if (menu.value) menu.value.style.height = "auto"
-      // 记录高度
-      menuHeigh.value = menu.value.offsetHeight + "px"
-      menuWidth.value = menu.value.offsetWidth + "px"
-      menu.value.style.height = "0"
-    })
+    initEl()
+    if (!menu) return
+    menu.style.height = "auto"
+    // 记录高度
+    menuHeigh.value = menu.offsetHeight + "px"
+    menuWidth.value = menu.offsetWidth + "px"
+    menu.style.height = "0"
   }
 
   // 重载
@@ -69,15 +75,34 @@ export const useContextMenu = (
     onMount()
   }
 
+  const isContent = ref(false)
+  const isUserEditor = ref(false)
+  const isUserEditorTransitioned = ref(false)
+  // 菜单容器
+  let menu: HTMLDivElement | undefined
+  // 初始化元素
+  const initEl = () => {
+    if (!menu) {
+      menu = document.querySelector(".menu-context") as HTMLDivElement
+      // 监听 transitionend 事件 判断 是否关闭  关闭的话则初始化 ref变量
+      eventTransitionend = useEventListener(menu, "transitionend", () => {
+        if (!isClosed) return
+        isUserEditorTransitioned.value = false
+      })
+    }
+  }
+
   // 存储 事件
   let eventContextmenu: null | (() => void) = null
   let eventClick: null | (() => void) = null
   let eventWindowContextmenu: null | (() => void) = null
+  let eventTransitionend: null | (() => void) = null
   // 加载
   const onMount = () => {
     nextTick(() => {
+      // 初始化高度
       geometricinfo()
-      eventContextmenu = useEventListener(container, "contextmenu", open)
+      eventContextmenu = useEventListener("contextmenu", open)
       //使用捕获 先关闭 再打开菜单 防止多个菜单出现
       eventClick = useEventListener("click", close, true)
       eventWindowContextmenu = useEventListener("contextmenu", close, true)
@@ -89,6 +114,7 @@ export const useContextMenu = (
     eventContextmenu?.()
     eventClick?.()
     eventWindowContextmenu?.()
+    eventTransitionend?.()
   }
 
   // 监听 鼠标是否开启
@@ -98,4 +124,9 @@ export const useContextMenu = (
   onBeforeUnmount(() => {
     onUnMount()
   })
+  return {
+    isContent,
+    isUserEditor,
+    isUserEditorTransitioned,
+  }
 }

@@ -17,104 +17,99 @@
       <!-- 内容区 -->
       <template #content-start>
         <teleport to="body" v-if="article">
-          <my-context-menu>
-            <!-- 头部 -->
-            <div class="doc-pages-header">
-              <div class="container">
-                <div class="title cur-text">{{ article?.title }}</div>
-                <div class="author cur-text">作者--{{ article?.author }}</div>
-                <div class="desc">
-                  <div class="item">
-                    <div class="item-data">
-                      <span class="label cur-text">
-                        <i class="i-oui:token-date"></i>
-                        发表于
-                      </span>
-                      <span class="content cur-text">{{
-                        moment(article?.createdAt)
-                      }}</span>
-                    </div>
-                    <span class="item-hr">|</span>
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-mingcute:refresh-3-line"></i>更新于</span
-                      >
-                      <span class="content cur-text">{{
-                        moment(article?.updatedAt)
-                      }}</span>
-                    </div>
+          <!-- 头部 -->
+          <div class="doc-pages-header">
+            <div class="container">
+              <div class="title cur-text">{{ article?.title }}</div>
+              <div class="author cur-text">作者--{{ article?.author }}</div>
+              <div class="desc">
+                <div class="item">
+                  <div class="item-data">
+                    <span class="label cur-text">
+                      <i class="i-oui:token-date"></i>
+                      发表于
+                    </span>
+                    <span class="content cur-text">{{
+                      moment(article?.createdAt)
+                    }}</span>
                   </div>
+                  <span class="item-hr">|</span>
+                  <div class="item-data">
+                    <span class="label cur-text"
+                      ><i class="i-mingcute:refresh-3-line"></i>更新于</span
+                    >
+                    <span class="content cur-text">{{
+                      moment(article?.updatedAt)
+                    }}</span>
+                  </div>
+                </div>
 
-                  <div class="item">
-                    <div class="item-data">
-                      <span class="label cur-text">
-                        <i class="i-tabler:clover-filled"></i>
-                      </span>
-                      <span
-                        class="content cur-text doc-header-link cur-pointer"
+                <div class="item">
+                  <div class="item-data">
+                    <span class="label cur-text">
+                      <i class="i-tabler:clover-filled"></i>
+                    </span>
+                    <span class="content cur-text doc-header-link cur-pointer">
+                      <router-link
+                        :to="`/user/categories?author=${article.author}&category=${article.category}`"
+                        >{{ article?.category }}</router-link
                       >
-                        <router-link
-                          :to="`/user/categories?author=${article.author}&category=${article.category}`"
-                          >{{ article?.category }}</router-link
-                        >
-                      </span>
-                    </div>
-                    <span class="item-hr">|</span>
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-mynaui:label-solid"></i
-                      ></span>
-                      <span class="content">
-                        <template
-                          v-for="(item, index) in article?.tags"
-                          :key="item"
-                        >
-                          <span class="doc-header-link cur-pointer">
-                            <router-link
-                              :to="`/user/tags?author=${article.author}&tags=${item}`"
-                              >{{ item }}</router-link
-                            >
-                          </span>
-                          <span
-                            class="tags-doc"
-                            v-if="index !== article?.tags.length - 1"
-                            >·</span
-                          >
-                        </template>
-                      </span>
-                    </div>
+                    </span>
                   </div>
-                  <div class="item">
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-oui:token-date"></i>字数总计:</span
+                  <span class="item-hr">|</span>
+                  <div class="item-data">
+                    <span class="label cur-text"
+                      ><i class="i-mynaui:label-solid"></i
+                    ></span>
+                    <span class="content">
+                      <template
+                        v-for="(item, index) in article?.tags"
+                        :key="item"
                       >
-                      <span class="content cur-text">{{
-                        numberTransform(article?.length)
-                      }}</span>
-                    </div>
-                    <span class="item-hr">|</span>
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-mingcute:refresh-3-line"></i
-                        >阅读时长:</span
-                      >
-                      <span class="content cur-text">1分钟</span>
-                    </div>
-                    <span class="item-hr">|</span>
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
-                      >
-                      <span class="content cur-text">{{
-                        numberTransform(23208)
-                      }}</span>
-                    </div>
+                        <span class="doc-header-link cur-pointer">
+                          <router-link
+                            :to="`/user/tags?author=${article.author}&tags=${item}`"
+                            >{{ item }}</router-link
+                          >
+                        </span>
+                        <span
+                          class="tags-doc"
+                          v-if="index !== article?.tags.length - 1"
+                          >·</span
+                        >
+                      </template>
+                    </span>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item-data">
+                    <span class="label cur-text"
+                      ><i class="i-oui:token-date"></i>字数总计:</span
+                    >
+                    <span class="content cur-text">{{
+                      numberTransform(article?.length)
+                    }}</span>
+                  </div>
+                  <span class="item-hr">|</span>
+                  <div class="item-data">
+                    <span class="label cur-text"
+                      ><i class="i-mingcute:refresh-3-line"></i>阅读时长:</span
+                    >
+                    <span class="content cur-text">1分钟</span>
+                  </div>
+                  <span class="item-hr">|</span>
+                  <div class="item-data">
+                    <span class="label cur-text"
+                      ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
+                    >
+                    <span class="content cur-text">{{
+                      numberTransform(23208)
+                    }}</span>
                   </div>
                 </div>
               </div>
             </div>
-          </my-context-menu>
+          </div>
         </teleport>
         <!-- 卡片 -->
         <div class="doc-content" ref="docRef">

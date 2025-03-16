@@ -1,94 +1,85 @@
 <template>
-  <my-context-menu
-    panel-name="编辑用户"
-    :panel-scene="1"
-    panel-icon="i-basil:edit-outline"
-  >
-    <layout-content-aside-card>
-      <template #body>
-        <div class="aside-container aside-userinfo">
-          <div
-            class="pin"
-            :content="adminAccount ? `owner` : 'null'"
-            :style="{
-              '--pin-left': adminAccount ? '-0.5rem' : '0rem',
-              '--pin-top': adminAccount ? '1.125rem' : '0.9375rem',
-            }"
-            v-if="!userToken"
-          ></div>
-          <div
-            class="pin right-pin cur-pointer"
-            :content="'bin'"
-            :style="{
-              '--pin-left': '13px',
-              '--pin-top': '15px',
-            }"
-            @click="userEditorScene"
-            v-if="showIsBin"
-          ></div>
-          <div class="userInfo">
-            <!-- 头像 -->
-            <global-avatar></global-avatar>
-          </div>
-          <div class="username font-size-1.5625rem text-center cur-text">
-            {{ showNickName }}
-            <div class="signer text-center cur-text">
-              {{ showSigner }}
-            </div>
-          </div>
-          <div class="side-counts-container">
-            <layout-link-pages></layout-link-pages>
-          </div>
-          <router-link
-            class="block w-100% h-100%"
-            :to="`/user/space/${adminAccount}`"
-          >
-            <my-button type="primary" class="userinfo-btn">
-              <div class="tip">前往小窝</div>
-              <div class="car">
-                <icon-car></icon-car>
-              </div>
-            </my-button>
-          </router-link>
-          <div class="links">
-            <a
-              class="color-[var(--aside-userinfo-wechat-color)]"
-              @click="copyToClipboard('微信号', ownerWeChat)"
-              v-if="ownerWeChat"
-            >
-              <i class="i-ic:twotone-wechat"></i>
-            </a>
-            <a
-              class="color-[var(--aside-userinfo-qq-color)]"
-              @click="copyToClipboard('QQ号', ownerQQ)"
-              v-if="ownerQQ"
-            >
-              <icon-qq></icon-qq>
-            </a>
-            <a
-              :href="ownerBiliBili"
-              target="_blank"
-              class="color-[var(--aside-userinfo-bilibili-color)]"
-              v-if="ownerBiliBili"
-            >
-              <i class="i-simple-icons:bilibili"></i>
-            </a>
-            <a
-              :href="`mailto:${ownerEmail}`"
-              class="color-[var(--aside-userinfo-mail-color)]"
-              target="_self"
-              v-if="ownerEmail"
-            >
-              <i class="i-fluent-color:mail-24"></i>
-            </a>
+  <layout-content-aside-card @contextmenu="mitt.emit('isUserEditorMenu')">
+    <template #body>
+      <div class="aside-container aside-userinfo">
+        <div
+          class="pin"
+          :content="adminAccount ? `owner` : 'null'"
+          :style="{
+            '--pin-left': adminAccount ? '-0.5rem' : '0rem',
+            '--pin-top': adminAccount ? '1.125rem' : '0.9375rem',
+          }"
+          v-if="!userToken"
+        ></div>
+        <div
+          class="pin right-pin cur-pointer"
+          :content="'bin'"
+          :style="{
+            '--pin-left': '13px',
+            '--pin-top': '15px',
+          }"
+          @click="userEditorScene"
+          v-if="showIsBin"
+        ></div>
+        <div class="userInfo">
+          <!-- 头像 -->
+          <global-avatar></global-avatar>
+        </div>
+        <div class="username font-size-1.5625rem text-center cur-text">
+          {{ showNickName }}
+          <div class="signer text-center cur-text">
+            {{ showSigner }}
           </div>
         </div>
-      </template>
-    </layout-content-aside-card>
-    <template #body>
-      <layout-content-menu />
+        <div class="side-counts-container">
+          <layout-link-pages></layout-link-pages>
+        </div>
+        <router-link
+          class="block w-100% h-100%"
+          :to="`/user/space/${adminAccount}`"
+        >
+          <my-button type="primary" class="userinfo-btn">
+            <div class="tip">前往小窝</div>
+            <div class="car">
+              <icon-car></icon-car>
+            </div>
+          </my-button>
+        </router-link>
+        <div class="links">
+          <a
+            class="color-[var(--aside-userinfo-wechat-color)]"
+            @click="copyToClipboard('微信号', ownerWeChat)"
+            v-if="ownerWeChat"
+          >
+            <i class="i-ic:twotone-wechat"></i>
+          </a>
+          <a
+            class="color-[var(--aside-userinfo-qq-color)]"
+            @click="copyToClipboard('QQ号', ownerQQ)"
+            v-if="ownerQQ"
+          >
+            <icon-qq></icon-qq>
+          </a>
+          <a
+            :href="ownerBiliBili"
+            target="_blank"
+            class="color-[var(--aside-userinfo-bilibili-color)]"
+            v-if="ownerBiliBili"
+          >
+            <i class="i-simple-icons:bilibili"></i>
+          </a>
+          <a
+            :href="`mailto:${ownerEmail}`"
+            class="color-[var(--aside-userinfo-mail-color)]"
+            target="_self"
+            v-if="ownerEmail"
+          >
+            <i class="i-fluent-color:mail-24"></i>
+          </a>
+        </div>
+      </div>
     </template>
-  </my-context-menu>
+  </layout-content-aside-card>
 </template>
 
 <script setup lang="ts" name="AsideIntroduceSelf">
@@ -100,6 +91,7 @@ import { useShowUserinfo } from "@/hooks/showUserinfo"
 // 引入 hooks
 // 切换 到编辑用户界面
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
+import { mitt } from "@/utils/emitter"
 // 切换 到编辑用户界面
 const userEditorScene = useUserEditorScene()
 // 提取需要展示的信息

@@ -1,64 +1,62 @@
 <template>
-  <div ref="menucontainer">
-    <slot></slot>
-    <div class="menu-context" ref="menuInstance">
-      <div class="title">
-        <div class="icon" @click="goBack">
-          <i class="i-lets-icons:arrow-left"></i>
-        </div>
-        <div class="icon" @click="$router.go(1)">
-          <i class="i-lets-icons:arrow-right"></i>
-        </div>
-        <div class="icon" @click="fullScreenEmit">
-          <i
-            :class="
-              isFullscreen
-                ? 'i-tdesign:fullscreen-exit'
-                : 'i-tdesign:fullscreen-1'
-            "
-          ></i>
-        </div>
-        <div class="icon" @click="$router.go(0)">
-          <i class="i-tabler:refresh"></i>
-        </div>
-        <div class="icon" @click="scrollTop">
-          <i class="i-lets-icons:arrow-top"></i>
-        </div>
-        <div class="icon" @click="scrollBottom">
-          <i class="i-lets-icons:arrow-down"></i>
-        </div>
+  <div class="menu-context">
+    <div class="title">
+      <div class="icon" @click="goBack">
+        <i class="i-lets-icons:arrow-left"></i>
       </div>
-      <my-context-menu-item
-        :content="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
-        :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
-        @click="bannerIsFixed = !bannerIsFixed"
-      >
-      </my-context-menu-item>
-      <my-context-menu-item
-        v-if="themes === 'switch'"
-        :content="`${isDark ? '暗夜' : '白天'}模式`"
-        :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
-        @click="isDark = !isDark"
-      >
-      </my-context-menu-item>
-      <my-context-menu-item
-        :content="panelName"
-        :icon="panelIcon"
-        @click="openSettings"
-      ></my-context-menu-item>
-      <my-context-menu-item
-        :content="'复制文本'"
-        :icon="'i-material-symbols-light:print'"
-        @click="handleContextMenu"
-        v-if="isCopyText"
-      ></my-context-menu-item>
-      <my-context-menu-item
-        :content="'打印页面'"
-        :icon="'i-material-symbols-light:print'"
-        onclick="window.print()"
-      ></my-context-menu-item>
-      <slot name="body"></slot>
+      <div class="icon" @click="$router.go(1)">
+        <i class="i-lets-icons:arrow-right"></i>
+      </div>
+      <div class="icon" @click="fullScreenEmit">
+        <i
+          :class="
+            isFullscreen
+              ? 'i-tdesign:fullscreen-exit'
+              : 'i-tdesign:fullscreen-1'
+          "
+        ></i>
+      </div>
+      <div class="icon" @click="$router.go(0)">
+        <i class="i-tabler:refresh"></i>
+      </div>
+      <div class="icon" @click="scrollTop">
+        <i class="i-lets-icons:arrow-top"></i>
+      </div>
+      <div class="icon" @click="scrollBottom">
+        <i class="i-lets-icons:arrow-down"></i>
+      </div>
     </div>
+    <my-context-menu-item
+      :content="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
+      :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
+      @click="bannerIsFixed = !bannerIsFixed"
+    >
+    </my-context-menu-item>
+    <my-context-menu-item
+      v-if="themes === 'switch'"
+      :content="`${isDark ? '暗夜' : '白天'}模式`"
+      :icon="isDark ? 'i-ep-moon-night' : 'i-ep:sunny'"
+      @click="isDark = !isDark"
+    >
+    </my-context-menu-item>
+    <my-context-menu-item
+      :content="isUserEditor ? '编辑用户' : '面板界面'"
+      :icon="isUserEditor ? 'i-basil:edit-outline' : 'i-mynaui:panel-top'"
+      @click="openSettings"
+    ></my-context-menu-item>
+    <my-context-menu-item
+      :content="'复制文本'"
+      :icon="'i-material-symbols-light:print'"
+      @click="handleContextMenu"
+      v-if="isCopyText"
+    ></my-context-menu-item>
+    <my-context-menu-item
+      :content="'打印页面'"
+      :icon="'i-material-symbols-light:print'"
+      onclick="window.print()"
+    ></my-context-menu-item>
+    <!-- 内容区域的 菜单 -->
+    <layout-content-menu v-if="isContent" />
   </div>
 </template>
 
@@ -87,35 +85,41 @@ const {
   isCopyText,
 } = storeToRefs(useSettingStore())
 
-// 菜单绑定的元素
-const menuInstance = ref()
-const menucontainer = ref()
-
 // 初始化 菜单
-useContextMenu(menuInstance, menucontainer)
+/**
+ * @isContent 是否是内容区域的 菜单事件
+ * @isUserEditor 是否是自我介绍区域的 菜单事件
+ * @isUserEditorTransitioned 是否是自我介绍区域的 菜单事件 重置使用的监听 transitionend 来进行
+ * 因为点击时关闭菜单直接 isUserEditor变量为 false 会出现 打开面板不在 用户编辑界面
+ */
+const { isContent, isUserEditor, isUserEditorTransitioned } = useContextMenu()
+// 内容区域
+const isContentMenu = () => {
+  isContent.value = true
+}
+mitt.on("isContentMenu", isContentMenu)
+// 自我介绍区域
+const isUserEditorMenu = () => {
+  isUserEditor.value = true
+  isUserEditorTransitioned.value = true
+}
+mitt.on("isUserEditorMenu", isUserEditorMenu)
 
-// 判断 是打开那个个性化面板
-const props = withDefaults(
-  defineProps<{
-    panelScene?: number
-    panelName?: string
-    panelIcon?: string
-  }>(),
-  {
-    panelName: "面板界面",
-    panelIcon: "i-mynaui:panel-top",
-  }
-)
-
-// 打开 个性化设置
+// 打开 全局面板
 const openSettings = () => {
+  if (isUserEditorTransitioned.value) {
+    setScene.value = 1
+  }
   isShowPanel.value = true
-  if (props.panelScene) setScene.value = props.panelScene
 }
 
 const fullScreenEmit = () => {
   mitt.emit("fullScreenChange", document.documentElement)
 }
+onBeforeUnmount(() => {
+  mitt.off("isContentMenu", isContentMenu)
+  mitt.off("isUserEditorMenu", isUserEditorMenu)
+})
 </script>
 
 <style scoped lang="scss">

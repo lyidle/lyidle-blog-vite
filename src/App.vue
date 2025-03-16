@@ -1,11 +1,14 @@
 <template>
+  <!-- element-plus的配置 -->
   <el-config-provider :locale="zhCn">
-    <my-context-menu>
-      <global-theme></global-theme>
-      <router-view v-slot="{ Component, route }">
-        <component :is="Component" :key="route.path" />
-      </router-view>
-    </my-context-menu>
+    <!-- 右键菜单 -->
+    <my-context-menu />
+    <!-- 全局面板 -->
+    <global-theme></global-theme>
+    <!-- 路由 -->
+    <router-view v-slot="{ Component, route }">
+      <component :is="Component" :key="route.path" />
+    </router-view>
   </el-config-provider>
 </template>
 

@@ -1,56 +1,54 @@
 <template>
   <teleport to="body">
-    <my-context-menu>
-      <el-dialog
-        class="manager-dialog"
-        v-model="centerDialogVisible"
-        width="500"
-        align-center
-        draggable
-        @close="handlerClose"
+    <el-dialog
+      class="manager-dialog"
+      v-model="centerDialogVisible"
+      width="500"
+      align-center
+      draggable
+      @close="handlerClose"
+    >
+      <template #header>
+        <div class="color-[var(--primary-color)]">创建菜单</div>
+      </template>
+      <el-form
+        :model="createData"
+        :rules="createRules"
+        label-position="right"
+        label-width="60"
+        ref="formInstance"
+        @submit.prevent="handlerConfirm"
       >
-        <template #header>
-          <div class="color-[var(--primary-color)]">创建菜单</div>
-        </template>
-        <el-form
-          :model="createData"
-          :rules="createRules"
-          label-position="right"
-          label-width="60"
-          ref="formInstance"
-          @submit.prevent="handlerConfirm"
-        >
-          <el-form-item label="菜单名" prop="name">
-            <my-input
-              placeholder="请输入子菜单名"
-              v-model="createData.name"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="权限" prop="role">
-            <my-tags
-              v-model="createData.roles"
-              min="0"
-              max="5"
-              error="标签个数需要在0-5之间"
-              ref="tagsInstance"
-              class="mr-10px"
-              left="10px"
-            ></my-tags>
-          </el-form-item>
-          <div class="flex justify-end mt-20px">
-            <my-button
-              class="w-unset"
-              type="default"
-              @click="centerDialogVisible = false"
-              >取消</my-button
-            >
-            <my-button class="w-unset" type="primary" native-type="submit">
-              确认
-            </my-button>
-          </div>
-        </el-form>
-      </el-dialog>
-    </my-context-menu>
+        <el-form-item label="菜单名" prop="name">
+          <my-input
+            placeholder="请输入子菜单名"
+            v-model="createData.name"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="权限" prop="role">
+          <my-tags
+            v-model="createData.roles"
+            min="0"
+            max="5"
+            error="标签个数需要在0-5之间"
+            ref="tagsInstance"
+            class="mr-10px"
+            left="10px"
+          ></my-tags>
+        </el-form-item>
+        <div class="flex justify-end mt-20px">
+          <my-button
+            class="w-unset"
+            type="default"
+            @click="centerDialogVisible = false"
+            >取消</my-button
+          >
+          <my-button class="w-unset" type="primary" native-type="submit">
+            确认
+          </my-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </teleport>
 </template>
 

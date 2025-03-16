@@ -1,92 +1,90 @@
 <template>
   <teleport to="body">
-    <my-context-menu>
-      <el-dialog
-        class="manager-dialog"
-        v-model="centerDialogVisible"
-        width="500"
-        align-center
-        draggable
-        @close="handlerClose"
+    <el-dialog
+      class="manager-dialog"
+      v-model="centerDialogVisible"
+      width="500"
+      align-center
+      draggable
+      @close="handlerClose"
+    >
+      <template #header>
+        <div class="color-[var(--primary-color)]">编辑菜单</div>
+      </template>
+      <el-form
+        :model="createData"
+        :rules="createRules"
+        label-position="right"
+        label-width="60"
+        ref="formInstance"
+        @submit.prevent="handlerConfirm"
       >
-        <template #header>
-          <div class="color-[var(--primary-color)]">编辑菜单</div>
-        </template>
-        <el-form
-          :model="createData"
-          :rules="createRules"
-          label-position="right"
-          label-width="60"
-          ref="formInstance"
-          @submit.prevent="handlerConfirm"
-        >
-          <el-form-item label="菜单名" prop="name">
-            <my-input
-              placeholder="请输入菜单名"
-              v-model="createData.name"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="权限" prop="roles">
-            <my-tags
-              v-model="createData.roles"
-              min="0"
-              max="5"
-              error="标签个数需要在0-5之间"
-              ref="tagsInstance"
-              class="mr-10px"
-              left="10px"
-            ></my-tags>
-          </el-form-item>
-          <el-form-item label="图标" prop="icon">
-            <my-tooltip
-              effect="dark"
-              content="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
-              placement="top"
-            >
-              <my-input
-                placeholder="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
-                v-model="createData.icon"
-              ></my-input>
-            </my-tooltip>
-          </el-form-item>
-          <el-form-item label="路径" prop="to">
-            <my-input
-              placeholder="请输入路径名(需要是异步路由写了的,不是必填项)"
-              v-model="createData.to"
-            ></my-input>
-          </el-form-item>
-          <!-- Layout -->
-          <div
-            class="text-color-[var(--primary-color)] text-center text-20px mt-10px"
+        <el-form-item label="菜单名" prop="name">
+          <my-input
+            placeholder="请输入菜单名"
+            v-model="createData.name"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="权限" prop="roles">
+          <my-tags
+            v-model="createData.roles"
+            min="0"
+            max="5"
+            error="标签个数需要在0-5之间"
+            ref="tagsInstance"
+            class="mr-10px"
+            left="10px"
+          ></my-tags>
+        </el-form-item>
+        <el-form-item label="图标" prop="icon">
+          <my-tooltip
+            effect="dark"
+            content="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
+            placement="top"
           >
-            布局
-          </div>
-          <el-form-item label="宽度" prop="topnavWidth">
             <my-input
-              placeholder="请输入菜单的宽度(不是必填项)"
-              v-model="createData.topnavWidth"
+              placeholder="请输入svg或本地的iconify的class名亦或者是database图片需要以[background:]开头(不是必填项)"
+              v-model="createData.icon"
             ></my-input>
-          </el-form-item>
-          <el-form-item label="方向" prop="topnavDirection">
-            <my-input
-              placeholder="请输入菜单的方向(不是必填项)"
-              v-model="createData.topnavDirection"
-            ></my-input>
-          </el-form-item>
-          <div class="flex justify-end mt-20px">
-            <my-button
-              class="w-unset"
-              type="default"
-              @click="centerDialogVisible = false"
-              >取消</my-button
-            >
-            <my-button class="w-unset" type="primary" native-type="submit">
-              确认
-            </my-button>
-          </div>
-        </el-form>
-      </el-dialog>
-    </my-context-menu>
+          </my-tooltip>
+        </el-form-item>
+        <el-form-item label="路径" prop="to">
+          <my-input
+            placeholder="请输入路径名(需要是异步路由写了的,不是必填项)"
+            v-model="createData.to"
+          ></my-input>
+        </el-form-item>
+        <!-- Layout -->
+        <div
+          class="text-color-[var(--primary-color)] text-center text-20px mt-10px"
+        >
+          布局
+        </div>
+        <el-form-item label="宽度" prop="topnavWidth">
+          <my-input
+            placeholder="请输入菜单的宽度(不是必填项)"
+            v-model="createData.topnavWidth"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="方向" prop="topnavDirection">
+          <my-input
+            placeholder="请输入菜单的方向(不是必填项)"
+            v-model="createData.topnavDirection"
+          ></my-input>
+        </el-form-item>
+        <div class="flex justify-end mt-20px">
+          <my-button
+            class="w-unset"
+            type="default"
+            @click="centerDialogVisible = false"
+            >取消</my-button
+          >
+          <my-button class="w-unset" type="primary" native-type="submit">
+            确认
+          </my-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </teleport>
 </template>
 

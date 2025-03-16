@@ -1,63 +1,61 @@
 <template>
   <teleport to="body">
-    <my-context-menu>
-      <el-dialog
-        class="manager-dialog"
-        v-model="centerDialogVisible"
-        width="500"
-        align-center
-        draggable
-        @close="handlerClose"
+    <el-dialog
+      class="manager-dialog"
+      v-model="centerDialogVisible"
+      width="500"
+      align-center
+      draggable
+      @close="handlerClose"
+    >
+      <template #header>
+        <div class="color-[var(--primary-color)]">创建用户</div>
+      </template>
+      <el-form
+        :model="createData"
+        :rules="createRules"
+        label-position="left"
+        label-width="60"
+        ref="formInstance"
+        @submit.prevent="handlerConfirm"
       >
-        <template #header>
-          <div class="color-[var(--primary-color)]">创建用户</div>
-        </template>
-        <el-form
-          :model="createData"
-          :rules="createRules"
-          label-position="left"
-          label-width="60"
-          ref="formInstance"
-          @submit.prevent="handlerConfirm"
-        >
-          <el-form-item label="账号" prop="account">
-            <my-input
-              placeholder="请输入账号"
-              v-model="createData.account"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="用户名" prop="nickName">
-            <my-input
-              placeholder="请输入用户名"
-              v-model="createData.nickName"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <my-input
-              placeholder="请输入邮箱"
-              v-model="createData.email"
-            ></my-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <my-input
-              placeholder="请输入密码"
-              v-model="createData.password"
-            ></my-input>
-          </el-form-item>
-          <div class="flex justify-end mt-20px">
-            <my-button
-              class="w-unset"
-              type="default"
-              @click="centerDialogVisible = false"
-              >取消</my-button
-            >
-            <my-button class="w-unset" type="primary" native-type="submit">
-              确认
-            </my-button>
-          </div>
-        </el-form>
-      </el-dialog>
-    </my-context-menu>
+        <el-form-item label="账号" prop="account">
+          <my-input
+            placeholder="请输入账号"
+            v-model="createData.account"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="nickName">
+          <my-input
+            placeholder="请输入用户名"
+            v-model="createData.nickName"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <my-input
+            placeholder="请输入邮箱"
+            v-model="createData.email"
+          ></my-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <my-input
+            placeholder="请输入密码"
+            v-model="createData.password"
+          ></my-input>
+        </el-form-item>
+        <div class="flex justify-end mt-20px">
+          <my-button
+            class="w-unset"
+            type="default"
+            @click="centerDialogVisible = false"
+            >取消</my-button
+          >
+          <my-button class="w-unset" type="primary" native-type="submit">
+            确认
+          </my-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </teleport>
 </template>
 

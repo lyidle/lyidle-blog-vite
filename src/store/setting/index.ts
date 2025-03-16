@@ -54,7 +54,7 @@ export const useSettingStore = defineStore(
     const contentIsReverse = ref<boolean>(false)
     // 文章的目录是否固定 默认固定 使用交叉传感器
     const docMenuIsFixed = ref<boolean>(true)
-    // 是否存储 个性化面板的 位置
+    // 是否存储 全局面板的 位置
     const isPanelPositionSaved = ref<boolean>(true)
     // 存储位置信息
     const savedPanelLeft = ref<null | string>(null)
@@ -119,7 +119,7 @@ export const useSettingStore = defineStore(
       // 右键菜单 信息
       isFullscreen,
       contentIsReverse,
-      // 个性化设置 右键的编辑项
+      // 全局面包 右键的编辑项
       setScene,
       isSaveScene,
       isShowPanel,
@@ -161,7 +161,7 @@ export const useSettingStore = defineStore(
         "docMenuIsFixed",
         // 右键菜单 信息
         "contentIsReverse",
-        // 个性化设置 右键的编辑项
+        // 全局面包 右键的编辑项
         "setScene",
         "isSaveScene",
         "isPanelPositionSaved",

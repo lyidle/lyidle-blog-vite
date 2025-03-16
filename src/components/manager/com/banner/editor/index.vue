@@ -1,69 +1,67 @@
 <template>
   <teleport to="body">
-    <my-context-menu>
-      <el-dialog
-        class="manager-dialog"
-        v-model="centerDialogVisible"
-        width="500"
-        align-center
-        draggable
-        @close="handlerClose"
+    <el-dialog
+      class="manager-dialog"
+      v-model="centerDialogVisible"
+      width="500"
+      align-center
+      draggable
+      @close="handlerClose"
+    >
+      <template #header>
+        <div class="color-[var(--primary-color)]">编辑背景</div>
+      </template>
+      <el-form
+        :model="createData"
+        :rules="editorRules"
+        label-position="left"
+        label-width="60"
+        ref="formInstance"
+        @submit.prevent="handlerConfirm"
       >
-        <template #header>
-          <div class="color-[var(--primary-color)]">编辑背景</div>
-        </template>
-        <el-form
-          :model="createData"
-          :rules="editorRules"
-          label-position="left"
-          label-width="60"
-          ref="formInstance"
-          @submit.prevent="handlerConfirm"
+        <el-form-item label="高度" prop="height">
+          <my-input
+            placeholder="请输入高度"
+            v-model="createData.height"
+          ></my-input>
+        </el-form-item>
+        <!-- bannerImg -->
+        <div
+          class="text-color-[var(--primary-color)] text-center text-20px mt-20px"
         >
-          <el-form-item label="高度" prop="height">
-            <my-input
-              placeholder="请输入高度"
-              v-model="createData.height"
-            ></my-input>
-          </el-form-item>
-          <!-- bannerImg -->
-          <div
-            class="text-color-[var(--primary-color)] text-center text-20px mt-20px"
+          背景
+        </div>
+        <div class="flex justify-between mt-20px">
+          <div class="flex items-center">
+            白天:
+            <my-upload
+              v-model="light"
+              :auto-remove="false"
+              class="ml-10px"
+            ></my-upload>
+          </div>
+          <div class="flex items-center mr-10px hidden">
+            暗夜:
+            <my-upload
+              v-model="dark"
+              :auto-remove="false"
+              class="ml-10px"
+            ></my-upload>
+          </div>
+        </div>
+        <div class="flex justify-end mt-20px">
+          <my-button
+            class="w-unset"
+            type="default"
+            @click="centerDialogVisible = false"
+            >取消</my-button
           >
-            背景
-          </div>
-          <div class="flex justify-between mt-20px">
-            <div class="flex items-center">
-              白天:
-              <my-upload
-                v-model="light"
-                :auto-remove="false"
-                class="ml-10px"
-              ></my-upload>
-            </div>
-            <div class="flex items-center mr-10px hidden">
-              暗夜:
-              <my-upload
-                v-model="dark"
-                :auto-remove="false"
-                class="ml-10px"
-              ></my-upload>
-            </div>
-          </div>
-          <div class="flex justify-end mt-20px">
-            <my-button
-              class="w-unset"
-              type="default"
-              @click="centerDialogVisible = false"
-              >取消</my-button
-            >
-            <my-button class="w-unset" type="primary" native-type="submit">
-              确认
-            </my-button>
-          </div>
-        </el-form>
-      </el-dialog>
-    </my-context-menu>
+          <my-button class="w-unset" type="primary" native-type="submit">
+            确认
+          </my-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </teleport>
 </template>
 

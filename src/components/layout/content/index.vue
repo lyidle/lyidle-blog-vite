@@ -1,9 +1,10 @@
 <template>
   <global-animations-ornaments></global-animations-ornaments>
   <global-tools></global-tools>
-  <my-context-menu
+  <div
     class="global-content"
     :style="{ marginTop: `${$route.meta.pagesMt}` }"
+    @contextmenu="mitt.emit('isContentMenu')"
   >
     <div class="pages">
       <div
@@ -26,11 +27,8 @@
         <slot name="aside-end"></slot>
       </div>
     </div>
-    <template #body>
-      <layout-content-menu />
-    </template>
     <slot name="outer"></slot>
-  </my-context-menu>
+  </div>
 </template>
 
 <script setup lang="ts" name="Content">
