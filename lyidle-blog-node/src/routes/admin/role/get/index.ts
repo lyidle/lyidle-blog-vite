@@ -12,6 +12,13 @@ const router = express.Router()
 // 获取权限菜单列表
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // 获取所有角色 保存的键
+    const cacheKey = "roles:*"
+
+    // 有缓存直接返回
+    const cacheValue = await getKey(cacheKey)
+    if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
+
     const roles = await Role.findAll({
       include: [
         {
@@ -20,13 +27,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
         },
       ],
     })
-
-    // 获取所有角色 保存的键
-    const cacheKey = "roles:*"
-
-    // 有缓存直接返回
-    const cacheValue = await getKey(cacheKey)
-    if (cacheValue) return res.result(cacheValue, "获取所有角色成功~")
 
     // 判断是否有 角色
     if (!roles?.length) return res.result(void 0, "服务器角色未初始化", false)
