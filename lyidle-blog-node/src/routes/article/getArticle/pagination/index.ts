@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {
 
   try {
     const { count, rows } = await Article.findAndCountAll({
-      attributes: { exclude: ["UserId"] },
+      attributes: { exclude: ["UserId", "content"] },
       order: [["carousel", "desc"], [["id", "desc"]]],
       limit: pageSize,
       offset,

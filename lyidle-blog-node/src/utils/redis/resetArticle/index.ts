@@ -31,10 +31,6 @@ export const resetArticle = async (
     // 删除 缓存
     // 删除总字数统计缓存
     await delKey("webTotalWords")
-    // 按照 id
-    await delKeys("ArticlefindByPk:", ids, (keys) => keys)
-    // 按照 作者和id 所以只需要以作者开头
-    await delKeys("ArticlefindAuthorAndId:", accounts, (keys) => keys)
     // 最新文章的 缓存 使用的
     await delKeys("recentPages:")
     // 用户的 所有 tags 按照作者

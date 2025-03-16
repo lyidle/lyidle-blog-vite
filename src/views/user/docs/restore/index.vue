@@ -37,7 +37,7 @@
 
 <script setup lang="ts" name="FindAllUserPagesRestore">
 // 引入 api
-import { deleteArticle, searchArticleMergeExact } from "@/api/article"
+import { searchArticleMergeExact } from "@/api/article"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
