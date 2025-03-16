@@ -12,12 +12,10 @@ const router = express.Router()
 
 // 恢复用户
 router.put(
-  "/:id",
-  [jwtMiddleware, isAdmin],
+  "/",
+  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params
-    if (!id) return res.result(void 0, "恢复用户失败,id是必传项", false)
-
+    const id = req.auth.id
     try {
       const findUser = await User.findByPk(id, {
         paranoid: false,

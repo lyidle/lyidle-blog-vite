@@ -73,10 +73,18 @@
       </div>
       <!-- 头像 -->
       <div class="right">
-        <div class="text-20px">头像</div>
-        <!-- 头像 -->
-        <my-upload v-model="avatar" :auto-remove="false"></my-upload>
-        <my-button @click="updateAvatar"> 更新头像 </my-button>
+        <div class="w-100%">
+          <div class="text-20px text-center mb-15px">头像</div>
+          <!-- 头像 -->
+          <my-upload v-model="avatar" :auto-remove="false"></my-upload>
+          <my-button @click="updateAvatar" class="mt-5px"> 更新头像 </my-button>
+        </div>
+        <div class="w-100%">
+          <div class="text-20px text-center mb-15px">账号状态</div>
+          <my-button @click="toggleUserBin(userIsBin)">{{
+            userIsBin ? "恢复账号" : "注销账号"
+          }}</my-button>
+        </div>
       </div>
     </div>
   </div>
@@ -98,7 +106,13 @@ import {
   pwdReg,
 } from "@/RegExp/loginOrReg"
 // 引入 api 更新用户
-import { updateUser, updateUserAvatar, updateUserEmail } from "@/api/user"
+import {
+  recoverUser,
+  removeUser,
+  updateUser,
+  updateUserAvatar,
+  updateUserEmail,
+} from "@/api/user"
 // 引入 api 处理头像
 import { postImgPermanent, removeFileStatic } from "@/api/img"
 // 引入 类型
@@ -112,6 +126,7 @@ import { useSettingStore } from "@/store/setting"
 const { isShowPanel } = storeToRefs(useSettingStore())
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { mitt } from "@/utils/emitter"
 
 // 导入 默认的图片
 const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
@@ -126,6 +141,7 @@ const {
   userEmail,
   userSigner,
   userToken,
+  userIsBin,
 } = storeToRefs(useUserStore())
 // 表单 数据
 // @ts-ignore
@@ -358,6 +374,35 @@ const updateAvatar = async () => {
     avatar.value = [{ name: "default", url: avatarInit() }]
   }
 }
+
+// 切换账号的状态
+const toggleUserBin = async (isBin: string | null) => {
+  // 处理 注销的逻辑
+  if (!isBin) {
+    try {
+      const result = await removeUser()
+      ElMessage.success(
+        `注销账号成功，过期时间为：${formatMilliseconds(+result)}`
+      )
+
+      // 重新加载路由
+      mitt.emit("route:reload")
+    } catch (error) {
+      ElMessage.error(`注销账号失败~`)
+    }
+    return
+  }
+  // 处理恢复的逻辑
+  try {
+    await recoverUser()
+    ElMessage.success("恢复账号成功~")
+
+    // 重新加载路由
+    mitt.emit("route:reload")
+  } catch (error) {
+    ElMessage.error("恢复账号失败~")
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -383,7 +428,7 @@ const updateAvatar = async () => {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
   }
 }

@@ -32,6 +32,7 @@ enum API {
   searchCounts = "/user/search/user",
   // 普通的 需要req.auth.id 的jwt验证
   removeUser = "/user/admin/bin",
+  recoverUser = "/user/admin/restore",
   deleteUser = "/user/admin/clear",
   updateUser = "/user/admin/update",
   updateAvatar = "/user/admin/update/avatar",
@@ -110,7 +111,9 @@ const removeCallbackUser = (api: APIKeysType) => (id: number) =>
 
 // 软删除 用户 需要 是本用户的id
 export const removeUser = () =>
-  request.delete<any, void>(server + prefix + API.removeUser)
+  request.delete<any, string>(server + prefix + API.removeUser)
+export const recoverUser = () =>
+  request.put<any, void>(server + prefix + API.recoverUser)
 
 // 彻底删除 用户 需要 是本用户的id
 export const deleteUser = () =>

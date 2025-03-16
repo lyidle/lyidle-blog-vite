@@ -17,7 +17,7 @@ router.delete(
       const { id } = req.auth
 
       // 判断是否移动到垃圾桶
-      const isBin = await getKey(`userBin:${id}`)
+      const isBin = await getKey(`userBin:${+id}`)
 
       if (isBin)
         return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
@@ -41,12 +41,12 @@ router.delete(
       const { id } = req.body
 
       // 判断是否移动到垃圾桶
-      const isBin = await getKey(`userBin:${id}`)
+      const isBin = await getKey(`userBin:${+id}`)
 
       if (isBin)
         return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
 
-      await remove(req, res, id, true, false)
+      await remove(req, res, +id, true, false)
     } catch (error) {
       res.validateAuth(error, next, () =>
         res.result(void 0, "用户移动到回收站失败~", false)
