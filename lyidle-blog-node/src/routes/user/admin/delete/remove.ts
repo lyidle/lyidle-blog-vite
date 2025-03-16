@@ -18,8 +18,6 @@ export const publicUserRemove = async (findUser: any, articles: any[]) => {
   await resetUserInfo([findUser])
   // 删除 对应的 文章的缓存
   await resetArticle(articles, true)
-  // 删除用户的临时垃圾桶变量
-  await delKey(`userArticleBin`)
   // 删除文章的缓存
   await delKey(`webTotalPages`)
   await delKey(`webTotalWords`)
@@ -40,8 +38,6 @@ const deleted = async (findUser: any, articles: any[]) => {
 
   // 设置用户数量
   await setKey("userCounts", +userCounts - 1)
-  // 删除临时的userBin
-  await delKey(`userBin:${findUser.dataValues.id}`)
 
   // 不管是否删除都要移除的
   await publicUserRemove(findUser, articles)
@@ -100,15 +96,8 @@ const remove = async (
   }
 
   if (bin) {
-    // 只能点击移动到一次垃圾桶
-    const isBin = await getKey(`userBin:${userId}`)
-    if (isBin)
-      return res.result(void 0, "用户移动到垃圾桶了，请勿重复操作~", false)
-
     // 软删除
     await findUser.destroy()
-
-    await setKey(`userBin:${userId}`, true)
 
     // 不管是否是软删除都要移除的
     await publicUserRemove(findUser, articles)

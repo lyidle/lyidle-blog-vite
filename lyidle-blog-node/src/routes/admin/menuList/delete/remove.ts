@@ -24,8 +24,6 @@ export const publicMenusRemove = async (roles: string[]) => {
 const deleted = async (delMenu: any, id: number, roles: string[]) => {
   // 删除菜单
   await delMenu.destroy({ force: true })
-  // 删除临时的 userMenusBin
-  await delKey(`userMenusBin:${id}`)
   // 不管是否删除都要移除的
   await publicMenusRemove(roles)
 }
@@ -58,12 +56,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
 
   // 回收到垃圾桶
   if (bin) {
-    // 检查是否已经移动到垃圾桶
-    const isBin = await getKey(`userMenusBin:${id}`)
-    if (isBin) {
-      return res.result(void 0, "菜单已经移动到垃圾桶，请勿重复操作~", false)
-    }
-
     // 开启事务
     const transaction = await sequelize.transaction()
     try {
@@ -126,8 +118,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
         })
       )
 
-      // 设置缓存，标记菜单已移动到垃圾桶
-      await setKey(`userMenusBin:${id}`, true)
       // 去重
       roles = deduplication(roles).filter(Boolean)
       // 清理公共菜单缓存

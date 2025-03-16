@@ -38,7 +38,6 @@ router.put(
       const newUser = await findUser.restore()
       // 删除缓存
       await resetUserInfo([newUser])
-      await delKey(`userBin:${+id}`)
 
       res.result(void 0, "恢复用户成功~")
     } catch (error) {

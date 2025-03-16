@@ -1,5 +1,5 @@
 // 引入redis
-import { delKey, setKey, getKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 引入 去重函数
 import { deduplication } from "@/utils/array/deduplication"
 // 引入 清除用户缓存的函数
@@ -42,8 +42,6 @@ const deleted = async (
 ) => {
   // 删除权限菜单
   await model.destroy({ force: true })
-  // 删除临时的 permissionGroupBin
-  await delKey(`permissionGroupBin:${id}`)
   // 不管是否删除都要移除的
   await publicUserRemove(users, roles)
 }
@@ -108,15 +106,8 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
 
   // 回收到垃圾桶
   if (bin) {
-    // 只能点击移动到一次垃圾桶
-    const isBin = await getKey(`permissionGroupBin:${id}`)
-    if (isBin)
-      return res.result(void 0, "权限菜单移动到垃圾桶了，请勿重复操作~", false)
-
     // 软删除
     await findGroup.destroy()
-    // 设置缓存
-    await setKey(`permissionGroupBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
     await publicUserRemove(users, roles)

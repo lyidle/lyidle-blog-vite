@@ -290,6 +290,8 @@ const handlerUpdate = async () => {
 
     ElMessage.success("更新用户信息成功~")
   } catch (error) {
+    // 重新加载路由
+    mitt.emit("route:reload")
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("更新用户信息失败~")
   }
@@ -369,6 +371,8 @@ const updateAvatar = async () => {
 
     ElMessage.success("更新用户头像成功~")
   } catch (error) {
+    // 重新加载路由
+    mitt.emit("route:reload")
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("更新用户头像失败~")
     avatar.value = [{ name: "default", url: avatarInit() }]

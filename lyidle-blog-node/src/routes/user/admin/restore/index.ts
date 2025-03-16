@@ -5,7 +5,6 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入 清除用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
-import { delKey } from "@/utils/redis"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 const router = express.Router()
@@ -36,7 +35,6 @@ router.put(
       const newUser = await findUser.restore()
       // 删除缓存
       await resetUserInfo([newUser])
-      await delKey(`userBin:${+id}`)
 
       res.result(void 0, "恢复用户成功~")
     } catch (error) {

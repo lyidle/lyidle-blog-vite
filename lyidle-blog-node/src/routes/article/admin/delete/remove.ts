@@ -1,5 +1,5 @@
 // 引入redis
-import { delKey, setKey, getKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 引入时间转换
 const ms = require("ms")
 
@@ -28,8 +28,6 @@ export const publicUserRemove = async (articles: any[], user: any) => {
 const deleted = async (model: any, id: number, articles: any[], user: any) => {
   // 删除文章
   await model.destroy({ force: true })
-  // 删除临时的 userArticleBin
-  await delKey(`userArticleBin:${id}`)
   // 不管是否删除都要移除的
   await publicUserRemove(articles, user)
 }
@@ -81,15 +79,8 @@ const remove = async (
 
   // 回收到垃圾桶
   if (bin) {
-    // 只能点击移动到一次垃圾桶
-    const isBin = await getKey(`userArticleBin:${id}`)
-    if (isBin)
-      return res.result(void 0, "文章移动到垃圾桶了，请勿重复操作~", false)
-
     // 软删除
     await findArticle.destroy()
-    // 设置缓存
-    await setKey(`userArticleBin:${id}`, true)
 
     // 不管是否是软删除都要移除的
     await publicUserRemove([findArticle], user)
