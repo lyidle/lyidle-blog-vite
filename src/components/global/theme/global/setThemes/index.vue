@@ -45,14 +45,7 @@
         </div>
         <div class="item">
           <span class="label">暗夜主题设置</span>
-          <el-select v-model="darks" placeholder="Select" size="small">
-            <el-option
-              v-for="item in darkOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <my-select v-model="darks" :options="darkOptions"></my-select>
         </div>
       </div>
     </div>

@@ -18,10 +18,13 @@ defineExpose({
 })
 </script>
 
+<!-- popconfirm 是全局的不是子元素 -->
 <style lang="scss">
-.el-popover.el-popper {
+.el-popper:has(.el-popconfirm) {
   --el-popover-bg-color: var(--popconfirm-bg);
   --el-popover-border-color: var(--popconfirm-bg);
-  color: var(--primary-color);
+  --el-bg-color-overlay: var(--popconfirm-bg);
+  --el-border-color-light: var(--popconfirm-bg);
+  color: var(--primary-color) !important;
 }
 </style>

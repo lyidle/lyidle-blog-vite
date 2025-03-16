@@ -38,6 +38,7 @@ defineExpose({
   ::v-deep(.el-pagination__goto) {
     color: var(--primary-color);
   }
+
   ::v-deep(.el-pagination__classifier) {
     color: var(--primary-color);
   }
