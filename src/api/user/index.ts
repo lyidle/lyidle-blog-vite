@@ -112,6 +112,7 @@ const removeCallbackUser = (api: APIKeysType) => (id: number) =>
 // 软删除 用户 需要 是本用户的id
 export const removeUser = () =>
   request.delete<any, string>(server + prefix + API.removeUser)
+// 恢复 用户 需要 是本用户的id
 export const recoverUser = () =>
   request.put<any, void>(server + prefix + API.recoverUser)
 

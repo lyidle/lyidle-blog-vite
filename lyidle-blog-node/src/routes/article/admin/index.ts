@@ -7,11 +7,14 @@ import updated from "@/routes/article/admin/update"
 import addArticle from "@/routes/article/admin/addArticle"
 // 改变 文章置顶状态 与 carousel 状态
 import setCarousel from "./setCarousel"
+// 恢复文章
+import restore from "./restore"
 const router = express.Router()
 // 挂载函数
 router.use("/", deleted)
 router.use("/add", addArticle)
 router.use("/update", updated)
 router.use("/setCarousel", setCarousel)
+router.use("/restore", restore)
 
 export default router

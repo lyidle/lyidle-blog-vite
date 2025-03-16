@@ -404,7 +404,8 @@ const toggleUserBin = async (isBin: string | null) => {
     // 重新加载路由
     mitt.emit("route:reload")
   } catch (error) {
-    ElMessage.error("恢复账号失败~")
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("恢复账号失败~")
   }
 }
 </script>

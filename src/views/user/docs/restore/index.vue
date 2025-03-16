@@ -67,11 +67,12 @@ const handlerArticles = async (
 // 删除文章的回调
 const restoreArticle = async (id: string | number) => {
   try {
-    // await deleteArticle(id)
     ElMessage.success(`恢复文章成功~`)
     // 获取所有文章
     await handlerArticles()
   } catch (error) {
+    // 获取所有文章
+    await handlerArticles()
     ElMessage.error("恢复文章失败~")
   }
 }
