@@ -1,12 +1,7 @@
 <template>
   <div ref="menucontainer">
     <slot></slot>
-    <!-- 阻止冒泡 防止多个菜单干扰 -->
-    <div
-      class="menu-context"
-      ref="menuInstance"
-      @contextmenu.capture.prevent.stop
-    >
+    <div class="menu-context" ref="menuInstance">
       <div class="title">
         <div class="icon" @click="goBack">
           <i class="i-lets-icons:arrow-left"></i>
