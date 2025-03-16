@@ -125,6 +125,11 @@ html[themes="#{$theme}"] {
   // pagination 左右按钮 disabled
   --pagination-bg-disabled: #9dbfd3;
   --pagination-color-disabled: #fcfeff;
+  // select
+  --select-bg: #689aba;
+  --select-bg-active: #8bb9d5;
+  --select-color: #d2edff;
+  --select-color-hover: #f4fbff;
   // tooltip
   --tooltip-bg: #3d5b6e;
   --tooltip-color: var(--primary-color);
