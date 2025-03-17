@@ -7,7 +7,7 @@ import { RouteRecordRaw } from "vue-router"
  * title 网页标签展示信息
  * bannerContextHidden Boolean 焦点图的文字信息是否展示 欢迎词 和 古诗
  * bannerWaves Boolean 波浪动画
- * pagesMt 内容区域卡片的 上边距 和 banner 展示信息的 上边距
+ * pagesMt 内容区域卡片的 上边距
  * bannerWel 欢迎词的文本信息
  * bannerWelTextShadowHidden Boolean 欢迎词的阴影是否隐藏
  * bannerPoetry 古诗信息

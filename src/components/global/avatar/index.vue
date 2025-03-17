@@ -29,10 +29,16 @@ const { showAccount, showAvatar } = useShowUserinfo({
   showAccount: true,
   showAvatar: true,
 })
-withDefaults(defineProps<{ isTo?: boolean; isCursor?: boolean }>(), {
-  isTo: true,
-  isCursor: true,
-})
+const props = withDefaults(
+  defineProps<{ isTo?: boolean; isCursor?: boolean; isCenter?: boolean }>(),
+  {
+    isTo: true,
+    isCursor: true,
+    isCenter: true,
+  }
+)
+const left = props.isCenter ? "50%" : "initial"
+const transform = props.isCenter ? "translateX(-50%)" : "initial"
 </script>
 
 <style scoped lang="scss">
@@ -42,8 +48,8 @@ withDefaults(defineProps<{ isTo?: boolean; isCursor?: boolean }>(), {
   height: var(--avatar-size);
   border-radius: 50%;
   position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  left: v-bind(left);
+  transform: v-bind(transform);
   overflow: hidden;
 }
 </style>

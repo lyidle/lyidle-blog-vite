@@ -45,9 +45,6 @@
       </div>
       <teleport to="body">
         <div class="header-animate" v-if="$route.meta.bannerWaves">
-          <!--       :style="{
-              top: `${`calc(${$route.meta.pagesMt} + 20vh)` || '55vh'}`,
-            }" -->
           <global-animations-waves
             oneColor="var(--doc-header-waves-color-1)"
             twoColor="var(--doc-header-waves-color-2)"
