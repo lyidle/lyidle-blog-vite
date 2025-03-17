@@ -14,22 +14,27 @@ import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { resetArticle } from "@/utils/redis/resetArticle"
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (articles: any[], user: any) => {
-  // 删除对应用户信息缓存
-  await resetUserInfo([user])
-  // 删除 对应的文章缓存
-  await resetArticle([articles])
-  // 删除文章的缓存
-  await delKey(`webTotalPages`)
-  await delKey(`webTotalWords`)
+export const publicArticleRemove = async (articles: any[]) => {
+  await Promise.allSettled([
+    // 删除对应用户信息缓存
+    ...JSON.parse(JSON.stringify(articles))?.map((item: any) =>
+      resetUserInfo([item.User])
+    ),
+    // 删除对应的文章缓存
+    resetArticle([articles]),
+    // 删除文章的缓存
+    delKey(`webTotalPages`),
+    delKey(`webTotalWords`),
+  ])
 }
 
 // 彻底删除函数
-const deleted = async (model: any, id: number, articles: any[], user: any) => {
-  // 删除文章
-  await model.destroy({ force: true })
-  // 不管是否删除都要移除的
-  await publicUserRemove(articles, user)
+const deleted = async (model: any, articles: any[]) => {
+  await Promise.allSettled([
+    // 删除文章
+    model.destroy({ force: true }), // 不管是否删除都要移除的
+    publicArticleRemove(articles),
+  ])
 }
 // 删除函数
 const remove = async (
@@ -63,11 +68,9 @@ const remove = async (
   })
   // 没有找到文章
   if (!findArticle) return res.result(void 0, "删除文章时，没有找到文章", false)
-  // 得到 user
-  const user = JSON.parse(JSON.stringify(findArticle)).User
 
   // 找到提取需要的信息
-  const { id, userId } = findArticle.dataValues
+  const { userId } = findArticle.dataValues
 
   // 是否 权限 判断
   if (isAuth) {
@@ -83,13 +86,13 @@ const remove = async (
     await findArticle.destroy()
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove([findArticle], user)
+    await publicArticleRemove([findArticle])
     // 到时间自动删除 使用定时任务 每天判断
     return res.result(delete_article_expire, "文章成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findArticle, id, [findArticle], user)
+  await deleted(findArticle, [findArticle])
   return res.result(void 0, "删除文章成功~")
 }
 export default remove

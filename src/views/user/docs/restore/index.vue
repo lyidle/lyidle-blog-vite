@@ -37,7 +37,7 @@
 
 <script setup lang="ts" name="FindAllUserPagesRestore">
 // 引入 api
-import { searchArticleMergeExact } from "@/api/article"
+import { recoverArticle, searchArticleMergeExact } from "@/api/article"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
@@ -67,6 +67,7 @@ const handlerArticles = async (
 // 删除文章的回调
 const restoreArticle = async (id: string | number) => {
   try {
+    await recoverArticle()
     ElMessage.success(`恢复文章成功~`)
     // 获取所有文章
     await handlerArticles()

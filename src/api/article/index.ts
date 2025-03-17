@@ -32,6 +32,7 @@ enum API {
   updateArticle = "/article/admin/update",
   // 删除 获取的 req.auth.id 为 userId
   binArticle = "/article/admin/bin",
+  recoverArticle = "/article/admin/restore",
   clearArticle = "/article/admin/clear",
   // 后退后台管理的api
   managerBinArticle = "/article/admin/bin/manager",
@@ -112,13 +113,16 @@ export const addArticle = (data: AddArticleBody) =>
 export const updateArticle = (data: UpdateArticleBody) =>
   request.put<any, void>(server + prefix + API.updateArticle, data)
 
-// 软删除文章 有后悔期间
+// 软删除文章 有后悔期间 是本用户的id
 export const removeArticle = (id: number | string) =>
   request.delete<any, number>(server + prefix + API.binArticle, {
     data: { id },
   })
+// 恢复 文章 需要 是本用户的id
+export const recoverArticle = () =>
+  request.put<any, void>(server + prefix + API.recoverArticle)
 
-// 彻底删除文章 无后悔期间
+// 彻底删除文章 无后悔期间 是本用户的id
 export const deleteArticle = (id: number | string) =>
   request.delete<any, number>(server + prefix + API.clearArticle, {
     data: { id },

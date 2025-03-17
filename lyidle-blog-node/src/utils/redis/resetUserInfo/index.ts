@@ -19,7 +19,7 @@ export const isOwner = (roles: string[]) => roles.includes(default_owner)
  * @param findUsers 查找到的user是一个数组
  * @param roles string[] 各式的 角色
  */
-export const resetUserInfo = async (findUsers: string[], isOwner?: boolean) => {
+export const resetUserInfo = async (findUsers: any[], isOwner?: boolean) => {
   const users = JSON.parse(JSON.stringify(findUsers))
   // 是否包含owner
   let isOwnerRole: boolean = isOwner || false
@@ -40,9 +40,11 @@ export const resetUserInfo = async (findUsers: string[], isOwner?: boolean) => {
 
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
-    // 删除 缓存
-    await delKeys("userInfo:", deleteArr, (keys) => keys)
-    await delKeys("userInfo:bin:", deleteArr, (keys) => keys)
+    await Promise.allSettled([
+      // 删除 缓存
+      delKeys("userInfo:", deleteArr, (keys) => keys),
+      delKeys("userInfo:bin:", deleteArr, (keys) => keys),
+    ])
   }
 }
 
