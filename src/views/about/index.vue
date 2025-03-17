@@ -1,16 +1,13 @@
 <template>
-  <layout-content>
-    <template #content-start>
-      <my-card class="aboutCard card_style"> 124 </my-card>
-    </template>
-  </layout-content>
+  <layout-article-review></layout-article-review>
 </template>
 
 <script setup lang="ts" name="About">
-//
-</script>
+import about from "./about.md?raw"
+const reqArticle = async () => {
+  return { content: about }
+}
 
-<style scoped lang="scss">
-// 设置 卡片 样式
-@include setCardStyle;
-</style>
+// 提供方法
+provide("reqArticle", reqArticle)
+</script>
