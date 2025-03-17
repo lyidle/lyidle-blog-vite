@@ -24,6 +24,11 @@ const asyncRoute = [
             roles: ["admin"],
             to: "/admin/other/banner",
           },
+          {
+            name: "Settings",
+            roles: ["admin"],
+            to: "/admin/other/settings",
+          },
         ],
       },
       {

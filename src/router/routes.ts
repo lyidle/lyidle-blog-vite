@@ -317,6 +317,12 @@ export const asyncRoute: RouteRecordRaw[] = [
             meta: { title: "背景管理", roles: ["admin"] },
             component: () => import("@/views/admin/other/banner/index.vue"),
           },
+          {
+            name: "Settings",
+            path: "/admin/other/settings",
+            meta: { title: "设置管理", roles: ["admin"] },
+            component: () => import("@/views/admin/other/settings/index.vue"),
+          },
         ],
       },
     ],

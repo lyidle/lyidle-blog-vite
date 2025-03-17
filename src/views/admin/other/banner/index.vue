@@ -130,7 +130,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="AdminAccessGroups">
+<script setup lang="ts" name="AdminOtherBanner">
 // 引入 api
 import { managerRecycleBannerImg, managerRestoreBannerImg } from "@/api/admin"
 // 引入 类型
