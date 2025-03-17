@@ -4,6 +4,8 @@
       v-if="adminMenuList.length"
       :data="adminMenuList"
       radius="5px"
+      :isActive="true"
+      :isExpand="true"
     >
       <!-- 自定义 图标 -->
       <template #link="{ item }">

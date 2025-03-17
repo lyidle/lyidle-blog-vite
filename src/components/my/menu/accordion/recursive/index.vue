@@ -2,7 +2,10 @@
   <template v-for="(item, index) in data" :key="item.name">
     <ul class="menu-list" ref="menus" v-if="item.name">
       <li>
-        <div class="menu-item">
+        <div
+          class="menu-item"
+          :class="{ active: isActive && $route.path === filterPath(item) }"
+        >
           <div class="start-icon">
             <my-anchor v-if="filterPath(item)" :to="filterPath(item)">
               <!-- 使用 的my-anchor 的默认插槽  -->
@@ -29,7 +32,7 @@
         <ul
           v-if="item.children?.length"
           class="submenu"
-          :style="{ height: `${$route.path.startsWith(item.path!)&&'auto !important'}` }"
+          :style="isExpand?`height: ${$route.path.startsWith(item.path!)&&'auto !important'}`:'' "
         >
           <!-- 递归调用 修改 props中的 data 为 children -->
           <AccordionRecursive v-bind="{ ...props, data: item.children }">
@@ -63,6 +66,8 @@ const props = withDefaults(
     subColor?: string
     subColorHover?: string
     icon?: { plus: string; minus: string }
+    isActive?: boolean
+    isExpand?: boolean
   }>(),
   {
     icon: () => ({ plus: "i-ic:baseline-plus", minus: "i-ic:baseline-minus" }),
@@ -218,6 +223,11 @@ $ident: 20px;
     &:hover {
       background: $item-bg-hover;
       color: $item-color-hover;
+    }
+    // 悬浮
+    &.active {
+      background: $item-bg-hover !important;
+      color: $item-color-hover !important;
     }
     // 开始的 图标集合
     .start-icon {
