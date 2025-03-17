@@ -65,8 +65,6 @@ const search = async (
   // 查询用户的所有文章
   const { count, rows } = await Article.findAndCountAll(commend)
 
-  if (!count) return res.result(void 0, "查询文章失败~", false)
-
   return res.result(
     {
       pagination: {

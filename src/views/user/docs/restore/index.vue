@@ -1,5 +1,9 @@
 <template>
-  <layout-article-tree :account :title="$route.meta.title || '文章回收站'">
+  <layout-article-tree
+    ref="articleTree"
+    :account
+    :title="$route.meta.title || '文章回收站'"
+  >
     <template #btns="{ row }">
       <!-- 删除 -->
       <my-popconfirm
@@ -65,18 +69,20 @@ const handlerArticles = async (
     return result
   } catch (error) {}
 }
+const articleTree = ref()
+
 // 恢复文章的回调
 const restoreArticle = async (id: string | number) => {
   try {
     await recoverArticle(id)
     // 获取所有文章
-    await handlerArticles()
+    await articleTree.value?.handlerArticles?.()
     ElMessage.success(`恢复文章成功~`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("恢复文章失败~")
     // 获取所有文章
-    await handlerArticles()
+    await articleTree.value?.handlerArticles()
   }
 }
 onMounted(() => {

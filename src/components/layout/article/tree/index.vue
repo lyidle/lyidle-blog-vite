@@ -185,6 +185,7 @@ import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { mitt } from "@/utils/emitter"
 
 // 判断是否是回收站页面
 const route = useRoute()
@@ -209,6 +210,7 @@ const reqArticles =
     (currentPage?: number, pageSize?: number) => Promise<SearchArticle["data"]>
   >("req")
 
+let isReq = false
 // 获取所有文章
 const handlerArticles = async (
   currentPage: number = 1,
@@ -216,31 +218,35 @@ const handlerArticles = async (
 ) => {
   if (!reqArticles) return
   const result = await reqArticles(currentPage, pageSize)
-  if (result?.article) {
-    // 处理排序
-    const sortedArticles = orderArticle(result.article, true) as Article[]
-    // 处理时间
-    const mappedArticles = sortedArticles.map((item) => ({
-      ...item,
-      createdAt: moment(item.createdAt),
-    }))
-    // 年份归类
-    const groupedArticles = mappedArticles.reduce((acc, article) => {
-      const year = article.createdAt.split("-")[0] // 提取年份
-      let found = acc.find((group) => group.year === year)
-      if (found) {
-        found.articles.push(article)
-      } else {
-        acc.push({ year, articles: [article] })
-      }
-      return acc
-    }, [] as { year: string; articles: Article[] }[])
-    // 更新数据
-    articles.value = groupedArticles
-    pagination.value = result.pagination
-  }
-}
+  if (!result?.article || !result?.pagination) return
+  // 处理排序
+  const sortedArticles = orderArticle(result.article, true) as Article[]
+  // 处理时间
+  const mappedArticles = sortedArticles.map((item) => ({
+    ...item,
+    createdAt: moment(item.createdAt),
+  }))
+  // 年份归类
+  const groupedArticles = mappedArticles.reduce((acc, article) => {
+    const year = article.createdAt.split("-")[0] // 提取年份
+    let found = acc.find((group) => group.year === year)
+    if (found) {
+      found.articles.push(article)
+    } else {
+      acc.push({ year, articles: [article] })
+    }
+    return acc
+  }, [] as { year: string; articles: Article[] }[])
+  // 更新数据
+  articles.value = groupedArticles
+  pagination.value = result.pagination
 
+  if (isReq)
+    // 重新加载路由
+    mitt.emit("route:reload")
+  isReq = true
+}
+defineExpose({ handlerArticles })
 // 软删除文章的回调
 const handlerRemove = async (id: string | number) => {
   try {
