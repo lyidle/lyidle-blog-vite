@@ -224,10 +224,10 @@ $ident: 20px;
       background: $item-bg-hover;
       color: $item-color-hover;
     }
-    // 悬浮
+    // 激活
     &.active {
-      background: $item-bg-hover !important;
-      color: $item-color-hover !important;
+      background: $item-bg-hover;
+      color: $item-color-hover;
     }
     // 开始的 图标集合
     .start-icon {
@@ -268,6 +268,11 @@ $ident: 20px;
       color: $sub-color;
       // 悬浮
       &:hover {
+        background: $sub-bg-hover;
+        color: $sub-color-hover;
+      }
+      // 激活
+      &.active {
         background: $sub-bg-hover;
         color: $sub-color-hover;
       }
