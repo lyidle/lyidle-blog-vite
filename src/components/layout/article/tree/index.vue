@@ -184,6 +184,7 @@ import moment from "@/utils/moment"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 判断是否是回收站页面
 const route = useRoute()
@@ -252,7 +253,8 @@ const handlerRemove = async (id: string | number) => {
     // 获取所有文章
     await handlerArticles()
   } catch (error) {
-    ElMessage.error("软删除文章失败~")
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("软删除文章失败~")
   }
 }
 // 删除文章的回调
@@ -263,7 +265,8 @@ const handlerDelete = async (id: string | number) => {
     // 获取所有文章
     await handlerArticles()
   } catch (error) {
-    ElMessage.error("彻底删除文章失败~")
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("彻底删除文章失败~")
   }
 }
 onMounted(async () => {

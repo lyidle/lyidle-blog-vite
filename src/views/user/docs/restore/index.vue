@@ -41,6 +41,7 @@ import { recoverArticle, searchArticleMergeExact } from "@/api/article"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 提取需要的数据
 const { userAccount } = storeToRefs(useUserStore())
 
@@ -64,17 +65,18 @@ const handlerArticles = async (
     return result
   } catch (error) {}
 }
-// 删除文章的回调
+// 恢复文章的回调
 const restoreArticle = async (id: string | number) => {
   try {
-    await recoverArticle()
+    await recoverArticle(id)
+    // 获取所有文章
+    await handlerArticles()
     ElMessage.success(`恢复文章成功~`)
-    // 获取所有文章
-    await handlerArticles()
   } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("恢复文章失败~")
     // 获取所有文章
     await handlerArticles()
-    ElMessage.error("恢复文章失败~")
   }
 }
 onMounted(() => {

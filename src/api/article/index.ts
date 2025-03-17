@@ -119,8 +119,8 @@ export const removeArticle = (id: number | string) =>
     data: { id },
   })
 // 恢复 文章 需要 是本用户的id
-export const recoverArticle = () =>
-  request.put<any, void>(server + prefix + API.recoverArticle)
+export const recoverArticle = (id: number | string) =>
+  request.put<any, void>(server + prefix + API.recoverArticle, { data: { id } })
 
 // 彻底删除文章 无后悔期间 是本用户的id
 export const deleteArticle = (id: number | string) =>
