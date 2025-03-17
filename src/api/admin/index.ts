@@ -27,6 +27,8 @@ import { UpdateBannerImg } from "./types/updateBannerImg"
 import { GetBannerImgPagination } from "./types/getBannerImgPagination"
 import { GetBannerImgPaginationQuery } from "./types/getBannerImgPaginationQuery"
 import { OrdinarySearchQuery } from "../types/ordinarySearchQuery"
+import { FindAllSettingsPagination } from "./types/findAllSettingsPagination"
+import { DelSettingQuery } from "./types/delSettingQuery"
 
 // 统一管理 api
 enum API {
@@ -37,7 +39,10 @@ enum API {
   announce = "/admin/announce",
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
+  // 设置信息
   findOneSetting = "/admin/settings",
+  findAllSettingsPagination = "/admin/settings/manager",
+  managerDeleteSetting = "/admin/settings",
   // 角色
   Role = "/admin/role",
   findAllRoles = "/admin/role",
@@ -118,6 +123,20 @@ export const getPoetry = () =>
 export const findOneSetting = (name: string) =>
   request.get<any, FindOneSetting["data"]>(
     server + prefix + API.findOneSetting + `/?name=${name}`
+  )
+// 获取 所有的设置信息 分页器
+export const findAllSettingsPagination = (data?: OrdinarySearchQuery) =>
+  request.get<any, FindAllSettingsPagination["data"]>(
+    server +
+      prefix +
+      API.findAllSettingsPagination +
+      `/?${new URLSearchParams(data)}`
+  )
+
+// 软删除角色 登录用户需要拥有权限
+export const managerDeleteSetting = (id: number) =>
+  request.delete<any, void>(
+    server + prefix + API.managerDeleteSetting + `/${id}`
   )
 
 // 获取 所有的角色信息

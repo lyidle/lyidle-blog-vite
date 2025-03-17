@@ -9,20 +9,22 @@ const router = express.Router()
 // 引入redis 设置缓存
 import { delKey } from "@/utils/redis"
 router.delete(
-  "/",
+  "/:id",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 提取需要的信息
-      const { name } = req.query
+      const { id } = req.params
 
       // 汇总 错误信息
-      if (!name) return res.result(void 0, "name是必传项", false)
-      const findSetting = await Setting.findOne({ where: { name } })
+      if (!id) return res.result(void 0, "id是必传项", false)
+      const findSetting = await Setting.findByPk(id)
       if (!findSetting)
         return res.result(void 0, "没有找到对应的设置信息~", false)
+
       await findSetting.destroy()
-      await delKey(`setting:${name}`)
+      // 清除缓存
+      await delKey(`setting:${findSetting.dataValues.name}`)
       res.result(void 0, "删除设置信息成功~")
     } catch (error) {
       res.validateAuth(error, next, () =>

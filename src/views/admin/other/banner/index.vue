@@ -197,8 +197,6 @@ const handlerReq = async () => {
   }
   // 默认是 当前页 和分页器的个数
   await reqAllBanners(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 禁用 与 恢复
