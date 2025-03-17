@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from "express"
 import { Op } from "sequelize"
-const { PermissionGroup, Permission } = require("@/db/models")
+const { Setting } = require("@/db/models")
 const router = express.Router()
 
-// 获取权限组列表
+// 获取设置信息列表
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const { query } = req
   const { name } = req.query
@@ -16,20 +16,13 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const offset = (currentPage - 1) * pageSize
   try {
     const commend = {
-      include: [
-        {
-          model: Permission,
-          as: "children",
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-        },
-      ],
       limit: pageSize,
       offset,
       where: name && {
         name: { [Op.like]: `%${name}%` },
       },
     }
-    const { count, rows } = await PermissionGroup.findAndCountAll(commend)
+    const { count, rows } = await Setting.findAndCountAll(commend)
 
     const result = {
       pagination: {
@@ -37,13 +30,13 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
         currentPage,
         pageSize,
       },
-      groups: rows,
+      setting: rows,
     }
 
-    res.result(result, "获取所有权限组成功~")
+    res.result(result, "获取所有设置信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取所有权限组失败", false)
+      res.result(void 0, "获取所有设置信息失败", false)
     )
   }
 })

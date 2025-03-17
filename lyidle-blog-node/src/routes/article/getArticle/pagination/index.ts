@@ -28,7 +28,6 @@ router.get("/", async (req, res, next) => {
       limit: pageSize,
       offset,
     })
-    if (!count) return res.result(void 0, "获取文章失败~", false)
 
     const result = {
       pagination: {
@@ -39,8 +38,9 @@ router.get("/", async (req, res, next) => {
       article: rows,
     }
 
-    // 设置 缓存
-    await setKey(`articlePagination:${currentPage},${pageSize}`, result)
+    if (count)
+      // 设置 缓存
+      await setKey(`articlePagination:${currentPage},${pageSize}`, result)
 
     return res.result(result, "获取文章成功~")
   } catch (error) {

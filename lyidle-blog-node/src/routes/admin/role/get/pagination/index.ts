@@ -3,7 +3,7 @@ import { Op } from "sequelize"
 const { Role, PermissionGroup } = require("@/db/models")
 const router = express.Router()
 
-// 获取权限菜单列表
+// 获取所有角色列表
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const { query } = req
   const { name } = req.query
@@ -29,9 +29,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
       },
     }
     const { count, rows } = await Role.findAndCountAll(commend)
-
-    // 判断是否有 角色
-    if (!count) return res.result(void 0, "服务器角色未初始化", false)
 
     const result = {
       pagination: {

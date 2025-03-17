@@ -1,11 +1,12 @@
 import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
+// 引入redis 设置缓存
+import { setKey, getKey } from "@/utils/redis"
+import pagination from "./pagination"
 // 引入 模型
 const { Setting } = require("@/db/models")
 const router = express.Router()
-// 引入redis 设置缓存
-import { setKey, getKey } from "@/utils/redis"
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   // 提取需要的信息
@@ -32,5 +33,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     )
   }
 })
+
+router.use("/manager", pagination)
 // 挂载路由
 export default router

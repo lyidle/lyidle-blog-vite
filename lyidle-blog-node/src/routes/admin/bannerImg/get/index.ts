@@ -74,10 +74,6 @@ router.get(
       // 查询 所有的 bannerImg
       const { count, rows } = await BannerImg.findAndCountAll(commend)
 
-      if (!count) {
-        return res.result(void 0, "获取背景失败~", false)
-      }
-
       const result = {
         pagination: {
           total: count,

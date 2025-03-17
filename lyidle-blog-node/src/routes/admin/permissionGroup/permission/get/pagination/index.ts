@@ -25,9 +25,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 
     const { count, rows } = await Permission.findAndCountAll(commend)
 
-    // 判断是否有 权限
-    if (!count) return res.result(void 0, "服务器权限未初始化", false)
-
     const result = {
       pagination: {
         total: count,
