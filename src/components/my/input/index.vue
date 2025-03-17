@@ -19,6 +19,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
+// #region input
 .el-input__wrapper {
   &.is-focus {
     box-shadow: unset;
@@ -55,7 +56,6 @@ defineExpose({
   }
 }
 
-// input
 .login-container .el-input__wrapper {
   .el-icon {
     color: var(--login-input-color);
@@ -70,4 +70,15 @@ defineExpose({
     }
   }
 }
+// #endregion input
+
+// #region textarea
+.el-textarea {
+  textarea {
+    background: transparent;
+    color: var(--primary-color);
+    resize: none;
+  }
+}
+// #endregion textarea
 </style>

@@ -39,6 +39,9 @@
           align="center"
         />
         <my-table-column prop="content" label="内容" align="center">
+          <template #="{ row }">
+            <div v-if="row.name !== '关于'">{{ row.content }}</div>
+          </template>
         </my-table-column>
         <!-- 工具栏 -->
         <my-table-column

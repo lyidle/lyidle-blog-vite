@@ -26,10 +26,34 @@
           ></my-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <my-input
-            placeholder="请输入内容"
-            v-model="createData.content"
-          ></my-input>
+          <template v-if="createData.name !== '关于'">
+            <!-- 字符串 -->
+            <my-input
+              v-if="typeof createData.content === 'string'"
+              placeholder="请输入内容"
+              v-model="createData.content"
+              type="textarea"
+              class="mx-10px"
+              :autosize="{ minRows: 2, maxRows: 10 }"
+            ></my-input>
+
+            <!-- 对象字面量型 -->
+            <div v-if="isPlainObject(createData.content)">
+              {{ createData.content }}
+            </div>
+
+            <!-- array 类型 -->
+            <my-tags
+              v-if="Array.isArray(createData.content)"
+              v-model="createData.content"
+              min="0"
+              max="5"
+              error="标签个数需要在0-5之间"
+              ref="tagsInstance"
+              class="mr-10px"
+              left="10px"
+            ></my-tags>
+          </template>
         </el-form-item>
         <div class="flex justify-end mt-20px">
           <my-button
@@ -54,6 +78,8 @@ import { updateSetting } from "@/api/admin"
 import type { Setting } from "@/api/admin/types/Setting"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+// 判断是否 是一个 对象字面量
+import { isPlainObject } from "lodash-es"
 
 const centerDialogVisible = ref(false)
 
@@ -78,9 +104,14 @@ const createRules = reactive({
   content: [{ required: true, trigger: "change", message: "设置内容是必填项" }],
 })
 
+// 保存 类型
+let contentType: null | "string" | "array" | "object" = null
 // 初始化
 const init = (row: Setting) => {
   centerDialogVisible.value = true
+  if (typeof row.content === "string") contentType = "string"
+  else if (Array.isArray(row.content)) contentType = "array"
+  else if (isPlainObject(row.content)) contentType = "object"
   Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
 
