@@ -7,34 +7,33 @@ const router = express.Router()
 // 引入 模型
 const { Setting } = require("@/db/models")
 // 引入redis 设置缓存
-import { setKey } from "@/utils/redis"
+import { delKey, setKey } from "@/utils/redis"
 router.put(
   "/",
   [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     // 提取需要的信息
-    const { name, content } = req.body
+    const { name, content, id } = req.body
+    // 错误信息
+    if (!id) return res.result(void 0, "id是必传项~", false)
     try {
-      // 汇总 错误信息
-      const errorArray = []
-      if (!name) errorArray.push("name是必传项")
-      if (!content) errorArray.push("content是必传项")
-      if (errorArray.length) return res.result(void 0, errorArray, false)
-
-      const findSetting = await Setting.findOne({ where: { name } })
+      const findSetting = await Setting.findByPk(id)
       if (!findSetting)
-        return res.result(void 0, `没有找到${name}设置项~`, false)
+        return res.result(void 0, `没有找到id为：${id}的设置项~`, false)
 
       if (content) await findSetting.set("content", content)
+      if (name) await findSetting.set("name", name)
 
       const { dataValues } = await findSetting.save()
 
-      // 设置缓存
+      // 删除 旧的缓存
+      await delKey(`setting:${findSetting.dataValues.name}`)
+      // // 设置缓存
       await setKey(`setting:${name}`, dataValues)
-      res.result(void 0, `修改${name}成功~`)
+      res.result(void 0, `修改id为：${id}的设置项成功~`)
     } catch (error) {
       res.validateAuth(error, next, () =>
-        res.result(void 0, `修改${name}失败~`, false)
+        res.result(void 0, `修改id为：${id}的设置项失败~`, false)
       )
     }
   }

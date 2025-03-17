@@ -117,8 +117,8 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
 
-      <manager-com-role-create ref="create" @req="handlerReq" />
-      <manager-com-role-editor ref="editor" @req="handlerReq" />
+      <manager-com-setting-create ref="create" @req="handlerReq" />
+      <manager-com-setting-editor ref="editor" @req="handlerReq" />
     </my-card>
   </div>
 </template>

@@ -28,7 +28,7 @@ import { GetBannerImgPagination } from "./types/getBannerImgPagination"
 import { GetBannerImgPaginationQuery } from "./types/getBannerImgPaginationQuery"
 import { OrdinarySearchQuery } from "../types/ordinarySearchQuery"
 import { FindAllSettingsPagination } from "./types/findAllSettingsPagination"
-import { DelSettingQuery } from "./types/delSettingQuery"
+import { Setting } from "./types/Setting"
 
 // 统一管理 api
 enum API {
@@ -40,7 +40,7 @@ enum API {
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
   // 设置信息
-  findOneSetting = "/admin/settings",
+  Setting = "/admin/settings",
   findAllSettingsPagination = "/admin/settings/manager",
   managerDeleteSetting = "/admin/settings",
   // 角色
@@ -122,7 +122,7 @@ export const getPoetry = () =>
 // 获取设置信息
 export const findOneSetting = (name: string) =>
   request.get<any, FindOneSetting["data"]>(
-    server + prefix + API.findOneSetting + `/?name=${name}`
+    server + prefix + API.Setting + `/?name=${name}`
   )
 // 获取 所有的设置信息 分页器
 export const findAllSettingsPagination = (data?: OrdinarySearchQuery) =>
@@ -132,12 +132,19 @@ export const findAllSettingsPagination = (data?: OrdinarySearchQuery) =>
       API.findAllSettingsPagination +
       `/?${new URLSearchParams(data)}`
   )
+// 创建设置信息 登录用户需要拥有权限
+export const createSetting = (data: Setting) =>
+  request.post<any, void>(server + prefix + API.Setting, data)
 
-// 软删除角色 登录用户需要拥有权限
+// 软删除设置信息 登录用户需要拥有权限
 export const managerDeleteSetting = (id: number) =>
   request.delete<any, void>(
     server + prefix + API.managerDeleteSetting + `/${id}`
   )
+
+// 更新设置信息 登录用户需要拥有权限
+export const updateSetting = (data: Setting) =>
+  request.put<any, void>(server + prefix + API.Setting, data)
 
 // 获取 所有的角色信息
 export const findAllRoles = () =>

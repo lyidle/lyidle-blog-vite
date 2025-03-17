@@ -9,7 +9,7 @@
       @close="handlerClose"
     >
       <template #header>
-        <div class="color-[var(--primary-color)]">编辑权限组</div>
+        <div class="color-[var(--primary-color)]">编辑设置</div>
       </template>
       <el-form
         :model="createData"
@@ -19,16 +19,16 @@
         ref="formInstance"
         @submit.prevent="handlerConfirm"
       >
-        <el-form-item label="权限组名" prop="name">
+        <el-form-item label="设置名" prop="name">
           <my-input
-            placeholder="请输入权限组名"
+            placeholder="请输入设置名"
             v-model="createData.name"
           ></my-input>
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
+        <el-form-item label="内容" prop="content">
           <my-input
-            placeholder="请输入描述"
-            v-model="createData.desc"
+            placeholder="请输入内容"
+            v-model="createData.content"
           ></my-input>
         </el-form-item>
         <div class="flex justify-end mt-20px">
@@ -47,46 +47,39 @@
   </teleport>
 </template>
 
-<script setup lang="ts" name="GroupEditor">
+<script setup lang="ts" name="SettingEditor">
 // 引入 接口
-import { updateGroup } from "@/api/admin"
+import { updateSetting } from "@/api/admin"
 // 引入 类型
-import type { UpdateRoleBody } from "@/api/admin/types/updateRoleBody"
+import type { Setting } from "@/api/admin/types/Setting"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 
 const centerDialogVisible = ref(false)
 
-const createData = reactive<UpdateRoleBody>({
+const createData = reactive<Setting>({
   id: -1,
   name: "",
-  desc: "",
+  content: "",
 })
 
 // 创建规则
 const createRules = reactive({
   name: [
-    { required: true, trigger: "change", message: "权限组名是必填项" },
+    { required: true, trigger: "change", message: "设置名是必填项" },
     {
       required: true,
       trigger: "change",
       min: 1,
       max: 32,
-      message: "权限组名字长度必须在1-32之间哦",
+      message: "设置名字长度必须在1-32之间哦",
     },
   ],
-  desc: [
-    {
-      trigger: "change",
-      min: 0,
-      max: 255,
-      message: "权限组描述长度必须要在0-32之间哦",
-    },
-  ],
+  content: [{ required: true, trigger: "change", message: "设置内容是必填项" }],
 })
 
 // 初始化
-const init = (row: UpdateRoleBody) => {
+const init = (row: Setting) => {
   centerDialogVisible.value = true
   Object.assign(createData, JSON.parse(JSON.stringify(row)))
 }
@@ -109,14 +102,14 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    await updateGroup(createData)
-    ElMessage.success(`修改权限组成功~`)
+    await updateSetting(createData)
+    ElMessage.success(`修改设置成功~`)
     centerDialogVisible.value = false
     // 重新请求
     await emit("req")
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("修改权限组失败~")
+    if (!err) ElMessage.error("修改设置失败~")
   }
 }
 

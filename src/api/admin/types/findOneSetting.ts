@@ -9,7 +9,7 @@ export interface FindOneSetting {
 }
 
 export interface Data {
-  content: { [key: string]: any } | string
+  content: string[] | { [key: string]: any } | string
   id: number
   name: string
   [property: string]: any

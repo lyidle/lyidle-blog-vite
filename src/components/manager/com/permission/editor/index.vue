@@ -9,7 +9,7 @@
       @close="handlerClose"
     >
       <template #header>
-        <div class="color-[var(--primary-color)]">创建权限</div>
+        <div class="color-[var(--primary-color)]">编辑权限</div>
       </template>
       <el-form
         :model="createData"
