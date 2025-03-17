@@ -159,7 +159,13 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/person/about",
         name: "About",
-        meta: { title: "关于" },
+        meta: {
+          title: "关于",
+          bannerWel: "关于",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/about/index.vue"),
       },
     ],
