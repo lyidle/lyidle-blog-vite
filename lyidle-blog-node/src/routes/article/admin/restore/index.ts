@@ -10,12 +10,13 @@ const router = express.Router()
 
 // 恢复文章
 router.put(
-  "/",
+  "/:id",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     // 得到 用户id 和 文章id
     const userId = req.auth.id
-    const articleId = req.body.id
+    const articleId = req.params.id
+
     // 非法判断
     if (!articleId || !userId)
       return res.result(void 0, "恢复文章失败,没有找到文章数据", false)

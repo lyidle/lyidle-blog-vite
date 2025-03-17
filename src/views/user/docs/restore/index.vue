@@ -7,7 +7,7 @@
         :title="`确认要恢复《${row.title}》么?`"
         icon-color="#F56C6C"
         placement="top"
-        @confirm="restoreArticle"
+        @confirm="restoreArticle(row.id)"
       >
         <template #reference>
           <my-button
