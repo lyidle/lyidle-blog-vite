@@ -28,6 +28,7 @@ const handlerArticles = async (
     return result
   } catch (error) {}
 }
+console.log("red")
 
 // 提供方法
 provide("req", handlerArticles)

@@ -91,7 +91,7 @@ export default async () => {
       if (copyright === null) {
         const { dataValues } = await Setting.create({
           name: "版权",
-          content: is_production ? "" : "©2022-2023",
+          content: is_production ? "" : "©2024-2025",
         })
         await setKey("setting:版权", dataValues)
       }
@@ -103,14 +103,13 @@ export default async () => {
       if (follow === null) {
         const { dataValues } = await Setting.create({
           name: "联系方式",
-          content: is_production
-            ? ""
-            : {
-                weChat: "LIDSGOA",
-                QQ: "912512766",
-                BiliBili: "BiliBili",
-                email: "912512766@qq.com",
-              },
+          content: {
+            weChat: "LIDSGOA",
+            QQ: "912512766",
+            BiliBili:
+              "https://space.bilibili.com/238728646?spm_id_from=333.1007.0.0",
+            email: "912512766@qq.com",
+          },
         })
         await setKey("setting:联系方式", dataValues)
       }

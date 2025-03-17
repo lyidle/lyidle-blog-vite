@@ -81,7 +81,19 @@ export const constantRoute: RouteRecordRaw[] = [
         name: "UserSpace",
         meta: { title: "空间" },
         component: () => import("@/views/user/space/index.vue"),
-      },
+      }, // 用户查询 所有文章
+      {
+        path: "/user/docs",
+        name: "FindAllUserDocsRedirect",
+        meta: {
+          title: "文章总览",
+          bannerWel: "文章总览",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
+        component: () => import("@/views/user/docs/index.vue"),
+      }, // 用户查询 所有文章
       // 用户查询 所有文章
       {
         path: "/user/docs/:author",

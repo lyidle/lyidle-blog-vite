@@ -12,13 +12,17 @@
     </ul>
     <ul class="tools">
       <!-- 个人项 -->
-      <global-header-item class="manager-header-item avatar" :data="PersonData">
+      <global-header-item
+        class="manager-header-item avatar"
+        :data="PersonData"
+        top="40px"
+      >
         <global-avatar></global-avatar>
       </global-header-item>
       <li class="manager-header-item">
         <global-setting
           right="10px"
-          top="50px"
+          top="65px"
           :triangle="{ right: '0', left: 'unset' }"
         ></global-setting>
       </li>

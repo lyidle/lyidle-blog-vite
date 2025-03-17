@@ -3,8 +3,6 @@ import type { Request, Response, NextFunction } from "express"
 // 引入初始化
 import initialEnvironment from "@/utils/initial"
 import { resolve } from "path"
-// 引入 redis
-// import { clear } from "./utils/redis"
 // 导入环境变量
 require("dotenv").config()
 
@@ -38,6 +36,8 @@ app.use(express.static(resolve(__dirname, "./assets")))
 // 导入路由
 const api = require("@/routes")
 
+// 引入 redis
+// import { clear } from "./utils/redis"
 ;(async () => {
   // await clear()
   await initialEnvironment()

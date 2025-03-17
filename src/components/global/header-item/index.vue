@@ -7,7 +7,7 @@
         个人
       </a>
     </template>
-    <my-menu :data="data?.data" :triangle="true" :left="data?.style.left">
+    <my-menu :data="data?.data" :triangle="true" :left="data?.style.left" :top>
       <template #body="{ item: sub }: { item: PersonMenuList }">
         <my-anchor
           :to="sub.to"
@@ -28,7 +28,7 @@
 import type { PersonMenuList } from "@/components/layout/header/types"
 import { ReturnType } from "@/hooks/header/showPersonHeaderMenu"
 
-defineProps<{ data: ReturnType }>()
+defineProps<{ data: ReturnType; top?: string }>()
 </script>
 
 <style scoped lang="scss"></style>
