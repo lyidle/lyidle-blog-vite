@@ -50,4 +50,15 @@ $crumb-color-hover: var(--header-crumb-color-hover);
     }
   }
 }
+.manager-content {
+  ::v-deep(.admin-container) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--admin-content-card-gap);
+    @include adminHeaderBtns;
+    .admin-content {
+      padding: var(--admin-content-card-pd);
+    }
+  }
+}
 </style>
