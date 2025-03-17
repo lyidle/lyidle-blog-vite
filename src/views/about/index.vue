@@ -3,11 +3,11 @@
 </template>
 
 <script setup lang="ts" name="About">
-import about from "./about.md?raw"
+import { findOneSetting } from "@/api/admin"
 const reqArticle = async () => {
-  return { content: about }
+  const result = await findOneSetting("关于")
+  return { content: result?.content }
 }
-
 // 提供方法
 provide("reqArticle", reqArticle)
 </script>
