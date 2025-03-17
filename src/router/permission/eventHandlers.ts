@@ -61,9 +61,8 @@ export const routerEventHandlered = (router: any) => {
   mitt.on("NotFound", (msg: string) => {
     switch (msg) {
       case "not article":
-        console.error("需要调整到没有文章的404页面~")
         ElMessage.error("获取文章失败")
-        // router.push({ path: "/404", replace: true })
+        router.push({ path: "/404", replace: true })
         break
       default:
         router.push({ path: "/404", replace: true })

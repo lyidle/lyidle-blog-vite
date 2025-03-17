@@ -321,5 +321,5 @@ export const asyncRoute: RouteRecordRaw[] = [
       },
     ],
   },
-  ...asyncRoutesTest,
+  // ...asyncRoutesTest,
 ]
