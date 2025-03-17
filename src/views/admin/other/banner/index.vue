@@ -139,8 +139,6 @@ import { Banner } from "@/api/admin/types/getBannerImgPagination"
 import { useMangerBannerBase } from "@/hooks/manager/other/banner/useMangerBannerBase"
 // url转义
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 
 // 引入 默认banner 图片
 // 导入 默认的图片

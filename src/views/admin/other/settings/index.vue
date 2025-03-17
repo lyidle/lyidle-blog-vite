@@ -130,8 +130,6 @@ import { managerDeleteSetting } from "@/api/admin"
 import type { Setting } from "@/api/admin/types/findAllSettingsPagination"
 // 引入 基础配置
 import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置
