@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="DocumentReviewCard">
+<script setup lang="ts" name="VditorPreview">
 // 引入 文章渲染函数
 import { useVditorPreview } from "@/hooks/Doc/vditorPreview"
 // 引入 文章侧边目录高亮显示

@@ -124,10 +124,10 @@
             ref="observerMenu"
           ></div>
           <my-card class="card_style">
-            <layout-article-review-card
+            <vditor-preview
               v-model:article="article"
               v-model:menuTree="menuTree"
-            ></layout-article-review-card>
+            ></vditor-preview>
           </my-card>
         </div>
       </template>

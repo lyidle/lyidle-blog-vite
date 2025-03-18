@@ -68,9 +68,7 @@
           ></my-tags>
         </el-form-item>
         <div v-if="createData.name === '关于'">
-          <layout-article-review-card
-            v-model:article="article"
-          ></layout-article-review-card>
+          <vditor-preview v-model:article="article"></vditor-preview>
         </div>
         <!-- 关于 界面 -->
         <div class="flex justify-end mt-20px">
