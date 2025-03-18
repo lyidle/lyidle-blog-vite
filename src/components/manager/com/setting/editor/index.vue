@@ -3,7 +3,7 @@
     <el-dialog
       class="manager-dialog"
       v-model="centerDialogVisible"
-      width="500"
+      :width="dialogWidth"
       align-center
       draggable
       @close="handlerClose"
@@ -68,7 +68,17 @@
           ></my-tags>
         </el-form-item>
         <div v-if="createData.name === '关于'">
-          <vditor-preview v-model:article="article"></vditor-preview>
+          <h1 class="text-center color-[var(--primary-color)] cur-text">
+            内容
+          </h1>
+          <!-- vditor -->
+          <vditor-editor
+            v-if="isEditor"
+            v-model:docHeight="docHeight"
+            v-model:context="context"
+            :isAutoMount="false"
+            ref="vditorInstance"
+          ></vditor-editor>
         </div>
         <!-- 关于 界面 -->
         <div class="flex justify-end mt-20px">
@@ -97,7 +107,10 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 // 判断是否 是一个 对象字面量
 import { isPlainObject } from "lodash-es"
 
+// dialog相关
 const centerDialogVisible = defineModel<boolean>()
+const initialDialogWidth = 500
+const dialogWidth = ref<string | number>(initialDialogWidth)
 
 const createData = reactive<Setting>({
   id: -1,
@@ -105,11 +118,13 @@ const createData = reactive<Setting>({
   content: "",
   arrayContent: [],
 })
-const article = computed(() => {
-  return {
-    content: createData.content,
-  }
-})
+
+// vditor 相关
+const docHeight = ref("60vh")
+const context = ref("")
+const isEditor = ref(false)
+const vditorInstance = ref()
+
 // 保存 类型
 const contentType = ref<"string" | "array" | "object">("string")
 // 下拉框
@@ -154,6 +169,27 @@ const createRules = reactive({
   ],
 })
 
+// 判断是否 是相关的 name
+let isAbout = false
+
+const initialName = () => {
+  isAbout = false
+}
+
+// 判断是否是 vditor
+const isVditorEditor = (name: string) => {
+  let isAccess = false
+  switch (name) {
+    case "关于":
+      isAccess = true
+      isAbout = true
+      break
+  }
+  if (!isAccess) return
+  isEditor.value = true
+  dialogWidth.value = "80%"
+}
+
 // 初始化
 const init = (row: Setting) => {
   centerDialogVisible.value = true
@@ -164,11 +200,18 @@ const init = (row: Setting) => {
   // 分配变量
   createData.id = _row.id
   createData.name = _row.name
+
+  // 判断是否是 vditor
+  isVditorEditor(_row.name)
+
   // 初始化 content 和 类型
   // string
   if (typeof _row.content === "string") {
     contentType.value = "string"
-    createData.content = _row.content
+
+    // 判断是否是 vditor 编辑器
+    if (isEditor.value) context.value = _row.content
+    else createData.content = _row.content
   }
   // array
   if (Array.isArray(_row.content)) {
@@ -189,6 +232,10 @@ const formInstance = ref()
 const handlerClose = () => {
   formInstance.value.resetFields()
   createData.arrayContent = []
+  isEditor.value = false
+  context.value = ""
+  dialogWidth.value = initialDialogWidth
+  initialName()
 }
 
 // 夫组件的自定义事件
@@ -213,6 +260,12 @@ const handlerConfirm = async () => {
       updateData.content = updateData.arrayContent
     delete updateData.arrayContent
 
+    // 是否 是关于 的页面
+    if (isAbout) {
+      updateData.content = vditorInstance.value.getContext()
+    }
+
+    // 更新
     await updateSetting(updateData)
     ElMessage.success(`修改设置成功~`)
     centerDialogVisible.value = false

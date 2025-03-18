@@ -40,7 +40,20 @@
         />
         <my-table-column prop="content" label="内容" align="center">
           <template #="{ row }">
-            <div v-if="row.name !== '关于'">{{ row.content }}</div>
+            <!-- 不是数组 -->
+            <div v-if="!Array.isArray(row.content)" class="cur-text">
+              {{ row.content }}
+            </div>
+            <!-- 是数组 -->
+            <template v-else>
+              <el-tag
+                v-for="(arr, i) in row.content"
+                :key="arr"
+                :type="tagsType[i % tagsType.length]"
+                class="cur-text ml-10px float-left"
+                >{{ arr }}</el-tag
+              >
+            </template>
           </template>
         </my-table-column>
         <!-- 工具栏 -->
@@ -135,6 +148,7 @@
 import { managerDeleteSetting } from "@/api/admin"
 // 引入 类型
 import type { Setting } from "@/api/admin/types/findAllSettingsPagination"
+import { tagsType } from "@/components/my/tags"
 // 引入 基础配置
 import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
 // 搜索 的key

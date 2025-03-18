@@ -40,6 +40,7 @@
 <script setup lang="ts" name="MyTags">
 // 引入类型
 import type { InputInstance } from "element-plus"
+import { tagsType } from "."
 const tags = defineModel<string[]>()
 const props = withDefaults(
   defineProps<{
@@ -64,8 +65,6 @@ const props = withDefaults(
 const inputValue = ref("")
 const inputVisible = ref(false)
 const InputRef = ref<InputInstance>()
-
-const tagsType = ["primary", "success", "info", "warning", "danger"]
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
