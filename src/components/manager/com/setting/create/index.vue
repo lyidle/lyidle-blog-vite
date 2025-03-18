@@ -107,15 +107,6 @@ const contentTypeOptions = ref([
   { value: "array", label: "数组" },
   { value: "object", label: "对象" },
 ])
-watch(
-  () => contentType.value,
-  (newV) => {
-    if (newV === "string") createData.content = ""
-    if (newV === "array") createData.arrayContent = []
-    if (newV === "object") createData.content = JSON.stringify({})
-  }
-)
-
 const tagsInstance = ref()
 // 内容 的验证器
 const contentValidator = (rule: any, value: any, callback: any) => {
@@ -163,6 +154,7 @@ const formInstance = ref()
 // 关闭
 const handlerClose = () => {
   formInstance.value.resetFields()
+  createData.arrayContent = []
 }
 
 // 夫组件的自定义事件

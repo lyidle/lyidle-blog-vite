@@ -107,17 +107,6 @@ const contentTypeOptions = ref([
   { value: "array", label: "数组" },
   { value: "object", label: "对象" },
 ])
-let isLoad = false
-watch(
-  () => contentType.value,
-  (newV) => {
-    if (!isLoad) return
-    if (newV === "string") createData.content = ""
-    if (newV === "array") createData.arrayContent = []
-    if (newV === "object") createData.content = JSON.stringify({})
-  }
-)
-
 const tagsInstance = ref()
 // 内容 的验证器
 const contentValidator = (rule: any, value: any, callback: any) => {
@@ -180,7 +169,6 @@ const init = (row: Setting) => {
     contentType.value = "object"
     createData.content = jsonRow
   }
-  nextTick(() => (isLoad = true))
 }
 
 // 表单实例
@@ -189,6 +177,7 @@ const formInstance = ref()
 // 关闭
 const handlerClose = () => {
   formInstance.value.resetFields()
+  createData.arrayContent = []
 }
 
 // 夫组件的自定义事件
