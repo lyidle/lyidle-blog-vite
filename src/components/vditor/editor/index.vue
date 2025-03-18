@@ -7,15 +7,8 @@
 <script setup lang="ts" name="VditorEditor">
 // 引入 编辑器的 hooks
 import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
-
 // 引入 编辑器 全屏事件的 处理 hooks
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
-
-onMounted(() => {
-  // @ts-ignore
-  const styles = document.querySelector("style[data-v-5e96d17d]")?.innerText
-  console.log(styles)
-})
 // vditor 容器
 const vditorEditor = ref()
 const docHeight = defineModel<string>("docHeight")
