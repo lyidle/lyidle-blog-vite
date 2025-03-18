@@ -15,7 +15,7 @@
                   backgroundSize: 'cover',
                   // 转义url链接
                   backgroundImage: item.poster
-                    ? `url('${item.poster.replace(/\\/g, '/')}')`
+                    ? `url('${escapeUrlForRegExp(item.poster)}')`
                     : 'var(--default-img)',
                 }"
                 class="poster-img"
@@ -41,6 +41,7 @@
 import moment from "@/utils/moment"
 import { getRecentPages } from "@/api/article"
 import type { GetRecentPages } from "@/api/article/types/getRecentPages"
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 
 // 最新文章
 //  展示的数据

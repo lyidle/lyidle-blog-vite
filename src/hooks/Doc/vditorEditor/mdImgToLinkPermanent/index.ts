@@ -6,7 +6,18 @@ import { compressString } from "@/utils/compression"
 import { useUserStore } from "@/store/user"
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 替换 md的 临时链接
-export const useMdReplaceImg = async (content: string, data: any) => {
+export const useMdReplaceImg = async (
+  content: string,
+  data: any,
+  options?: { key?: string; path?: string }
+) => {
+  let contentKey = "content"
+  let path = "/md/content"
+  if (options) {
+    let { key: optKey, path: optPath } = options
+    if (optPath) path = optPath
+    if (optKey) contentKey = optKey
+  }
   // 引入 前缀
   const prefix = import.meta.env.VITE_API
   // 处理临时链接
@@ -36,18 +47,19 @@ export const useMdReplaceImg = async (content: string, data: any) => {
   // 判断有无临时 链接
   if (arr.length) {
     data.tempImg = arr
-    transformLink = (await useMdImgToLinkPermanent(arr, content)) || ""
-    data.content = compressString(transformLink || "") || ""
+    transformLink = (await useMdImgToLinkPermanent(arr, content, path)) || ""
+    data[contentKey] = compressString(transformLink || "") || ""
   }
   // 没有 临时的 直接压缩
   if (!transformLink) {
-    data.content = compressString(content || "") || ""
+    data[contentKey] = compressString(content || "") || ""
   }
 }
 // 转换 临时链接为永久
 export const useMdImgToLinkPermanent = async (
   tempImg: string[],
-  content: string
+  content: string,
+  path: string
 ) => {
   const { userAccount } = storeToRefs(useUserStore())
   if (!userAccount.value) {
@@ -59,7 +71,7 @@ export const useMdImgToLinkPermanent = async (
     const result = await postImgPermanent({
       tempImg,
       account: userAccount.value,
-      path: "/md/content",
+      path: path,
     })
     if (result) {
       const { successImg, tempImgNull } = result

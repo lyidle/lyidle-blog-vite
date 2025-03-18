@@ -110,6 +110,7 @@ import { isPlainObject } from "lodash-es"
 import { isVditorEditor } from "."
 // 解压缩 vditor的 内容
 import { decompressStringNotError } from "@/utils/compression"
+import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 
 // dialog相关
 const centerDialogVisible = defineModel<boolean>()
@@ -252,7 +253,10 @@ const handlerConfirm = async () => {
 
     // 是否是 vditor
     if (isEditor) {
-      updateData.content = vditorInstance.value.getContext()
+      const content = vditorInstance.value.getContext()
+      updateData.content = content
+      // 处理文章的 内容
+      await useMdReplaceImg(content, updateData, { path: "/manager" })
     }
 
     // 更新

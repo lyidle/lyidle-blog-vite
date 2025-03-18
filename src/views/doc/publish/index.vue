@@ -220,7 +220,7 @@ const mdAndFormReset = () => {
   context.value = ""
   // 使用 定时器 在 微任务后清除验证
   setTimeout(() => {
-    docsForm.value.clearValidate()
+    docsForm.value?.clearValidate?.()
   }, 0)
 }
 
