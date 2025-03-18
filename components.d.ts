@@ -150,6 +150,8 @@ declare module 'vue' {
     MyUpload: typeof import('./src/components/my/upload/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VditorMenu: typeof import('./src/components/vditor/menu/index.vue')['default']
+    VditorMenuGenerate: typeof import('./src/components/vditor/menu/generate.vue')['default']
     VditorPreview: typeof import('./src/components/vditor/preview/index.vue')['default']
   }
 }

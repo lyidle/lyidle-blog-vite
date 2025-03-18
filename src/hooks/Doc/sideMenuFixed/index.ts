@@ -6,10 +6,6 @@ import { mitt } from "@/utils/emitter"
 import { observer } from "@/utils/observer"
 import type { ObserverCallback } from "@/utils/observer"
 import { TocNode } from "@/views/doc/review/types"
-// 提取数据
-const { docMenuIsFixed, asideCounts, isAsideDocMenu } = storeToRefs(
-  useSettingStore()
-)
 
 // 初始化需要的数据
 let menuWrap: HTMLDivElement | null = null
@@ -32,6 +28,10 @@ export const useSideMenuFixed = (
   observerMenu: HTMLDivElement | undefined,
   menuCom: Ref<HTMLDivElement | undefined>
 ) => {
+  // 提取数据
+  const { docMenuIsFixed, asideCounts, isAsideDocMenu } = storeToRefs(
+    useSettingStore()
+  )
   // 判断是否有菜单要固定
   const isBad = (): boolean => {
     // 判断 是否有菜单数据 是否固定 和 菜单是否存在 还有 侧边栏个数一起判断

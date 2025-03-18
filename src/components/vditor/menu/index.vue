@@ -1,6 +1,6 @@
 <template>
   <div ref="menuCom">
-    <GenerateMenuTree :menuData v-if="menuData"></GenerateMenuTree>
+    <vditor-menu-generate :menuData v-if="menuData"></vditor-menu-generate>
   </div>
 </template>
 
@@ -9,8 +9,6 @@
 import { TocNode } from "@/views/doc/review/types"
 // 引入 侧边栏固定的 hook
 import { useSideMenuFixed } from "@/hooks/Doc/sideMenuFixed"
-// 引入子组件 用来递归 时 不用自身的组件递归
-import GenerateMenuTree from "./generate.vue"
 
 // 接收props
 const props = defineProps<{
@@ -29,5 +27,22 @@ useSideMenuFixed(props.menuData, props.observerMenu, menuCom)
 <style lang="scss">
 .active {
   color: var(--doc-menu-highlight);
+}
+
+// 侧边栏吸附效果
+.aside-menu-sticky-right {
+  position: fixed !important;
+  top: calc(var(--header-height) + var(--content-gap));
+  z-index: $doc-aside-menu-sticky-right-index;
+  right: var(--content-gap);
+  width: calc(var(--aside-width) - 0.1875rem);
+}
+// 侧边栏吸附效果 左侧
+.aside-menu-sticky-left {
+  position: fixed !important;
+  top: calc(var(--header-height) + var(--content-gap));
+  z-index: $doc-aside-menu-sticky-right-index;
+  left: var(--content-gap);
+  width: calc(var(--aside-width) - 0.1875rem);
 }
 </style>

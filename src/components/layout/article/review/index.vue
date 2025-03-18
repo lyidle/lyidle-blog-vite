@@ -9,8 +9,7 @@
             <span>目录</span>
           </template>
           <template #body>
-            <layout-content-doc-menu-tree :menuData="menuTree" :observerMenu>
-            </layout-content-doc-menu-tree>
+            <vditor-menu :menuData="menuTree" :observerMenu> </vditor-menu>
           </template>
         </layout-content-aside-card>
       </template>
@@ -252,26 +251,6 @@ $header-container-h: 12.5rem;
     width: $height;
     cursor: pointer;
     pointer-events: none;
-  }
-  // 文档 内容 区域
-  .doc-content {
-    position: relative;
-  }
-  // 侧边栏吸附效果
-  ::v-deep(.aside-menu-sticky-right) {
-    position: fixed !important;
-    top: calc(var(--header-height) + var(--content-gap));
-    z-index: $doc-aside-menu-sticky-right-index;
-    right: var(--content-gap);
-    width: calc(var(--aside-width) - 0.1875rem);
-  }
-  // 侧边栏吸附效果 左侧
-  ::v-deep(.aside-menu-sticky-left) {
-    position: fixed !important;
-    top: calc(var(--header-height) + var(--content-gap));
-    z-index: $doc-aside-menu-sticky-right-index;
-    left: var(--content-gap);
-    width: calc(var(--aside-width) - 0.1875rem);
   }
 }
 </style>
