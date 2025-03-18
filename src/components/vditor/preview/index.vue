@@ -30,7 +30,7 @@ useVditorPreview(article, menuTree, docPreview, useSideMenuHighlight)
   // markdown 预览
   ::v-deep(.vditor-style) {
     overflow: hidden;
-    $preview-pd: 0 40px;
+    padding: 0 40px;
   }
 }
 </style>

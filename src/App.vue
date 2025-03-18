@@ -39,9 +39,6 @@ useGlobalEmitter()
     // callouts
     $preview-calouts-pd: var(--editor-calouts-pd);
     $preview-callouts-title-gap: var(--editor-callouts-title-gap);
-    // 提示信息
-    $preview-h1-h6-tip-color: var(--editor-h1-h6-tip-color);
-    $preview-h1-h6-tip-size: var(--editor-h1-h6-tip-size);
     $preview-shadow: var(--editor-shadow);
     $preview-radius: var(--editor-radius);
     // 工具栏
@@ -167,57 +164,10 @@ useGlobalEmitter()
     }
     // #endregion h2-h6 编号
 
-    $h2-ml: 0.625rem;
-    // 恢复 编号的样式
-    @for $i from 1 through 6 {
-      h#{$i} {
-        position: relative;
-        &:before {
-          cursor: var(--cursor-default);
-          @if $i==1 {
-            // 去除提示信息
-            all: unset;
-          }
-          font-size: inherit;
-          color: inherit;
-          @if $i==2 {
-            margin-left: $h2-ml;
-          } @else {
-            @if $i !=1 {
-              padding-left: 10px;
-            }
-          }
-        }
-      }
-    }
-
-    // 提示的信息
-    @for $i from 1 through 6 {
-      h#{$i} {
-        position: relative;
-        &::after {
-          $left: -4.0938rem;
-          position: absolute;
-          content: "H#{$i}";
-          display: block;
-          cursor: var(--cursor-default);
-          @if $i == 2 {
-            left: $left - $h2-ml;
-          } @else {
-            left: $left;
-          }
-          font-size: $preview-h1-h6-tip-size;
-          color: $preview-h1-h6-tip-color;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-      }
-    }
-
     h1 {
-      border-bottom: 0 !important;
+      border-bottom: 0;
       text-align: center;
-      position: relative;
+      position: relative !important;
       // 分割线
       &::before {
         position: absolute;
@@ -228,18 +178,18 @@ useGlobalEmitter()
         background-repeat: no-repeat;
         background-size: 13rem;
         background-position: center 0;
-        left: 0.625rem;
-        right: 0;
-        top: -80%;
         pointer-events: none;
         margin: auto;
-        background-color: currentColor;
+        background-color: var(--primary-color);
         -webkit-mask-image: var(--doc-h1-underline-img);
         mask-image: var(--doc-h1-underline-img);
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
         -webkit-mask-size: 100% 100%;
         mask-size: 100% 100%;
+        left: 50%;
+        top: -80%;
+        transform: translateX(-50%);
         @include media(md) {
           top: -50%;
         }
@@ -258,7 +208,9 @@ useGlobalEmitter()
       & {
         padding: $preview-calouts-pd;
         // 左侧的边
-        border-left-color: var(--doc-callouts-#{$types}-border-l-color);
+        border-left-color: var(
+          --doc-callouts-#{$types}-border-l-color
+        ) !important;
         // 渐变背景
         background-image: linear-gradient(
           to right,
@@ -266,7 +218,7 @@ useGlobalEmitter()
           var(--doc-callouts-#{$types}-bg-r)
         );
         // 颜色
-        color: var(#{--doc-callouts-#{$types}-color});
+        color: var(#{--doc-callouts-#{$types}-color}) !important;
         // 阴影
         filter: drop-shadow(var(--doc-callouts-#{$types}-shadow));
         // 圆角
@@ -390,7 +342,7 @@ useGlobalEmitter()
       $scissors-size: 30px;
       display: block;
       height: $scissors-size;
-      background-color: unset;
+      background-color: unset !important;
       cursor: var(--cursor-default);
       position: relative !important;
       overflow: visible;

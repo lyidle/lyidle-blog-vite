@@ -37,3 +37,48 @@ defineExpose({ getContext })
 // 使用 编辑器是否全屏的hook
 useIsFullscreen(vditorEditor)
 </script>
+
+<style></style>
+<style scoped lang="scss">
+.my-vditor-container {
+  // 提示信息
+  $preview-h1-h6-tip-color: var(--editor-h1-h6-tip-color);
+  $preview-h1-h6-tip-size: var(--editor-h1-h6-tip-size);
+  // markdown 预览
+  ::v-deep(.vditor-style) {
+    $h2-ml: 0.625rem;
+    // 恢复 编号的样式
+    @for $i from 1 through 6 {
+      h#{$i} {
+        position: relative;
+        &:before {
+          content: "";
+        }
+      }
+    }
+
+    // 提示的信息
+    @for $i from 1 through 6 {
+      h#{$i} {
+        position: relative;
+        &::after {
+          $left: -4.0938rem;
+          position: absolute;
+          content: "H#{$i}";
+          display: block;
+          cursor: var(--cursor-default);
+          @if $i == 2 {
+            left: $left - $h2-ml;
+          } @else {
+            left: $left;
+          }
+          font-size: $preview-h1-h6-tip-size;
+          color: $preview-h1-h6-tip-color;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+}
+</style>
