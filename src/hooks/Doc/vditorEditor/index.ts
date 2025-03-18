@@ -8,9 +8,9 @@ import { baseOptions } from "./baseOptions"
 import type { vditorType } from "./update"
 // 定义 配置项 Ref 存储 高度 内容 长度
 type RefOptionsType = {
-  docHeight: Ref<string>
-  context: Ref<string>
-  length: Ref<number>
+  docHeight: Ref<string | undefined>
+  context: Ref<string | undefined>
+  length: Ref<number | undefined>
 }
 /**
  *

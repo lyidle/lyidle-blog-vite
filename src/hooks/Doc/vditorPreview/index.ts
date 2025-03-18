@@ -100,12 +100,13 @@ export const useVditorPreview = (
     if (article.value?.content && docPreview.value) {
       preview()
       mitt.on("isDark", preview)
-      // 初始化了
-      isInitialized = true
       try {
         // 取消监听
         stopWatch()
-      } catch (error) {}
+      } catch (error) {
+        // 初始化了
+        isInitialized = true
+      }
     }
   })
   // 在外部逻辑中调用 close

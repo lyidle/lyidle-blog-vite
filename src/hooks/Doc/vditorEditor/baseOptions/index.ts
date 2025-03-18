@@ -9,9 +9,9 @@ import { mitt } from "@/utils/emitter"
 import type { vditorType } from "../update"
 export const baseOptions = (
   vditor: vditorType,
-  docHeight: Ref<number | string>,
-  context: Ref<string>,
-  length: Ref<number>
+  docHeight: Ref<number | string | undefined>,
+  context: Ref<string | undefined>,
+  length: Ref<number | undefined>
 ) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
