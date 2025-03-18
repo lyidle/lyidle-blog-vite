@@ -95,20 +95,24 @@ export const useVditorPreview = (
       },
     })
   }
-
-  // 等内容加载后渲染
-  const close = watch(
-    () => article.value?.content,
-    (newV) => {
-      // 渲染 文章
-      if (newV) {
-        preview()
-        // 订阅 暗夜切换 事件
-        mitt.on("isDark", preview)
-        close()
-      }
+  let isInitialized = false
+  const stopWatch = watchEffect(() => {
+    if (article.value?.content && docPreview.value) {
+      preview()
+      mitt.on("isDark", preview)
+      // 初始化了
+      isInitialized = true
+      try {
+        // 取消监听
+        stopWatch()
+      } catch (error) {}
     }
-  )
+  })
+  // 在外部逻辑中调用 close
+  if (isInitialized) {
+    // 取消监听
+    stopWatch()
+  }
 
   // 卸载
   onBeforeUnmount(() => {

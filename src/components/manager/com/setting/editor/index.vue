@@ -67,6 +67,11 @@
             left="10px"
           ></my-tags>
         </el-form-item>
+        <div v-if="createData.name === '关于'">
+          <layout-article-review-card
+            v-model:article="article"
+          ></layout-article-review-card>
+        </div>
         <!-- 关于 界面 -->
         <div class="flex justify-end mt-20px">
           <my-button
@@ -102,7 +107,11 @@ const createData = reactive<Setting>({
   content: "",
   arrayContent: [],
 })
-
+const article = computed(() => {
+  return {
+    content: createData.content,
+  }
+})
 // 保存 类型
 const contentType = ref<"string" | "array" | "object">("string")
 // 下拉框
