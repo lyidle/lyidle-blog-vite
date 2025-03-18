@@ -338,10 +338,12 @@ useIsFullscreen(vditorEditor)
     }
     // 代码`code`
     code {
-      background-color: var(--doc-code-bg);
+      background-color: var(--doc-code-bg) !important;
       color: var(--doc-code-color);
       font-size: 15px;
       border-radius: var(--doc-code-radius);
+      display: inline-block;
+      padding: 0 8px;
     }
     pre > code.hljs {
       box-shadow: var(--doc-pre-code-shadow);
