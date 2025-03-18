@@ -118,7 +118,7 @@ export default async () => {
     // 初始化 关于
     (async () => {
       const aboutMd = readFileSync(
-        join(__dirname, "../db/mock/about.md"),
+        join(__dirname, "../db/mock/about.txt"),
         "utf8"
       )
       const about = await getKey("setting:关于")

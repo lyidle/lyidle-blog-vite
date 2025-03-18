@@ -106,6 +106,10 @@ import type { Setting } from "@/api/admin/types/Setting"
 import { handlerReqErr } from "@/utils/request/error/successError"
 // 判断是否 是一个 对象字面量
 import { isPlainObject } from "lodash-es"
+// 是否是 vditor
+import { isVditorEditor } from "."
+// 解压缩 vditor的 内容
+import { decompressStringNotError } from "@/utils/compression"
 
 // dialog相关
 const centerDialogVisible = defineModel<boolean>()
@@ -169,23 +173,9 @@ const createRules = reactive({
   ],
 })
 
-// 判断是否 是相关的 name
-let isAbout = false
-
-const initialName = () => {
-  isAbout = false
-}
-
 // 判断是否是 vditor
-const isVditorEditor = (name: string) => {
-  let isAccess = false
-  switch (name) {
-    case "关于":
-      isAccess = true
-      isAbout = true
-      break
-  }
-  if (!isAccess) return
+const isVditorEditorCallback = (name: string) => {
+  if (!isVditorEditor(name)) return
   isEditor.value = true
   dialogWidth.value = "80%"
 }
@@ -202,7 +192,7 @@ const init = (row: Setting) => {
   createData.name = _row.name
 
   // 判断是否是 vditor
-  isVditorEditor(_row.name)
+  isVditorEditorCallback(_row.name)
 
   // 初始化 content 和 类型
   // string
@@ -210,8 +200,9 @@ const init = (row: Setting) => {
     contentType.value = "string"
 
     // 判断是否是 vditor 编辑器
-    if (isEditor.value) context.value = _row.content
-    else createData.content = _row.content
+    if (isEditor.value) {
+      context.value = decompressStringNotError(_row.content) as string
+    } else createData.content = _row.content
   }
   // array
   if (Array.isArray(_row.content)) {
@@ -235,7 +226,6 @@ const handlerClose = () => {
   isEditor.value = false
   context.value = ""
   dialogWidth.value = initialDialogWidth
-  initialName()
 }
 
 // 夫组件的自定义事件
@@ -260,8 +250,8 @@ const handlerConfirm = async () => {
       updateData.content = updateData.arrayContent
     delete updateData.arrayContent
 
-    // 是否 是关于 的页面
-    if (isAbout) {
+    // 是否是 vditor
+    if (isEditor) {
       updateData.content = vditorInstance.value.getContext()
     }
 

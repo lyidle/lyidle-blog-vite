@@ -6,7 +6,7 @@
 // 引入 请求
 import { getOneArticle } from "@/api/article"
 // 解压缩
-import { decompressString } from "@/utils/compression"
+import { decompressStringNotError } from "@/utils/compression"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 处理错误的 请求函数
@@ -25,7 +25,8 @@ const reqArticle = async (): Promise<GetOneArticle["data"] | undefined> => {
       // 解压缩展示文章
       if (articles?.content)
         articles.content =
-          (decompressString(articles.content) as string) || articles.content
+          (decompressStringNotError(articles.content) as string) ||
+          articles.content
     } catch (error) {}
     return articles
   } catch (error) {

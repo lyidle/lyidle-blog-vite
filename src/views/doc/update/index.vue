@@ -89,7 +89,7 @@
 <script setup lang="ts" name="DocumentUpdate">
 import { uploadFiles } from "@/components/my/upload/index.vue"
 // 压缩 与 解压
-import { decompressString } from "@/utils/compression"
+import { decompressStringNotError } from "@/utils/compression"
 // 引入 api
 import { getArticleByAuthorAndId, updateArticle } from "@/api/article"
 // 引入 类型
@@ -146,11 +146,7 @@ const reqArticle = async () => {
     }
 
     // 内容尝试解压 失败就展示原内容
-    try {
-      context.value = decompressString(Article?.content || "") as string
-    } catch (error) {
-      context.value = Article?.content || ""
-    }
+    context.value = decompressStringNotError(Article?.content || "") as string
     isEditor.value = true
     // 挂载内容
   } catch (error) {

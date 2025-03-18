@@ -40,12 +40,20 @@
         />
         <my-table-column prop="content" label="内容" align="center">
           <template #="{ row }">
+            <!-- 是 vditor -->
+            <div v-if="isVditorEditor(row.name)">
+              <!-- 解压缩内容 -->
+              {{ decompressStringNotError(row.content) }}
+            </div>
             <!-- 不是数组 -->
-            <div v-if="!Array.isArray(row.content)" class="cur-text">
+            <div
+              v-if="!isVditorEditor(row.name) && !Array.isArray(row.content)"
+              class="cur-text"
+            >
               {{ row.content }}
             </div>
             <!-- 是数组 -->
-            <template v-else>
+            <template v-else-if="Array.isArray(row.content)">
               <el-tag
                 v-for="(arr, i) in row.content"
                 :key="arr"
@@ -148,9 +156,14 @@
 import { managerDeleteSetting } from "@/api/admin"
 // 引入 类型
 import type { Setting } from "@/api/admin/types/findAllSettingsPagination"
+// 判断是否 是 vditor
+import { isVditorEditor } from "@/components/manager/com/setting/editor"
+// tags 的类型 const
 import { tagsType } from "@/components/my/tags"
 // 引入 基础配置
 import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
+// 解压缩内容
+import { decompressStringNotError } from "@/utils/compression"
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置
