@@ -209,7 +209,7 @@ useVditorPreview(article, menuTree, docPreview, useSideMenuHighlight)
     }
 
     // 代码`code`
-    p code {
+    code {
       background-color: var(--doc-code-bg);
       color: var(--doc-code-color);
       font-size: 15px;

@@ -45,15 +45,16 @@
               <!-- 解压缩内容 -->
               {{ decompressStringNotError(row.content) }}
             </div>
-            <!-- 不是数组 -->
-            <div
-              v-if="!isVditorEditor(row.name) && !Array.isArray(row.content)"
-              class="cur-text"
-            >
+            <!-- 是字符串 -->
+            <div v-if="typeof row.content === 'string'" class="cur-text">
+              {{ row.content }}
+            </div>
+            <!-- 是对象字面量 -->
+            <div v-if="isPlainObject(row.content)" class="cur-text">
               {{ row.content }}
             </div>
             <!-- 是数组 -->
-            <template v-else-if="Array.isArray(row.content)">
+            <template v-if="Array.isArray(row.content)">
               <el-tag
                 v-for="(arr, i) in row.content"
                 :key="arr"
@@ -164,6 +165,9 @@ import { tagsType } from "@/components/my/tags"
 import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
 // 解压缩内容
 import { decompressStringNotError } from "@/utils/compression"
+// 判断是否 是一个 对象字面量
+import { isPlainObject } from "lodash-es"
+
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置

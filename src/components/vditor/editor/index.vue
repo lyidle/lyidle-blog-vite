@@ -337,7 +337,7 @@ useIsFullscreen(vditorEditor)
       color: var(--doc-link-color);
     }
     // 代码`code`
-    p code {
+    code {
       background-color: var(--doc-code-bg);
       color: var(--doc-code-color);
       font-size: 15px;

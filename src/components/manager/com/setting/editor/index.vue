@@ -52,6 +52,7 @@
             v-model="createData.content"
             type="textarea"
             class="mx-10px"
+            @blur="inputBlur"
             :autosize="{ minRows: 2, maxRows: 10 }"
           ></my-input>
 
@@ -110,6 +111,7 @@ import { isPlainObject } from "lodash-es"
 import { isVditorEditor } from "."
 // 解压缩 vditor的 内容
 import { decompressStringNotError } from "@/utils/compression"
+// 处理 content
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 
 // dialog相关
@@ -146,14 +148,28 @@ const contentValidator = (rule: any, value: any, callback: any) => {
     return callback(new Error("内容必须要有内容"))
 
   // 只验证 字面量的形式的 object
-  if (contentType.value !== "object") return callback()
+  if (contentType.value !== "object") return
   try {
-    isPlainObject(JSON.parse(value))
-    callback()
+    const content = JSON.parse(value)
+    // 不是对象
+    if (!isPlainObject(content)) {
+      callback(new Error('内容必须要是对象的字面量形式：{"key":"value"}'))
+      return
+    }
   } catch (error) {
     callback(new Error('内容必须要是对象的字面量形式：{"key":"value"}'))
   }
 }
+
+// 失焦时 格式化 json 文本
+const inputBlur = () => {
+  createData.content = JSON.stringify(
+    JSON.parse(createData.content as string),
+    null,
+    2
+  )
+}
+
 // 创建规则
 const createRules = reactive({
   name: [
@@ -213,7 +229,7 @@ const init = (row: Setting) => {
   // object
   if (isPlainObject(_row.content)) {
     contentType.value = "object"
-    createData.content = jsonRow
+    createData.content = JSON.stringify(_row.content, null, 2)
   }
 }
 
