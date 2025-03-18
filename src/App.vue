@@ -63,8 +63,8 @@ useGlobalEmitter()
 
     // 书写区域
     .vditor-reset {
-      color: inherit;
-      background-color: $preview-bg;
+      color: var(--primary-color) !important;
+      background-color: $preview-bg !important;
       cursor: var(--cursor-text);
       overflow-x: hidden;
     }
@@ -168,6 +168,8 @@ useGlobalEmitter()
       border-bottom: 0;
       text-align: center;
       position: relative !important;
+      border: unset !important;
+      padding-bottom: unset !important;
       // 分割线
       &::before {
         position: absolute;
@@ -198,7 +200,7 @@ useGlobalEmitter()
 
     h2 {
       border-left: $preview-h1-border-l;
-      border-bottom: $preview-h1-border-b;
+      border-bottom: $preview-h1-border-b !important;
       padding-left: $preview-h2-p-l;
     }
 
@@ -281,7 +283,7 @@ useGlobalEmitter()
       color: var(--doc-link-color);
     }
     // 代码`code`
-    code:not(.hljs) {
+    code:not([class^="language"]) {
       background-color: var(--doc-code-bg) !important;
       color: var(--doc-code-color) !important;
       font-size: 15px !important;
@@ -402,7 +404,9 @@ useGlobalEmitter()
         }
       }
     }
-
+    .vditor-wysiwyg div[data-type="link-ref-defs-block"] {
+      color: inherit;
+    }
     // 高亮
     .doc-highlight {
       background-color: var(--doc-highlight-bg);
