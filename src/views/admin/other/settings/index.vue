@@ -57,7 +57,7 @@
                 class="!m-0"
                 :style="{ width: isSmall ? '80px' : '50px' }"
                 type="warning"
-                @click="editor.init(row)"
+                @click="handerEditor(row)"
                 >编辑</my-button
               >
 
@@ -121,7 +121,11 @@
       />
 
       <manager-com-setting-create ref="create" @req="handlerReq" />
-      <manager-com-setting-editor ref="editor" @req="handlerReq" />
+      <manager-com-setting-editor
+        ref="editor"
+        @req="handlerReq"
+        v-if="editorDialogVisible"
+      />
     </my-card>
   </div>
 </template>
@@ -169,6 +173,12 @@ const handleSelectionChange = (role: Setting[]) => {
 // 子组件实例
 const create = ref()
 const editor = ref()
+const editorDialogVisible = ref(false)
+const handerEditor = (row: Setting) => {
+  editorDialogVisible.value = true
+  nextTick(() => editor.value.init(row))
+}
+
 // 请求的逻辑
 const handlerReq = async () => {
   // 只有一条数据时

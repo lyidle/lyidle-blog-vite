@@ -124,6 +124,7 @@ declare module 'vue' {
     MyEmpty: typeof import('./src/components/my/empty/index.vue')['default']
     MyInput: typeof import('./src/components/my/input/index.vue')['default']
     MyInputcopy: typeof import('./src/components/my/input copy/index.vue')['default']
+    MyInputKeyValue: typeof import('./src/components/my/input/key-value/index.vue')['default']
     MyMenu: typeof import('./src/components/my/menu/index.vue')['default']
     MyMenuAccordion: typeof import('./src/components/my/menu/accordion/index.vue')['default']
     MyMenuAccordionRecursive: typeof import('./src/components/my/menu/accordion/recursive/index.vue')['default']
