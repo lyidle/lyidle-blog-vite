@@ -26,44 +26,48 @@
           ></my-input>
         </el-form-item>
         <my-select
+          v-if="createData.name !== '关于'"
           v-model="contentType"
           :options="contentTypeOptions"
           class="w-70px float-right"
         ></my-select>
-        <el-form-item label="内容" prop="content">
-          <template v-if="createData.name !== '关于'">
-            <!-- 字符串 -->
-            <my-input
-              v-if="contentType === 'string'"
-              placeholder="请输入内容"
-              v-model="createData.content"
-              type="textarea"
-              class="mx-10px"
-              :autosize="{ minRows: 2, maxRows: 10 }"
-            ></my-input>
-            <!-- 对象字面量型 -->
-            <my-input
-              v-if="contentType === 'object'"
-              placeholder="请输入内容"
-              v-model="createData.content"
-              type="textarea"
-              class="mx-10px"
-              :autosize="{ minRows: 2, maxRows: 10 }"
-            ></my-input>
+        <el-form-item
+          label="内容"
+          prop="content"
+          v-if="createData.name !== '关于'"
+        >
+          <!-- 字符串 -->
+          <my-input
+            v-if="contentType === 'string'"
+            placeholder="请输入内容"
+            v-model="createData.content"
+            type="textarea"
+            class="mx-10px"
+            :autosize="{ minRows: 2, maxRows: 10 }"
+          ></my-input>
+          <!-- 对象字面量型 -->
+          <my-input
+            v-if="contentType === 'object'"
+            placeholder="请输入内容"
+            v-model="createData.content"
+            type="textarea"
+            class="mx-10px"
+            :autosize="{ minRows: 2, maxRows: 10 }"
+          ></my-input>
 
-            <!-- array 类型 -->
-            <my-tags
-              v-if="contentType === 'array'"
-              v-model="createData.arrayContent"
-              min="1"
-              max="5"
-              error="标签个数需要在1-5之间"
-              ref="tagsInstance"
-              class="mr-10px"
-              left="10px"
-            ></my-tags>
-          </template>
+          <!-- array 类型 -->
+          <my-tags
+            v-if="contentType === 'array'"
+            v-model="createData.arrayContent"
+            min="1"
+            max="5"
+            error="标签个数需要在1-5之间"
+            ref="tagsInstance"
+            class="mr-10px"
+            left="10px"
+          ></my-tags>
         </el-form-item>
+        <!-- 关于 界面 -->
         <div class="flex justify-end mt-20px">
           <my-button
             class="w-unset"
