@@ -13,6 +13,7 @@ type RefOptionsType = {
   context: Ref<string | undefined>
   length: Ref<number | undefined>
   title?: Ref<string | undefined>
+  isSaveBtn?: boolean
 }
 /**
  *
@@ -27,7 +28,7 @@ export const useVditorEditor = (
   RefOptions: RefOptionsType
 ) => {
   // 提取数据
-  const { docHeight, context, length, title } = RefOptions
+  const { docHeight, context, length, title, isSaveBtn } = RefOptions
   // vditor 实列
   let vditor: vditorType = ref(null)
   // 销毁配置项
@@ -76,17 +77,19 @@ export const useVditorEditor = (
         "fullscreen",
         "edit-mode",
         // 保存文档
-        {
-          name: "save",
-          tip: "保存文档",
-          tipPosition: "n",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 4a2 2 0 0 1 2-2h10l4 4v10.2a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-2Z"/><path d="M10 2v4h6m2 12v-7h-8v7"/><path d="M18 22H4a2 2 0 0 1-2-2V6"/></g></svg>',
-          click: () => {
-            const content = vditor.value?.getValue()
-            context.value = content as string
-            ElMessage.success("保存文档成功~")
-          },
-        },
+        isSaveBtn
+          ? {
+              name: "save",
+              tip: "保存文档",
+              tipPosition: "n",
+              icon: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 4a2 2 0 0 1 2-2h10l4 4v10.2a2 2 0 0 1-2 1.8H8a2 2 0 0 1-2-2Z"/><path d="M10 2v4h6m2 12v-7h-8v7"/><path d="M18 22H4a2 2 0 0 1-2-2V6"/></g></svg>',
+              click: () => {
+                const content = vditor.value?.getValue()
+                context.value = content as string
+                ElMessage.success("保存文档成功~")
+              },
+            }
+          : "|",
         // 重置文档
         {
           name: "save",

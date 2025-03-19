@@ -80,6 +80,7 @@
           v-model:context="context"
           v-model:length="length"
           v-model:title="title"
+          :isSaveBtn="false"
           :isAutoMount="false"
         ></vditor-editor>
       </my-card>

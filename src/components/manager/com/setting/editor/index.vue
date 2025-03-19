@@ -77,6 +77,7 @@
             v-if="isEditor"
             v-model:docHeight="docHeight"
             v-model:context="context"
+            :isSaveBtn="false"
             :isAutoMount="false"
             ref="vditorInstance"
           ></vditor-editor>

@@ -15,12 +15,16 @@ const docHeight = defineModel<string>("docHeight")
 const context = defineModel<string>("context")
 const length = defineModel<number>("length")
 const title = defineModel<string>("title")
+const props = withDefaults(defineProps<{ isSaveBtn: boolean }>(), {
+  isSaveBtn: true,
+})
 // 使用 hooks
 const vditor = useVditorEditor("vditor-editor", vditorEditor, {
   docHeight,
   context,
   length,
   title,
+  isSaveBtn: props.isSaveBtn,
 })
 
 // 得到 内容
