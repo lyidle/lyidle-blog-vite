@@ -7,10 +7,10 @@ import { mitt } from "@/utils/emitter"
 let headerHeight = 0
 
 export const useSideMenuHighlight = (
-  menuTree: Ref<TocNode[]>
+  menuTree: Ref<TocNode[] | undefined>
 ): (() => void) | undefined => {
   // 不存在目录树则不需要代理
-  if (!menuTree.value.length) return
+  if (!menuTree?.value?.length) return
 
   // 获取 所有 侧边栏的链接
   const sideMenuTree = document.querySelectorAll<HTMLAnchorElement>(

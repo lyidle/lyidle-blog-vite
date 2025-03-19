@@ -1,5 +1,8 @@
 <template>
-  <layout-article-review></layout-article-review>
+  <layout-article-review
+    v-model:title="title"
+    :isShowHeader="false"
+  ></layout-article-review>
 </template>
 
 <script setup lang="ts" name="About">
@@ -10,6 +13,7 @@ const reqArticle = async () => {
   let content = decompressStringNotError(result?.content as string)
   return { content }
 }
+const title = ref("关于")
 // 提供方法
 provide("reqArticle", reqArticle)
 </script>

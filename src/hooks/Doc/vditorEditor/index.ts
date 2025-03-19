@@ -6,7 +6,7 @@ import { imgToTempLink } from "./imgToTempLink"
 import { baseOptions } from "./baseOptions"
 // 引入类型
 import type { vditorType } from "./update"
-import { exportHtmlFile } from "./export/exportHtml"
+import { exportHtmlFile } from "../export/exportHtml"
 // 定义 配置项 Ref 存储 高度 内容 长度
 type RefOptionsType = {
   docHeight: Ref<string | undefined>

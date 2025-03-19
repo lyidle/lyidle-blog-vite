@@ -13,9 +13,11 @@ import { addCalloutsAndHighlightAndFillToSvg } from "@/utils/doc/addCalloutsAndH
 
 export const useVditorPreview = (
   article: Ref<GetOneArticle["data"]>,
-  menuTree: Ref<TocNode[]>,
+  menuTree: Ref<TocNode[] | undefined>,
   docPreview: Ref<HTMLDivElement | undefined>,
-  observerHeading: (menuTree: Ref<TocNode[]>) => (() => void) | undefined
+  observerHeading: (
+    menuTree: Ref<TocNode[] | undefined>
+  ) => (() => void) | undefined
 ) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
@@ -64,7 +66,7 @@ export const useVditorPreview = (
     // 把生成的目录 通知给 Content 来判断是否要显示目录 和 侧边栏
     mitt.emit("articleMenu", toc)
   }
-
+  const resultHtml = ref("")
   let destroyHighlight: undefined | (() => void)
   // 渲染的回调函数
   const preview = () => {
@@ -87,10 +89,12 @@ export const useVditorPreview = (
         let result = addCalloutsAndHighlightAndFillToSvg(html)
         // 生成目录树
         addTree(result)
+        resultHtml.value = result
         return result
       },
       after: () => {
         // 处理高亮逻辑
+        if (!menuTree.value) return
         destroyHighlight = observerHeading(menuTree)
       },
     })
@@ -114,7 +118,6 @@ export const useVditorPreview = (
     // 取消监听
     stopWatch()
   }
-
   // 卸载
   onBeforeUnmount(() => {
     // 取消订阅 暗夜切换 事件
@@ -123,4 +126,6 @@ export const useVditorPreview = (
     mitt.emit("articleMenu:destroy", preview)
     destroyHighlight && destroyHighlight()
   })
+
+  return resultHtml
 }

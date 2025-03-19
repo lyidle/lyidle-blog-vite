@@ -1,10 +1,16 @@
 <template>
-  <div class="my-vditor-container">
+  <div class="my-vditor-container relative">
     <div
       id="vditor-preview"
       ref="docPreview"
       class="cur-text vditor-style"
     ></div>
+    <my-button
+      class="absolute top-10px right-10px w-initial"
+      size="small"
+      @click="exportHtml"
+      >导出HTML文件</my-button
+    >
   </div>
 </template>
 
@@ -16,13 +22,27 @@ import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import { TocNode } from "@/hooks/Doc/vditorPreview/types"
+import { exportHtmlFile } from "@/hooks/Doc/export/exportHtml"
 // markdown 渲染的容器
 const docPreview = ref<HTMLDivElement | undefined>()
 const article = defineModel<GetOneArticle["data"]>("article")
-const menuTree = defineModel<Ref<TocNode[]>>("menuTree")
+const menuTree = defineModel<TocNode[]>("menuTree")
+const title = defineModel<string>("title")
 // 调用 渲染文章
-// @ts-ignore
-useVditorPreview(article, menuTree, docPreview, useSideMenuHighlight)
+const html = useVditorPreview(
+  article,
+  menuTree,
+  docPreview,
+  useSideMenuHighlight
+)
+const exportHtml = () => {
+  const h1Name = document.querySelector(
+    "#vditor-preview h1"
+  ) as HTMLAnchorElement
+
+  const fileName = title.value || h1Name?.innerText || "LyidleのBlog"
+  exportHtmlFile(html.value, fileName)
+}
 </script>
 
 <style scoped lang="scss">

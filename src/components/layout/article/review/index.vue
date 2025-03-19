@@ -126,6 +126,7 @@
             <vditor-preview
               v-model:article="article"
               v-model:menuTree="menuTree"
+              v-model:title="title"
             ></vditor-preview>
           </my-card>
         </div>
@@ -149,11 +150,14 @@ const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
+const title = defineModel<string>("title")
 
 // 注入父组件提供的方法
 const reqArticle =
   inject<() => Promise<GetOneArticle["data"] | undefined>>("reqArticle")
-defineProps<{ isShowHeader?: boolean }>()
+withDefaults(defineProps<{ isShowHeader?: boolean }>(), {
+  isShowHeader: true,
+})
 // 初始化
 onBeforeMount(async () => {
   if (!reqArticle) return

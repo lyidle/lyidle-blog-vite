@@ -1,5 +1,5 @@
 <template>
-  <layout-article-review :isShowHeader="true"></layout-article-review>
+  <layout-article-review v-model:title="title"></layout-article-review>
 </template>
 
 <script setup lang="ts" name="Document">
@@ -14,7 +14,7 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
-
+const title = ref("")
 // 根据路由的params判断
 const route = useRoute()
 const reqArticle = async (): Promise<GetOneArticle["data"] | undefined> => {
