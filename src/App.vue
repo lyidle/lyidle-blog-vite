@@ -25,6 +25,14 @@ useGlobalEmitter()
 <!-- 文章 的css 代码 -->
 <style lang="scss">
 .my-vditor-container {
+  * {
+    font-family: $global-font !important;
+  }
+
+  li::before {
+    font-family: initial !important;
+  }
+
   // markdown 预览
   .vditor-style {
     $preview-pd: 0;
