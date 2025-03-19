@@ -1,6 +1,7 @@
 // 引入api
 import { getBannerImg, getMenuList } from "@/api/admin"
 import { getUserInfo, reqLogout } from "@/api/user"
+import { reqAddTourist, reqDelTourist } from "@/api/webInfo"
 // 引入类型
 import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import type { RouteRecordRaw } from "vue-router"
@@ -14,6 +15,9 @@ import { mitt } from "@/utils/emitter"
 
 // 引入 常量 路由
 import { constantRoute, anyRoute } from "@/router/routes"
+import { getPersistedData } from "@/utils/crypto/crypto-aes"
+
+const SECRET_KEY = import.meta.env.VITE_INITIAL_HASH
 
 type bannerImgType = { [key in string]: GetBannerImg["data"][0] }
 // 处理 常量路由 和异步路由
@@ -115,6 +119,9 @@ export const useUserStore = defineStore(
     const userTags = ref<number>(0)
     const userCategories = ref<number>(0)
 
+    // 游客token
+    const touristToken = ref<string>("")
+
     // 获取 用户信息 使用 token 获取
     const reqUserInfo = async () => {
       // 重置用户信息
@@ -138,12 +145,28 @@ export const useUserStore = defineStore(
           userPages.value = user?.counts.pages
           userTags.value = user?.counts.tags
           userCategories.value = user?.counts.categories
+          // 删除 游客信息
+          if (touristToken.value) {
+            await reqDelTourist(touristToken.value)
+            touristToken.value = ""
+            // 重新 获取小站咨询
+            mitt.emit("reloadWebInfo")
+          }
+          // 重新 获取 个人空间的 信息
           mitt.emit("reloadUserInfo")
           return
         }
       } catch (error) {
         ElMessage.error("获取用户信息失败")
       }
+    }
+
+    // 增加游客数量
+    const addTourist = async () => {
+      // 有 访客标识了 退出
+      if (getPersistedData("User", "touristToken")) return
+      const result = await reqAddTourist()
+      if (result) touristToken.value = result
     }
 
     // 通过 设置 token 重新获取 数据
@@ -240,6 +263,8 @@ export const useUserStore = defineStore(
       userInfoByToken,
       resetUserInfo,
       resetMenuList,
+      addTourist,
+      touristToken,
     }
   },
   {
@@ -256,6 +281,7 @@ export const useUserStore = defineStore(
         "userSigner",
         "userRoles",
         "userToken",
+        "touristToken",
       ],
     },
   }

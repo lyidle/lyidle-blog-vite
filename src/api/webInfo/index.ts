@@ -11,6 +11,7 @@ enum API {
   announce = "/admin/announce",
   poetry = "/admin/poetry",
   webInfo = "/webinfo",
+  tourist = "/visitor",
 }
 
 // 引入前缀
@@ -21,3 +22,9 @@ const server = import.meta.env.VITE_SERVE
 // 获取小站资讯
 export const getWebInfo = () =>
   request.get<any, GetWebInfo["data"]>(server + prefix + API.webInfo)
+// 增加访客
+export const reqAddTourist = () =>
+  request.get<any, string>(server + prefix + API.tourist)
+// 删除访客
+export const reqDelTourist = (name: string) =>
+  request.delete<any, string>(server + prefix + API.tourist, { data: { name } })

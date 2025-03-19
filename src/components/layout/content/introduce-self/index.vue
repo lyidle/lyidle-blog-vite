@@ -34,9 +34,10 @@
         <div class="side-counts-container">
           <layout-link-pages></layout-link-pages>
         </div>
-        <router-link
+        <a
+          href="https://github.com/lyidle/lyidle-blog-vite"
           class="block w-100% h-100%"
-          :to="`/user/space/${adminAccount}`"
+          target="_blank"
         >
           <my-button type="primary" class="userinfo-btn">
             <div class="tip">前往小窝</div>
@@ -44,7 +45,7 @@
               <icon-car></icon-car>
             </div>
           </my-button>
-        </router-link>
+        </a>
         <div class="links">
           <a
             class="color-[var(--aside-userinfo-wechat-color)]"

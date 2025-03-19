@@ -44,6 +44,7 @@ import { getWebInfo } from "@/api/webInfo"
 import numberTransform from "@/utils/numberTransform"
 // 引入 moment
 import moment from "@/utils/moment"
+import { mitt } from "@/utils/emitter"
 
 // 显示的数据
 const webTotalPages = ref<string>()
@@ -90,10 +91,15 @@ const reqWebInfo = async () => {
   if (totalWords) webTotalWords.value = numberTransform(totalWords)
 }
 
+mitt.on("reloadWebInfo", reqWebInfo)
+
 // 组件初始化 加载数据
 onMounted(async () => {
   await reqWebInfo()
   if (!isDataShow.value) ElMessage.warning("小站咨询加载失败~")
+})
+onBeforeUnmount(() => {
+  mitt.off("reloadWebInfo", reqWebInfo)
 })
 </script>
 
