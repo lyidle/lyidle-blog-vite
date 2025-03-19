@@ -27,7 +27,6 @@ useGlobalEmitter()
 .my-vditor-container {
   // markdown 预览
   .vditor-style {
-    overflow: hidden;
     $preview-pd: 0;
     $doc-primary-color: var(--doc-content-color);
     $color: #{$doc-primary-color};
@@ -73,8 +72,45 @@ useGlobalEmitter()
     .vditor-toolbar {
       border: unset;
       border-radius: $preview-radius $preview-radius 0 0;
-      .vditor-toolbar__item input {
-        cursor: var(--cursor-pointer) !important;
+      .vditor-toolbar__item {
+        input {
+          cursor: var(--cursor-pointer) !important;
+        }
+        .vditor-tooltipped {
+          $bg: #8dbcdc;
+          // 下箭头
+          &.vditor-tooltipped__ne,
+          &.vditor-tooltipped__n,
+          &.vditor-tooltipped__nw {
+            &::before {
+              border-top-color: $bg;
+            }
+          }
+          // 上箭头
+          &.vditor-tooltipped__s,
+          &.vditor-tooltipped__se,
+          &.vditor-tooltipped__sw {
+            &::before {
+              border-bottom-color: $bg;
+            }
+          }
+          // 左箭头
+          &.vditor-tooltipped__w {
+            &::before {
+              border-left-color: $bg;
+            }
+          }
+          // 右箭头
+          &.vditor-tooltipped__e {
+            &::before {
+              border-right-color: $bg;
+            }
+          }
+          &:after {
+            color: white;
+            background-color: $bg;
+          }
+        }
       }
       background-color: $toolbar-bg;
       // 图标

@@ -6,11 +6,13 @@ import { imgToTempLink } from "./imgToTempLink"
 import { baseOptions } from "./baseOptions"
 // 引入类型
 import type { vditorType } from "./update"
+import { exportHtmlFile } from "./export/exportHtml"
 // 定义 配置项 Ref 存储 高度 内容 长度
 type RefOptionsType = {
   docHeight: Ref<string | undefined>
   context: Ref<string | undefined>
   length: Ref<number | undefined>
+  title?: Ref<string | undefined>
 }
 /**
  *
@@ -25,7 +27,7 @@ export const useVditorEditor = (
   RefOptions: RefOptionsType
 ) => {
   // 提取数据
-  const { docHeight, context, length } = RefOptions
+  const { docHeight, context, length, title } = RefOptions
   // vditor 实列
   let vditor: vditorType = ref(null)
   // 销毁配置项
@@ -101,9 +103,22 @@ export const useVditorEditor = (
         // more
         {
           name: "more",
+          tip: "更多",
+          tipPosition: "n",
           toolbar: [
+            "export",
             {
-              name: "export",
+              name: "export-html",
+              icon: "导出Html",
+              click: () => {
+                const html = vditor.value?.getHTML()
+                if (!html) return
+                const h1 = document.querySelector(
+                  ".vditor-reset h1"
+                ) as HTMLAnchorElement
+                const Title = title?.value || h1?.innerText || "LyidleのBlog"
+                exportHtmlFile(html, Title)
+              },
             },
             "outline",
             "help",

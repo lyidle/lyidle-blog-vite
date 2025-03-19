@@ -79,6 +79,7 @@
           v-model:docHeight="docHeight"
           v-model:context="context"
           v-model:length="length"
+          v-model:title="title"
           :isAutoMount="false"
         ></vditor-editor>
       </my-card>
@@ -164,17 +165,18 @@ const reqArticle = async () => {
 const docHeight = ref("85vh")
 const length = ref()
 const context = ref<string>("")
+const title = ref<string>("")
 // vditor 实例
 const vditorInstance = ref()
 
 // #region 表单 验证
 const docsFormData = reactive<{
-  title: string
+  title: Ref<string>
   category: string
   desc: string
   tags: string[]
 }>({
-  title: "",
+  title,
   category: "",
   desc: "",
   tags: [],

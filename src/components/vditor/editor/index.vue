@@ -14,11 +14,13 @@ const vditorEditor = ref()
 const docHeight = defineModel<string>("docHeight")
 const context = defineModel<string>("context")
 const length = defineModel<number>("length")
+const title = defineModel<string>("title")
 // 使用 hooks
 const vditor = useVditorEditor("vditor-editor", vditorEditor, {
   docHeight,
   context,
   length,
+  title,
 })
 
 // 得到 内容
@@ -47,6 +49,13 @@ useIsFullscreen(vditorEditor)
         &:before {
           content: "";
         }
+      }
+    }
+    h1 {
+      &::before {
+        left: 53%;
+        transform: translateX(-50%);
+        position: absolute;
       }
     }
 

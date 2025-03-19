@@ -79,6 +79,7 @@
           v-model:docHeight="docHeight"
           v-model:context="context"
           v-model:length="length"
+          v-model:title="title"
         ></vditor-editor>
       </my-card>
     </template>
