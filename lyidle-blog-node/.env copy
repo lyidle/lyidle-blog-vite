@@ -1,4 +1,4 @@
-# 用于控制是否是生产模式 验证码 apifox 发送邮箱的验证码方便提取 访客信息模拟 设置信息的模拟 redis 的连接有无密码
+# 用于控制是否是生产模式 验证码 apifox 发送邮箱的验证码方便提取 公告栏的访客信息模拟 设置信息的模拟
 is_production=false
 # api  的前缀
 api_prefix='/api'
@@ -23,10 +23,11 @@ seeder_permission_group='["owner","admin","user"]'
 seeder_permissions='["user:read","user:write","menu:read","menu:write","doc:publish"]'
 # 最终生成的 是 权限组 owner 和 admin 拥有 所有的 权限 user的 权限组 只拥有read 字段的权限
 # 生成的角色 对应的拥有 权限组
-# 用户的 种子文件是 第一个是 owner 第二个是 admin 其余是 user 的角色
+# 用户的 种子文件是 第一个是 owner、admin 第二个是 admin 其余是 user 的角色
+# owner 和 admin 的Role与Group api 不可修改名字和删除
 
 # 生成jwt 的 hash
-jwt_hash=9&fQkK$a^o!rNq*8ra&F2ot!S@b@3ekw72q
+jwt_hash=
 # 邮箱服务
 email_send=false
 email_host=smtp.office365.com
@@ -39,20 +40,22 @@ email_pwd=
 email_reg_stage=Lyのblog
 # redis 
 redis_prefix=vite-blog # redis 的保存键的 前缀
-redis_pwd=redis_bXwWeD
-redis_host=154.9.253.229
+# 密码
+redis_pwd='' 
+# 账号
+redis_host=127.0.0.1 
 # 使用 ms 库进行转换成对应的毫秒
 # 时间的单位 h、m、s、y、d对应时、分、秒、年、日
 # 验证码有效期
 code_expire=1m #按照秒
 # 软删除文章的时间
-delete_article_expire=5s
+delete_article_expire=1d
 # 软删除用户的时间
-delete_user_expire=10s
+delete_user_expire=1d
 # 软删除菜单的时间
-delete_menu=10s
+delete_menu=1d
 # token过期时间
-token_expire=5h
+token_expire=1d
 # 实时性不强的数据 的缓存时间 如短诗 第三方接口
 default_expire=1d
 # 压缩
