@@ -229,6 +229,7 @@ export const useUserStore = defineStore(
         resetStore()
         // 额外 重置 token
         userToken.value = ""
+        await addTourist()
         ElMessage.success("退出登录成功~")
         // 重新加载路由
         mitt.emit("route:reload")

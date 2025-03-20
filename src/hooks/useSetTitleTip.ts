@@ -1,5 +1,6 @@
 // 引入 hooks
 import { useEventListener } from "@/hooks/useEventListener"
+import { mitt } from "@/utils/emitter"
 // 离开窗口和回来的提示标题
 export const useSetTitleTip = () => {
   // 设置标题离开和回来的提示语
@@ -13,6 +14,7 @@ export const useSetTitleTip = () => {
   let leaveTimer: any
   // 窗口获取焦点的回调
   const enterCallback = () => {
+    mitt.emit("windowFocus", { focus: true })
     // 非空判断
     if (!temp) return
     // 回来时都要清除离开的定时器避免错乱
@@ -28,6 +30,7 @@ export const useSetTitleTip = () => {
   }
   // 窗口失去焦点的回调
   const leaveCallback = () => {
+    mitt.emit("windowBlur", { blur: true })
     // 非空判断
     if (!document.title) return
     // 离开时记录

@@ -63,7 +63,10 @@ router.get("/:id", async (req, res, next) => {
     }
 
     // 返回浏览量
-    return res.result(article?.dataValues?.count?.count, "查询文章浏览量成功")
+    return res.result(
+      article?.dataValues?.count?.count || 0,
+      "查询文章浏览量成功"
+    )
   } catch (error) {
     return res.result(void 0, "查询文章浏览量失败", false)
   }

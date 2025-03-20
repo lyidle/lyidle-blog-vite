@@ -23,15 +23,15 @@ router.get("/", async (req, res, next) => {
     const token = jwt.sign(id, process.env.jwt_hash, {
       algorithm: "HS256",
     })
-    const result = await Visitor.findOrCreate({
+    const [visitor, created] = await Visitor.findOrCreate({
       where: { name: token },
-      defaults: token,
+      defaults: { name: token },
     })
 
     // 是创建的 则 增加 访客数量
-    if (result.isNewRecord) {
+    if (created) {
       // 获取到访客数量
-      let touristCounts = +(await getKey("touristCounts"))
+      let touristCounts = await getKey("touristCounts")
       // 访客数量 + 1
       await setKey("touristCounts", touristCounts + 1)
     }

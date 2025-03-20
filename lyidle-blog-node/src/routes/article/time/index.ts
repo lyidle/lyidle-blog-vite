@@ -18,13 +18,13 @@ router.post("/", async (req, res, next) => {
     if (!article) return res.result(void 0, "文章未找到", false)
 
     // 查找或创建 ArticleTime
-    const [articleTime] = await ArticleTime.findOrCreate({
+    const [articleTime, created] = await ArticleTime.findOrCreate({
       where: { articleId },
       defaults: { time },
     })
 
     // 如果已存在，则更新时间
-    if (!articleTime.isNewRecord) {
+    if (!created) {
       articleTime.time = time
       await articleTime.save()
     }
@@ -52,7 +52,7 @@ router.get("/:id", async (req, res, next) => {
     }
 
     // 返回时间
-    return res.result(article?.dataValues?.time?.time, "查询文章时间成功")
+    return res.result(article?.dataValues?.time?.time || 0, "查询文章时间成功")
   } catch (error) {
     return res.result(void 0, "查询文章时间失败", false)
   }

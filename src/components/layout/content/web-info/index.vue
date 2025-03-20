@@ -41,7 +41,7 @@
 // 引入api
 import { getWebInfo } from "@/api/webInfo"
 // 引入计数 转换函数
-import numberTransform from "@/utils/numberTransform"
+import { numberTransform } from "@/utils/Math"
 // 引入 moment
 import moment from "@/utils/moment"
 import { mitt } from "@/utils/emitter"
@@ -81,14 +81,15 @@ const reqWebInfo = async () => {
   } = await getWebInfo()
 
   // 整理参数
-  if (totalPages) webTotalPages.value = numberTransform(totalPages)
-  if (userCounts) webUserCounts.value = numberTransform(userCounts)
-  if (tourists) touristCounts.value = numberTransform(tourists)
-  if (totalPersonCounts)
-    webTotalPersonCounts.value = numberTransform(totalPersonCounts)
+  webTotalPages.value = numberTransform(totalPages)
+  webUserCounts.value = numberTransform(userCounts)
+  touristCounts.value = numberTransform(tourists)
+  webTotalPersonCounts.value = numberTransform(totalPersonCounts)
   if (createdAt) webCreatedAt.value = moment(createdAt)
+  else webCreatedAt.value = undefined
   if (updatedAt) webUpdatedAt.value = moment(updatedAt)
-  if (totalWords) webTotalWords.value = numberTransform(totalWords)
+  else webUpdatedAt.value = undefined
+  webTotalWords.value = numberTransform(totalWords)
 }
 
 mitt.on("reloadWebInfo", reqWebInfo)

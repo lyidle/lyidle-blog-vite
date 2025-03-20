@@ -44,6 +44,10 @@ enum API {
   getTags = "/article/getCategories/one",
   // 获取 所有categories
   getCategoriesAll = "/article/getCategories/all",
+  // 文章阅读时间
+  getTime = "/article/time",
+  // 文章浏览量
+  getLook = "/article/look",
 }
 
 // API 的 key 的类型
@@ -159,3 +163,17 @@ export const getCategoryToTags = (name: string) =>
   request.get<any, string[]>(
     server + prefix + API.getTags + `/?category=${name}`
   )
+
+// 获取 浏览量
+export const getArticleLook = (id: number | string) =>
+  request.get<any, number>(server + prefix + API.getLook + `/${id}`)
+// 更新 浏览量
+export const putArticleLook = (data: { articleId: number }) =>
+  request.post<any, number>(server + prefix + API.getLook, data)
+
+// 获取 时间
+export const getArticleTime = (id: number | string) =>
+  request.get<any, string>(server + prefix + API.getTime + `/${id}`)
+// 更新 时间
+export const putArticleTime = (data: { articleId: number; time: string }) =>
+  request.post<any, number>(server + prefix + API.getTime, data)

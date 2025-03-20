@@ -98,16 +98,18 @@
                         ><i class="i-mingcute:refresh-3-line"></i
                         >阅读时长:</span
                       >
-                      <span class="content cur-text">1分钟</span>
+                      <span class="content cur-text">
+                        <article-times :article="article"></article-times>
+                      </span>
                     </div>
                     <span class="item-hr">|</span>
                     <div class="item-data">
                       <span class="label cur-text"
                         ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
                       >
-                      <span class="content cur-text"
-                        >{{ numberTransform(23208) }}次</span
-                      >
+                      <span class="content cur-text">
+                        <article-counts :article="article"></article-counts>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -141,10 +143,14 @@ import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
 // 引入 moment
 import moment from "@/utils/moment"
-// 引入 自定义工具 大数字转中文
-import numberTransform from "@/utils/numberTransform"
+// 引入计数 转换函数
+import { numberTransform } from "@/utils/Math"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
+// 引入 子组件
+import ArticleCounts from "./counts/index.vue"
+import ArticleTimes from "./times/index.vue"
+
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 
