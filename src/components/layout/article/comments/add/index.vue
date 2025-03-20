@@ -1,5 +1,5 @@
 <template>
-  <div class="add-comments">
+  <div class="add-comments pb-20px">
     <div class="overflow-hidden mt-20px flex gap-10px">
       <!-- 头像 -->
       <global-avatar
