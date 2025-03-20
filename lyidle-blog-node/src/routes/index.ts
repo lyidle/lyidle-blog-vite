@@ -11,8 +11,10 @@ import webInfo from "@/routes/webInfo"
 import visitor from "@/routes/visitor"
 // 引入 api/upload
 import upload from "./upload"
+// 引入 api/comments
+import comments from "./comments"
 // 引入权限判断
-import { jwtMiddleware, isAdmin, isTourist } from "@/middleware/auth"
+import { jwtMiddleware, isTourist } from "@/middleware/auth"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
@@ -24,5 +26,6 @@ router.use("/user", isTourist, user)
 router.use("/visitor", visitor)
 router.use("/article", isTourist, article)
 router.use("/webInfo", isTourist, webInfo)
-router.use("/upload", isTourist, jwtMiddleware, upload)
+router.use("/upload", [jwtMiddleware, isTourist], upload)
+router.use("/comments", isTourist, comments)
 module.exports = router

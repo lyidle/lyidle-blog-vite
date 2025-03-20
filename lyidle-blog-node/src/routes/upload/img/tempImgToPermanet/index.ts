@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
-import { isAdmin, jwtMiddleware } from "@/middleware/auth"
+import { isAdmin } from "@/middleware/auth"
 // 引入 把临时图片转为永久图片的 函数
 import { tempImgLinkToPermantLink } from "@/utils/io/compress/tempImgLinkToPermantLink"
 import { join, resolve } from "path"
@@ -81,18 +81,14 @@ const handlerTransform = async (
   }
 }
 
-router.post(
-  "/",
-  [jwtMiddleware],
-  async (req: Request, res: Response, next: NextFunction) => {
-    await handlerTransform(req, res, next)
-  }
-)
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  await handlerTransform(req, res, next)
+})
 
 // 需要 admin 权限 只需要传入 path 和 tempImg
 router.post(
   "/manager",
-  [jwtMiddleware, isAdmin],
+  [isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     await handlerTransform(req, res, next, false)
   }

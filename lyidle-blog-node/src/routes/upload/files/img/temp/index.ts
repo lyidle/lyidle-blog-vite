@@ -4,9 +4,6 @@ import express, { Request, Response, NextFunction } from "express"
 import { v4 as uuidV4 } from "uuid"
 import { extname, join } from "path"
 
-// 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
-
 const multer = require("multer")
 const router = express.Router()
 
@@ -52,7 +49,6 @@ const multerPath = async (req: Request, res: Response, next: NextFunction) => {
 router.post(
   "/",
   multerPath,
-  [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     const { account } = req.auth
     try {

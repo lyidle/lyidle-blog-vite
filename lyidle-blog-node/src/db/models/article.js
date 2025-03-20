@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "articleId",
         as: "count",
       })
+      // 一篇 文章 有多个 评论
+      this.hasMany(models.Comment, { foreignKey: "articleId", as: "comments" })
     }
   }
   Article.init(

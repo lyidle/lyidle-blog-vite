@@ -1,8 +1,5 @@
 import request from "@/utils/request"
 // 引入类型
-/* 
-  set的最后是携带的参数类型
-*/
 import { PostTempImg } from "./types/postTempImg"
 import { PostTempImgFiles } from "./types/postTempImgFiles"
 import { PostImgPermanentBody } from "./types/postImgPermanentBody"

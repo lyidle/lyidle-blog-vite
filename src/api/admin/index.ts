@@ -1,8 +1,5 @@
 import request from "@/utils/request"
 // 引入类型
-/* 
-  set的最后是携带的参数类型
-*/
 import type { GetMenuList } from "@/api/admin/types/getMenuList"
 import type { GetAnnounce } from "@/api/admin/types/getAnnounce"
 import type { GetPoetry } from "@/api/admin/types/getPoetry"

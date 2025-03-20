@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
 
       // 关联角色 通过 UserRole 关联 Role
       this.belongsToMany(models.Role, { through: "UserRoles" })
+
+      // User 和 Comment 之间的一对多关系
+      this.hasMany(models.Comment, { foreignKey: "userId", as: "comments" })
     }
   }
 

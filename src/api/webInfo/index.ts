@@ -1,8 +1,5 @@
 import request from "@/utils/request"
 // 引入类型
-/* 
-  set的最后是携带的参数类型
-*/
 import { GetWebInfo } from "@/api/webInfo/types/getWebInfo"
 
 // 统一管理 api
