@@ -34,7 +34,9 @@ router.get("/:articleId", async (req, res, next) => {
     })
     res.result(comments, "查询评论成功")
   } catch (error) {
-    res.result(void 0, "查询评论失败")
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询评论失败", false)
+    )
   }
 })
 export default router

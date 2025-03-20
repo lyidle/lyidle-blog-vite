@@ -36,9 +36,11 @@ router.get("/", async (req, res, next) => {
       await setKey("touristCounts", touristCounts + 1)
     }
 
-    return res.result(token, "访客登记成功~")
-  } catch (err: any) {
-    return res.result(void 0, "访客登记失败~")
+    return res.result(token, "访客登记成功")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "访客登记失败", false)
+    )
   }
 })
 router.delete(
@@ -50,7 +52,7 @@ router.delete(
       const result = await Visitor.findOne({ where: { name } })
 
       // 有值 去掉对应的标识
-      if (!result) return res.result(void 0, "访客注销失败~")
+      if (!result) return res.result(void 0, "访客注销失败")
       await result.destroy()
 
       // 获取到访客数量
@@ -60,9 +62,11 @@ router.delete(
       // 访客数量 + 1
 
       await setKey("touristCounts", touristCounts || 0)
-      return res.result(void 0, "访客注销成功~")
-    } catch (err: any) {
-      return res.result(void 0, "访客注销失败~")
+      return res.result(void 0, "访客注销成功")
+    } catch (error) {
+      res.validateAuth(error, next, () =>
+        res.result(void 0, "访客注销失败", false)
+      )
     }
   }
 )

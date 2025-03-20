@@ -1,14 +1,11 @@
 <template>
   <div class="my-vditor-container relative">
-    <div
-      id="vditor-preview"
-      ref="docPreview"
-      class="cur-text vditor-style"
-    ></div>
+    <div ref="docPreview" class="cur-text vditor-style"></div>
     <my-button
       class="absolute top-10px right-10px w-initial"
       size="small"
       @click="exportHtml"
+      v-if="isExportHtml"
       >导出HTML文件</my-button
     >
   </div>
@@ -28,13 +25,24 @@ const docPreview = ref<HTMLDivElement | undefined>()
 const article = defineModel<GetOneArticle["data"]>("article")
 const menuTree = defineModel<TocNode[]>("menuTree")
 const title = defineModel<string>("title")
+
+const props = withDefaults(
+  defineProps<{ isExportHtml?: boolean; autoPreview?: boolean }>(),
+  {
+    isExportHtml: true,
+  }
+)
+
 // 调用 渲染文章
 const html = useVditorPreview(
   article,
   menuTree,
   docPreview,
-  useSideMenuHighlight
+  useSideMenuHighlight,
+  props.autoPreview
 )
+
+// 导出 为 html
 const exportHtml = () => {
   const h1Name = document.querySelector(
     "#vditor-preview h1"
@@ -51,6 +59,7 @@ const exportHtml = () => {
   ::v-deep(.vditor-style) {
     overflow: hidden;
     padding: 40px;
+    box-shadow: none;
   }
 }
 </style>

@@ -10,7 +10,7 @@
       <div
         :style="{
           background: 'no-repeat center',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundImage: showAvatar,
         }"
         alt=""

@@ -17,7 +17,8 @@ export const useVditorPreview = (
   docPreview: Ref<HTMLDivElement | undefined>,
   observerHeading: (
     menuTree: Ref<TocNode[] | undefined>
-  ) => (() => void) | undefined
+  ) => (() => void) | undefined,
+  autoPreview: boolean
 ) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
@@ -99,11 +100,14 @@ export const useVditorPreview = (
       },
     })
   }
+
+  // 是否初始化了
   let isInitialized = false
   const stopWatch = watchEffect(() => {
     if (article.value?.content && docPreview.value) {
       preview()
       mitt.on("isDark", preview)
+      if (autoPreview) return
       try {
         // 取消监听
         stopWatch()
@@ -114,7 +118,7 @@ export const useVditorPreview = (
     }
   })
   // 在外部逻辑中调用 close
-  if (isInitialized) {
+  if (isInitialized && !autoPreview) {
     // 取消监听
     stopWatch()
   }

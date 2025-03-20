@@ -1,5 +1,5 @@
 <template>
-  <div class="my-vditor-container">
+  <div class="my-vditor-container w-100%">
     <div id="vditor-editor" class="vditor-style" ref="vditorEditor"></div>
   </div>
 </template>
@@ -11,13 +11,21 @@ import { useVditorEditor } from "@/hooks/Doc/vditorEditor"
 import { useIsFullscreen } from "@/hooks/Doc/vditorEditor/isFullScreen"
 // vditor 容器
 const vditorEditor = ref()
-const docHeight = defineModel<string>("docHeight")
+const docHeight = defineModel<string | number>("docHeight")
 const context = defineModel<string>("context")
 const length = defineModel<number>("length")
 const title = defineModel<string>("title")
-const props = withDefaults(defineProps<{ isSaveBtn?: boolean }>(), {
-  isSaveBtn: true,
-})
+const props = withDefaults(
+  defineProps<{
+    isSaveBtn?: boolean
+    toolbarHide?: boolean
+    resizeHide?: boolean
+  }>(),
+  {
+    isSaveBtn: true,
+    resizeHide: true,
+  }
+)
 // 使用 hooks
 const vditor = useVditorEditor("vditor-editor", vditorEditor, {
   docHeight,
@@ -25,6 +33,8 @@ const vditor = useVditorEditor("vditor-editor", vditorEditor, {
   length,
   title,
   isSaveBtn: props.isSaveBtn,
+  toolbarHide: props.toolbarHide,
+  resizeHide: props.resizeHide,
 })
 
 // 得到 内容
@@ -45,6 +55,9 @@ useIsFullscreen(vditorEditor)
   $preview-h1-h6-tip-size: var(--editor-h1-h6-tip-size);
   // markdown 预览
   ::v-deep(.vditor-style) {
+    .vditor-toolbar--hide {
+      display: none;
+    }
     $h2-ml: 0.625rem;
     // 恢复 编号的样式
     @for $i from 1 through 6 {

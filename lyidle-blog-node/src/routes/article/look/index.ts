@@ -68,7 +68,9 @@ router.get("/:id", async (req, res, next) => {
       "查询文章浏览量成功"
     )
   } catch (error) {
-    return res.result(void 0, "查询文章浏览量失败", false)
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询文章浏览量失败", false)
+    )
   }
 })
 

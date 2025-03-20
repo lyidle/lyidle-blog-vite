@@ -54,7 +54,9 @@ router.get("/:id", async (req, res, next) => {
     // 返回时间
     return res.result(article?.dataValues?.time?.time || 0, "查询文章时间成功")
   } catch (error) {
-    return res.result(void 0, "查询文章时间失败", false)
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询文章时间失败", false)
+    )
   }
 })
 

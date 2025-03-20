@@ -125,11 +125,17 @@
             ref="observerMenu"
           ></div>
           <my-card class="card_style">
+            <!-- 预览 -->
             <vditor-preview
               v-model:article="article"
               v-model:menuTree="menuTree"
               v-model:title="title"
             ></vditor-preview>
+            <!-- 评论 -->
+            <layout-article-comments
+              :articleId="article?.id"
+              v-if="article?.id"
+            ></layout-article-comments>
           </my-card>
         </div>
       </template>

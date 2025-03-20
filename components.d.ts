@@ -63,6 +63,8 @@ declare module 'vue' {
     IconSwitchUnfixed: typeof import('./src/components/icon/switch/unfixed.vue')['default']
     IconSwitchUnmove: typeof import('./src/components/icon/switch/unmove.vue')['default']
     Layout: typeof import('./src/components/layout/index.vue')['default']
+    LayoutArticleComments: typeof import('./src/components/layout/article/comments/index.vue')['default']
+    LayoutArticleCommentsAdd: typeof import('./src/components/layout/article/comments/add/index.vue')['default']
     LayoutArticleReview: typeof import('./src/components/layout/article/review/index.vue')['default']
     LayoutArticleReviewCounts: typeof import('./src/components/layout/article/review/counts/index.vue')['default']
     LayoutArticleReviewCountscopy: typeof import('./src/components/layout/article/review/counts copy/index.vue')['default']

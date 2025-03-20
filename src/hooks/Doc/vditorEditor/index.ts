@@ -9,11 +9,13 @@ import type { vditorType } from "./update"
 import { exportHtmlFile } from "../export/exportHtml"
 // 定义 配置项 Ref 存储 高度 内容 长度
 type RefOptionsType = {
-  docHeight: Ref<string | undefined>
+  docHeight: Ref<string | number | undefined>
   context: Ref<string | undefined>
   length: Ref<number | undefined>
   title?: Ref<string | undefined>
   isSaveBtn?: boolean
+  toolbarHide?: boolean
+  resizeHide?: boolean
 }
 /**
  *
@@ -28,7 +30,15 @@ export const useVditorEditor = (
   RefOptions: RefOptionsType
 ) => {
   // 提取数据
-  const { docHeight, context, length, title, isSaveBtn } = RefOptions
+  const {
+    docHeight,
+    context,
+    length,
+    title,
+    isSaveBtn,
+    toolbarHide,
+    resizeHide = true,
+  } = RefOptions
   // vditor 实列
   let vditor: vditorType = ref(null)
   // 销毁配置项
@@ -47,6 +57,7 @@ export const useVditorEditor = (
     // 保存 vditor
     vditor.value = new Vditor(containerId, {
       ...options,
+      toolbarConfig: { hide: toolbarHide },
       // 工具栏
       toolbar: [
         "headings",
@@ -130,7 +141,7 @@ export const useVditorEditor = (
       ],
       // 控制高度
       resize: {
-        enable: true,
+        enable: resizeHide,
         // 缓存 高度
         after: () => {
           docHeight.value = vditorEditor.value.offsetHeight + "px"

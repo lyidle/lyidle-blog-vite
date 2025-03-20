@@ -36,6 +36,7 @@ $dark: (
 // 暗夜模式
 html[themes="#{$theme}"] {
   --primary-color: #{$primary-color};
+  --primary-scend-color: #{color.adjust($primary-color, $lightness: -20%)};
   // 链接 悬浮样式
   --primary-links-hover: rgb(197, 132, 57);
   // 默认图片
