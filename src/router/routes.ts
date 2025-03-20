@@ -2,6 +2,7 @@
 import { asyncRoutesTest } from "@/test/asyncRoute"
 // 引入 测试 的路由
 import { RouteRecordRaw } from "vue-router"
+import { handlerRoutes } from "./handlerRoutes"
 
 /* meta 参数
  * title 网页标签展示信息
@@ -209,10 +210,11 @@ export const constantRoute: RouteRecordRaw[] = [
   {
     path: "/404",
     name: "404",
-    meta: { title: "404" },
+    meta: { title: "404", bannerHidden: true },
     component: () => import("@/views/404/index.vue"),
   },
 ]
+
 // 任意路由
 export const anyRoute: RouteRecordRaw[] = [
   {
@@ -223,125 +225,153 @@ export const anyRoute: RouteRecordRaw[] = [
 ]
 
 // 异步路由 需要权限判断的
-export const asyncRoute: RouteRecordRaw[] = [
-  {
-    name: "Admin",
-    path: "/admin",
-    meta: { title: "管理", roles: ["admin"] },
-    component: () => import("@/components/manager/index.vue"),
-    redirect: "/admin/dashboard",
-    children: [
-      {
-        name: "Dashboard",
-        path: "/admin/dashboard",
-        meta: { title: "仪表盘", roles: ["admin"] },
-        component: () => import("@/views/admin/dashboard/index.vue"),
+export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
+  [
+    {
+      name: "Admin",
+      path: "/admin",
+      meta: {
+        title: "管理",
       },
-      {
-        name: "Articles",
-        path: "/admin/article",
-        meta: { title: "文章管理", roles: ["admin"] },
-        component: () => import("@/views/admin/articles/manager/index.vue"),
-      },
-      {
-        name: "AccessManagement",
-        path: "/admin/access",
-        meta: { title: "权限管理", roles: ["admin"] },
-        redirect: "/admin/access/users",
-        children: [
-          {
-            name: "UserManagement",
-            path: "/admin/access/users",
-            meta: { title: "用户管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/users/index.vue"),
-          },
-          {
-            name: "RoleManagement",
-            path: "/admin/access/roles",
-            meta: { title: "角色管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/roles/index.vue"),
-          },
-          {
-            name: "GroupManagement",
-            path: "/admin/access/groups",
-            meta: { title: "权限组管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/groups/index.vue"),
-          },
-          {
-            name: "PermissionManagement",
-            path: "/admin/access/permissions",
-            meta: { title: "权限管理", roles: ["admin"] },
-            component: () =>
-              import("@/views/admin/access/permissions/index.vue"),
-          },
-          {
-            name: "MenuManagement",
-            path: "/admin/access/menus",
-            meta: { title: "菜单管理", roles: ["admin"] },
-            component: () => import("@/views/admin/access/menus/index.vue"),
-          },
-        ],
-      },
-      {
-        name: "RecycleManager",
-        path: "/admin/recycle",
-        meta: { title: "回收站", roles: ["admin"] },
-        redirect: "/admin/recycle/users",
-        children: [
-          {
-            name: "UserRecycle",
-            path: "/admin/recycle/users",
-            meta: { title: "用户回收站", roles: ["admin"] },
-            component: () => import("@/views/admin/recycle/users/index.vue"),
-          },
-          {
-            name: "RoleRecycle",
-            path: "/admin/recycle/roles",
-            meta: { title: "角色回收站", roles: ["admin"] },
-            component: () => import("@/views/admin/recycle/roles/index.vue"),
-          },
-          {
-            name: "GroupRecycle",
-            path: "/admin/recycle/groups",
-            meta: { title: "权限组回收站", roles: ["admin"] },
-            component: () => import("@/views/admin/recycle/groups/index.vue"),
-          },
-          {
-            name: "PermissionRecycle",
-            path: "/admin/recycle/permissions",
-            meta: { title: "权限回收站理", roles: ["admin"] },
-            component: () =>
-              import("@/views/admin/recycle/permissions/index.vue"),
-          },
-          {
-            name: "MenuRecycle",
-            path: "/admin/recycle/menus",
-            meta: { title: "菜单回收站", roles: ["admin"] },
-            component: () => import("@/views/admin/recycle/menus/index.vue"),
-          },
-        ],
-      },
-      {
-        name: "Other",
-        path: "/admin/other",
-        meta: { title: "其他", roles: ["admin"] },
-        redirect: "/admin/other/banner",
-        children: [
-          {
-            name: "BannerImg",
-            path: "/admin/other/banner",
-            meta: { title: "背景管理", roles: ["admin"] },
-            component: () => import("@/views/admin/other/banner/index.vue"),
-          },
-          {
-            name: "Settings",
-            path: "/admin/other/settings",
-            meta: { title: "设置管理", roles: ["admin"] },
-            component: () => import("@/views/admin/other/settings/index.vue"),
-          },
-        ],
-      },
-    ],
-  },
-  // ...asyncRoutesTest,
-]
+      component: () => import("@/components/manager/index.vue"),
+      redirect: "/admin/dashboard",
+      children: [
+        {
+          name: "Dashboard",
+          path: "/admin/dashboard",
+          meta: { title: "仪表盘" },
+          component: () => import("@/views/admin/dashboard/index.vue"),
+        },
+        {
+          name: "Articles",
+          path: "/admin/article",
+          meta: { title: "文章管理" },
+          component: () => import("@/views/admin/articles/manager/index.vue"),
+        },
+        {
+          name: "AccessManagement",
+          path: "/admin/access",
+          meta: { title: "权限管理" },
+          redirect: "/admin/access/users",
+          children: [
+            {
+              name: "UserManagement",
+              path: "/admin/access/users",
+              meta: { title: "用户管理" },
+              component: () => import("@/views/admin/access/users/index.vue"),
+            },
+            {
+              name: "RoleManagement",
+              path: "/admin/access/roles",
+              meta: { title: "角色管理" },
+              component: () => import("@/views/admin/access/roles/index.vue"),
+            },
+            {
+              name: "GroupManagement",
+              path: "/admin/access/groups",
+              meta: { title: "权限组管理" },
+              component: () => import("@/views/admin/access/groups/index.vue"),
+            },
+            {
+              name: "PermissionManagement",
+              path: "/admin/access/permissions",
+              meta: { title: "权限管理" },
+              component: () =>
+                import("@/views/admin/access/permissions/index.vue"),
+            },
+            {
+              name: "MenuManagement",
+              path: "/admin/access/menus",
+              meta: { title: "菜单管理" },
+              component: () => import("@/views/admin/access/menus/index.vue"),
+            },
+          ],
+        },
+        {
+          name: "RecycleManager",
+          path: "/admin/recycle",
+          meta: { title: "回收站" },
+          redirect: "/admin/recycle/users",
+          children: [
+            {
+              name: "UserRecycle",
+              path: "/admin/recycle/users",
+              meta: { title: "用户回收站" },
+              component: () => import("@/views/admin/recycle/users/index.vue"),
+            },
+            {
+              name: "RoleRecycle",
+              path: "/admin/recycle/roles",
+              meta: { title: "角色回收站" },
+              component: () => import("@/views/admin/recycle/roles/index.vue"),
+            },
+            {
+              name: "GroupRecycle",
+              path: "/admin/recycle/groups",
+              meta: { title: "权限组回收站" },
+              component: () => import("@/views/admin/recycle/groups/index.vue"),
+            },
+            {
+              name: "PermissionRecycle",
+              path: "/admin/recycle/permissions",
+              meta: { title: "权限回收站理" },
+              component: () =>
+                import("@/views/admin/recycle/permissions/index.vue"),
+            },
+            {
+              name: "MenuRecycle",
+              path: "/admin/recycle/menus",
+              meta: { title: "菜单回收站" },
+              component: () => import("@/views/admin/recycle/menus/index.vue"),
+            },
+          ],
+        },
+        {
+          name: "Other",
+          path: "/admin/other",
+          meta: { title: "其他" },
+          redirect: "/admin/other/banner",
+          children: [
+            {
+              name: "BannerImg",
+              path: "/admin/other/banner",
+              meta: { title: "背景管理" },
+              component: () => import("@/views/admin/other/banner/index.vue"),
+            },
+            {
+              name: "Settings",
+              path: "/admin/other/settings",
+              meta: { title: "设置管理" },
+              component: () => import("@/views/admin/other/settings/index.vue"),
+            },
+          ],
+        },
+      ],
+    },
+    // ...asyncRoutesTest,
+  ],
+  (item) => {
+    // 隐藏 banner
+    if (!item.meta?.bannerHidden) {
+      item.meta!.bannerHidden = true
+    }
+    // 隐藏 header
+    if (!item.meta?.headerHidden) {
+      item.meta!.headerHidden = true
+    }
+
+    // 得到 roles
+    const roles = item.meta?.roles as string[] | undefined
+    // 添加 admin
+    if (roles?.includes("admin")) {
+      // 有数组 则 push
+      if (roles?.length) {
+        roles.push("admin")
+      }
+      // 没有数组 则创建
+      else {
+        item.meta!.roles = ["admin"]
+      }
+    }
+  }
+)

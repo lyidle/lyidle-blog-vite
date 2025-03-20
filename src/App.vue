@@ -1,4 +1,6 @@
 <template>
+  <layout-header v-if="!$route.meta.headerHidden" />
+  <layout-banner v-if="!$route.meta.bannerHidden" />
   <!-- element-plus的配置 -->
   <el-config-provider :locale="zhCn">
     <!-- 右键菜单 -->

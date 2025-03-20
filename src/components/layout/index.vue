@@ -1,6 +1,4 @@
 <template>
-  <layout-header />
-  <layout-banner></layout-banner>
   <router-view v-slot="{ Component, route }">
     <component :is="Component" :key="route.path" />
   </router-view>

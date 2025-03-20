@@ -1,6 +1,4 @@
 <template>
-  <layout-header />
-  <layout-banner></layout-banner>
   <div class="login-container">
     <loginCard ref="loginRef" :reg="regRef?.reg"></loginCard>
     <regCard ref="regRef" :login="loginRef?.login"></regCard>

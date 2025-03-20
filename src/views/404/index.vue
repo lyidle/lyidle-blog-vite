@@ -1,5 +1,4 @@
 <template>
-  <layout-header />
   <div
     class="w-100vw h-100vh flex justify-center items-center color-[var(--primary-color)]"
   >
