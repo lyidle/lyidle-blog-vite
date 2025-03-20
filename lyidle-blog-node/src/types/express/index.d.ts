@@ -28,6 +28,7 @@ declare global {
         iat?: Date
         exp?: Date
       }
+      isAccess: string | undefined //用户token 或者 是 游客token
     }
     interface Response {
       result: (

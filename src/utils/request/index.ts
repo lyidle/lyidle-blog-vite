@@ -11,12 +11,12 @@ const request = axios.create({
 
 // 添加请求与响应拦截器
 request.interceptors.request.use((config) => {
-  const { userToken } = storeToRefs(useUserStore())
-  const token = userToken.value
+  const { userToken, touristToken } = useUserStore()
+  const token = userToken
+  const tourist = touristToken
   // 存在token 就携带token发起信息
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+  if (tourist) config.headers["authorization-tourist"] = `Bearer ${tourist}`
+  if (token) config.headers.Authorization = `Bearer ${token}`
   //返回配置对象
   return config
 })
@@ -26,8 +26,8 @@ request.interceptors.response.use(
     // 简化数据 直接得到data
     if (response.data.code === 200) return response.data?.data
     if (response.data.code === 401) {
-      const { userToken } = storeToRefs(useUserStore())
-      const token = userToken.value
+      const { userToken } = useUserStore()
+      const token = userToken
       // 如果没有 token 且状态码为 401，不进行错误提示
       if (!token) return response.data
       // 有 token  且 为 401 则需要清除 信息等操作

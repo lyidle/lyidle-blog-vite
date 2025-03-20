@@ -18,14 +18,6 @@ import { useGlobalEmitter } from "@/hooks/globalEmitter"
 // 中文化
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 
-// 处理 访客
-import { useUserStore } from "@/store/user"
-const { addTourist } = useUserStore()
-
-onMounted(async () => {
-  await addTourist()
-})
-
 // 全局的 监听事件 使用 mitt 管理 和 效果等
 useGlobalEmitter()
 </script>

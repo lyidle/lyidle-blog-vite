@@ -12,17 +12,17 @@ import visitor from "@/routes/visitor"
 // 引入 api/upload
 import upload from "./upload"
 // 引入权限判断
-import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+import { jwtMiddleware, isAdmin, isTourist } from "@/middleware/auth"
 const router = express.Router()
 // root api
 router.get("/", (req, res) => {
   res.send("Here is the api~")
 })
-// 挂载路由
-router.use("/admin", admin)
-router.use("/user", user)
+// 挂载路由 全部加上 访客验证 除了 visitor 的get
+router.use("/admin", isTourist, admin)
+router.use("/user", isTourist, user)
 router.use("/visitor", visitor)
-router.use("/article", article)
-router.use("/webInfo", webInfo)
-router.use("/upload", jwtMiddleware, upload)
+router.use("/article", isTourist, article)
+router.use("/webInfo", isTourist, webInfo)
+router.use("/upload", isTourist, jwtMiddleware, upload)
 module.exports = router

@@ -1,3 +1,4 @@
+import { getKey, setKey } from "@/utils/redis"
 import express from "express"
 const { Article, ArticleCount } = require("@/db/models")
 const router = express.Router()
@@ -7,6 +8,13 @@ const router = express.Router()
  */
 router.post("/", async (req, res, next) => {
   const { articleId } = req.body
+  // 判断 缓存 是否存在 isAccess 是 用户token 或者 游客 token
+  const token = req.isAccess
+  const cacheKey = `article-look:${token}`
+  const cacheValue = await getKey(cacheKey)
+
+  if (cacheValue) return res.result(void 0, "更新文章浏览量成功")
+
   // 校验参数
   if (!articleId)
     return res.result(void 0, "articleId 和 count 是必填项", false)
@@ -18,19 +26,20 @@ router.post("/", async (req, res, next) => {
     if (!article) return res.result(void 0, "文章未找到", false)
 
     // 查找或创建 ArticleCount
-    const [articleCount] = await ArticleCount.findOrCreate({
+    const [articleCount, created] = await ArticleCount.findOrCreate({
       where: { articleId },
-      defaults: 0,
+      defaults: { count: 1 },
     })
 
     // 如果已存在，则更新浏览量
-    if (!articleCount.isNewRecord) {
+    if (!created) {
       // 得到 count 自增
       let count = articleCount.count
       articleCount.count = ++count
       await articleCount.save()
     }
-
+    // 设置缓存
+    await setKey(cacheKey, true)
     return res.result(void 0, "更新文章浏览量成功")
   } catch (error) {
     return res.result(void 0, "更新文章浏览量失败", false)

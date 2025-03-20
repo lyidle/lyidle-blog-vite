@@ -16,14 +16,22 @@ import "@/styles/reset.scss"
 import "vditor/dist/index.css"
 // 引入 自定义指令
 import directives from "@/directive"
+import { useUserStore } from "@/store/user"
 export default {
   // 安装插件
   install(app: any) {
     // 安装仓库
     app.use(pinia)
-    // 安装路由
-    app.use(router)
-    // 安装自定义指令
-    app.use(directives)
+    // 处理 访客
+    const { addTourist } = useUserStore()
+    ;(async () => {
+      // 等待 访客 请求 完毕后 再 挂载 其他东西
+      await addTourist()
+      // 安装路由
+      app.use(router)
+      // 安装自定义指令
+      app.use(directives)
+      app.mount("#app")
+    })()
   },
 }

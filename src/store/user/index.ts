@@ -17,8 +17,6 @@ import { mitt } from "@/utils/emitter"
 import { constantRoute, anyRoute } from "@/router/routes"
 import { getPersistedData } from "@/utils/crypto/crypto-aes"
 
-const SECRET_KEY = import.meta.env.VITE_INITIAL_HASH
-
 type bannerImgType = { [key in string]: GetBannerImg["data"][0] }
 // 处理 常量路由 和异步路由
 const handlerPath = () => {

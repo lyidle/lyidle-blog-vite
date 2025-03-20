@@ -12,7 +12,7 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await delKey(`token:${req.auth.id}`)
-      res.result(void 0, "退出登录成功~")
+      res.result({ token: null }, "退出登录成功~")
     } catch (error) {
       res.result(void 0, "退出登录失败~", false)
     }

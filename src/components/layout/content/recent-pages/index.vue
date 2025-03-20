@@ -1,5 +1,5 @@
 <template>
-  <layout-content-aside-card class="aside-container" v-if="pages">
+  <layout-content-aside-card class="aside-container" v-if="pages?.length">
     <template #title>
       <i class="i-mdi:recent"></i>
       <span>最新文章</span>
