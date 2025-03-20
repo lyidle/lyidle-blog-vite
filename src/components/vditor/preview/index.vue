@@ -50,7 +50,7 @@ const exportHtml = () => {
   // markdown 预览
   ::v-deep(.vditor-style) {
     overflow: hidden;
-    padding: 0 40px;
+    padding: 40px;
   }
 }
 </style>

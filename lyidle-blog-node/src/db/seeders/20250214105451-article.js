@@ -44,9 +44,9 @@ module.exports = {
       return content
     }
     const lengthRender = (i) => {
-      let length = 20 + i
-      if (i === 1) length = content1.length
-      if (i === 2) length = content2.length
+      let length = `这是示例文章${i}的内容，包含一些随机文本。`.trim().length
+      if (i === 1) length = 6076
+      if (i === 2) length = 18523
       return length
     }
     const userIdRender = (i) => {

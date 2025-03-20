@@ -41,6 +41,7 @@ enum API {
   // 获取 所有tags
   // 获取 所有tags
   getTagsAll = "/article/getTags/all",
+  getTags = "/article/getCategories/one",
   // 获取 所有categories
   getCategoriesAll = "/article/getCategories/all",
 }
@@ -152,4 +153,9 @@ export const getTagsAll = (author: string) =>
 export const getCategoriesAll = (author: string) =>
   request.get<any, { [key in string]: number }>(
     server + prefix + API.getCategoriesAll + `/?author=${author}`
+  )
+// 根据 category 获取所有 tags
+export const getCategoryToTags = (name: string) =>
+  request.get<any, string[]>(
+    server + prefix + API.getTags + `/?category=${name}`
   )

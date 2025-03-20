@@ -84,7 +84,7 @@ const getMenuList = async (
       return res.result(void 0, "暂无权限访问任何菜单", false)
     }
     // 设置 缓存
-    await setKey(cacheKey, result)
+    if (cacheKey) await setKey(cacheKey, result)
     return res.result(result, "获取菜单成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

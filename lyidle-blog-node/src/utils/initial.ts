@@ -17,7 +17,7 @@ export default async () => {
 
     // 初始化 访客数
     (async () => {
-      let touristCounts = +(await getKey("touristCounts"))
+      let touristCounts = await getKey("touristCounts")
       if (touristCounts === null) {
         touristCounts = await Visitor.count()
         await setKey("touristCounts", touristCounts)
@@ -128,6 +128,16 @@ export default async () => {
           content: aboutMd,
         })
         await setKey("setting:关于", dataValues)
+      }
+    })(),
+    (async () => {
+      const note = await getKey("setting:笔记菜单项")
+      if (note === null) {
+        const { dataValues } = await Setting.create({
+          name: "笔记菜单项",
+          content: ["前端", "后端"],
+        })
+        await setKey("setting:笔记菜单项", dataValues)
       }
     })(),
   ])

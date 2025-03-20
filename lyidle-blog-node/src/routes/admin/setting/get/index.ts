@@ -22,7 +22,11 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 汇总 错误信息
     if (!name) return res.result(void 0, "name是必传项", false)
-    const { dataValues } = await Setting.findOne({ where: { name } })
+    const findSetting = await Setting.findOne({ where: { name } })
+
+    if (!findSetting) return res.result(void 0, `获取${name}失败~`, false)
+
+    const { dataValues } = findSetting
 
     // 成功设置缓存
     await setKey(`setting:${name}`, dataValues)

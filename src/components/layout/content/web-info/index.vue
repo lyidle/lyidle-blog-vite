@@ -7,23 +7,23 @@
     <template #body>
       <div class="item cur-text" v-if="webTotalPages">
         <div class="title">文章数目:</div>
-        <div class="data">{{ webTotalPages }}</div>
+        <div class="data">{{ webTotalPages }}条</div>
       </div>
       <div class="item cur-text" v-if="webTotalWords">
         <div class="title">本站总字数:</div>
-        <div class="data">{{ webTotalWords }}</div>
+        <div class="data">{{ webTotalWords }}字</div>
       </div>
       <div class="item cur-text" v-if="webUserCounts">
         <div class="title">本站用户数:</div>
-        <div class="data">{{ webUserCounts }}</div>
+        <div class="data">{{ webUserCounts }}人</div>
       </div>
       <div class="item cur-text" v-if="touristCounts">
         <div class="title">本站访客数:</div>
-        <div class="data">{{ touristCounts }}</div>
+        <div class="data">{{ touristCounts }}人</div>
       </div>
       <div class="item cur-text" v-if="webTotalPersonCounts">
         <div class="title">本站总访问量:</div>
-        <div class="data">{{ webTotalPersonCounts }}</div>
+        <div class="data">{{ webTotalPersonCounts }}次</div>
       </div>
       <div class="item cur-text" v-if="webCreatedAt">
         <div class="title">本站创建时间:</div>

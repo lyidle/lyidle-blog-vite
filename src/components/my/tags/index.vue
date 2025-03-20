@@ -20,7 +20,7 @@
         class="!w-80px !h-25px"
         :style="{ marginLeft: left }"
         size="small"
-        @keyup.enter="handleInputConfirm"
+        @keydown.enter.prevent="handleInputConfirm"
         @blur="handleInputConfirm"
       />
       <my-button
@@ -105,7 +105,7 @@ const validate = () => {
   }
 }
 
-const handleInputConfirm = async () => {
+const handleInputConfirm = async (e: Event) => {
   // 没内容
   if (!inputValue.value) {
     resetInput()

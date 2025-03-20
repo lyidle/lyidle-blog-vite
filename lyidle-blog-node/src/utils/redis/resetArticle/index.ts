@@ -11,36 +11,58 @@ export const resetArticle = async (
   findArticles: any[],
   isResetCarousel?: boolean
 ) => {
+  const categoriesSet = new Set()
   const deleteArr = deduplication(
-    JSON.parse(JSON.stringify(findArticles)).map((item: any) => [
-      item.id,
-      item.author,
-    ])
+    JSON.parse(JSON.stringify(findArticles)).map((item: any) => {
+      categoriesSet.add(item.category)
+      return [item.id, item.author]
+    })
   ).filter(Boolean)
+  // 得到 去重后的 category
+  const categories = Array.from(categoriesSet) as string[]
+  categoriesSet.clear()
 
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
     // 得到 ids
-    const ids = deleteArr.filter(
-      (item: string | number) => !Number.isNaN(+item) && +item
-    )
+    // const ids = deleteArr.filter(
+    //   (item: string | number) => !Number.isNaN(+item) && +item
+    // )
     // 得到 accounts
     const accounts = deleteArr.filter(
       (item: string | number) => typeof item === "string" && item
     )
     // 删除 缓存
-    // 删除总字数统计缓存
-    await delKey("webTotalWords")
-    // 最新文章的 缓存 使用的
-    await delKeys("recentPages:")
-    // 用户的 所有 tags 按照作者
-    await delKeys(`allTags:`, accounts, (keys) => keys)
-    // 用户的 所有 categories 按照作者
-    await delKeys(`allCategories:`, accounts, (keys) => keys)
-    // 获取文章 按照分页器 的格式返回
-    await delKeys(`articlePagination:`)
-    if (isResetCarousel)
-      // 清除缓存
-      await delKeys(`carousel:`)
+
+    const results = await Promise.allSettled([
+      // 删除 总字数统计缓存
+      delKey("webTotalWords"),
+      // 最新文章的 缓存 使用的
+      delKeys("recentPages:"),
+      // 用户的 所有 tags 按照作者
+      delKeys(`allTags:`, accounts),
+      // 用户的 所有 categories 按照作者
+      delKeys(`allCategories:`, accounts),
+      // 删除所有 articlePagination: 开头的 缓存
+      delKeys(`articlePagination:`),
+      (async () => {
+        // 需要 清除 categories 则 清除
+        if (categories.length)
+          await delKeys(`category:search:allTag:`, categories)
+      })(),
+      (async () => {
+        // 需要 清除 carousel 则 清除 所有
+        if (isResetCarousel)
+          // 清除缓存
+          await delKeys(`carousel:`)
+      })(),
+    ])
+
+    // 检查是否有任务失败
+    results.forEach((result) => {
+      if (result.status === "rejected") {
+        console.error("删除文章的缓存失败:", result.reason)
+      }
+    })
   }
 }

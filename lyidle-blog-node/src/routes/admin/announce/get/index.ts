@@ -21,12 +21,12 @@ router.get("/", async (req, res, next) => {
         }
 
     // 有缓存直接返回
-    let ipRegion: ipRegionType | null = await getKey(`ipRegion:${userIp}`)
-    // 没缓存 设置
+    let ipRegion: ipRegionType | null = null
     // 是本地的跳过
-    if (!is_production || !ip.isPrivate(userIp)) {
+    if (!ip.isPrivate(userIp)) {
       const query = new IP2Region()
       let data
+      // 是否 是模拟的 数据
       if (!is_production) data = query.search("120.24.78.68") as IP2RegionResult
       else data = query.search(userIp) as IP2RegionResult
       if (data) {
@@ -50,14 +50,19 @@ router.get("/", async (req, res, next) => {
     }
 
     // 没缓存设置
-    const { dataValues } = await Setting.findOne({
+    const findSetting = await Setting.findOne({
       where: { name: "公告" },
     })
 
-    await setKey(`setting:公告`, dataValues)
+    if (!findSetting && !ipRegion)
+      return res.result(void 0, "获取公告失败~", false)
+
+    if (findSetting?.dataValues)
+      await setKey(`setting:公告`, findSetting?.dataValues)
+
     return res.result(
       {
-        announce: dataValues,
+        announce: findSetting?.dataValues,
         region: ipRegion ? { ...ipRegion } : null,
       },
       "获取公告成功~"

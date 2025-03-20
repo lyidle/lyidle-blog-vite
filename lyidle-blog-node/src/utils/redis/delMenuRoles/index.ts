@@ -5,16 +5,30 @@ import { delKeys, delKey, genCacheKey } from "@/utils/redis"
 // 清除菜单缓存
 export const delMenuRoles = async (roles: string[]) => {
   // 获取所有菜单的缓存 无论如何都要删除
-  await delKey("menu:*")
+  let settleArr: Promise<any>[] = [delKey("menu:*")]
   if (roles && roles.length) {
-    // 需要删除 的数组 去重加 过滤
-    const deleteArr = deduplication(roles).filter(Boolean)
+    // 需要删除 的数组 去重加 过滤 排序
+    const deleteArr = deduplication(roles).filter(Boolean).sort()
     // 判断是否需要和删除缓存
     if (deleteArr && deleteArr.length) {
       // 删除 缓存
-      await delKeys("menu:", deleteArr)
+      settleArr.push(
+        delKeys("menu:", deleteArr, {
+          //  使用模糊匹配
+          like: true,
+        })
+      )
     }
   }
+
+  const results = await Promise.allSettled(settleArr)
+
+  // 检查是否有任务失败
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      console.error("删除菜单的缓存失败:", result.reason)
+    }
+  })
 }
 
 /**
@@ -26,7 +40,7 @@ export const saveMenuCache = (roles: string[] | string) => {
   // 获取 权限菜单 的key
   if (roles === "*") return `menu:*`
   // 不在 预期之类 报错
-  if (typeof roles === "string") {
+  if (!Array.isArray(roles)) {
     throw new myError("otherError", `缓存menu时出错,保存的键是预期之外的键`)
   }
   return genCacheKey("menu:", roles)

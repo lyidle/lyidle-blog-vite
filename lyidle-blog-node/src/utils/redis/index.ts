@@ -72,39 +72,85 @@ const delKey = async (key: string): Promise<void> => {
 }
 
 /**
- * 批量删除以指定前缀开头的 key，并根据 patterns 和自定义回调过滤
- * @param prefix 前缀字符串（如 "menu:"）
- * @param patterns 需要匹配的数组项  如果没有 callback，使用默认的 patterns 过滤逻辑 即所有查询到的数组
- * @param callback 自定义过滤回调函数 即按照保存时是按照 , 分割的
- * @returns 删除的 key 数量
+ * 批量删除以指定前缀开头的 key，并根据 `patterns` 和自定义回调进行过滤
+ *
+ * @param prefix - **前缀(string)**（如 `"menu:"`），用于筛选以该前缀开头的 key
+ * @param patterns - **匹配模式(string[])**（可选），如果提供，则仅删除匹配 `patterns` 的 key，否则删除所有匹配 `prefix` 的 key
+ * @param options - **可选参数对象**
+ * @param options.like - **模糊匹配(boolean)** 按照 `prefix`查询结果 `keys` 与 patterns 来进行模糊匹配 删除对应的缓存 和 callback 中的使用 的方法方法一致
+ * @param options.unlike - **模糊匹配(boolean)** 按照 `prefix`查询结果 `keys` 与 patterns 来进行精确匹配 删除对应的缓存 和 callback 中的使用 的方法方法一致
+ * @param options.callback - **自定义过滤回调(function)**，接收 `keys`（匹配前缀的所有 key）和 `patterns`（可选的匹配模式），应返回需要删除的 key 数组
+ *
+ * @returns **删除的 key 数量**
+ *
+ * @example
+ * ```ts
+ * const deletedCount = await delKeys("menu:", ["read", "write"], {
+ *   模糊匹配
+ *   callback: (keys, patterns) => keys.filter(key => patterns.some(delKey => key.includes(delKey)))
+ *   精确匹配
+ *   callback: (keys, patterns) => keys.filter((key) => patterns?.includes(key))
+ * })
+ * console.log(`删除了 ${deletedCount} 个键`)
+ * ```
  */
 const delKeys = async (
   prefix: string,
   patterns?: string[],
-  callback?: (keys: string[], patterns?: string[]) => string[]
+  options?: {
+    callback?: (keys: string[], patterns?: string[]) => string[]
+    like?: boolean
+    unlike?: boolean
+  }
 ): Promise<number> => {
   if (!client) await redisClient() // 确保客户端已初始化
 
-  // 获取所有以 prefix 开头的 key
-  const keys = await getKeys(prefix)
+  // 获取所有以 prefix 开头的 key 的回调函数
+  const _getKeys = async () => await getKeys(prefix)
 
-  if (!keys?.length) {
-    console.log(prefix, "没有匹配的 key 需要删除")
-    return 0
+  // 默认 按照 传入 patterns 来进行删除
+  // 或者 按照查询到的所有以 prefix 开头的 来进行删除
+  let filteredKeys = patterns
+  let keys: string[] = []
+  if (!patterns) {
+    // 获取所有以 prefix 开头的 key
+    const _keys = await _getKeys()
+
+    if (!_keys?.length) {
+      console.log(prefix, "没有匹配的 key 需要删除")
+      return 0
+    }
+    filteredKeys = _keys
+    keys = _keys
   }
 
-  // 如果有 callback，使用回调函数过滤 keys
-  let filteredKeys = keys
-  if (callback) {
-    filteredKeys = callback(keys, patterns)
-  } else if (patterns && patterns?.length) {
-    // 如果没有 callback，使用默认的 patterns 过滤逻辑
-    // 保存时是按照 ，分割的
-    filteredKeys = keys.filter((key) =>
-      patterns.find((item: any) => {
-        return key.includes(item)
-      })
-    )
+  // 有配置项
+  if (options && patterns) {
+    // 提取 对应的 配置项
+    const { callback, like, unlike } = options
+
+    let curKeys = keys.length && keys
+    // 如果 没有 查找所有keys 则查找
+    if (!curKeys) {
+      const allkeys = await _getKeys()
+      curKeys = allkeys
+    }
+
+    // 模糊 匹配
+    if (like) {
+      filteredKeys = curKeys.filter((key) =>
+        patterns.some((delKey) => key.includes(delKey))
+      )
+    }
+    // 全等 匹配
+    if (unlike) {
+      filteredKeys = curKeys.filter((key) => patterns?.includes(key))
+    }
+
+    // 如果有 callback，使用回调函数过滤 keys
+    if (callback) {
+      filteredKeys = callback(curKeys, patterns)
+    }
   }
 
   if (!filteredKeys?.length) {
@@ -114,7 +160,6 @@ const delKeys = async (
 
   // 拼接完整的 key（加上 redis_prefix）
   const fullKeys = filteredKeys.map((key) => `${redis_prefix}:${prefix}${key}`)
-
   // 使用 DEL 命令批量删除
   const deletedCount = await client!.del(fullKeys)
   console.log(`${prefix}删除了 ${deletedCount} 个 key`)

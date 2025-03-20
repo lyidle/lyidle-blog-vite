@@ -7,7 +7,7 @@
           <div class="text-[1.875rem] font-bold cur-text">
             {{ title }} - {{ pagination?.total || 0 }}
           </div>
-          <div class="flex gap-10px items-center">
+          <div class="flex gap-10px items-center" v-if="account">
             <my-tooltip
               class="box-item"
               effect="dark"
@@ -64,7 +64,7 @@
                 </div>
               </div>
               <!-- 每一项的按钮 -->
-              <div class="flex">
+              <div class="flex" v-if="isTools">
                 <!-- 修改 -->
                 <my-button
                   class="w-80px"
@@ -202,7 +202,12 @@ const articles = ref<YearGroupedArticles[]>([])
 const pagination = ref<Pagination>()
 
 // 接收父组件的 属性
-defineProps(["account", "title"])
+withDefaults(
+  defineProps<{ account?: string; title?: string; isTools?: boolean }>(),
+  {
+    isTools: true,
+  }
+)
 
 // 注入父组件提供的方法
 const reqArticles =

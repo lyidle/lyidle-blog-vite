@@ -40,11 +40,18 @@ export const resetUserInfo = async (findUsers: any[], isOwner?: boolean) => {
 
   // 判断是否需要和删除缓存
   if (deleteArr && deleteArr.length) {
-    await Promise.allSettled([
+    const results = await Promise.allSettled([
       // 删除 缓存
-      delKeys("userInfo:", deleteArr, (keys) => keys),
-      delKeys("userInfo:bin:", deleteArr, (keys) => keys),
+      delKeys("userInfo:", deleteArr),
+      delKeys("userInfo:bin:", deleteArr),
     ])
+
+    // 检查是否有任务失败
+    results.forEach((result) => {
+      if (result.status === "rejected") {
+        console.error("删除用户的缓存失败:", result.reason)
+      }
+    })
   }
 }
 

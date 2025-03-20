@@ -161,6 +161,22 @@ export const constantRoute: RouteRecordRaw[] = [
       },
     ],
   },
+  //  查询标签
+  {
+    path: "/tags",
+    name: "Tags",
+    meta: { title: "标签", bannerWel: "标签" },
+    component: () => import("@/components/layout/index.vue"),
+    redirect: "/tags/search",
+    children: [
+      {
+        path: "/tags/search",
+        name: "TagsSearch",
+        meta: { title: "标签", bannerWel: "标签" },
+        component: () => import("@/views/tags/index.vue"),
+      },
+    ],
+  },
   // 个人
   {
     path: "/person",

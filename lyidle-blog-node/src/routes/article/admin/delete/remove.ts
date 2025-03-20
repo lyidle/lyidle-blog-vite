@@ -15,7 +15,7 @@ import { resetArticle } from "@/utils/redis/resetArticle"
 
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicArticleRemove = async (articles: any[]) => {
-  await Promise.allSettled([
+  const results = await Promise.allSettled([
     // 删除对应用户信息缓存
     ...JSON.parse(JSON.stringify(articles))?.map((item: any) =>
       resetUserInfo([item.User])
@@ -26,15 +26,28 @@ export const publicArticleRemove = async (articles: any[]) => {
     delKey(`webTotalPages`),
     delKey(`webTotalWords`),
   ])
+  // 检查是否有任务失败
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      console.error("删除文章失败:", result.reason)
+    }
+  })
 }
 
 // 彻底删除函数
 const deleted = async (model: any, articles: any[]) => {
-  await Promise.allSettled([
+  const results = await Promise.allSettled([
     // 删除文章
     model.destroy({ force: true }), // 不管是否删除都要移除的
     publicArticleRemove(articles),
   ])
+  // 检查是否有任务失败
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      console.error("彻底删除文章失败:", result.reason)
+      throw new Error("彻底删除文章失败")
+    }
+  })
 }
 // 删除函数
 const remove = async (

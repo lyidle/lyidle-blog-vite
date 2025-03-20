@@ -41,7 +41,7 @@ const findUserByPk = async (id: number) => {
         model: Article,
         as: "articles",
         paranoid: false,
-        attributes: ["id", "author"],
+        attributes: { exclude: ["content"] },
       },
     ],
   })

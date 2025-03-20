@@ -166,7 +166,11 @@ export const useUserStore = defineStore(
       // 有 访客标识了 退出
       if (getPersistedData("User", "touristToken")) return
       const result = await reqAddTourist()
-      if (result) touristToken.value = result
+      if (result) {
+        touristToken.value = result
+        // 重新 获取小站咨询
+        mitt.emit("reloadWebInfo")
+      }
     }
 
     // 通过 设置 token 重新获取 数据
@@ -230,6 +234,8 @@ export const useUserStore = defineStore(
         ElMessage.success("退出登录成功~")
         // 重新加载路由
         mitt.emit("route:reload")
+        // 重新 获取小站咨询
+        mitt.emit("reloadWebInfo")
       } catch (error) {
         ElMessage.error("退出登录失败~")
       }

@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from "express"
 // 引入 jwt
 import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
-import { delKeys, setKey } from "@/utils/redis"
+import { setKey } from "@/utils/redis"
 // 引入 清除 user 的缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
@@ -27,6 +27,7 @@ router.put(
       // 查找是否有文章
       const findArticle = await Article.findByPk(articleId, {
         paranoid: false,
+        attributes: { exclude: ["content"] },
         include: [
           {
             model: User,

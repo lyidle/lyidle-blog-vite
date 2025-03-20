@@ -16,6 +16,16 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, {
         foreignKey: "userId", // 指定外键
       })
+      // 一篇文章有 阅读时间记录
+      this.hasOne(models.ArticleTime, {
+        foreignKey: "articleId",
+        as: "time",
+      })
+      // 一篇文章有 浏览量记录
+      this.hasOne(models.ArticleCount, {
+        foreignKey: "articleId",
+        as: "count",
+      })
     }
   }
   Article.init(

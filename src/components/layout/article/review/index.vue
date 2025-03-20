@@ -16,8 +16,8 @@
       <!-- 内容区 -->
       <template #content-start>
         <template v-if="isShowHeader">
+          <!-- 头部 -->
           <teleport to="body" v-if="article">
-            <!-- 头部 -->
             <div class="doc-pages-header">
               <div class="container">
                 <div class="title cur-text">{{ article?.title }}</div>
@@ -88,9 +88,9 @@
                       <span class="label cur-text"
                         ><i class="i-oui:token-date"></i>字数总计:</span
                       >
-                      <span class="content cur-text">{{
-                        numberTransform(article?.length)
-                      }}</span>
+                      <span class="content cur-text"
+                        >{{ numberTransform(article?.length) }}字</span
+                      >
                     </div>
                     <span class="item-hr">|</span>
                     <div class="item-data">
@@ -105,9 +105,9 @@
                       <span class="label cur-text"
                         ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
                       >
-                      <span class="content cur-text">{{
-                        numberTransform(23208)
-                      }}</span>
+                      <span class="content cur-text"
+                        >{{ numberTransform(23208) }}次</span
+                      >
                     </div>
                   </div>
                 </div>

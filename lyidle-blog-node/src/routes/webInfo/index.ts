@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
       webCreatedAt = await setKey("webCreatedAt", new Date())
 
     // 获取到访客数量
-    let touristCounts = +(await getKey("touristCounts"))
+    let touristCounts = await getKey("touristCounts")
     if (touristCounts === null) {
       // 查询游客量
       touristCounts = await Visitor.count()
@@ -20,7 +20,8 @@ router.get("/", async (req, res, next) => {
     }
 
     // 查询用户数量
-    let webUserCounts = +(await getKey("userCounts"))
+    let webUserCounts = await getKey("userCounts")
+
     if (webUserCounts === null) {
       // 得到 用户数量
       webUserCounts = await User.count()
@@ -28,10 +29,10 @@ router.get("/", async (req, res, next) => {
     }
 
     // 总访问量
-    const webTotalPersonCounts = webUserCounts + touristCounts
+    const webTotalPersonCounts = +webUserCounts + +touristCounts
 
     // 网页总数
-    let webTotalPages = +(await getKey("webTotalPages"))
+    let webTotalPages = await getKey("webTotalPages")
     if (webTotalPages === null) {
       webTotalPages = await Article.count()
       await setKey("webTotalPages", webTotalPages)

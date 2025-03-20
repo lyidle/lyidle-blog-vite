@@ -55,7 +55,7 @@ router.post(
 
     // 读取缓存
     const cacheValue = await getKey(`upload:img:temp:${account}:${url}`)
-    // 有缓存
+    // 有缓存 且文件还存在 则直接返回
     if (cacheValue) {
       const path = join(
         resolve(__dirname, "../../../../"),
