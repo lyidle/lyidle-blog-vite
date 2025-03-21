@@ -20,12 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         as: "article",
       })
 
-      // 评论可以有一个来源评论（自引用）
-      this.belongsTo(models.Comment, {
-        foreignKey: "fromId",
-        as: "fromComment",
-      })
-
       // 评论可以有多个回复评论（自引用）
       this.hasMany(models.Comment, {
         foreignKey: "fromId",

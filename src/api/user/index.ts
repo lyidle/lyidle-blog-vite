@@ -16,6 +16,7 @@ import { ManagerUpdateUserBody } from "./types/managerUpdateUserBody"
 import { UpdateUser } from "./types/updateUser"
 import { CreateUserBody } from "./types/createUserBody"
 import { managerSetUserRolesBody } from "./types/setUserRolesBody"
+import { UserFindByPk } from "./types/userFindByPk"
 // 统一管理 api
 enum API {
   // 注册相关
@@ -26,7 +27,9 @@ enum API {
   login = "/user/login",
   // 退出登录 清除token redis 缓存
   logout = "/user/logout",
+  // 用户信息
   userInfo = "/user/userinfo",
+  findByPk = "/user/search/findByPk",
   search = "/user/search",
   exactSearch = "/user/search/exact",
   searchCounts = "/user/search/user",
@@ -101,6 +104,12 @@ export const searchExactUser = searchUserCallback("exactSearch")
 export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
   request.get<any, SearchCountsById["data"]>(
     server + prefix + API.searchCounts + `/?${new URLSearchParams(data)}`
+  )
+
+// 通过 id 搜索 用户 只有 用户表的 信息
+export const userFindByPk = (userId: number) =>
+  request.get<any, UserFindByPk["data"]>(
+    server + prefix + API.findByPk + `/${userId}`
   )
 
 // 删除的回调

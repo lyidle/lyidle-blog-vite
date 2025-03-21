@@ -87,6 +87,8 @@ module.exports = (sequelize, DataTypes) => {
       avatar: DataTypes.TEXT,
       signer: DataTypes.STRING,
       isBin: DataTypes.DATE,
+      userProvince: DataTypes.STRING,
+      userAgent: DataTypes.STRING,
     },
     {
       sequelize,

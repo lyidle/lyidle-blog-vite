@@ -35,36 +35,25 @@
 </template>
 
 <script setup lang="ts" name="AsideAnnounce">
-// 引入api
-import { getAnnounce } from "@/api/admin"
-import type { GetAnnounce } from "@/api/admin/types/getAnnounce"
 // 引入 moment
 import moment from "@/utils/moment"
+// 引入 仓库
+import { useAnnounceStore } from "@/store/announce/index"
 // 显示当前时间
 const currentTime = ref(moment(new Date(), "a h:mm:ss"))
 // 记录当前时间的 setInterval
 let updateTime: ReturnType<typeof setInterval>
 
-// 公告
-// 展示的数据
-const announce = ref<GetAnnounce["data"]["announce"]>()
-const region_city = ref<string | null>()
-const region_country = ref<string | null>()
-const region_province = ref<string | null>()
-const region_userIp = ref<string | null>()
-
-// 发起请求
-const reqAnnounce = async () => {
-  try {
-    const result = await getAnnounce()
-    announce.value = result.announce
-    // 设置 region 的值
-    region_city.value = result.region?.city
-    region_country.value = result.region?.country
-    region_province.value = result.region?.province
-    region_userIp.value = result.region?.userIp
-  } catch (error) {}
-}
+// 提取相关 信息
+const { reqAnnounce } = useAnnounceStore()
+const {
+  // 展示的数据
+  announce,
+  region_city,
+  region_country,
+  region_province,
+  region_userIp,
+} = storeToRefs(useAnnounceStore())
 
 // 初始化 发起请求
 onMounted(async () => {

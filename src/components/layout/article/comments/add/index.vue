@@ -18,17 +18,18 @@
         @focus="commentFocus"
         @blur="isFocus = false"
         @input="handlerInput"
-        ref="inputRef"
+        ref="textAreaInstance"
+        v-bind="$attrs"
       ></my-input>
     </div>
     <!-- 文本框下的 工具栏 -->
     <div v-show="isShowTools" class="ml-70px my-10px flex justify-between">
       <!-- 左侧 按钮 -->
       <div class="tool-btns">
-        <div
+        <i
           class="i-clarity:picture-line mt-1px ml-[-0.5px]"
           @click="handlerUpload"
-        ></div>
+        ></i>
       </div>
       <!-- 右侧 按钮 -->
       <div class="flex">
@@ -47,7 +48,7 @@
         >
       </div>
     </div>
-    <!-- 渲染 文章 -->
+    <!-- 渲染 评论 -->
     <vditor-preview
       v-model:article="previewComment"
       :isExportHtml="false"
@@ -81,7 +82,47 @@ import {
   tempFileUpload,
 } from "@/utils/upload"
 
-const props = defineProps<{ articleId: number; reqComments: () => void }>()
+// 引入 UAParser
+import { UAParser } from "ua-parser-js"
+
+// 创建解析器实例
+const parser = new UAParser()
+// 获取解析结果
+const result = parser.getResult()
+// 操作系统和浏览器信息
+const systemVersion = `${result.os.name || ""} ${result.os.version || ""}`
+const browserVersion = `${result.browser.name || ""} ${
+  result.browser.version || ""
+}`
+const userAgent = `${systemVersion}|${browserVersion}`
+
+// 引入 仓库
+import { useAnnounceStore } from "@/store/announce"
+
+// 提取需要的
+const {
+  // 展示的数据
+  region_city,
+  region_province,
+} = storeToRefs(useAnnounceStore())
+const { reqAnnounce } = useAnnounceStore()
+
+onMounted(() => {
+  // 延迟 500 毫秒 如果还没有 公告 相关信息 则 重新获取
+  setTimeout(async () => {
+    if (region_city.value) return
+    await reqAnnounce()
+  }, 500)
+})
+
+const props = defineProps<{
+  // 文章id
+  articleId: number
+  //  请求评论的接口
+  reqComments: () => void
+  // 添加评论的回调
+  addComments?: (updateBody: AddCommentBody) => void
+}>()
 // 评论 信息
 const comment = ref("")
 // vditor 预览 需要的格式
@@ -99,8 +140,9 @@ const initialMaxCounts = 800
 // 最大 输入字数
 const maxCounts = ref(initialMinCounts)
 // 输入框 的实例
-const inputRef = ref()
-
+const textAreaInstance = ref()
+// 把 输入框暴露出去
+defineExpose({ textAreaInstance })
 // 输入框 聚焦 事件
 const commentFocus = () => {
   isFocus.value = true
@@ -161,7 +203,10 @@ const addArticleComments = async () => {
     const updateBody: AddCommentBody = {
       articleId: id,
       content: "",
+      userProvince: region_province.value,
+      userAgent,
     }
+    props?.addComments?.(updateBody)
     await useMdReplaceImg(comment.value, updateBody, {
       path: "/comments",
     })
@@ -186,7 +231,7 @@ const handlerUpload = async (e: Event) => {
     // 更新 值
     comment.value += mdUrl
   } catch (error) {
-    console.error(error)
+    console.error("评论区上传图片出错", error)
   }
 }
 
@@ -215,7 +260,7 @@ const handlerSuccessFile = async (
     handlerCounts()
     // 聚焦文本框
     nextTick(() => {
-      inputRef.value?.instance?.focus?.()
+      textAreaInstance.value?.instance?.focus?.()
     })
   }
 
@@ -242,7 +287,7 @@ const handlerSuccessFile = async (
 
   // 聚焦文本框
   nextTick(() => {
-    inputRef.value?.instance?.focus?.()
+    textAreaInstance.value?.instance?.focus?.()
   })
 }
 </script>

@@ -17,7 +17,7 @@
         :data="PersonData"
         top="40px"
       >
-        <global-avatar></global-avatar>
+        <global-avatar :isCenter="false"></global-avatar>
       </global-header-item>
       <li class="manager-header-item">
         <global-setting

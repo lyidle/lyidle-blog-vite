@@ -17,7 +17,14 @@ router.get("/:articleId", async (req, res, next) => {
         {
           model: User,
           as: "user", // 关联用户
-          attributes: ["id", "nickName"], // 只返回用户 ID 和用户名
+          attributes: [
+            "id",
+            "account",
+            "nickName",
+            "avatar",
+            "userProvince",
+            "userAgent",
+          ],
         },
         {
           model: Comment,
@@ -25,8 +32,15 @@ router.get("/:articleId", async (req, res, next) => {
           include: [
             {
               model: User,
-              as: "user",
-              attributes: ["id", "nickName"],
+              as: "user", // 关联用户
+              attributes: [
+                "id",
+                "account",
+                "nickName",
+                "avatar",
+                "userProvince",
+                "userAgent",
+              ],
             },
           ],
         },

@@ -3,17 +3,13 @@
     <template #content-start>
       <my-card class="card_style allDocs">
         <div class="header">
-          <div class="avatar-container">
-            <div
-              :style="{
-                background: 'no-repeat center',
-                backgroundSize: 'cover',
-                backgroundImage: userInfo?.avatar
-                  ? `url('${escapeUrlForRegExp(userInfo?.avatar)}')`
-                  : 'var(--default-avatar)',
-              }"
-              class="avatar w-100% h-100% block"
-            />
+          <div class="avatar-container" v-if="pagination?.total">
+            <!-- 头像 -->
+            <global-avatar-src
+              :account="account"
+              :avatar="userInfo?.avatar"
+              style="--avatar-size: 80px"
+            ></global-avatar-src>
             <div
               class="mask cur-pointer"
               @click="userEditorScene"
@@ -85,8 +81,6 @@
 // 引入 api
 import { searchArticleExact } from "@/api/article"
 import { searchCounts } from "@/api/user"
-// 处理 url
-import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
 import type {
@@ -97,13 +91,15 @@ import type {
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-import { mitt } from "@/utils/emitter"
 // 提取需要的数据
 const { userAccount } = storeToRefs(useUserStore())
+
+// 得到 布局组件的实例
 const layoutRef = ref()
 
 // 切换 到编辑用户界面
 const userEditorScene = useUserEditorScene()
+
 // 得到 账号名
 const route = useRoute()
 const account = route.params.author as string
@@ -131,14 +127,9 @@ const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
   pagination.value = result.pagination
 }
 
-mitt.on("reloadUserInfo", reqUserInfo)
 onMounted(async () => {
   await reqUserInfo()
   await reqArticles()
-})
-
-onBeforeUnmount(() => {
-  mitt.off("reloadUserInfo", reqUserInfo)
 })
 </script>
 <style scoped lang="scss">

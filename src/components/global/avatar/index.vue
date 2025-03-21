@@ -11,7 +11,7 @@
         :style="{
           background: 'no-repeat center',
           backgroundSize: 'contain',
-          backgroundImage: showAvatar,
+          backgroundImage: imgSrc || showAvatar,
         }"
         alt=""
         v-bind="$attrs"
@@ -30,7 +30,12 @@ const { showAccount, showAvatar } = useShowUserinfo({
   showAvatar: true,
 })
 const props = withDefaults(
-  defineProps<{ isTo?: boolean; isCursor?: boolean; isCenter?: boolean }>(),
+  defineProps<{
+    isTo?: boolean
+    isCursor?: boolean
+    isCenter?: boolean
+    imgSrc?: string
+  }>(),
   {
     isTo: true,
     isCursor: true,

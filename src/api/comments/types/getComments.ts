@@ -31,6 +31,7 @@ export interface The154549791 {
   fromId: null
   id: number
   updatedAt: string
+  user: User
   userId: number
   [property: string]: any
 }
@@ -38,5 +39,9 @@ export interface The154549791 {
 export interface User {
   id: number
   nickName: string
+  avatar: string | null
+  account: string
+  userProvince: string | null
+  userAgent: string | null
   [property: string]: any
 }

@@ -2,6 +2,8 @@ import express from "express"
 // 引入搜素函数
 import search from "./search"
 import { getKey, setKey } from "@/utils/redis"
+// 导入模型
+const { User } = require("@/db/models")
 const router = express.Router()
 // 环境变量
 const default_owner = process.env.default_owner!
@@ -127,4 +129,19 @@ router.get("/user", async (req, res, next) => {
   }
 })
 
+router.get("/findByPk/:id", async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const user = await User.findByPk(id, {
+      paranoid: false,
+      attributes: { exclude: ["pwd"] },
+    })
+    if (!user) return res.result(void 0, "查询用户失败", false)
+    res.result(user, "查询用户成功")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "查询用户失败", false)
+    )
+  }
+})
 export default router

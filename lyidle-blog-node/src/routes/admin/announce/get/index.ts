@@ -23,18 +23,21 @@ router.get("/", async (req, res, next) => {
     // 有缓存直接返回
     let ipRegion: ipRegionType | null = null
     // 是本地的跳过
-    if (!ip.isPrivate(userIp)) {
-      const query = new IP2Region()
-      let data
-      // 是否 是模拟的 数据
-      if (!is_production) data = query.search("120.24.78.68") as IP2RegionResult
-      else data = query.search(userIp) as IP2RegionResult
-      if (data) {
-        const { country, province, city } = data
-        ipRegion = { country, province, city }
-        ;(ipRegion as ipRegionType).userIp = userIp
-        await setKey(`ipRegion:${userIp}`, ipRegion)
-      }
+
+    const query = new IP2Region()
+    const testIP = "120.24.78.68"
+    let data
+    // 是否 是模拟的 数据
+    if (!is_production) data = query.search(testIP) as IP2RegionResult
+    // 开发环境 需要 不是本地的
+    else if (!ip.isPrivate(userIp))
+      data = query.search(userIp) as IP2RegionResult
+    if (data) {
+      const { country, province, city } = data
+      ipRegion = { country, province, city }
+      ;(ipRegion as ipRegionType).userIp = userIp
+      if (!is_production) (ipRegion as ipRegionType).userIp = testIP
+      await setKey(`ipRegion:${userIp}`, ipRegion)
     }
 
     // 有缓存直接返回

@@ -33,6 +33,12 @@ module.exports = {
       signer: {
         type: Sequelize.STRING,
       },
+      userProvince: {
+        type: Sequelize.STRING,
+      },
+      userAgent: {
+        type: Sequelize.STRING,
+      },
       isBin: {
         type: Sequelize.DATE,
         allowNull: true,

@@ -29,11 +29,11 @@ request.interceptors.response.use(
       const { userToken } = useUserStore()
       const token = userToken
       // 如果没有 token 且状态码为 401，不进行错误提示
-      if (!token) return response.data
+      if (!token) return Promise.reject(response.data)
       // 有 token  且 为 401 则需要清除 信息等操作
       if (token) {
         mitt.emit("token expired")
-        return
+        return Promise.reject(response.data)
       }
     }
     return Promise.reject(response.data)

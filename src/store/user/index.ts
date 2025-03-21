@@ -150,8 +150,6 @@ export const useUserStore = defineStore(
             // 重新 获取小站咨询
             mitt.emit("reloadWebInfo")
           }
-          // 重新 获取 个人空间的 信息
-          mitt.emit("reloadUserInfo")
           return
         }
       } catch (error) {
