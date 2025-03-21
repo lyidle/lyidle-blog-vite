@@ -17,13 +17,17 @@
         maxlength="300"
         @focus="commentFocus"
         @blur="isFocus = false"
+        ref="inputRef"
       ></my-input>
     </div>
     <!-- 文本框下的 工具栏 -->
     <div v-show="isShowTools" class="ml-70px my-10px flex justify-between">
       <!-- 左侧 按钮 -->
       <div class="tool-btns">
-        <div class="i-clarity:picture-line mt-1px ml-[-0.5px]"></div>
+        <div
+          class="i-clarity:picture-line mt-1px ml-[-0.5px]"
+          @click="handlerUpload"
+        ></div>
       </div>
       <!-- 右侧 按钮 -->
       <div class="flex">
@@ -50,6 +54,14 @@
 <script setup lang="ts" name="AddArticleComments">
 import { getComments } from "@/api/comments"
 import { useEventListener } from "@/hooks/useEventListener"
+import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+// 处理 文件上传
+import {
+  clickUpload,
+  fileToImgMd,
+  nameToMdImg,
+  tempFileUpload,
+} from "@/utils/upload"
 
 const props = defineProps<{ articleId: number }>()
 // 评论 信息
@@ -62,7 +74,7 @@ const isShowTools = ref(false)
 const isPreview = ref(false)
 // 是否 聚焦
 const isFocus = ref(false)
-
+const inputRef = ref()
 // 输入框 聚焦 事件
 const commentFocus = () => {
   isFocus.value = true
@@ -105,6 +117,47 @@ useEventListener("click", (e) => {
 const addArticleComments = async () => {
   const id = props.articleId
   if (!props.articleId) return
+}
+
+// 处理 点击文件的 上传 图片
+const handlerUpload = async (e: Event) => {
+  try {
+    const files = await clickUpload()
+    const mdUrl = fileToImgMd(files)
+    // 不等待 ，等成功后 自动替换
+    handlerSuccessFile(files)
+    // 更新 值
+    comment.value += mdUrl
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 替换文件的内容
+const handlerSuccessFile = async (files: File[]) => {
+  const result = await tempFileUpload(files)
+  if (!result?.length) return
+
+  // 获取需要替换的文本内容
+  let commentContent = comment.value
+
+  // for 循环 生成 正则
+  for (const [fileName, tempUrl] of result) {
+    const originImg = nameToMdImg(fileName)
+    // 使用正则表达式全局替换 originImg 为 newImg
+    const newImg = nameToMdImg(tempUrl).replace(/\\/g, "/") // 统一路径格式
+    const regex = new RegExp(escapeUrlForRegExp(originImg), "g")
+
+    commentContent = commentContent.replace(regex, newImg)
+  }
+
+  // 更新 comment.value 为替换后的内容
+  comment.value = commentContent
+
+  // 聚焦文本框
+  nextTick(() => {
+    inputRef.value?.instance?.focus?.()
+  })
 }
 </script>
 

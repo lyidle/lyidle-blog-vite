@@ -1,4 +1,5 @@
 <template>
+  <!-- @vue-ignore -->
   <div class="contain carousel card_style" v-if="$attrs?.data?.length">
     <my-carousel v-bind="$attrs">
       <template #body="{ item }: { item: Datum }">

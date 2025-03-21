@@ -26,6 +26,9 @@ importers:
       moment:
         specifier: ^2.30.1
         version: 2.30.1
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
       normalize.css:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1352,6 +1355,11 @@ packages:
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@5.1.5:
+    resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   node-addon-api@7.1.1:
@@ -2996,6 +3004,8 @@ snapshots:
   muggle-string@0.4.1: {}
 
   nanoid@3.3.7: {}
+
+  nanoid@5.1.5: {}
 
   node-addon-api@7.1.1:
     optional: true
