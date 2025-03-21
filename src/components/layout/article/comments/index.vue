@@ -21,6 +21,21 @@
       :reqComments
     ></layout-article-comments-add>
   </div>
+  <div v-for="comment in comments" class="comments-content">
+    <div class="comment-item">
+      <div class="avatar">{{ comment.userId }}</div>
+      <!-- 评论 -->
+      <div class="comment">
+        <!-- 渲染 文章 -->
+        <vditor-preview
+          :article="{ content: decompressStringNotError(comment.content) }"
+          :isExportHtml="false"
+          :autoPreview="true"
+          v-if="comment.id"
+        ></vditor-preview>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts" name="ArticleComments">
@@ -28,10 +43,12 @@
 import { getComments } from "@/api/comments"
 // 引入 评论
 import type { GetComments } from "@/api/comments/types/getComments"
+import { decompressStringNotError } from "@/utils/compression"
 
 const props = defineProps<{ articleId: number }>()
 // 评论 数量
 const counts = ref(0)
+const comments = ref<GetComments["data"]>()
 
 // 得到 评论
 const reqComments = async () => {
@@ -40,6 +57,7 @@ const reqComments = async () => {
   const result = await getComments(id)
   // 处理 评论 个数
   handlerCounts(result)
+  comments.value = result
 }
 
 // 处理 评论数量的 函数
@@ -63,13 +81,10 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.comments-container {
-  padding: 0 26px;
-
+%vditor-style {
   // 改变 vditor 的样式
-  ::v-deep(.vditor-reset) {
+  ::v-deep(.vditor-style) {
     padding: 10px;
-    margin-right: 5px;
     border: 1px solid var(--primary-scend-color);
     // 隐藏 描点后的 跳转
     a[id^="vditorAnchor"] {
@@ -77,6 +92,22 @@ onMounted(async () => {
         display: none;
       }
     }
+  }
+}
+// 容器的 padding
+$container-pd: 0 26px;
+.comments-container {
+  padding: $container-pd;
+  @extend %vditor-style;
+}
+
+.comments-content {
+  padding: $container-pd;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  .comment {
+    @extend %vditor-style;
   }
 }
 </style>

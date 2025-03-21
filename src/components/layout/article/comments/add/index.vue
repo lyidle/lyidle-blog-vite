@@ -262,8 +262,9 @@ const handlerSuccessFile = async (
   }
 
   // 改变 vditor 的样式
-  ::v-deep(.vditor-reset) {
+  ::v-deep(.vditor-style) {
     margin-left: 65px;
+    margin-right: 5px;
   }
 }
 </style>

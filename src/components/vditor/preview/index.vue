@@ -27,12 +27,18 @@ const menuTree = defineModel<TocNode[]>("menuTree")
 const title = defineModel<string>("title")
 
 const props = withDefaults(
-  defineProps<{ isExportHtml?: boolean; autoPreview?: boolean }>(),
+  defineProps<{
+    isExportHtml?: boolean
+    autoPreview?: boolean
+    article?: GetOneArticle["data"]
+  }>(),
   {
     isExportHtml: true,
   }
 )
-
+onMounted(() => {
+  if (props.article) article.value = props.article
+})
 // 调用 渲染文章
 const html = useVditorPreview(
   article,

@@ -144,4 +144,7 @@ declare module 'vue' {
     VditorMenuGenerate: typeof import('./src/components/vditor/menu/generate.vue')['default']
     VditorPreview: typeof import('./src/components/vditor/preview/index.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }
