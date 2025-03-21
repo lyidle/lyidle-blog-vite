@@ -20,7 +20,7 @@ export const exportHtmlFile = (html: string, Title: string) => {
 // 导出为 html 加上样式和暗夜切换的代码
 export const exportHtmlTemplate = (html: string, title: string): string => {
   return `
-  <html themes="normal-light">
+    <html themes="normal-light">
   <head>
     <link
       rel="stylesheet"
@@ -274,7 +274,11 @@ Current colors taken from GitHub's CSS
         --content-card-flex-during: 0.5s;
         --pages-card-radius: 10px;
       }
-
+      
+      .vditor-style img{
+        cursor: var(--cursor-default);
+      }
+      
       html .vditor-style {
         --doc-border-radius: 5px;
       }

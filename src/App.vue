@@ -78,6 +78,10 @@ useGlobalEmitter()
       overflow-x: hidden;
     }
 
+    img {
+      cursor: var(--cursor-default);
+    }
+
     // 工具 栏
     .vditor-toolbar {
       border: unset;

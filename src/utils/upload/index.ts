@@ -2,32 +2,44 @@ import { postTempImgFiles } from "@/api/img"
 import { cloneDeep } from "lodash-es"
 import { nanoid } from "nanoid"
 
+// 定义 类型
+export type clickUploadNameMapType = { [newName: string]: string }
 /**
- * 处理文件上传，返回符合类型限制的 File[]
+ * 处理文件上传，返回符合类型限制的 File[] 和文件名映射
  * @param type 文件类型限制（默认为 "image"）
- * @returns 返回符合类型限制的 File[]，如果未选择文件或类型不匹配，抛出错误
+ * @returns 返回一个对象，包含符合类型限制的 File[] 和文件名映射 { files: File[], nameMap: { [newName: string]: string } }
+ * 如果未选择文件或类型不匹配，抛出错误
  */
-export const clickUpload = async (type: string = "image"): Promise<File[]> => {
+export const clickUpload = async (
+  type: string = "image"
+): Promise<{ files: File[]; nameMap: clickUploadNameMapType }> => {
   const files = await clickVirtualFile() // 获取用户选择的文件列表
 
+  const filteredFiles: File[] = []
+  const nameMap: clickUploadNameMapType = {}
+
   // 过滤并检查文件类型
-  const filteredFiles = files
-    .map((item) => {
-      if (!item.files.type.startsWith(type)) {
-        // 如果文件类型不匹配，显示错误提示
-        ElMessage.error(`文件 ${item.oldName} 类型错误，需要的类型为：${type}`)
-        return
-      }
-      return item.files // 返回符合类型限制的文件
-    })
-    .filter(Boolean) as File[]
+  files.forEach((item) => {
+    if (!item.files.type.startsWith(type)) {
+      // 如果文件类型不匹配，显示错误提示
+      ElMessage.error(`文件 ${item.oldName} 类型错误，需要的类型为：${type}`)
+      return
+    }
+
+    // 将符合类型限制的文件添加到 filteredFiles 中
+    filteredFiles.push(item.files)
+
+    // 将新文件名映射到旧文件名
+    nameMap[item.files.name] = item.oldName
+  })
 
   // 如果没有符合类型的文件，抛出错误
   if (filteredFiles.length === 0) {
     throw new Error("没有符合类型的文件")
   }
 
-  return filteredFiles // 返回符合类型限制的文件列表
+  // 返回符合类型限制的文件列表和文件名映射
+  return { files: filteredFiles, nameMap }
 }
 
 /**
@@ -100,17 +112,41 @@ export const nameToMdImg = (name: string) => `![](${name})`
  * @param file File[]
  */
 export const tempFileUpload = async (
-  files: File[]
-): Promise<[string, string][] | undefined> => {
+  files: File[],
+  options?: {
+    errorCallback?: (name: string) => void
+  }
+): Promise<{ success: [string, string][]; error: string[] } | undefined> => {
+  // 初始化 配置项
+  let errorCallback: ((name: string) => void) | null = null
+  if (options?.errorCallback) {
+    errorCallback = options.errorCallback
+  }
+
   try {
+    let error: string[] = []
+
     // 调用 API 上传文件
     const response = await postTempImgFiles(files)
     for (const errorName of response.errFiles) {
-      ElMessage.error(`上传文件${errorName}失败`)
+      errorCallback?.(errorName)
+      if (!errorCallback) ElMessage.error(`上传文件${errorName}失败`)
+      error.push(errorName)
     }
     const success = Object.entries(response.succMap)
-    if (success.length) return success
+    if (success.length) return { error, success }
   } catch (error) {
     console.log("上传图片失败~", error)
+    return {
+      error: files
+        .map((item) => {
+          const name = item.name
+          errorCallback?.(name)
+          if (!errorCallback) ElMessage.error(`上传文件${name}失败`)
+          return name
+        })
+        .filter(Boolean) as string[],
+      success: [],
+    }
   }
 }

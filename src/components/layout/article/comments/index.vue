@@ -18,6 +18,7 @@
     <layout-article-comments-add
       v-if="articleId"
       :articleId
+      :reqComments
     ></layout-article-comments-add>
   </div>
 </template>
@@ -64,5 +65,18 @@ onMounted(async () => {
 <style scoped lang="scss">
 .comments-container {
   padding: 0 26px;
+
+  // 改变 vditor 的样式
+  ::v-deep(.vditor-reset) {
+    padding: 10px;
+    margin-right: 5px;
+    border: 1px solid var(--primary-scend-color);
+    // 隐藏 描点后的 跳转
+    a[id^="vditorAnchor"] {
+      svg {
+        display: none;
+      }
+    }
+  }
 }
 </style>
