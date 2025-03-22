@@ -12,7 +12,8 @@
     <template v-if="data.length">
       <!-- 优先 id 然后 name 最后 item本身 作为 key -->
       <template v-for="item in data" :key="item.id || item.name || item">
-        <my-menu-item>
+        <slot name="custom" v-if="$slots?.custom" :item="item"></slot>
+        <my-menu-item v-else>
           <slot name="body" :item="item">
             {{ item.name }}
           </slot>

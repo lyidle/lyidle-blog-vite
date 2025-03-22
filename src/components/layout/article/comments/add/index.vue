@@ -221,6 +221,7 @@ const addArticleComments = async () => {
     })
     // 添加 评论
     await addComment(updateBody)
+    // 重置输入框
     comment.value = ""
     ElMessage.success("添加评论成功~")
     await props?.reqComments?.()

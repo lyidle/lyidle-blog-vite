@@ -8,17 +8,21 @@
       </a>
     </template>
     <my-menu :data="data?.data" :triangle="true" :left="data?.style?.left" :top>
-      <template #body="{ item: sub }: { item: menuItemType }">
-        <my-anchor
-          :to="sub.to"
-          class="topnav-menu-item"
-          :style="{ width: data?.style?.width }"
-          @click="sub.click && sub.click()"
-          v-if="!sub?.hide"
-        >
-          <i :class="sub?.icon?.icon" :style="sub?.icon?.style"></i>
-          <span>{{ sub.name }}</span>
-        </my-anchor>
+      <template #custom="{ item: sub }: { item: menuItemType }">
+        <slot name="custom" v-if="$slots.custom" :item="sub"></slot>
+        <template v-else>
+          <my-menu-item v-if="!sub.hide">
+            <my-anchor
+              :to="sub.to"
+              class="topnav-menu-item"
+              :style="{ width: data?.style?.width }"
+              @click="sub?.click?.()"
+            >
+              <i :class="sub?.icon?.icon" :style="sub?.icon?.style"></i>
+              <span>{{ sub.name }}</span>
+            </my-anchor>
+          </my-menu-item>
+        </template>
       </template>
     </my-menu>
   </li>
@@ -29,12 +33,13 @@
 import type { menuItemType, menuView } from "@/components/layout/header/types"
 
 const data = defineModel<menuView>("data")
-
 defineProps<{ top?: string; name?: string; icon?: string }>()
 </script>
 
-<style scoped lang="scss">
-.topnav-menu-item {
-  padding-left: var(--pl);
+<style lang="scss">
+.custom-menu-trigger {
+  .topnav-menu-item {
+    padding-left: var(--pl);
+  }
 }
 </style>

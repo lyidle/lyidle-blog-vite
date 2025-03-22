@@ -37,11 +37,11 @@ $menu-radius: var(--menu-radius);
     color: v-bind(colorHover);
   }
   // 圆角
-  &:nth-child(2) {
+  &:nth-of-type(2) {
     border-top-left-radius: $menu-radius;
     border-top-right-radius: $menu-radius;
   }
-  &:last-child {
+  &:nth-last-of-type(1) {
     border-bottom-left-radius: $menu-radius;
     border-bottom-right-radius: $menu-radius;
   }
