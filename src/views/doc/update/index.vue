@@ -133,7 +133,7 @@ const reqArticle = async () => {
       id: docId,
     })
     if (!Article?.content) {
-      ElMessage.error("没有找到文章信息~")
+      mitt.emit("NotFound", "not article")
       return
     }
     docsFormData.title = Article?.title || ""
@@ -152,13 +152,7 @@ const reqArticle = async () => {
     isEditor.value = true
     // 挂载内容
   } catch (error) {
-    // 触发路由守卫 账户不一致事件
-    const err = handlerReqErr(error, (err) => {
-      if (err?.includes("没有查找到文章")) {
-        mitt.emit("account inconsistent", "无权限更新当前文章~")
-      }
-    })
-    if (!err) mitt.emit("account inconsistent", "获取文章失败~")
+    mitt.emit("NotFound", "not article")
   }
 }
 
@@ -306,7 +300,6 @@ const handerUpload = async () => {
     if (!err) ElMessage.error("更新文章失败~")
   }
 }
-
 // 挂载
 onMounted(async () => {
   // 账号和本地的不一样

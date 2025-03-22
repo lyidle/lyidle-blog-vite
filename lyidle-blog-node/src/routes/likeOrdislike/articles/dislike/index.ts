@@ -21,12 +21,10 @@ router.post("/:articleId", async (req, res, next) => {
       where: {
         userId,
         targetType: "article",
-        targetId: articleId,
       },
       defaults: {
         userId,
         targetType: "article",
-        targetId: articleId,
         dislikeType,
         likeType: "normal", // 默认点赞状态为 normal
         articleId, // 关联的文章 ID
@@ -40,7 +38,7 @@ router.post("/:articleId", async (req, res, next) => {
     }
 
     // 返回成功响应
-    res.result(record, "点踩操作成功")
+    res.result(void 0, "点踩操作成功")
   } catch (error) {
     // 捕获错误并返回失败响应
     res.validateAuth(error, next, () =>

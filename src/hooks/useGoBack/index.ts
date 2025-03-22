@@ -1,6 +1,11 @@
+import type { Router } from "vue-router"
+
 // 返回上一个路径 没有时 回到指定路径
-export function useGoBack(defaultPath = "/") {
-  const router = useRouter()
+export function useGoBack(options?: { defaultPath?: string; router?: Router }) {
+  // 默认 路径
+  const defaultPath = options?.defaultPath || "/"
+
+  const router = options?.router || useRouter()
 
   const goBack = () => {
     if (router.options.history.state.back !== null) {

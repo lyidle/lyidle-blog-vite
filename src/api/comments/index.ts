@@ -7,6 +7,7 @@ import { GetComments } from "./types/getComments"
 // 统一管理 api
 enum API {
   comments = "/comments",
+  pagination = "/comments/pagination",
 }
 
 // 引入前缀
@@ -20,5 +21,5 @@ export const addComment = (data: AddCommentBody) =>
 // 查询评论
 export const getComments = (articleId: number) =>
   request.get<any, GetComments["data"]>(
-    server + prefix + API.comments + `/${articleId}`
+    server + prefix + API.pagination + `/${articleId}`
   )

@@ -19,14 +19,18 @@ module.exports = {
           model: "Users",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       articleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Articles",
+          model: "Articles", // 关联文章表
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       fromId: {
         type: Sequelize.INTEGER,
@@ -35,6 +39,8 @@ module.exports = {
           model: "Comments", // 自引用，指向同一张表
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

@@ -77,7 +77,7 @@ router.get("/:articleId", async (req, res, next) => {
         currentPage,
         pageSize,
       },
-      replies: rows,
+      comments: rows,
     }
 
     res.result(result, "查询评论成功")

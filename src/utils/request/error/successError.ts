@@ -66,6 +66,7 @@ export const handlerSuccessErrorMessage = (response: {
     mitt.emit("token expired")
     return
   }
+  console.log(response.data?.data?.msg?.roles)
 
   // 如果是已知错误码且服务器返回了错误信息，显示错误信息
   if (errorCode.includes(response.data.code)) {

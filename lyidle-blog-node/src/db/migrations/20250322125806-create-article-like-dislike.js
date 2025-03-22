@@ -22,15 +22,22 @@ module.exports = {
         type: Sequelize.ENUM("comment", "article"),
         allowNull: false,
       },
-      targetId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       articleId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // 如果 targetType 是 comment，则可以为空
+        allowNull: false, //都是对文章的操作
         references: {
           model: "Articles", // 关联文章表
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      commentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true, // 如果 targetType 是 article，则可以为空
+        unique: true,
+        references: {
+          model: "Comments", // 关联评论表
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -58,7 +65,7 @@ module.exports = {
 
     // 添加联合唯一索引，确保一个用户对同一个目标只能有一条记录
     await queryInterface.addIndex("ArticleLikeDislikes", {
-      fields: ["userId", "targetType", "targetId"],
+      fields: ["userId", "targetType", "articleId", "commentId"],
       unique: true,
       name: "unique_user_target",
     })

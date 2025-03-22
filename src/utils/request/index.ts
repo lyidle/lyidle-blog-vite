@@ -15,7 +15,10 @@ request.interceptors.request.use((config) => {
   const token = userToken
   const tourist = touristToken
   // 存在token 就携带token发起信息
+  // 必须要有 其中一个 token 才能成功请求
+  // 游客 token
   if (tourist) config.headers["authorization-tourist"] = `Bearer ${tourist}`
+  // 用户token
   if (token) config.headers.Authorization = `Bearer ${token}`
   //返回配置对象
   return config
@@ -23,8 +26,9 @@ request.interceptors.request.use((config) => {
 
 request.interceptors.response.use(
   (response) => {
-    // 简化数据 直接得到data
+    // 成功 简化数据 直接得到data
     if (response.data.code === 200) return response.data?.data
+    // token 过期
     if (response.data.code === 401) {
       const { userToken } = useUserStore()
       const token = userToken
@@ -36,6 +40,7 @@ request.interceptors.response.use(
         return Promise.reject(response.data)
       }
     }
+    // 其他的 状态码 拒绝
     return Promise.reject(response.data)
   },
   (error) => {

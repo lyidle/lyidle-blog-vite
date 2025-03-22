@@ -79,7 +79,7 @@ const props = defineProps<{ articleId: number }>()
 // 评论 数量
 const counts = ref(0)
 // 保存的 评论
-const comments = ref<GetComments["data"]>()
+const comments = ref<GetComments["data"]["comments"]>()
 // 回复 的评论 id
 const fromId = ref(-1)
 // 回复 的评论 nickName
@@ -89,20 +89,21 @@ const reqComments = async () => {
   const id = props.articleId
   if (!props.articleId) return
   const result = await getComments(id)
+  const { comments: _comments } = result
   // 处理 评论 个数
-  handlerCounts(result)
-  result?.forEach?.((item) => {
+  handlerCounts(_comments)
+  _comments.forEach?.((item) => {
     const parentId = item.id
     if (item?.replies?.length) {
       // 添加一个 parentId
       item.replies.forEach((item) => (item.parentId = parentId))
     }
   })
-  comments.value = orderComments(result)
+  comments.value = orderComments(_comments)
 }
 
 // 处理 评论数量的 函数
-const handlerCounts = (comments: GetComments["data"]) => {
+const handlerCounts = (comments: GetComments["data"]["comments"]) => {
   // 初始化 外层的 个数
   let len = comments?.length || 0
   if (len) {
@@ -136,9 +137,9 @@ const order = reactive<orderObjType>({
 
 // 评论排序 的回调函数
 const orderComments = (
-  comments: GetComments["data"],
+  comments: GetComments["data"]["comments"],
   key: OrderKeys = "new"
-): GetComments["data"] => {
+): GetComments["data"]["comments"] => {
   // 得到 当前 的排序
   const curOrder = order[key]
   return comments.sort((a, b) => {

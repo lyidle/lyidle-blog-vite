@@ -23,18 +23,19 @@ const reqArticle = async (): Promise<GetOneArticle["data"] | undefined> => {
     const articles = await getOneArticle(route.params.id as string)
     try {
       // 解压缩展示文章
-      if (articles?.content)
-        articles.content =
-          (decompressStringNotError(articles.content) as string) ||
-          articles.content
+      if (!articles?.content) {
+        mitt.emit("NotFound", "not article")
+        return
+      }
+      articles.content =
+        (decompressStringNotError(articles.content) as string) ||
+        articles.content
     } catch (error) {}
     return articles
   } catch (error) {
-    handlerReqErr(error, "error")
     mitt.emit("NotFound", "not article")
   }
 }
-
 // 提供方法
 provide("reqArticle", reqArticle)
 </script>

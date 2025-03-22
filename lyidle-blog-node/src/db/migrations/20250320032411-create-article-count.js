@@ -11,11 +11,12 @@ module.exports = {
       },
       articleId: {
         type: Sequelize.INTEGER,
-        unique: true,
+        allowNull: false,
         references: {
-          model: "Articles",
+          model: "Articles", // 关联文章表
           key: "id",
         },
+        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       count: {

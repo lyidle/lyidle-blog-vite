@@ -56,7 +56,7 @@ module.exports = {
       if (i === 2) randomUser = users[0]
       return randomUser
     }
-
+    let carouselCounts = 0
     for (let i = 1; i <= articleCounts; i++) {
       const randomCategory = categories[i % categories.length]
       const randomTags = tagsList[i % tagsList.length]
@@ -67,7 +67,9 @@ module.exports = {
         author: user.account,
         category: randomCategory,
         tags: JSON.stringify(randomTags),
-        carousel: Math.random() > 0.5 ? 1 : 0,
+        // 成功 次数加一
+        carousel:
+          Math.random() > 0.5 && carouselCounts <= 8 ? +!!++carouselCounts : 0,
         desc: `文章的描述内容${i}`,
         // poster: `https://example.com/poster${i}.jpg`,
         length: lengthRender(i),

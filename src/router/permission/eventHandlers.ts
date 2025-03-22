@@ -1,5 +1,7 @@
 import { mitt } from "@/utils/emitter"
 import { useUserStore } from "@/store/user"
+// 回到上一个路径
+import { useGoBack } from "@/hooks/useGoBack"
 
 // 错误信息去重处理
 // token 错误信息
@@ -27,8 +29,9 @@ export const routerEventHandlered = (router: any) => {
     router.push({ path: "/", replace: true })
   })
 
-  mitt.on("account inconsistent", (msg: string) => {
-    router.push({ path: "/", replace: true })
+  mitt.on("account inconsistent", (msg: string, to?: string) => {
+    const goBack = useGoBack({ router, defaultPath: to })
+    goBack()
     msg && ElMessage.warning(msg)
   })
 
@@ -58,10 +61,12 @@ export const routerEventHandlered = (router: any) => {
   })
 
   // 处理 Not Found 跳转
-  mitt.on("NotFound", (msg: string) => {
+  mitt.on("NotFound", (msg: string, options?: { isTip?: boolean }) => {
+    // 默认值 为 true
+    const isTip = options?.isTip ?? true
     switch (msg) {
       case "not article":
-        ElMessage.error("获取文章失败")
+        isTip && ElMessage.error("获取文章失败")
         router.push({ path: "/404", replace: true })
         break
       default:

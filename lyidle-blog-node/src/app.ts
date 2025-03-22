@@ -75,29 +75,54 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     // 处理 各个模型的 错误
     switch (modelName) {
       case "BannerImg":
-        res.result(void 0, "背景的路径名字不能重复", false, 400)
+        res.result(void 0, "背景的路径名字不能重复", false)
         break
       case "Menu":
-        res.result(void 0, "菜单的名字不能重复", false, 400)
+        res.result(void 0, "菜单的名字不能重复", false)
         break
       case "Permission":
-        res.result(void 0, "权限的名字不能重复", false, 400)
+        res.result(void 0, "权限的名字不能重复", false)
         break
       case "PermissionGroup":
-        res.result(void 0, "权限组的名字不能重复", false, 400)
+        res.result(void 0, "权限组的名字不能重复", false)
         break
       case "Role":
-        res.result(void 0, "角色的名字不能重复", false, 400)
+        res.result(void 0, "角色的名字不能重复", false)
         break
       case "Setting":
-        res.result(void 0, "设置的名字不能重复", false, 400)
+        res.result(void 0, "设置的名字不能重复", false)
+        break
+      case "ArticleLikeDislike":
+        // 获取违反唯一性约束的字段
+        const articleLikeDislikeErrors = []
+        if (uniqueFields.includes("userId"))
+          articleLikeDislikeErrors.push("用户ID不能重复")
+        if (uniqueFields.includes("targetType"))
+          articleLikeDislikeErrors.push("目标类型不能重复")
+        if (uniqueFields.includes("articleId"))
+          articleLikeDislikeErrors.push("文章ID不能重复")
+        if (uniqueFields.includes("commentId"))
+          articleLikeDislikeErrors.push("评论ID不能重复")
+
+        // 根据联合唯一索引的逻辑，返回更具体的错误信息
+        if (articleLikeDislikeErrors.length > 0) {
+          res.result(
+            void 0,
+            `用户对同一目标只能有一条记录：${articleLikeDislikeErrors.join(
+              ", "
+            )}`,
+            false
+          )
+        } else {
+          res.result(void 0, "用户对同一目标只能有一条记录", false)
+        }
         break
       case "User":
         // 用户的 拥有 unique 字段的属性 有两个
         const result: string[] = []
         if (uniqueFields.includes("account")) result.push("用户的名字不能重复")
         if (uniqueFields.includes("email")) result.push("用户的邮箱不能重复")
-        res.result(void 0, result, false, 400)
+        res.result(void 0, result, false)
         break
     }
     return
@@ -107,8 +132,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)
   // 其他 错误
-  if ((err.name = "otherError"))
-    return res.result(void 0, err.message, false, 400)
+  if ((err.name = "otherError")) return res.result(void 0, err.message, false)
   // 打印其他错误
   console.log(err)
 })
