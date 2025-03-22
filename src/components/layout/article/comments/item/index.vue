@@ -14,6 +14,7 @@
         <div class="userName cur-text font-bold">
           {{ comment.user.nickName }}
         </div>
+        {{ comment.fromId || comment.id }}
         <!-- 评论 -->
         <div class="comment-data w-100% h-100%">
           <!-- 渲染 评论 -->
