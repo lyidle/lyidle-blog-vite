@@ -45,7 +45,7 @@ router.get("/", async (req, res, next) => {
 })
 router.delete(
   "/",
-  [jwtMiddleware, isTourist],
+  [isTourist],
   async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body
     try {

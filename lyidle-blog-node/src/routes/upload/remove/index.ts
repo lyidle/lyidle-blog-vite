@@ -5,7 +5,7 @@ import { unlink } from "fs/promises" // 以异步方式删除文件
 import express, { Request, Response, NextFunction } from "express"
 
 const router = express.Router()
-const api_prefix = process.env.api_prefix!
+let api_prefix = process.env.api_prefix! || "/api"
 const staticPath = resolve(__dirname, "../../../") // 计算静态资源的根目录路径
 
 router.delete("/", async (req: Request, res: Response, next: NextFunction) => {
@@ -16,28 +16,29 @@ router.delete("/", async (req: Request, res: Response, next: NextFunction) => {
   // 确保 urls 是一个非空数组
   if (Array.isArray(urls) && urls.length) {
     await Promise.all(
-      urls.map(async (item) => {
+      urls.map(async ($item) => {
         try {
+          // 先 全部斜杆 转成 /
+          api_prefix = api_prefix.replace(/[\\/]/g, "/")
+          const item = $item.replace(/[\\/]/g, "/")
           // 处理 URL 路径，将 API 前缀去掉
-          const handlerPath = item.replace(api_prefix.replace("/", "\\"), "")
-
+          const handlerPath = item.replace(api_prefix, "")
           // 确保路径指向 `assets` 目录，防止误删其他文件
-          if (handlerPath.startsWith("\\assets")) {
+          if (handlerPath.startsWith("/assets")) {
             const filePath = join(staticPath, handlerPath) // 计算文件的完整路径
-
             // 检查文件是否存在
             if (existsSync(filePath)) {
               await unlink(filePath) // 异步删除文件
               successMap.push(item) // 记录成功删除的文件
             } else {
-              errorMap.push(item) // 记录未找到的文件
+              errorMap.push($item) // 记录未找到的文件
             }
           } else {
-            errorMap.push(item) // 记录非法路径
+            errorMap.push($item) // 记录非法路径
           }
         } catch (error) {
-          console.error(`删除文件失败: ${item}`, error) // 记录删除失败的错误信息
-          errorMap.push(item) // 记录删除失败的文件
+          console.error(`删除文件失败: ${$item}`, error) // 记录删除失败的错误信息
+          errorMap.push($item) // 记录删除失败的文件
         }
       })
     )

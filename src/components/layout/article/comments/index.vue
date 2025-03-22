@@ -60,7 +60,6 @@
             :reqComments
             :fromNickName
             class="w-100%"
-            ref="replyInstance"
           ></layout-article-comments-reply>
         </div>
       </template>
@@ -83,15 +82,30 @@ const comments = ref<GetComments["data"]>()
 const fromId = ref(-1)
 // 回复 的评论 nickName
 const fromNickName = ref("")
-// 回复 框的 组件实例
-const replyInstance = ref()
-// 计算得到 对应显示的 textArea实例
-const textAreaInstance = computed(() => {
-  if (replyInstance?.value?.length)
-    for (const instances of replyInstance?.value) {
-      return instances?.addInstance?.textAreaInstance?.instance?.focus
-    }
-})
+// // 引入前缀
+// const prefix = import.meta.env.VITE_API
+
+// // 将 prefix 中的 / 替换为 \
+// const normalizedPrefix = prefix.replace(/\//g, "\\")
+// // 构建正则表达式，支持正斜杠和反斜杠
+// const urlRegex = new RegExp(
+//   `!\\[.*?\\]\\(([\\\\/]${normalizedPrefix}[\\\\/]assets[\\\\/]images[\\\\/]temp[\\\\/].*)\\)`,
+//   "g"
+// )
+// // 处理临时链接
+// let match: RegExpExecArray | null
+// const content =
+//   "tes豆腐干反对![](\\api/assets/images\\temp/test1/c9f789a3-9fca-4054-8fab-1c9d7f3ba4ec.jpg)"
+// const urls = new Set<string>()
+// // 使用循环查找所有匹配项
+// while ((match = urlRegex.exec(content)) !== null) {
+//   if (match.index === urlRegex.lastIndex) {
+//     urlRegex.lastIndex++
+//   }
+//   urls.add(match[1].replace(/\\/g, "/"))
+// }
+// console.log(Array.from(urls))
+
 // 得到 评论
 const reqComments = async () => {
   const id = props.articleId
@@ -196,7 +210,6 @@ const handlerReply = (options: handlerReplyType) => {
   if (find) {
     find.isShowComment = true
     callback?.()
-    nextTick(() => textAreaInstance.value?.())
   }
 }
 
@@ -223,7 +236,9 @@ onMounted(async () => {
         @extend %text-cursor;
       }
     }
-
+    img {
+      max-width: 500px;
+    }
     // 隐藏 描点后的 跳转
     a[id^="vditorAnchor"] {
       svg {

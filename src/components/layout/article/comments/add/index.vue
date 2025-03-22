@@ -206,10 +206,10 @@ const addArticleComments = async () => {
       userProvince: region_province.value,
       userAgent,
     }
-    props?.addComments?.(updateBody)
     await useMdReplaceImg(comment.value, updateBody, {
       path: "/comments",
     })
+    // 添加 评论
     await addComment(updateBody)
     comment.value = ""
     ElMessage.success("添加评论成功~")

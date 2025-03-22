@@ -20,8 +20,10 @@ const addComments = (updateBody: AddCommentBody) => {
 
 // 添加 评论的 组件实例
 const addInstance = ref()
-
-defineExpose({ addInstance })
+// 聚焦 输入框
+onMounted(() => {
+  addInstance.value?.textAreaInstance?.instance?.focus?.()
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -9,7 +9,7 @@ import { compressAndSaveImage } from "@/utils/io/compress/compressAndSaveImage"
 // 用于 获取contentType
 const { lookup } = require("mime-types")
 // api 的前缀
-const api_prefix = process.env.api_prefix || "/api"
+let api_prefix = process.env.api_prefix || "/api"
 
 // 判断是否是 GIF
 const isGif = (extension: string): boolean => {
@@ -22,8 +22,7 @@ const gifsicleQuality: NumberRange<1, 3> = 3
 /* 
 临时图片的api
 生成的文件路径
-今天资源路径
-账户
+相对的资源路径
 */
 type successType = { url: string; origin: string }[]
 export const tempImgLinkToPermantLink = async (
@@ -37,21 +36,20 @@ export const tempImgLinkToPermantLink = async (
   const successImg: successType = []
   // 判断有无 tempImg 需要替换成 永久的 文件链接
   if (Array.isArray(tempImg) && tempImg.length) {
-    for (const item of tempImg) {
+    for (const $item of tempImg) {
       // 非空判断
-      if (!item) continue
-
+      if (!$item) continue
+      // 先把所有的 斜杆转为 /
+      const item = $item.replace(/[\\/]/g, "/")
+      api_prefix = api_prefix.replace(/[\\/]/g, "/")
       // 判断是否是静态目录下的文件
-      if (
-        !item.replace(/\//g, "\\").startsWith(api_prefix.replace("/", "\\"))
-      ) {
+      if (!item.startsWith(api_prefix)) {
         // 不存在 添加到 数组
-        tempImgNull.push(item)
+        tempImgNull.push($item)
         continue
       }
-
       // 获取到对应的临时目录
-      const staticPath = join($staticPath, item.replace("\\api", ""))
+      const staticPath = join($staticPath, item.replace(api_prefix, ""))
       const isExist = existsSync(staticPath)
       // 判断是否存在
       if (isExist) {
@@ -80,7 +78,10 @@ export const tempImgLinkToPermantLink = async (
         if (resolvePath) {
           // 去掉 assets之前的路径生成api
           const api = resolvePath.replace($staticPath, "")
-          const result = { url: join(api_prefix, api), origin: item }
+          const result = {
+            url: join(api_prefix, api).replace(/[\\/]/g, "/"),
+            origin: $item,
+          }
           // 删除 临时文件
           unlinkSync(staticPath)
           successImg.push(result)
@@ -89,7 +90,7 @@ export const tempImgLinkToPermantLink = async (
         }
       }
       // 不存在 添加到 数组
-      tempImgNull.push(item)
+      tempImgNull.push($item)
     }
   }
   return { tempImgNull, successImg }

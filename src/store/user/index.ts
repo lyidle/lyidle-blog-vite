@@ -159,13 +159,17 @@ export const useUserStore = defineStore(
 
     // 增加游客数量
     const addTourist = async () => {
-      // 有 访客标识了 退出
-      if (getPersistedData("User", "touristToken")) return
-      const result = await reqAddTourist()
-      if (result) {
-        touristToken.value = result
-        // 重新 获取小站咨询
-        mitt.emit("reloadWebInfo")
+      try {
+        // 有 访客标识了 退出
+        if (getPersistedData("User", "touristToken")) return
+        const result = await reqAddTourist()
+        if (result) {
+          touristToken.value = result
+          // 重新 获取小站咨询
+          mitt.emit("reloadWebInfo")
+        }
+      } catch (error) {
+        console.error(error, "增加游客标识失败")
       }
     }
 
@@ -223,19 +227,19 @@ export const useUserStore = defineStore(
       try {
         // 退出登录
         await reqLogout()
-        // 重置 状态
-        resetStore()
-        // 额外 重置 token
-        userToken.value = ""
-        await addTourist()
-        ElMessage.success("退出登录成功~")
-        // 重新加载路由
-        mitt.emit("route:reload")
-        // 重新 获取小站咨询
-        mitt.emit("reloadWebInfo")
       } catch (error) {
-        ElMessage.error("退出登录失败~")
+        console.log(error, "退出登录失败")
       }
+      ElMessage.success("退出登录成功")
+      // 重置 状态
+      resetStore()
+      // 额外 重置 token
+      userToken.value = ""
+      await addTourist()
+      // 重新加载路由
+      mitt.emit("route:reload")
+      // 重新 获取小站咨询
+      mitt.emit("reloadWebInfo")
     }
 
     return {

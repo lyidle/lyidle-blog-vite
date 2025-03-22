@@ -18,16 +18,21 @@ export const useMdReplaceImg = async (
     if (optPath) path = optPath
     if (optKey) contentKey = optKey
   }
-  // 引入 前缀
+  // 引入前缀
   const prefix = import.meta.env.VITE_API
+
+  // 将 prefix 中的 / 替换为 \
+  const normalizedPrefix = prefix.replace(/\//g, "\\")
+
   // 处理临时链接
   let match: RegExpExecArray | null
   const urls = new Set<string>()
-  const api = prefix.replace("/", "\\")
+
   // 判断有无值
   if (content) {
+    // 构建正则表达式，支持正斜杠和反斜杠
     const urlRegex = new RegExp(
-      `!\\[.*?\\]\\((\\\\${api}\\\\assets\\\\images\\\\temp([^)]*))\\)`,
+      `!\\[.*?\\]\\(([\\\\/]${normalizedPrefix}[\\\\/]assets[\\\\/]images[\\\\/]temp.*)\\)`,
       "g"
     )
     // 使用循环查找所有匹配项
@@ -38,8 +43,8 @@ export const useMdReplaceImg = async (
       urls.add(match[1])
     }
   }
-  const arr = Array.from(urls)
 
+  const arr = Array.from(urls)
   urls.clear()
 
   let transformLink = ""
