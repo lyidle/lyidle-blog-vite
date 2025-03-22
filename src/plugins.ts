@@ -24,14 +24,13 @@ export default {
     app.use(pinia)
     // 处理 访客
     const { addTourist } = useUserStore()
-    ;(async () => {
+    addTourist().then(() => {
       // 等待 访客 请求 完毕后 再 挂载 其他东西
-      await addTourist()
       // 安装路由
       app.use(router)
       // 安装自定义指令
       app.use(directives)
       app.mount("#app")
-    })()
+    })
   },
 }
