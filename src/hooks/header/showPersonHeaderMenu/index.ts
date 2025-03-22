@@ -4,16 +4,16 @@ import { useSettingStore } from "@/store/setting"
 // 引入 unocss 图标
 import "./icons"
 // 引入类型
-import type { PersonMenuList } from "@/components/layout/header/types"
+import type {
+  MenuItemStyle,
+  menuItemType,
+  menuView,
+} from "@/components/layout/header/types"
 
 // 引入 hooks
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 
-export type ReturnType = {
-  data: PersonMenuList[]
-  style: { left: string; width: string }
-}
-export type headerItemReturnType = ComputedRef<ReturnType>
+export type headerItemReturnType = ComputedRef<menuView>
 let id = 0
 export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const { showAccount } = useShowUserinfo({ showAccount: true })
@@ -22,8 +22,9 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   const { setScene, isShowPanel } = storeToRefs(useSettingStore())
   // 提取 函数
   const { userStoreReset } = useUserStore()
+  const paddingLeft = "var(--header-topmenu-icon-pl)"
   // 默认的数据
-  const normalData: PersonMenuList[] = [
+  const normalData: menuItemType[] = [
     {
       id: `${++id}`,
       name: "关于",
@@ -33,7 +34,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   ]
 
   // 未登录的数据
-  const unLoginData: PersonMenuList[] = [
+  const unLoginData: menuItemType[] = [
     ...normalData,
     {
       id: `${++id}`,
@@ -43,13 +44,13 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
     },
   ]
 
-  const unLoginStyle = {
-    left: "-0.9375rem",
+  const unLoginStyle: MenuItemStyle = {
     width: "4.375rem",
+    pl: paddingLeft,
   }
 
   // 登录的数据
-  const loginData: PersonMenuList[] = [
+  const loginData: menuItemType[] = [
     ...normalData,
     {
       id: `${++id}`,
@@ -79,7 +80,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   ]
 
   // 需要 docs 权限的
-  const docs = [
+  const docs: menuItemType[] = [
     {
       id: `${++id}`,
       name: "发布文章",
@@ -89,7 +90,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
   ]
 
   // 需要 admin 权限的
-  const manager = [
+  const manager: menuItemType[] = [
     {
       id: `${++id}`,
       name: "管理页面",
@@ -98,18 +99,18 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
     },
   ]
 
-  const loginStyle = {
-    left: "-1.5625rem",
+  const loginStyle: MenuItemStyle = {
     width: "5.9375rem",
+    pl: paddingLeft,
   }
   // 个人选项卡展示的数据
   const PersonData = computed(() => {
     if (!userToken.value) {
-      return { data: unLoginData, style: unLoginStyle }
+      return { data: unLoginData, style: unLoginStyle } as menuView
     }
     // 没有权限的
     if (!userRoles.value.length) {
-      return { data: loginData, style: loginStyle }
+      return { data: loginData, style: loginStyle } as menuView
     }
     if (userRoles.value.length) {
       const data = new Set([loginData])
@@ -120,7 +121,7 @@ export const useShowPersonHeaderMenu = (): headerItemReturnType => {
       const result = [...data].flat(Infinity)
       // 清除 set
       data.clear()
-      return { data: result, style: loginStyle }
+      return { data: result, style: loginStyle } as menuView
     }
   })
 

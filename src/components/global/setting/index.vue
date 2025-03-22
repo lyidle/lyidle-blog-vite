@@ -3,91 +3,89 @@
     <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
     {{ label }}
     <my-popover :width :height :label v-bind="$attrs">
-      <template #body>
-        <el-form label-width="130px" class="m-5px m-l-15px header-setting">
+      <el-form label-width="130px" class="m-5px m-l-15px header-setting">
+        <el-form-item
+          v-if="themes === 'switch'"
+          :label="`${isDark ? '暗夜' : '白天'}模式`"
+          class="item"
+        >
+          <el-switch
+            v-model="isDark"
+            inline-prompt
+            :active-icon="dark"
+            :inactive-icon="light"
+            size="small"
+            class="settingSwitch"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
+          class="item"
+        >
+          <el-switch
+            v-model="bannerIsFixed"
+            inline-prompt
+            :active-icon="fixed"
+            :inactive-icon="unfixed"
+            size="small"
+            class="settingSwitch"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="`${clickEffect ? '开启' : '关闭'}鼠标点击特效`"
+          class="item"
+        >
+          <el-switch
+            v-model="clickEffect"
+            inline-prompt
+            :active-icon="click"
+            :inactive-icon="unclick"
+            size="small"
+            class="settingSwitch"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="`${moveEffect ? '开启' : '关闭'}鼠标移动特效`"
+          class="item"
+        >
+          <el-switch
+            v-model="moveEffect"
+            inline-prompt
+            :active-icon="move"
+            :inactive-icon="unmove"
+            size="small"
+            class="settingSwitch"
+          />
+        </el-form-item>
+        <template v-if="asideCounts">
           <el-form-item
-            v-if="themes === 'switch'"
-            :label="`${isDark ? '暗夜' : '白天'}模式`"
-            class="item"
+            :label="`${isAside ? '打开' : '关闭'}侧边信息`"
+            class="item aside-switch"
           >
             <el-switch
-              v-model="isDark"
+              v-model="isAside"
               inline-prompt
-              :active-icon="dark"
-              :inactive-icon="light"
+              :active-icon="aside"
+              :inactive-icon="unaside"
               size="small"
               class="settingSwitch"
             />
           </el-form-item>
           <el-form-item
-            :label="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
-            class="item"
+            :label="`${contentIsReverse ? '左侧' : '右侧'}侧边信息`"
+            class="item aside-switch"
           >
             <el-switch
-              v-model="bannerIsFixed"
+              v-model="contentIsReverse"
               inline-prompt
-              :active-icon="fixed"
-              :inactive-icon="unfixed"
+              :active-icon="aside"
+              :inactive-icon="unaside"
               size="small"
               class="settingSwitch"
             />
           </el-form-item>
-          <el-form-item
-            :label="`${clickEffect ? '开启' : '关闭'}鼠标点击特效`"
-            class="item"
-          >
-            <el-switch
-              v-model="clickEffect"
-              inline-prompt
-              :active-icon="click"
-              :inactive-icon="unclick"
-              size="small"
-              class="settingSwitch"
-            />
-          </el-form-item>
-          <el-form-item
-            :label="`${moveEffect ? '开启' : '关闭'}鼠标移动特效`"
-            class="item"
-          >
-            <el-switch
-              v-model="moveEffect"
-              inline-prompt
-              :active-icon="move"
-              :inactive-icon="unmove"
-              size="small"
-              class="settingSwitch"
-            />
-          </el-form-item>
-          <template v-if="asideCounts">
-            <el-form-item
-              :label="`${isAside ? '打开' : '关闭'}侧边信息`"
-              class="item aside-switch"
-            >
-              <el-switch
-                v-model="isAside"
-                inline-prompt
-                :active-icon="aside"
-                :inactive-icon="unaside"
-                size="small"
-                class="settingSwitch"
-              />
-            </el-form-item>
-            <el-form-item
-              :label="`${contentIsReverse ? '左侧' : '右侧'}侧边信息`"
-              class="item aside-switch"
-            >
-              <el-switch
-                v-model="contentIsReverse"
-                inline-prompt
-                :active-icon="aside"
-                :inactive-icon="unaside"
-                size="small"
-                class="settingSwitch"
-              />
-            </el-form-item>
-          </template>
-        </el-form>
-      </template>
+        </template>
+      </el-form>
     </my-popover>
   </a>
 </template>

@@ -10,6 +10,9 @@ router.post("/", async (req, res, next) => {
   if (!articleId || !content)
     return res.result(void 0, "添加评论时，articleId、content是必传项", false)
   const userId = req.auth.id
+  console.log("------------------------------------")
+
+  console.log({ articleId, content, fromId, userProvince, userAgent })
 
   try {
     // 创建评论

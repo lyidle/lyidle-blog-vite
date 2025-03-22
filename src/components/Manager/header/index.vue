@@ -14,7 +14,7 @@
       <!-- 个人项 -->
       <global-header-item
         class="manager-header-item avatar"
-        :data="PersonData"
+        v-model:data="PersonData"
         top="40px"
       >
         <global-avatar :isCenter="false"></global-avatar>
@@ -56,7 +56,6 @@ const PersonData = useShowPersonHeaderMenu()
 <style scoped lang="scss">
 $menu-item-height: var(--header-topmenu-h);
 $icon-mr: var(--header-topmenu-icon-mr);
-$icon-pl: var(--header-topmenu-icon-pl);
 $list-gap: 5px;
 $item-left: var(--header-topmenu-margin-left);
 $underline-height: var(--header-topnav-mask-height);
@@ -131,7 +130,6 @@ $color: var(--header-color);
       height: $menu-item-height;
       overflow: hidden;
       @include flex(start);
-      padding-left: $icon-pl;
       gap: $list-gap;
       > a {
         position: relative;

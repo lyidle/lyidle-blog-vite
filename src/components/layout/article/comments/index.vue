@@ -33,6 +33,7 @@
           <layout-article-comments-item
             @reply="handlerReply"
             :comment
+            v-bind="$attrs"
           ></layout-article-comments-item>
           <!-- 评论的回复信息 -->
           <div
@@ -44,6 +45,7 @@
                 <layout-article-comments-item
                   @reply="handlerReply"
                   :comment="replies"
+                  v-bind="$attrs"
                   class="w-100%"
                 ></layout-article-comments-item>
               </div>
@@ -166,6 +168,7 @@ const handlerReply = (options: handlerReplyType) => {
     fromNickName: _fromNickName,
     callback,
   } = options
+
   // 先全部关上 isShowComment
   comments.value?.forEach((item) => {
     item.isShowComment = false
@@ -199,7 +202,7 @@ onMounted(async () => {
 %vditor-style {
   // 改变 vditor 的样式
   .vditor-style {
-    padding: 10px;
+    padding: var(--primary-pd);
     border: 1px solid var(--primary-scend-color);
     cursor: var(--cursor-default);
     min-height: 30px;
@@ -230,6 +233,7 @@ onMounted(async () => {
 $container-pd: 0 26px;
 .comment-outer {
   --primary-gap: 10px;
+  --primary-pd: 10px;
   .comments-container {
     padding: $container-pd;
     @extend %vditor-style;

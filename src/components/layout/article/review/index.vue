@@ -134,6 +134,7 @@
             <!-- 评论 -->
             <layout-article-comments
               :articleId="article?.id"
+              :author="article.author"
               v-if="article?.id"
             ></layout-article-comments>
           </my-card>

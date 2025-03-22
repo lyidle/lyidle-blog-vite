@@ -215,6 +215,7 @@ const addArticleComments = async () => {
       userProvince: region_province.value,
       userAgent,
     }
+    props?.addComments?.(updateBody)
     await useMdReplaceImg(comment.value, updateBody, {
       path: "/comments",
     })

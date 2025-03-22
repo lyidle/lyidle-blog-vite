@@ -11,7 +11,12 @@
   <layout-header-notes></layout-header-notes>
   <slot name="scend"></slot>
   <!-- 个人项 -->
-  <global-header-item :data="PersonData"> </global-header-item>
+  <global-header-item
+    v-model:data="PersonData"
+    icon="i-iconoir:page-star"
+    name="个人"
+  >
+  </global-header-item>
   <slot name="last-scend"></slot>
   <!-- 设置项 -->
   <li>

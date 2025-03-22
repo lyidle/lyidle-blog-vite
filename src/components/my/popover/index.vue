@@ -1,7 +1,7 @@
 <template>
   <div class="custom-popover" :style="{ left, right, transform }">
     <div class="title"></div>
-    <slot name="body"></slot>
+    <slot></slot>
     <div class="popover-mask"></div>
   </div>
 </template>
