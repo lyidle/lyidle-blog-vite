@@ -15,6 +15,7 @@
         :autosize="{ minRows: 2, maxRows: 4 }"
         show-word-limit
         :maxlength="maxCounts"
+        :minlength="minCounts"
         @focus="commentFocus"
         @blur="isFocus = false"
         @input="handlerInput"
@@ -139,6 +140,7 @@ const initialMaxCounts = 800
 
 // 最大 输入字数
 const maxCounts = ref(initialMinCounts)
+const minCounts = 20
 // 输入框 的实例
 const textAreaInstance = ref()
 // 把 输入框暴露出去
@@ -152,6 +154,7 @@ const commentFocus = () => {
 // 判断 是否 是 有图片等信息
 // 处理 maxcount
 const handlerCounts = () => {
+  comment.value = comment.value?.trim?.()
   // 判断 是否 是 有图片等信息
   const reg = /!\[.*?\]\(.*?\)/
   if (!reg.test(comment.value)) {
@@ -199,6 +202,12 @@ useEventListener("click", (e) => {
 const addArticleComments = async () => {
   const id = props.articleId
   if (!props.articleId) return
+  // 判断 字数是否 符合
+  const len = comment.value.trim().length
+  if (len < minCounts || len > maxCounts.value)
+    return ElMessage.warning(
+      `评论字数需要在:${minCounts}到${maxCounts.value}之间哦`
+    )
   try {
     const updateBody: AddCommentBody = {
       articleId: id,

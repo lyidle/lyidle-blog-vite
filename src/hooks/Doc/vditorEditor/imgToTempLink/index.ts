@@ -2,7 +2,10 @@
 import { postTempImgUrl } from "@/api/img"
 // 正则
 import { isUrl } from "@/RegExp/Url/isUrl"
-import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+import {
+  contextReplaceUrls,
+  escapeUrlForRegExp,
+} from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 节流
 import throttle from "@/utils/throttle"
 import Vditor from "vditor"
@@ -17,17 +20,31 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
       // 获取 md的信息
       const value = vditor.value?.getValue()
       if (!value?.trim()) return ElMessage.warning("没有需要处理的图片")
+
       let match: RegExpExecArray | null
       const urls = new Set<string>()
       // 判断有无值
-      const urlRegex = /!\[.*\]\((.*)\)/g
+      const urlRegex = /!\[.*?\]\((.*?)\)/g
       // 使用循环查找所有匹配项
       while ((match = urlRegex.exec(value)) !== null) {
         if (match.index === urlRegex.lastIndex) {
           urlRegex.lastIndex++
         }
+
+        // 得到 匹配项
+        let cur = match[1]
+        // 判断 是https还是 http
+        const isHttp = cur.startsWith("http://") && "http://"
+        const isHttps = cur.startsWith("https://") && "https://"
+        const httpOrHttps = isHttp || isHttps
+        // 都不存在 退出
+        if (!httpOrHttps) return
+        // 去掉 协议
+        cur = cur.replace((isHttp as string) || (isHttps as string), "")
+        // 替换 斜杠 加上 协议 去重处理
+        cur = httpOrHttps + cur.replace(/[\\\\/]/g, "/")
         // 需要是一个url
-        if (isUrl(match[1])) urls.add(match[1])
+        if (isUrl(cur)) urls.add(cur)
       }
 
       const arr = Array.from(urls)
@@ -59,24 +76,16 @@ export const imgToTempLink = (vditor: Ref<Vditor>) => {
         )
 
         // 过滤掉 null 值
-        let result = handlers.filter((item) => item !== null)
+        let successImg = handlers.filter((item) => item !== null)
+        if (!successImg.length) {
+          ElMessage.warning("没有需要处理的图片")
+          return
+        }
 
-        // 处理 URL
-        const Origins = result
-          .map((item) => escapeUrlForRegExp(item.origin))
-          .join("|")
-
-        // 如果没有需要处理的图片，则退出
-        if (!Origins) return ElMessage.warning("没有需要处理的图片")
-
-        // 构造正则表达式匹配多个 origin
-        const reg = new RegExp(Origins, "g")
-
-        // 替换 value 中的 origin 为对应的 url
-        const contentValue = value?.replace(reg, (matched: string) => {
-          // 根据匹配的 origin 找到对应的 url
-          const index = result.findIndex((item) => item.origin === matched)
-          return result[index]?.url || matched // 替换为对应 url 或保持原值
+        const contentValue = contextReplaceUrls({
+          successImg,
+          content: value,
+          isHttpsOrHttp: true,
         })
 
         // 处理完后替换内容

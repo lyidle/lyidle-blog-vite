@@ -72,6 +72,10 @@ const handlerTransform = async (
       outputRelative,
       staticPath
     )
+    console.log("-------------------")
+
+    console.log({ staticPath, tempImg, outputRelative })
+    console.log(result)
 
     res.result({ ...result }, "图片转换成功~")
   } catch (error) {

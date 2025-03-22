@@ -238,6 +238,9 @@ onMounted(async () => {
     }
     img {
       max-width: 500px;
+      display: block;
+      $m: 15px;
+      margin-top: $m;
     }
     // 隐藏 描点后的 跳转
     a[id^="vditorAnchor"] {

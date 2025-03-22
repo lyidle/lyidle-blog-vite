@@ -312,13 +312,12 @@ const updateAvatar = async () => {
     let newAvatar = uploadAvatar || default_avatar || ""
     // 判断是否更新
     const isUpdate =
-      (uploadAvatar !== default_avatar &&
-        uploadAvatar !== userAvatar.value &&
-        uploadAvatar) ||
-      null
-
-    // 是否 更新
-    let isUpdateAvatar = false
+      // 不等与 默认图片
+      uploadAvatar !== default_avatar &&
+      // 不等于 本地图片
+      uploadAvatar !== userAvatar.value &&
+      // 有值
+      uploadAvatar
 
     // 判断 是否需要删除 原来的图片
     const originAvatar = userAvatar.value
@@ -343,7 +342,6 @@ const updateAvatar = async () => {
         // 修改 poster
         if (_img) {
           newAvatar = _img
-          isUpdateAvatar = true
         }
       }
     }
@@ -353,10 +351,8 @@ const updateAvatar = async () => {
     // 更新 头像
     const result = await updateUserAvatar(newAvatar)
     if (result?.token) token = result.token
-
     // 判断 是否需要删除
-    const isRemove = originAvatar && isUpdateAvatar
-
+    const isRemove = originAvatar
     // 重新获取信息 在 路由重载后 加载数据
     userInfoByToken(token || "", async () => {
       // 需要 更新了 token 后删除 因为 需要 验证
