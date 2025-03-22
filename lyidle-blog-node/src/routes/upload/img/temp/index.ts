@@ -12,24 +12,40 @@ import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
 
 // api 的前缀
-const api_prefix = process.env.api_prefix || "/api"
+let api_prefix = process.env.api_prefix || "/api"
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  const { url }: { url: string } = req.body
+  let { url: $url }: { url: string } = req.body
   const { account } = req.auth
+  // 先 全部斜杆 转成 /
+  api_prefix = api_prefix.replace(/[\\/]/g, "/")
+  const url = $url.replace(/[\\/]/g, "/")
+
   // 检查是否提供了 URL
   if (!url) {
     return res.result(void 0, "请提供有效的 URL", false)
   }
+
+  // 读取缓存
+  let cacheValue = await getKey(`upload:img:temp:${account}:${url}`)
+  // 有缓存 且文件还存在 则直接返回
+  if (cacheValue) {
+    // 先 全部斜杆 转成 /
+    cacheValue = cacheValue.replace(/[\\/]/g, "/")
+    const oldTempImg = join(
+      resolve(__dirname, "../../../../"),
+      cacheValue.replace(api_prefix, "")
+    )
+    const isExist = existsSync(oldTempImg)
+    if (isExist)
+      return res.result({ url: cacheValue, origin: $url }, "上传文件成功~")
+  }
+
   try {
     // 简单判断是否是一个url
     new URL(url)
-
     // 判断 是否是本地的
-    const handlerUrl = url.replace(
-      new RegExp(`.*${api_prefix.replace(/\//, "\\")}`),
-      ""
-    )
+    const handlerUrl = url.replace(api_prefix, "")
     // 是临时的图片 且是当前用户 直接返回临时的 防止重复
     if (
       handlerUrl.includes(account) &&
@@ -40,25 +56,12 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       // 判断文件是否存在
       if (isExist)
         return res.result(
-          { url: join(`${api_prefix}`, handlerUrl), origin: url },
+          { url: join(`${api_prefix}`, handlerUrl), origin: $url },
           "上传文件成功~"
         )
     }
   } catch (error) {
     return res.result(void 0, "请提供有效的 URL", false)
-  }
-
-  // 读取缓存
-  const cacheValue = await getKey(`upload:img:temp:${account}:${url}`)
-  // 有缓存 且文件还存在 则直接返回
-  if (cacheValue) {
-    const path = join(
-      resolve(__dirname, "../../../../"),
-      cacheValue.replace(join(api_prefix), "")
-    )
-    const isExist = existsSync(path)
-    if (isExist)
-      return res.result({ url: cacheValue, origin: url }, "上传文件成功~")
   }
 
   try {
@@ -97,7 +100,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     // 设置缓存信息 关键点是 传入的url 防止重复生成
     await setKey(`upload:img:temp:${account}:${url}`, staticPath)
 
-    res.result({ url: staticPath, origin: url }, "上传文件成功~")
+    res.result({ url: staticPath, origin: $url }, "上传文件成功~")
   } catch (error) {
     console.error("上传图片时出错:", error)
     res.result(void 0, "上传图片时失败~", false)

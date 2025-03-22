@@ -14,7 +14,7 @@ const handlerTransform = async (
   req: Request,
   res: Response,
   next: NextFunction,
-  isAccount: boolean = true
+  isUserAccount: boolean = true
 ) => {
   // 得到临时图片 和 作者 与 生成路径
   const { tempImg, account, path } = req.body
@@ -24,7 +24,7 @@ const handlerTransform = async (
     return res.result(void 0, "没有需要转换的图片", false)
 
   // 没有 作者 和 路径
-  if (isAccount && (!account || !path)) {
+  if (isUserAccount && (!account || !path)) {
     return res.result(
       void 0,
       "临时图片转永久图片，作者和路径是必须要有的参数",
@@ -33,12 +33,12 @@ const handlerTransform = async (
   }
 
   // 不需要传入 account参数 path 不存在
-  if (!isAccount && !path) {
+  if (!isUserAccount && !path) {
     return res.result(void 0, "临时图片转永久图片，路径是必须要有的参数", false)
   }
 
   // 存在 account 判断是否真实存在
-  if (isAccount) {
+  if (isUserAccount) {
     // 查找用户是否存在
     const fndAccount = await User.findOne({
       where: { account },
@@ -59,7 +59,9 @@ const handlerTransform = async (
     const outputRelative = join(
       __dirname,
       `../../../../assets/images/${account || ""}`,
-      path
+
+      // 先把所有的 斜杆转为 /
+      path.replace(/[\\/]/g, "/")
     )
 
     // 静态文件路径
