@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-outer">
+  <div class="comment-outer" style="--normal-avatar-size: 50px">
     <global-animations-ribbon class="my-20px"></global-animations-ribbon>
     <div class="comments-container">
       <div class="flex items-center gap-5px">
@@ -35,12 +35,11 @@
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
         <div class="comment-item" v-if="comment.id">
-          <div>fromId:{{ fromId }}</div>
-          <div>commentId:{{ comment.id }}</div>
           <!-- 评论信息 -->
           <layout-article-comments-item
             @reply="handlerReply"
             :comment
+            avatarSize="var(--normal-avatar-size)"
             v-bind="$attrs"
           ></layout-article-comments-item>
           <!-- 评论的回复信息 -->
@@ -63,17 +62,19 @@
         </div>
         <div class="flex justify-between" v-if="comment.id">
           <div class="h-100% w-70px"></div>
-          <!-- 回复 框 -->
-          <layout-article-comments-reply
-            v-if="comment.isShowComment"
-            :fromId="fromId"
-            :parentId="comment.id"
-            :articleId
-            :reqComments
-            :fromNickName
-            class="w-100%"
-            ref="replyInstance"
-          ></layout-article-comments-reply>
+          <div class="w-100%">
+            <!-- 回复 框 -->
+            <layout-article-comments-reply
+              v-if="comment.isShowComment"
+              :fromId="fromId"
+              :parentId="comment.id"
+              :articleId
+              :reqComments
+              :fromNickName
+              class="w-100%"
+              ref="replyInstance"
+            ></layout-article-comments-reply>
+          </div>
         </div>
       </template>
     </div>
@@ -135,6 +136,7 @@ const reqComments = async () => {
   counts.value = _pagination.total!
   // 处理 子组件的数据
   nextTick(async () => {
+    // 使用 allSettled 获取 子组件对应的 回复数据
     await Promise.allSettled(reqCallbacks.value.map((fn: Function) => fn()))
   })
 }

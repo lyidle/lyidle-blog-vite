@@ -1,5 +1,4 @@
 <template>
-  {{ parentId }}
   <!-- 添加 评论的 组件 -->
   <layout-article-comments-add
     :addComments

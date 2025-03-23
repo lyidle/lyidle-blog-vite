@@ -133,6 +133,7 @@ declare module 'vue' {
     MyMenuInstanceRecursive: typeof import('./src/components/my/menu/instance/recursive/index.vue')['default']
     MyMenuItem: typeof import('./src/components/my/menu/item.vue')['default']
     MyPagination: typeof import('./src/components/my/pagination/index.vue')['default']
+    MyPaginationText: typeof import('./src/components/my/pagination/text/index.vue')['default']
     MyPopconfirm: typeof import('./src/components/my/popconfirm/index.vue')['default']
     MyPopover: typeof import('./src/components/my/popover/index.vue')['default']
     MySearchAdmin: typeof import('./src/components/my/search/admin/index.vue')['default']

@@ -6,13 +6,22 @@
       <global-avatar-src
         :account="comment.user.account"
         :avatar="comment.user.avatar"
-        style="--avatar-size: 50px"
+        :style="{ '--avatar-size': avatarSize }"
       ></global-avatar-src>
       <div
         class="w-100% h-100% ml-[var(--primary-pd)] gap-[var(--primary-gap)] flex flex-col"
       >
-        <div class="userName cur-text font-bold">
-          {{ comment.user.nickName }}
+        <div class="flex gap-10px cur-text">
+          <div class="userName font-bold">
+            {{ comment.user.nickName }}
+          </div>
+          <div class="flex gap-8px" v-if="comment.fromId">
+            <div>回复</div>
+            <div class="global-at">
+              @<span>{{ comment.user.nickName }}</span>
+            </div>
+            <div>:</div>
+          </div>
         </div>
         <!-- 评论 -->
         <div class="comment-data w-100% h-100%">
@@ -102,6 +111,9 @@
         </div>
       </div>
     </div>
+    <div class="pl-65px">
+      <slot name="comment-outer"></slot>
+    </div>
   </div>
 </template>
 
@@ -119,11 +131,17 @@ import { nanoid } from "nanoid"
 import { useUserStore } from "@/store/user"
 const { userAccount, userToken } = storeToRefs(useUserStore())
 
-const props = defineProps<{
-  comment: GetComments["data"][0]
-  author: string
-  parentId?: number
-}>()
+const props = withDefaults(
+  defineProps<{
+    comment: GetComments["data"][0]
+    author: string
+    parentId?: number
+    avatarSize?: string
+  }>(),
+  {
+    avatarSize: "50px",
+  }
+)
 // 触发自定义事件
 const emit = defineEmits<{
   (e: "reply", options: handlerReplyType): void
