@@ -7,14 +7,19 @@
         <span>{{ +counts }}</span>
         <div class="flex items-center gap-3px ml-[var(--primary-gap)]">
           <div class="text-15px">
-            <a class="hover:color-[var(--primary-links-hover)]">最热</a>
+            <a
+              class="comment-order hover:color-[var(--primary-links-hover)]"
+              :class="`${order.key === 'like' ? 'active' : ''}`"
+              >最热</a
+            >
           </div>
           <div class="text-15px">|</div>
           <div class="text-15px">
             <a
-              class="hover:color-[var(--primary-links-hover)]"
+              class="comment-order hover:color-[var(--primary-links-hover)]"
               @click="handlerNewOrder"
-              >{{ order.new.order === "desc" ? "最新" : "最晚" }}</a
+              :class="`${order.key === 'new' ? 'active' : ''}`"
+              >{{ order.order === "desc" ? "最新" : "最晚" }}</a
             >
           </div>
         </div>
@@ -26,9 +31,12 @@
         :reqComments
       ></layout-article-comments-add>
     </div>
-    <div class="comments-content mb-20px comment-data">
+    总数{{ pagination.total }}
+    <div>fromId:{{ fromId }}</div>
+    <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
         <div class="comment-item" v-if="comment.id">
+          commentId:{{ comment.id }}
           <!-- 评论信息 -->
           <layout-article-comments-item
             @reply="handlerReply"
@@ -39,17 +47,16 @@
           <div
             class="flex flex-col gap-[var(--primary-gap)] mt-[var(--primary-gap)]"
           >
-            <template v-for="replies in comment.replies" :key="replies.id">
-              <div class="flex justify-between" v-if="replies.id">
-                <div class="h-100% w-70px"></div>
-                <layout-article-comments-item
-                  @reply="handlerReply"
-                  :comment="replies"
-                  v-bind="$attrs"
-                  class="w-100%"
-                ></layout-article-comments-item>
-              </div>
-            </template>
+            <div class="flex justify-between">
+              <div class="h-100% w-70px"></div>
+              <layout-article-comments-reply-item
+                @reply="handlerReply"
+                :parentId="comment.id"
+                :orderMap
+                v-model:order="order"
+                v-bind="$attrs"
+              ></layout-article-comments-reply-item>
+            </div>
           </div>
         </div>
         <div class="flex justify-between" v-if="comment.id">
@@ -74,7 +81,7 @@
 import { getComments } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
-import type { handlerReplyType, OrderKeys, orderObjType } from "./types"
+import type { handlerReplyType, orderObjType, typeOrderMap } from "./types"
 const props = defineProps<{ articleId: number }>()
 // 评论 数量
 const counts = ref(0)
@@ -84,81 +91,49 @@ const comments = ref<GetComments["data"]["comments"]>()
 const fromId = ref(-1)
 // 回复 的评论 nickName
 const fromNickName = ref("")
+
+// 分页 器
+const pagination = ref<GetComments["data"]["pagination"]>({
+  currentPage: 1,
+  pageSize: 10,
+})
+
 // 得到 评论
 const reqComments = async () => {
+  // 得到 id 判断 是否有 articleId 没有则 退出
   const id = props.articleId
   if (!props.articleId) return
-  const result = await getComments(id)
-  const { comments: _comments } = result
-  // 处理 评论 个数
-  handlerCounts(_comments)
-  _comments.forEach?.((item) => {
-    const parentId = item.id
-    if (item?.replies?.length) {
-      // 添加一个 parentId
-      item.replies.forEach((item) => (item.parentId = parentId))
-    }
+  // 获取 评论数据
+  const result = await getComments(id, {
+    key: order.key,
+    order: order.order,
+    currentPage: pagination.value.currentPage,
+    pageSize: pagination.value.pageSize,
   })
-  comments.value = orderComments(_comments)
-}
-
-// 处理 评论数量的 函数
-const handlerCounts = (comments: GetComments["data"]["comments"]) => {
-  // 初始化 外层的 个数
-  let len = comments?.length || 0
-  if (len) {
-    // 初始化回复的 个数
-    for (const value of comments) {
-      const curLen = value.replies?.length
-      // 存在 则相加
-      if (curLen) len += curLen
-    }
-  }
-  if (len) counts.value = len
+  // 赋值 评论数据
+  const { comments: _comments, pagination: _pagination } = result
+  comments.value = _comments
+  pagination.value = _pagination
 }
 
 // 构建 相反的 order 映射
-const orderMap = {
+const orderMap: typeOrderMap = {
   desc: "asc",
   asc: "desc",
-} as const
+}
 
 // 评论排序
 const order = reactive<orderObjType>({
-  like: {
-    order: "desc",
-    key: "updatedAt",
-  },
-  new: {
-    order: "desc",
-    key: "updatedAt",
-  },
+  order: "desc",
+  key: "new",
 })
-
-// 评论排序 的回调函数
-const orderComments = (
-  comments: GetComments["data"]["comments"],
-  key: OrderKeys = "new"
-): GetComments["data"]["comments"] => {
-  // 得到 当前 的排序
-  const curOrder = order[key]
-  return comments.sort((a, b) => {
-    const dateA = new Date(a[curOrder.key]).getTime()
-    const dateB = new Date(b[curOrder.key]).getTime()
-    if (curOrder.order === "asc") {
-      return dateA - dateB
-    } else {
-      return dateB - dateA
-    }
-  })
-}
 
 // 评论下方的 按钮
 // 最新 和 最晚 的 排序 按钮
-const handlerNewOrder = () => {
+const handlerNewOrder = async () => {
   if (!comments.value) return
-  order.new.order = orderMap[order.new.order]
-  orderComments(comments.value, "new")
+  order.order = orderMap[order.order]
+  await reqComments()
 }
 
 // 回复 按钮 用户打开 回复框
@@ -167,30 +142,22 @@ const handlerReply = (options: handlerReplyType) => {
     showId: _showId,
     fromId: _fromId,
     fromNickName: _fromNickName,
-    callback,
   } = options
 
   // 先全部关上 isShowComment
   comments.value?.forEach((item) => {
     item.isShowComment = false
   })
+
   // 修改 对应的 配置
   fromId.value = _fromId
   fromNickName.value = _fromNickName
 
   // 修改 showId 的 isShowComment 显示
-  const find = comments.value?.find((item) => {
-    // 查找 顶层评论
-    if (item.id === _showId) return true
-    // 查找 回复
-    if (item?.replies?.length)
-      return item.replies.find((_item) => _item.id === _showId)
-  })
+  const find = comments.value?.find((item) => item.id === _showId)
+  if (!find) return
   // 找到 修改 相关信息
-  if (find) {
-    find.isShowComment = true
-    callback?.()
-  }
+  find.isShowComment = true
 }
 
 onMounted(async () => {
@@ -238,6 +205,12 @@ $container-pd: 0 26px;
   .comments-container {
     padding: $container-pd;
     @extend %vditor-style;
+    // 排序 按钮
+    .comment-order {
+      &.active {
+        color: rgb(219, 127, 127);
+      }
+    }
   }
 
   .comments-content {

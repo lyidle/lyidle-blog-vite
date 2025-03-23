@@ -71,6 +71,7 @@ declare module 'vue' {
     LayoutArticleCommentsAddcopy: typeof import('./src/components/layout/article/comments/add copy/index.vue')['default']
     LayoutArticleCommentsItem: typeof import('./src/components/layout/article/comments/item/index.vue')['default']
     LayoutArticleCommentsReply: typeof import('./src/components/layout/article/comments/reply/index.vue')['default']
+    LayoutArticleCommentsReplyItem: typeof import('./src/components/layout/article/comments/replyItem/index.vue')['default']
     LayoutArticleReview: typeof import('./src/components/layout/article/review/index.vue')['default']
     LayoutArticleReviewCounts: typeof import('./src/components/layout/article/review/counts/index.vue')['default']
     LayoutArticleReviewCountscopy: typeof import('./src/components/layout/article/review/counts copy/index.vue')['default']

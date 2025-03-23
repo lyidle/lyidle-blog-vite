@@ -25,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "fromId",
         as: "replies",
       })
+
+      // 评论的点赞
+      this.hasMany(models.ArticleLikeDislike, {
+        foreignKey: "commentId",
+        as: "likes",
+      })
     }
   }
   Comment.init(

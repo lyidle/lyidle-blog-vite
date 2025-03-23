@@ -1,14 +1,45 @@
 import express from "express"
 // 引入 模型
-const { Comment, User } = require("@/db/models")
+const { Comment, ArticleLikeDislike, User, sequelize } = require("@/db/models")
 
 const router = express.Router()
+
+// 降序 升序
+type orderType = "desc" | "asc"
+// 最新 最晚 最热
+type orderKeyType = "new" | "late" | "like"
+
+// 处理 排序
+const handlerOrder = (order: orderType, key: orderKeyType) => {
+  if (key === "like") {
+    // 按照点赞数量排序
+    return [
+      [
+        sequelize.literal(
+          '(SELECT COUNT(*) FROM ArticleLikeDislikes WHERE ArticleLikeDislikes.commentId = Comment.id AND ArticleLikeDislikes.likeType = "like")'
+        ),
+        order,
+      ],
+    ]
+  } else {
+    // 默认排序
+    return [
+      ["updatedAt", order],
+      ["createdAt", order],
+      ["id", order],
+    ]
+  }
+}
+
 // 获取评论的回复分页数据
 router.get("/pagination/:fromId", async (req, res, next) => {
   const fromId = req.params.fromId
   const { query } = req
   // 决定 回复的 排序
-  const { order } = query
+  const { order = "desc", key = "new" } = query as {
+    order: orderType
+    key: orderKeyType
+  }
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
@@ -16,6 +47,7 @@ router.get("/pagination/:fromId", async (req, res, next) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
+
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
@@ -34,16 +66,22 @@ router.get("/pagination/:fromId", async (req, res, next) => {
             "userAgent",
           ],
         },
+        {
+          model: ArticleLikeDislike,
+          as: "likes", // 关联点赞
+          attributes: [], // 不需要返回点赞的具体信息
+          where: {
+            likeType: "like", // 只计算点赞
+          },
+          required: false, // 左连接
+        },
       ],
+      order: handlerOrder(order, key), // 根据 order 和 key 排序
       limit: pageSize,
       offset,
-      order: [
-        ["updatedAt", "desc"],
-        ["createdAt", "desc"],
-        ["id", "desc"],
-      ],
     })
 
+    // 返回 结果
     const result = {
       pagination: {
         total: count,
@@ -52,6 +90,7 @@ router.get("/pagination/:fromId", async (req, res, next) => {
       },
       replies: rows,
     }
+
     res.result(result, "获取回复分页数据成功")
   } catch (error) {
     res.validateAuth(error, next, () =>

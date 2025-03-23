@@ -14,7 +14,6 @@
         <div class="userName cur-text font-bold">
           {{ comment.user.nickName }}
         </div>
-        {{ comment.fromId || comment.id }}
         <!-- 评论 -->
         <div class="comment-data w-100% h-100%">
           <!-- 渲染 评论 -->
@@ -73,9 +72,16 @@
         <!-- 回复 -->
         <!-- 看 b站 可以自己给自己回复 所以也没有限制 -->
         <!-- v-if="comment.user.account !== userAccount" -->
+        <!-- 触发自定义事件 -->
         <div
           class="h-25px flex items-center gap-5px cur-pointer hover:color-[var(--primary-links-hover)]"
-          @click="handlerReply(comment)"
+          @click="
+            emit('reply', {
+              showId: parentId || comment.id,
+              fromId: comment.id,
+              fromNickName: comment.user.nickName,
+            })
+          "
         >
           回复
         </div>
@@ -116,6 +122,7 @@ const { userAccount, userToken } = storeToRefs(useUserStore())
 const props = defineProps<{
   comment: GetComments["data"][0]
   author: string
+  parentId?: number
 }>()
 // 触发自定义事件
 const emit = defineEmits<{
@@ -166,17 +173,6 @@ const moreItem = computed(() => {
     },
   } as menuView
 })
-
-const handlerReply = (
-  comment: GetComments["data"][0] | GetComments["data"][0][0]
-) => {
-  // 触发自定义事件
-  emit("reply", {
-    showId: comment.parentId || comment.id,
-    fromId: comment.id,
-    fromNickName: comment.user.nickName,
-  })
-}
 
 const hasEditor = (sub: menuItemType) => {
   if (sub.hide) return false

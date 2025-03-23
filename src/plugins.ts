@@ -17,6 +17,8 @@ import "vditor/dist/index.css"
 // 引入 自定义指令
 import directives from "@/directive"
 import { useUserStore } from "@/store/user"
+// 重试 次数
+let tryCounts: number | null = 0
 export default {
   // 安装插件
   install(app: any) {
@@ -24,13 +26,33 @@ export default {
     app.use(pinia)
     // 处理 访客
     const { addTourist } = useUserStore()
-    addTourist().then(() => {
-      // 等待 访客 请求 完毕后 再 挂载 其他东西
-      // 安装路由
-      app.use(router)
-      // 安装自定义指令
-      app.use(directives)
-      app.mount("#app")
-    })
+    const recur = () => {
+      ++(tryCounts as number)
+      if ((tryCounts as number) >= 5) {
+        ElMessage.error("加载页面失败")
+        // 安装路由
+        app.use(router)
+        // 安装自定义指令
+        app.use(directives)
+        app.mount("#app")
+        tryCounts = null
+        return
+      }
+      addTourist().then(
+        () => {
+          // 等待 访客 请求 完毕后 再 挂载 其他东西
+          // 安装路由
+          app.use(router)
+          // 安装自定义指令
+          app.use(directives)
+          app.mount("#app")
+        },
+        (error) => {
+          console.log(`重试次数：${tryCounts}`, error)
+          recur()
+        }
+      )
+    }
+    recur()
   },
 }

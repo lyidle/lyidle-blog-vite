@@ -1,15 +1,45 @@
 import express from "express"
 // 引入 模型
-const { Comment, User } = require("@/db/models")
+const { Comment, ArticleLikeDislike, User, sequelize } = require("@/db/models")
 
 const router = express.Router()
 
-// 添加评论
+// 降序 升序
+type orderType = "desc" | "asc"
+// 最新 最晚 最热
+type orderKeyType = "new" | "late" | "like"
+
+// 处理 排序
+const handlerOrder = (order: orderType, key: orderKeyType) => {
+  if (key === "like") {
+    // 按照点赞数量排序
+    return [
+      [
+        sequelize.literal(
+          '(SELECT COUNT(*) FROM ArticleLikeDislikes WHERE ArticleLikeDislikes.commentId = Comment.id AND ArticleLikeDislikes.likeType = "like")'
+        ),
+        order,
+      ],
+    ]
+  } else {
+    // 默认排序
+    return [
+      ["updatedAt", order],
+      ["createdAt", order],
+      ["id", order],
+    ]
+  }
+}
+
+// 查询评论
 router.get("/:articleId", async (req, res, next) => {
   const articleId = req.params.articleId
   const { query } = req
   // 决定 评论的 排序
-  const { order } = query
+  const { order = "desc", key = "new" } = query as {
+    order: orderType
+    key: orderKeyType
+  }
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
@@ -17,6 +47,7 @@ router.get("/:articleId", async (req, res, next) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
+
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
@@ -37,40 +68,21 @@ router.get("/:articleId", async (req, res, next) => {
           ],
         },
         {
-          model: Comment,
-          as: "replies", // 关联回复评论
-          include: [
-            {
-              model: User,
-              as: "user", // 关联用户
-              attributes: [
-                "id",
-                "account",
-                "nickName",
-                "avatar",
-                "userProvince",
-                "userAgent",
-              ],
-            },
-          ],
-          // 只获取 第一条 最新的
-          order: [
-            ["updatedAt", "desc"],
-            ["createdAt", "desc"],
-            ["id", "desc"],
-          ],
-          limit: 1,
+          model: ArticleLikeDislike,
+          as: "likes", // 关联点赞
+          attributes: [], // 不需要返回点赞的具体信息
+          where: {
+            likeType: "like", // 只计算点赞
+          },
+          required: false, // 左连接
         },
       ],
-      order: [
-        ["updatedAt", "desc"],
-        ["createdAt", "desc"],
-        ["id", "desc"],
-      ],
+      order: handlerOrder(order, key),
       limit: pageSize,
       offset,
     })
 
+    // 返回 结果
     const result = {
       pagination: {
         total: count,
