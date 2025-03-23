@@ -8,15 +8,16 @@
         <div class="flex items-center gap-3px ml-[var(--primary-gap)]">
           <div class="text-15px">
             <a
-              class="comment-order hover:color-[var(--primary-links-hover)]"
+              class="comment-order !hover:color-[var(--primary-links-hover)]"
               :class="`${order.key === 'like' ? 'active' : ''}`"
+              @click="handlerLike"
               >最热</a
             >
           </div>
           <div class="text-15px">|</div>
           <div class="text-15px">
             <a
-              class="comment-order hover:color-[var(--primary-links-hover)]"
+              class="comment-order !hover:color-[var(--primary-links-hover)]"
               @click="handlerNewOrder"
               :class="`${order.key === 'new' ? 'active' : ''}`"
               >{{ order.order === "desc" ? "最新" : "最晚" }}</a
@@ -34,13 +35,16 @@
 
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
+        {{ comment.id }}
         <div class="comment-item" v-if="comment.id">
           <!-- 评论信息 -->
           <layout-article-comments-item
             @reply="handlerReply"
             :comment
+            :parentId="null"
             avatarSize="var(--normal-avatar-size)"
             v-bind="$attrs"
+            :articleId
           ></layout-article-comments-item>
           <!-- 评论的回复信息 -->
           <div
@@ -53,6 +57,7 @@
                 @counts="addCounts"
                 :parentId="comment.id"
                 :orderMap
+                :articleId
                 ref="repliesInstance"
                 v-model:order="order"
                 v-bind="$attrs"
@@ -155,14 +160,23 @@ const orderMap: typeOrderMap = {
 // 评论排序
 const order = reactive<orderObjType>({
   order: "desc",
-  key: "new",
+  key: "like",
 })
 
 // 评论下方的 按钮
 // 最新 和 最晚 的 排序 按钮
 const handlerNewOrder = async () => {
   if (!comments.value) return
+  order.key = "new"
   order.order = orderMap[order.order]
+  await reqComments()
+}
+
+const handlerLike = async () => {
+  if (!comments.value || (order.key === "like" && order.order === "desc"))
+    return
+  order.key = "like"
+  order.order = "desc"
   await reqComments()
 }
 

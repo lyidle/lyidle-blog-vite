@@ -1,8 +1,8 @@
 // 定义排序顺序的类型，只能是 "desc" 或 "asc"
 export type orderType = "desc" | "asc"
 
-// 定义排序字段的类型，只能是 "createdAt" 或 "updatedAt"
-export type orderKeyType = "like" | "new" | "late"
+// 定义排序字段的类型
+export type orderKeyType = "like" | "new"
 // 排序的 对象 类型
 export type orderObjType = {
   order: orderType

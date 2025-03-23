@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "replies",
       })
 
+      // 评论属于父评论（自引用）
+      this.belongsTo(models.Comment, {
+        foreignKey: "parentId",
+        as: "parentComment",
+      })
+
       // 评论的点赞
       this.hasMany(models.ArticleLikeDislike, {
         foreignKey: "commentId",

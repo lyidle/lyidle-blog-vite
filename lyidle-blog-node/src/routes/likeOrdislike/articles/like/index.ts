@@ -20,6 +20,7 @@ router.post("/:articleId", async (req, res, next) => {
       where: {
         userId,
         targetType: "article",
+        articleId,
       },
       defaults: {
         userId,

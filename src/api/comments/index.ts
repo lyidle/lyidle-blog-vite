@@ -31,7 +31,7 @@ export const getComments = (articleId: number, data: GetCommentQuery) =>
       `/?${new URLSearchParams(data)}`
   )
 
-// 查询评论
+// 查询回复
 export const getCommentsReplies = (parentId: number, data: GetCommentQuery) =>
   request.get<any, GetCommentsReplies["data"]>(
     server +

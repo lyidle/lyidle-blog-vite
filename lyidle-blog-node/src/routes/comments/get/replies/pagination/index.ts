@@ -7,7 +7,7 @@ const router = express.Router()
 // 降序 升序
 type orderType = "desc" | "asc"
 // 最新 最晚 最热
-type orderKeyType = "new" | "late" | "like"
+type orderKeyType = "new" | "like"
 
 // 处理 排序
 const handlerOrder = (order: orderType, key: orderKeyType) => {
@@ -51,7 +51,7 @@ router.get("/pagination/:parentId", async (req, res, next) => {
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
-        parentId, // 根据 fromId 查询回复
+        parentId, // 根据 parentId 查询回复
       },
       include: [
         {
@@ -73,6 +73,25 @@ router.get("/pagination/:parentId", async (req, res, next) => {
           where: {
             likeType: "like", // 只计算点赞
           },
+          required: false, // 左连接
+        },
+        {
+          model: Comment,
+          as: "parentComment", // 关联父评论
+          include: [
+            {
+              model: User,
+              as: "user", // 父评论的用户信息
+              attributes: [
+                "id",
+                "account",
+                "nickName",
+                "avatar",
+                "userProvince",
+                "userAgent",
+              ],
+            },
+          ],
           required: false, // 左连接
         },
       ],

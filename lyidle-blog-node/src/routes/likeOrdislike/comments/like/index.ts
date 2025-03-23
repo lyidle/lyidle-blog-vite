@@ -9,6 +9,8 @@ router.post("/:commentId", async (req, res, next) => {
   const { commentId } = req.params
   const { likeType, articleId } = req.query
   const userId = req.auth.id
+  // 校验 commentId 是否合法
+  if (!commentId) return res.result(void 0, "commentId必须要有值", false)
 
   // 校验 likeType 是否合法
   if (!["like", "normal"].includes(likeType as string)) {
@@ -29,8 +31,11 @@ router.post("/:commentId", async (req, res, next) => {
       where: {
         userId,
         targetType: "comment",
+        articleId,
+        commentId,
       },
       defaults: {
+        commentId,
         articleId,
         userId,
         targetType: "comment",

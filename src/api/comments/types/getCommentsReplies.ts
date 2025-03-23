@@ -10,7 +10,7 @@ export interface GetCommentsReplies {
 
 export interface Data {
   pagination: Pagination
-  replies: Comments[]
+  replies: Reply[]
   [property: string]: any
 }
 
@@ -21,16 +21,40 @@ export interface Pagination {
   [property: string]: any
 }
 
-/**
- * comments
- */
-export interface Comments {
+export interface Reply {
+  articleId: number
+  content: string
+  createdAt: string
+  fromId: number | null
+  id: number
+  parentComment: ParentComment
+  updatedAt: string
+  user: CommentUser
+  userId: number
+  [property: string]: any
+}
+
+export interface ParentComment {
   articleId: number
   content: string
   createdAt: string
   fromId: number | null
   id: number
   updatedAt: string
+  user: CommentUser
   userId: number
+  [property: string]: any
+}
+
+/**
+ * comment user
+ */
+export interface CommentUser {
+  account: string
+  avatar?: null | string
+  id: number
+  nickName: string
+  userAgent: string
+  userProvince: string
   [property: string]: any
 }

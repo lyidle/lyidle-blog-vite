@@ -10,6 +10,9 @@ router.post("/:commentId", async (req, res, next) => {
   const { dislikeType, articleId } = req.query
   const userId = req.auth.id
 
+  // 校验 commentId 是否合法
+  if (!commentId) return res.result(void 0, "commentId必须要有值", false)
+
   // 校验 dislikeType 是否合法
   if (!["dislike", "normal"].includes(dislikeType as string)) {
     return res.result(void 0, "dislikeType 必须是 dislike 或 normal", false)
@@ -28,9 +31,12 @@ router.post("/:commentId", async (req, res, next) => {
       where: {
         userId,
         targetType: "comment",
+        articleId,
+        commentId,
       },
       defaults: {
         articleId,
+        commentId,
         userId,
         targetType: "comment",
         dislikeType,

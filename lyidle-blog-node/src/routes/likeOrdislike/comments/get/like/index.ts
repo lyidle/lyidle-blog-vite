@@ -10,16 +10,20 @@ router.get("/:commentId", async (req, res, next) => {
 
   try {
     // 查询点赞数量
-    const likeCount = await ArticleLikeDislike.count({
+    const { count, rows } = await ArticleLikeDislike.findAndCountAll({
       where: {
         targetType: "comment",
         commentId,
         likeType: "like", // 只统计点赞的记录
       },
+      attributes: ["userId"],
     })
 
     // 返回结果
-    res.result(likeCount, "获取评论点赞数量成功")
+    res.result(
+      { count, userIds: rows.map((item: any) => item?.userId) },
+      "获取评论点赞数量成功"
+    )
   } catch (error) {
     // 捕获错误并返回失败响应
     res.validateAuth(error, next, () =>

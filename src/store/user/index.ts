@@ -104,6 +104,7 @@ export const useUserStore = defineStore(
     }
 
     // 用户信息
+    const userId = ref<number>(-1)
     const userAccount = ref<string>("")
     const userIsBin = ref<string | null>(null)
     const userNickName = ref<string>("")
@@ -131,6 +132,7 @@ export const useUserStore = defineStore(
         const user = result?.[0]
         // 有用户信息 赋值
         if (user) {
+          userId.value = user?.id
           userIsBin.value = user?.isBin
           userPermissions.value = user?.permissions
           userRoles.value = user?.roles || []
@@ -187,6 +189,7 @@ export const useUserStore = defineStore(
     // 重置用户信息 没有 重置 token
     const resetUserInfo = () => {
       // 用户信息
+      userId.value = -1
       userAccount.value = ""
       userIsBin.value = null
       userNickName.value = ""
@@ -254,6 +257,7 @@ export const useUserStore = defineStore(
       reqUserInfo,
       resetStore,
       // 用户信息
+      userId,
       userAccount,
       userIsBin,
       userNickName,
@@ -281,6 +285,7 @@ export const useUserStore = defineStore(
       pick: [
         "userBannerImg",
         "whitelist",
+        "userId",
         "userAccount",
         "userNickName",
         "userEmail",

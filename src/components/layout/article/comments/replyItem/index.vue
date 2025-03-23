@@ -10,10 +10,10 @@
         >
           <template #comment-outer>
             <template v-if="isShowMore">
-              <div class="cur-text mt-5px" v-if="pagination.total">
+              <div class="cur-text mt-5px" v-if="pagination.total > 1">
                 共<span class="mx-5px">{{ pagination.total }} </span>
                 条回复，<span
-                  class="cur-pointer hover:color-[var(--primary-links-hover)]"
+                  class="cur-pointer !hover:color-[var(--primary-links-hover)]"
                   @click="viewComments"
                   >点击查看</span
                 >

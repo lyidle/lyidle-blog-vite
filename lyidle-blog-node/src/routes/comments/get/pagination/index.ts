@@ -7,7 +7,7 @@ const router = express.Router()
 // 降序 升序
 type orderType = "desc" | "asc"
 // 最新 最晚 最热
-type orderKeyType = "new" | "late" | "like"
+type orderKeyType = "new" | "like"
 
 // 处理 排序
 const handlerOrder = (order: orderType, key: orderKeyType) => {

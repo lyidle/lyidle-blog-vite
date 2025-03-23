@@ -10,7 +10,7 @@ router.get("/:articleId", async (req, res, next) => {
 
   try {
     // 查询点踩数量
-    const dislikeCount = await ArticleLikeDislike.count({
+    const { count, rows } = await ArticleLikeDislike.findAndCountAll({
       where: {
         targetType: "article",
         articleId,
@@ -19,7 +19,10 @@ router.get("/:articleId", async (req, res, next) => {
     })
 
     // 返回结果
-    res.result(dislikeCount, "获取点踩数量成功")
+    res.result(
+      { count, userIds: rows.map((item: any) => item?.userId) },
+      "获取点踩数量成功"
+    )
   } catch (error) {
     // 捕获错误并返回失败响应
     res.validateAuth(error, next, () =>

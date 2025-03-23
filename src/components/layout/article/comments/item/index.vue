@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="comment-item-container">
     <!-- 头像和评论 -->
     <div class="flex justify-between relative">
       <!-- 头像 -->
@@ -18,7 +18,7 @@
           <div class="flex gap-8px" v-if="comment.fromId">
             <div>回复</div>
             <div class="global-at">
-              @<span>{{ comment.user.nickName }}</span>
+              @<span>{{ comment.parentComment.user.nickName }}</span>
             </div>
             <div>:</div>
           </div>
@@ -40,7 +40,7 @@
       <div class="comment-more absolute right-[var(--primary-gap)] top-0">
         <global-header-item v-model:data="moreItem" top="5px" menu="test">
           <i
-            class="i-ri:more-line w-1em h-1em cur-pointer hover:color-[var(--primary-links-hover)]"
+            class="i-ri:more-line w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
           ></i>
           <template #custom="{ item: sub }: { item: menuItemType }">
             <my-menu-item v-if="hasEditor(sub)">
@@ -69,21 +69,27 @@
         <!-- 点赞 -->
         <div class="h-25px flex items-center gap-5px">
           <i
-            class="i-uiw:like-o w-1em h-1em cur-pointer hover:color-[var(--primary-links-hover)]"
-          ></i>
+            class="moment-like i-uiw:like-o w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
+            @click="toggleLike"
+            :class="isUserLike ? 'active' : ''"
+          ></i
+          >{{ likeCounts }}
         </div>
         <!-- 点踩 -->
         <div class="h-25px flex items-center gap-5px">
           <i
-            class="i-uiw:dislike-o w-1em h-1em cur-pointer hover:color-[var(--primary-links-hover)]"
-          ></i>
+            class="moment-like i-uiw:dislike-o w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
+            @click="toggleDislike"
+            :class="isUserDislike ? 'active' : ''"
+          ></i
+          >{{ dislikeCounts }}
         </div>
         <!-- 回复 -->
         <!-- 看 b站 可以自己给自己回复 所以也没有限制 -->
         <!-- v-if="comment.user.account !== userAccount" -->
         <!-- 触发自定义事件 -->
         <div
-          class="h-25px flex items-center gap-5px cur-pointer hover:color-[var(--primary-links-hover)]"
+          class="h-25px flex items-center gap-5px cur-pointer [var(--primary-links-hover)]"
           @click="
             emit('reply', {
               showId: parentId || comment.id,
@@ -92,7 +98,7 @@
             })
           "
         >
-          回复
+          <span class="!hover:color-[var(--primary-links-hover)]">回复</span>
         </div>
       </div>
       <!-- 用户信息 -->
@@ -118,8 +124,16 @@
 </template>
 
 <script setup lang="ts" name="ArticleCommentsItem">
+// 引入 api
+import {
+  toggleCommentLikes,
+  getCommentDislikes,
+  getCommentLikes,
+  toggleCommentDislikes,
+} from "@/api/likeOrDislike"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
+import type { GetCommentsReplies } from "@/api/comments/types/getCommentsReplies"
 import type { handlerReplyType } from "../types"
 import type { menuItemType, menuView } from "@/components/layout/header/types"
 // 引入 解压 函数
@@ -129,19 +143,35 @@ import moment from "@/utils/moment"
 import { nanoid } from "nanoid"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-const { userAccount, userToken } = storeToRefs(useUserStore())
+import { handlerReqErr } from "@/utils/request/error/successError"
+const { userAccount, userToken, userId } = storeToRefs(useUserStore())
 
 const props = withDefaults(
   defineProps<{
-    comment: GetComments["data"][0]
+    comment:
+      | GetCommentsReplies["data"]["replies"][0]
+      | GetComments["data"]["comments"][0]
     author: string
-    parentId?: number
+    parentId: number | null
     avatarSize?: string
+    articleId: number
   }>(),
   {
     avatarSize: "50px",
   }
 )
+
+// 评论的 id
+const commentId = props.comment.id
+// 点赞数
+const likeCounts = ref(0)
+// 点踩数
+const dislikeCounts = ref(0)
+// 是否 点赞
+const isUserLike = ref(false)
+// 是否 点踩
+const isUserDislike = ref(false)
+
 // 触发自定义事件
 const emit = defineEmits<{
   (e: "reply", options: handlerReplyType): void
@@ -216,9 +246,98 @@ const hasEditor = (sub: menuItemType) => {
   // 其他的 是显示
   return true
 }
+
+// 得到 点赞数量
+const reqCommentLikes = async () => {
+  if (!commentId) return
+  const result = await getCommentLikes(commentId)
+  // 处理 点赞数量
+  if (result?.count) likeCounts.value = result?.count
+  // 判断是否 点赞
+  const is = result?.userIds?.includes(userId.value)
+  if (is) isUserLike.value = true
+}
+// 得到 点踩数量
+const reqCommentDislikes = async () => {
+  if (!commentId) return
+  const result = await getCommentDislikes(commentId)
+  // 处理 点赞数量
+  if (result?.count) dislikeCounts.value = result?.count
+  // 判断是否 点赞
+  const is = result?.userIds?.includes(userId.value)
+  if (is) isUserDislike.value = true
+}
+
+// like 的映射
+const likeTypeMap = {
+  false: "like",
+  true: "normal",
+} as const
+// like 的映射
+const dislikeTypeMap = {
+  false: "dislike",
+  true: "normal",
+} as const
+
+// 切换 点赞
+const toggleLike = async () => {
+  try {
+    const is = !!isUserLike.value
+    // 切换 是否点赞
+    const likeType = likeTypeMap[`${is}`]
+    // 修改 点赞 状态
+    await toggleCommentLikes(commentId, {
+      articleId: props.articleId,
+      likeType,
+    })
+    // 取反 is
+    isUserLike.value = !is
+    if (likeType == "like") {
+      // 自增
+      likeCounts.value = likeCounts.value + 1
+    }
+    // 自减
+    else likeCounts.value = likeCounts.value - 1 || 0
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("点赞失败")
+  }
+}
+// 切换 点踩
+const toggleDislike = async () => {
+  try {
+    const is = !!isUserDislike.value
+    // 切换 是否 点踩
+    const dislikeType = dislikeTypeMap[`${is}`]
+    // 修改 点踩 状态
+    await toggleCommentDislikes(commentId, {
+      articleId: props.articleId,
+      dislikeType,
+    })
+    // 取反 is
+    isUserDislike.value = !is
+    if (dislikeType == "dislike") {
+      // 自增
+      dislikeCounts.value = dislikeCounts.value + 1
+    }
+    // 自减
+    else dislikeCounts.value = dislikeCounts.value - 1 || 0
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("点踩失败")
+  }
+}
+
+onMounted(async () => {
+  // 得到 点赞数量
+  await reqCommentLikes()
+  // 得到 点踩数量
+  await reqCommentDislikes()
+})
 </script>
 
 <style scoped lang="scss">
+// 更多的 菜单项
 .comment-more {
   ::v-deep(.custom-menu) {
     position: absolute;
@@ -231,6 +350,12 @@ const hasEditor = (sub: menuItemType) => {
       right: unset;
       transform: unset;
     }
+  }
+}
+// 点赞和点菜
+.moment-like {
+  &.active {
+    color: red;
   }
 }
 </style>
