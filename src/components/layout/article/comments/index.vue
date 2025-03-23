@@ -31,12 +31,12 @@
         :reqComments
       ></layout-article-comments-add>
     </div>
-    总数{{ pagination.total }}
-    <div>fromId:{{ fromId }}</div>
+
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
         <div class="comment-item" v-if="comment.id">
-          commentId:{{ comment.id }}
+          <div>fromId:{{ fromId }}</div>
+          <div>commentId:{{ comment.id }}</div>
           <!-- 评论信息 -->
           <layout-article-comments-item
             @reply="handlerReply"
@@ -51,8 +51,10 @@
               <div class="h-100% w-70px"></div>
               <layout-article-comments-reply-item
                 @reply="handlerReply"
+                @counts="addCounts"
                 :parentId="comment.id"
                 :orderMap
+                ref="repliesInstance"
                 v-model:order="order"
                 v-bind="$attrs"
               ></layout-article-comments-reply-item>
@@ -65,10 +67,12 @@
           <layout-article-comments-reply
             v-if="comment.isShowComment"
             :fromId="fromId"
+            :parentId="comment.id"
             :articleId
             :reqComments
             :fromNickName
             class="w-100%"
+            ref="replyInstance"
           ></layout-article-comments-reply>
         </div>
       </template>
@@ -91,6 +95,18 @@ const comments = ref<GetComments["data"]["comments"]>()
 const fromId = ref(-1)
 // 回复 的评论 nickName
 const fromNickName = ref("")
+// 回复评论输入 的 组件的 实例
+const replyInstance = ref()
+// 回复 回复评论输入聚焦函数
+const focusCallback = computed(
+  () => replyInstance.value?.[0].addInstance?.textAreaInstance?.instance?.focus
+)
+// 回复 评论的 组件实例
+const repliesInstance = ref()
+// 得到 子评论的 请求 函数
+const reqCallbacks = computed(() => {
+  return repliesInstance.value?.map((item: any) => item?.reqCommentsReplies)
+})
 
 // 分页 器
 const pagination = ref<GetComments["data"]["pagination"]>({
@@ -100,6 +116,8 @@ const pagination = ref<GetComments["data"]["pagination"]>({
 
 // 得到 评论
 const reqComments = async () => {
+  // 每次请求时 重置 次数
+  counts.value = 0
   // 得到 id 判断 是否有 articleId 没有则 退出
   const id = props.articleId
   if (!props.articleId) return
@@ -114,6 +132,16 @@ const reqComments = async () => {
   const { comments: _comments, pagination: _pagination } = result
   comments.value = _comments
   pagination.value = _pagination
+  counts.value = _pagination.total!
+  // 处理 子组件的数据
+  nextTick(async () => {
+    await Promise.allSettled(reqCallbacks.value.map((fn: Function) => fn()))
+  })
+}
+
+// 增加 num
+const addCounts = (num: number) => {
+  counts.value += num
 }
 
 // 构建 相反的 order 映射
@@ -158,6 +186,7 @@ const handlerReply = (options: handlerReplyType) => {
   if (!find) return
   // 找到 修改 相关信息
   find.isShowComment = true
+  nextTick(() => focusCallback.value?.())
 }
 
 onMounted(async () => {

@@ -6,7 +6,8 @@ const router = express.Router()
 
 // 添加评论
 router.post("/", async (req, res, next) => {
-  const { articleId, content, fromId, userProvince, userAgent } = req.body
+  const { articleId, content, fromId, parentId, userProvince, userAgent } =
+    req.body
   if (!articleId || !content)
     return res.result(void 0, "添加评论时，articleId、content是必传项", false)
   const userId = req.auth.id
@@ -17,6 +18,7 @@ router.post("/", async (req, res, next) => {
       articleId,
       content,
       fromId: fromId || null, // 顶级评论，fromId 为 null
+      parentId: parentId || null, // 顶级评论，parentId 为 null
     })
     try {
       // 更新 用户

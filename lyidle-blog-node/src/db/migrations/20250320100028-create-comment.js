@@ -42,6 +42,16 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      parentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true, // 允许为空，表示顶级评论
+        references: {
+          model: "Comments", // 自引用，指向同一张表
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

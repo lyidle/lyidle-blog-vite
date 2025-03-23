@@ -32,8 +32,8 @@ const handlerOrder = (order: orderType, key: orderKeyType) => {
 }
 
 // 获取评论的回复分页数据
-router.get("/pagination/:fromId", async (req, res, next) => {
-  const fromId = req.params.fromId
+router.get("/pagination/:parentId", async (req, res, next) => {
+  const parentId = req.params.parentId
   const { query } = req
   // 决定 回复的 排序
   const { order = "desc", key = "new" } = query as {
@@ -51,7 +51,7 @@ router.get("/pagination/:fromId", async (req, res, next) => {
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
-        fromId, // 根据 fromId 查询回复
+        parentId, // 根据 fromId 查询回复
       },
       include: [
         {

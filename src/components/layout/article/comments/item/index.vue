@@ -129,6 +129,7 @@ const emit = defineEmits<{
   (e: "reply", options: handlerReplyType): void
 }>()
 
+// 更多按钮 的 信息
 const moreItem = computed(() => {
   return {
     data: [
@@ -174,6 +175,7 @@ const moreItem = computed(() => {
   } as menuView
 })
 
+// 是否 显示 编辑等按钮
 const hasEditor = (sub: menuItemType) => {
   if (sub.hide) return false
 

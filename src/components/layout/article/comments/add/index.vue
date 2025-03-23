@@ -224,10 +224,12 @@ const addArticleComments = async () => {
     // 重置输入框
     comment.value = ""
     ElMessage.success("添加评论成功~")
+    // 重新 请求数据
     await props?.reqComments?.()
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("添加评论失败~")
+    // 重新 请求数据
     await props?.reqComments?.()
   }
 }

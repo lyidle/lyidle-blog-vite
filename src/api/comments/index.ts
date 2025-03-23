@@ -32,11 +32,11 @@ export const getComments = (articleId: number, data: GetCommentQuery) =>
   )
 
 // 查询评论
-export const getCommentsReplies = (fromId: number, data: GetCommentQuery) =>
+export const getCommentsReplies = (parentId: number, data: GetCommentQuery) =>
   request.get<any, GetCommentsReplies["data"]>(
     server +
       prefix +
       API.repliesPagination +
-      `/${fromId}` +
+      `/${parentId}` +
       `/?${new URLSearchParams(data)}`
   )

@@ -28,6 +28,10 @@ const pagination = ref<GetCommentsReplies["data"]["pagination"]>({
   currentPage: 1,
   pageSize: 1,
 })
+// 触发自定义事件
+const emit = defineEmits<{
+  (e: "counts", num: number): void
+}>()
 
 // 得到 回复的信息
 const reqCommentsReplies = async () => {
@@ -45,11 +49,10 @@ const reqCommentsReplies = async () => {
   const { replies: _replies, pagination: _pagination } = result
   replies.value = _replies
   pagination.value = _pagination
+  emit("counts", _pagination.total!)
 }
 
-onMounted(async () => {
-  await reqCommentsReplies()
-})
+defineExpose({ reqCommentsReplies })
 </script>
 
 <style scoped></style>

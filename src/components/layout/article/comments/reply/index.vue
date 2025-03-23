@@ -1,29 +1,33 @@
 <template>
+  {{ parentId }}
   <!-- 添加 评论的 组件 -->
   <layout-article-comments-add
-    v-bind="$attrs"
     :addComments
     :placeholder="`回复 @${fromNickName}:`"
     ref="addInstance"
+    v-bind="$attrs"
   ></layout-article-comments-add>
 </template>
 
 <script setup lang="ts" name="AddArticleComments">
 // 引入 类型
 import type { AddCommentBody } from "@/api/comments/types/addCommentBody"
-const props = defineProps<{ fromId: number; fromNickName: string }>()
+const props = defineProps<{
+  fromId: number
+  parentId: number
+  fromNickName: string
+}>()
+
 // 处理 上传数据 的回调 添加 fromId
 const addComments = (updateBody: AddCommentBody) => {
   if (!props.fromId) throw new Error("没有fromId，不能回复")
   updateBody.fromId = props.fromId
+  updateBody.parentId = props.parentId
 }
-
-// 添加 评论的 组件实例
+// 得到 添加组件的 实例
 const addInstance = ref()
-// 聚焦 输入框
-onMounted(() => {
-  addInstance.value?.textAreaInstance?.instance?.focus?.()
-})
+// 暴露对应信息
+defineExpose({ addInstance })
 </script>
 
 <style scoped lang="scss"></style>
