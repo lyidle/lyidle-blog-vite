@@ -27,24 +27,25 @@
       </div>
       <!-- 增加 评论的 组件 -->
       <layout-article-comments-add
-        v-if="articleId"
         :articleId
+        :settingId
         :reqComments
       ></layout-article-comments-add>
     </div>
 
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
-        {{ comment.id }}
+        <div>comment.id:{{ comment.id }}</div>
         <div class="comment-item" v-if="comment.id">
           <!-- 评论信息 -->
           <layout-article-comments-item
             @reply="handlerReply"
             :comment
+            :articleId
+            :settingId
             :parentId="null"
             avatarSize="var(--normal-avatar-size)"
             v-bind="$attrs"
-            :articleId
           ></layout-article-comments-item>
           <!-- 评论的回复信息 -->
           <div
@@ -56,8 +57,9 @@
                 @reply="handlerReply"
                 @counts="addCounts"
                 :parentId="comment.id"
-                :orderMap
                 :articleId
+                :settingId
+                :orderMap
                 ref="repliesInstance"
                 v-model:order="order"
                 v-bind="$attrs"
@@ -74,6 +76,7 @@
               :fromId="fromId"
               :parentId="comment.id"
               :articleId
+              :settingId
               :reqComments
               :fromNickName
               class="w-100%"
@@ -92,7 +95,7 @@ import { getComments } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { handlerReplyType, orderObjType, typeOrderMap } from "./types"
-const props = defineProps<{ articleId: number }>()
+const props = defineProps<{ articleId?: number; settingId?: number }>()
 // 评论 数量
 const counts = ref(0)
 // 保存的 评论
@@ -124,16 +127,28 @@ const pagination = ref<GetComments["data"]["pagination"]>({
 const reqComments = async () => {
   // 每次请求时 重置 次数
   counts.value = 0
-  // 得到 id 判断 是否有 articleId 没有则 退出
-  const id = props.articleId
-  if (!props.articleId) return
+  // 得到 id 判断 是否有 articleId settingId  没有则 退出
+  const id = props.articleId || props.settingId
+  // 验证 信息
+  if (!id) {
+    console.error("评论区加载失败，没有id")
+    return ElMessage.warning("评论区加载失败，没有id")
+  }
+  if (props.articleId && props.settingId) {
+    console.error("评论区加载失败，id冲突")
+    return ElMessage.warning("评论区加载失败，id冲突")
+  }
+
   // 获取 评论数据
-  const result = await getComments(id, {
+  const result = await getComments({
+    articleId: props.articleId ? `${props.articleId}` : "",
+    settingId: props.settingId ? `${props.settingId}` : "",
     key: order.key,
     order: order.order,
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
   })
+
   // 赋值 评论数据
   const { comments: _comments, pagination: _pagination } = result
   comments.value = _comments
@@ -168,10 +183,11 @@ const order = reactive<orderObjType>({
 const handlerNewOrder = async () => {
   if (!comments.value) return
   order.key = "new"
-  order.order = orderMap[order.order]
+
+  if (order.key !== "new") order.order = orderMap[order.order]
   await reqComments()
 }
-
+// 处理 按照 点赞排序
 const handlerLike = async () => {
   if (!comments.value || (order.key === "like" && order.order === "desc"))
     return
@@ -206,7 +222,7 @@ const handlerReply = (options: handlerReplyType) => {
 }
 
 onMounted(async () => {
-  if (!props.articleId) return
+  if (!props.articleId && !props.settingId) return
   await reqComments()
 })
 </script>

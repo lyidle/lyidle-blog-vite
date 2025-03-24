@@ -4,16 +4,16 @@ const { LikeDislike } = require("@/db/models")
 
 const router = express.Router()
 
-// 获取文章的点赞数量
-router.get("/:articleId", async (req, res, next) => {
-  const { articleId } = req.params
+// 获取设置 文章 的评论点赞数量
+router.get("/:commentId", async (req, res, next) => {
+  const { commentId } = req.params
 
   try {
     // 查询点赞数量
     const { count, rows } = await LikeDislike.findAndCountAll({
       where: {
-        targetType: "article",
-        articleId,
+        targetType: "settingComment",
+        commentId,
         likeType: "like", // 只统计点赞的记录
       },
     })

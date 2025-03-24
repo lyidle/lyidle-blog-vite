@@ -12,13 +12,14 @@
         class="w-100% h-100% ml-[var(--primary-pd)] gap-[var(--primary-gap)] flex flex-col"
       >
         <div class="flex gap-10px cur-text">
+          comment.id:{{ comment.id }}
           <div class="userName font-bold">
             {{ comment.user.nickName }}
           </div>
           <div class="flex gap-8px" v-if="comment.fromId">
             <div>回复</div>
             <div class="global-at">
-              @<span>{{ comment.parentComment.user.nickName }}</span>
+              @<span>{{ comment.replies.user.nickName }}</span>
             </div>
             <div>:</div>
           </div>
@@ -126,16 +127,25 @@
 <script setup lang="ts" name="ArticleCommentsItem">
 // 引入 api
 import {
-  toggleCommentLikes,
-  getCommentDislikes,
-  getCommentLikes,
-  toggleCommentDislikes,
+  // #region 文章的评论
+  getArticleCommentLikes,
+  getArticleCommentDislikes,
+  articleToggleCommentLikes,
+  articleToggleCommentDislikes,
+  // #endregion 文章的评论
+  // #region 设置的评论
+  getSettingCommentLikes,
+  getSettingCommentDislikes,
+  settingToggleCommentLikes,
+  settingToggleCommentDislikes,
+  // #endregion 设置的评论
 } from "@/api/likeOrDislike"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { GetCommentsReplies } from "@/api/comments/types/getCommentsReplies"
 import type { handlerReplyType } from "../types"
 import type { menuItemType, menuView } from "@/components/layout/header/types"
+import type { LikeOrDislikeCounts } from "@/api/likeOrDislike/types/likeOrDislikeCounts"
 // 引入 解压 函数
 import { decompressStringNotError } from "@/utils/compression"
 // 引入 moment
@@ -144,17 +154,19 @@ import { nanoid } from "nanoid"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { handlerReqErr } from "@/utils/request/error/successError"
+
 const { userAccount, userToken, userId } = storeToRefs(useUserStore())
 
 const props = withDefaults(
   defineProps<{
     comment:
       | GetCommentsReplies["data"]["replies"][0]
-      | GetComments["data"]["comments"][0]
-    author: string
+      | GetComments["data"]["comments"][0]["replies"][0]
+    author?: string
     parentId: number | null
     avatarSize?: string
-    articleId: number
+    articleId?: number
+    settingId?: number
   }>(),
   {
     avatarSize: "50px",
@@ -249,9 +261,18 @@ const hasEditor = (sub: menuItemType) => {
 
 // 得到 点赞数量
 const reqCommentLikes = async () => {
+  // 没有 评论id
   if (!commentId) return
-  const result = await getCommentLikes(commentId)
+  // 判断是文章 还是 设置
+  const isArticle = validate()
+  // 去除空的判断
+  if (!isArticle) return
   // 处理 点赞数量
+  let result: null | LikeOrDislikeCounts["data"] = null
+  if (isArticle === "文章") result = await getArticleCommentLikes(commentId)
+  if (isArticle === "设置") result = await getSettingCommentLikes(commentId)
+  if (!result) return
+
   if (result?.count) likeCounts.value = result?.count
   // 判断是否 点赞
   const is = result?.userIds?.includes(userId.value)
@@ -259,8 +280,18 @@ const reqCommentLikes = async () => {
 }
 // 得到 点踩数量
 const reqCommentDislikes = async () => {
+  // 没有 评论id
   if (!commentId) return
-  const result = await getCommentDislikes(commentId)
+  // 判断是文章 还是 设置
+  const isArticle = validate()
+  // 去除空的判断
+  if (!isArticle) return
+  // 处理 点赞数量
+  let result: null | LikeOrDislikeCounts["data"] = null
+  if (isArticle === "文章") result = await getArticleCommentDislikes(commentId)
+  if (isArticle === "设置") result = await getSettingCommentDislikes(commentId)
+  if (!result) return
+
   // 处理 点赞数量
   if (result?.count) dislikeCounts.value = result?.count
   // 判断是否 点赞
@@ -279,17 +310,49 @@ const dislikeTypeMap = {
   true: "normal",
 } as const
 
+// 判断 是否文章界面 还是 设置界面
+const validate = (): void | "文章" | "设置" | "" => {
+  const id = props.articleId || props.settingId
+  // 验证 信息
+  if (!id) {
+    console.error("评论区加载失败，没有id")
+    ElMessage.warning("评论区加载失败，没有id")
+    return
+  }
+  if (props.articleId && props.settingId) {
+    console.error("评论区加载失败，id冲突")
+    ElMessage.warning("评论区加载失败，id冲突")
+    return
+  }
+  return props.articleId ? "文章" : props.settingId ? "设置" : ""
+}
+
 // 切换 点赞
 const toggleLike = async () => {
+  // 没有 评论id
+  if (!commentId) return
+  // 判断是文章 还是 设置
+  const isArticle = validate()
+  // 去除空的判断
+  if (!isArticle) return
   try {
     const is = !!isUserLike.value
     // 切换 是否点赞
     const likeType = likeTypeMap[`${is}`]
-    // 修改 点赞 状态
-    await toggleCommentLikes(commentId, {
-      articleId: props.articleId,
-      likeType,
-    })
+    if (isArticle === "文章") {
+      // 修改 点赞 状态
+      await articleToggleCommentLikes(commentId, {
+        articleId: props.articleId,
+        likeType,
+      })
+    }
+    if (isArticle === "设置") {
+      // 修改 点赞 状态
+      await settingToggleCommentLikes(commentId, {
+        likeType,
+        settingId: props.settingId,
+      })
+    }
     // 取反 is
     isUserLike.value = !is
     if (likeType == "like") {
@@ -303,17 +366,34 @@ const toggleLike = async () => {
     if (!err) ElMessage.error("点赞失败")
   }
 }
+
 // 切换 点踩
 const toggleDislike = async () => {
+  // 没有 评论id
+  if (!commentId) return
+  // 判断是文章 还是 设置
+  const isArticle = validate()
+  // 去除空的判断
+  if (!isArticle) return
   try {
     const is = !!isUserDislike.value
     // 切换 是否 点踩
     const dislikeType = dislikeTypeMap[`${is}`]
-    // 修改 点踩 状态
-    await toggleCommentDislikes(commentId, {
-      articleId: props.articleId,
-      dislikeType,
-    })
+
+    if (isArticle === "文章") {
+      // 修改 点踩 状态
+      await articleToggleCommentDislikes(commentId, {
+        articleId: props.articleId,
+        dislikeType,
+      })
+    }
+    if (isArticle === "设置") {
+      // 修改 点踩 状态
+      await settingToggleCommentDislikes(commentId, {
+        settingId: props.settingId,
+        dislikeType,
+      })
+    }
     // 取反 is
     isUserDislike.value = !is
     if (dislikeType == "dislike") {

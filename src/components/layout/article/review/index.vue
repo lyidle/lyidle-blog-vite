@@ -135,7 +135,12 @@
             <layout-article-comments
               :articleId="article?.id"
               :author="article.author"
-              v-if="article?.id"
+              v-if="!settingId && article?.id && article?.id >= 0"
+            ></layout-article-comments>
+            <!-- 设置表的 存储杂项的表 评论 -->
+            <layout-article-comments
+              :settingId
+              v-if="!article?.id && settingId && settingId >= 0 && settingId"
             ></layout-article-comments>
           </my-card>
         </div>
@@ -164,6 +169,8 @@ const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
 const title = defineModel<string>("title")
+// 设置 的 id
+const settingId = defineModel<number>("settingId")
 
 // 注入父组件提供的方法
 const reqArticle =

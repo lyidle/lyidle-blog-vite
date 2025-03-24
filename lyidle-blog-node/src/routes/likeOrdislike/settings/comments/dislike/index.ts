@@ -1,41 +1,46 @@
 import express from "express"
 // 引入 模型
-const { LikeDislike, Article } = require("@/db/models")
+const { LikeDislike, Setting } = require("@/db/models")
 
 const router = express.Router()
 
 // 点踩接口
-router.post("/:articleId", async (req, res, next) => {
-  const { articleId } = req.params
-  const { dislikeType } = req.query
+router.post("/:commentId", async (req, res, next) => {
+  const { commentId } = req.params
+  const { dislikeType, settingId } = req.query
   const userId = req.auth.id
 
-  // 校验 dislikeType 是否合法
+  // 验证 是否有 commentId
+  if (!commentId) return res.result(void 0, "commentId 是必传项", false)
+
+  // 校验 likeType 是否合法
   if (!["dislike", "normal"].includes(dislikeType as string)) {
     return res.result(void 0, "dislikeType 必须是 dislike 或 normal", false)
   }
 
-  // 校验 是否有 articleId
-  if (!articleId) return res.result(void 0, "articleId 必须要有值", false)
+  // 校验 是否有 settingId
+  if (!settingId) return res.result(void 0, "settingId 必须要有值", false)
 
-  // 检查 文章 是否存在
-  const article = await Article.findByPk(articleId)
-  if (!article) return res.result(void 0, "文章不存在", false)
+  // 检查 设置 是否存在
+  const setting = await Setting.findByPk(settingId)
+  if (!setting) return res.result(void 0, "设置不存在", false)
 
   try {
     // 查找或创建记录
     const [record, created] = await LikeDislike.findOrCreate({
       where: {
         userId,
-        targetType: "article",
-        articleId,
+        targetType: "settingComment",
+        settingId,
+        commentId,
       },
       defaults: {
         userId,
-        targetType: "article",
+        targetType: "settingComment",
         dislikeType,
         likeType: "normal", // 默认点赞状态为 normal
-        articleId, // 关联的文章 ID
+        commentId,
+        settingId,
       },
     })
 

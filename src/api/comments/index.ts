@@ -22,13 +22,9 @@ const server = import.meta.env.VITE_SERVE
 export const addComment = (data: AddCommentBody) =>
   request.post<any, AddComment["data"]>(server + prefix + API.comments, data)
 // 查询评论
-export const getComments = (articleId: number, data: GetCommentQuery) =>
+export const getComments = (data: GetCommentQuery) =>
   request.get<any, GetComments["data"]>(
-    server +
-      prefix +
-      API.pagination +
-      `/${articleId}` +
-      `/?${new URLSearchParams(data)}`
+    server + prefix + API.pagination + `/?${new URLSearchParams(data)}`
   )
 
 // 查询回复

@@ -24,9 +24,19 @@ module.exports = {
       },
       articleId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Articles", // 关联文章表
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      settingId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Settings", // 关联设置表
           key: "id",
         },
         onUpdate: "CASCADE",

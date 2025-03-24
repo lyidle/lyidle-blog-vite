@@ -1,6 +1,6 @@
 import express from "express"
 // 引入 模型
-const { Comment, ArticleLikeDislike, User, sequelize } = require("@/db/models")
+const { Comment, LikeDislike, User, sequelize } = require("@/db/models")
 
 const router = express.Router()
 
@@ -16,7 +16,7 @@ const handlerOrder = (order: orderType, key: orderKeyType) => {
     return [
       [
         sequelize.literal(
-          '(SELECT COUNT(*) FROM ArticleLikeDislikes WHERE ArticleLikeDislikes.commentId = Comment.id AND ArticleLikeDislikes.likeType = "like")'
+          '(SELECT COUNT(*) FROM LikeDislikes WHERE LikeDislikes.commentId = Comment.id AND LikeDislikes.likeType = "like")'
         ),
         order,
       ],
@@ -47,7 +47,6 @@ router.get("/pagination/:parentId", async (req, res, next) => {
   const currentPage = Math.abs(Number(query.currentPage)) || 1
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
-
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
@@ -67,7 +66,7 @@ router.get("/pagination/:parentId", async (req, res, next) => {
           ],
         },
         {
-          model: ArticleLikeDislike,
+          model: LikeDislike,
           as: "likes", // 关联点赞
           attributes: [], // 不需要返回点赞的具体信息
           where: {
@@ -77,7 +76,7 @@ router.get("/pagination/:parentId", async (req, res, next) => {
         },
         {
           model: Comment,
-          as: "parentComment", // 关联父评论
+          as: "replies", // 关联父评论
           include: [
             {
               model: User,

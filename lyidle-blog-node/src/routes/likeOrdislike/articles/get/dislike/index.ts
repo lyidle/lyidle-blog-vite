@@ -1,6 +1,6 @@
 import express from "express"
 // 引入模型
-const { ArticleLikeDislike } = require("@/db/models")
+const { LikeDislike } = require("@/db/models")
 
 const router = express.Router()
 
@@ -10,7 +10,7 @@ router.get("/:articleId", async (req, res, next) => {
 
   try {
     // 查询点踩数量
-    const { count, rows } = await ArticleLikeDislike.findAndCountAll({
+    const { count, rows } = await LikeDislike.findAndCountAll({
       where: {
         targetType: "article",
         articleId,

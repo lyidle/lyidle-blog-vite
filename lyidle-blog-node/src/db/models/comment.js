@@ -20,8 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         as: "article",
       })
 
-      // 评论可以有多个回复评论（自引用）
-      this.hasMany(models.Comment, {
+      // 评论属于 设置 关于页面 或其他的 md 格式的文件 页面可能用到评论
+      this.belongsTo(models.Setting, {
+        foreignKey: "settingId",
+        as: "setting",
+      })
+
+      // 评论可以有 回复评论（自引用）
+      this.belongsTo(models.Comment, {
         foreignKey: "fromId",
         as: "replies",
       })
@@ -33,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       // 评论的点赞
-      this.hasMany(models.ArticleLikeDislike, {
+      this.hasMany(models.LikeDislike, {
         foreignKey: "commentId",
         as: "likes",
       })
@@ -51,8 +57,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       articleId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
+      settingId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      // 回复 的 那个评论
       fromId: {
         type: DataTypes.INTEGER,
         allowNull: true,

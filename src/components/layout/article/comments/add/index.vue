@@ -118,7 +118,8 @@ onMounted(() => {
 
 const props = defineProps<{
   // 文章id
-  articleId: number
+  articleId?: number
+  settingId?: number
   //  请求评论的接口
   reqComments: () => void
   // 添加评论的回调
@@ -200,17 +201,29 @@ useEventListener("click", (e) => {
 
 // 增加 评论
 const addArticleComments = async () => {
-  const id = props.articleId
-  if (!props.articleId) return
+  const id = props.articleId || props.settingId
+  // 验证 信息
+  if (!id) {
+    console.error("评论区加载失败，没有id")
+    return ElMessage.warning("评论区加载失败，没有id")
+  }
+  if (props.articleId && props.settingId) {
+    console.error("评论区加载失败，id冲突")
+    return ElMessage.warning("评论区加载失败，id冲突")
+  }
+
   // 判断 字数是否 符合
   const len = comment.value.trim().length
   if (len < minCounts || len > maxCounts.value)
     return ElMessage.warning(
       `评论字数需要在:${minCounts}到${maxCounts.value}之间哦`
     )
+
   try {
     const updateBody: AddCommentBody = {
-      articleId: id,
+      // articleId 或者 settingId
+      articleId: props.articleId,
+      settingId: props.settingId,
       content: "",
       userProvince: region_province.value,
       userAgent,

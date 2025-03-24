@@ -1,8 +1,8 @@
-// models/articlelikedislike.js
+// models/LikeDislike.js
 "use strict"
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
-  class ArticleLikeDislike extends Model {
+  class LikeDislike extends Model {
     static associate(models) {
       // 定义与用户表的关联
       this.belongsTo(models.User, {
@@ -15,21 +15,36 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "articleId",
         as: "article",
       })
+
+      // 点赞属于 设置 关于页面 或其他的 md 格式的文件 页面可能用到评论
+      this.belongsTo(models.Setting, {
+        foreignKey: "settingId",
+        as: "setting",
+      })
     }
   }
-  ArticleLikeDislike.init(
+  LikeDislike.init(
     {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
       targetType: {
-        type: DataTypes.ENUM("comment", "article"),
+        type: DataTypes.ENUM(
+          "articleComment",
+          "article",
+          "settingComment",
+          "setting"
+        ),
         allowNull: false,
       },
       articleId: {
         type: DataTypes.INTEGER,
-        allowNull: false, // 都是对文章的操作
+        allowNull: true, // 可能是文章 也可能是 设置表
+      },
+      settingId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       commentId: {
         type: DataTypes.INTEGER,
@@ -47,8 +62,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "ArticleLikeDislike",
+      modelName: "LikeDislike",
     }
   )
-  return ArticleLikeDislike
+  return LikeDislike
 }

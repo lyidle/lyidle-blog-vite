@@ -1,6 +1,6 @@
 import express from "express"
 // 引入模型
-const { ArticleLikeDislike, Comment } = require("@/db/models")
+const { LikeDislike, Comment, Article } = require("@/db/models")
 
 const router = express.Router()
 
@@ -19,6 +19,10 @@ router.post("/:commentId", async (req, res, next) => {
   // 校验 是否有 articleId
   if (!articleId) return res.result(void 0, "articleId 必须要有值", false)
 
+  // 检查 文章 是否存在
+  const article = await Article.findByPk(articleId)
+  if (!article) return res.result(void 0, "文章不存在", false)
+
   // 检查评论是否存在
   const comment = await Comment.findByPk(commentId)
   if (!comment) {
@@ -27,10 +31,10 @@ router.post("/:commentId", async (req, res, next) => {
 
   try {
     // 查找或创建记录
-    const [record, created] = await ArticleLikeDislike.findOrCreate({
+    const [record, created] = await LikeDislike.findOrCreate({
       where: {
         userId,
-        targetType: "comment",
+        targetType: "articleComment",
         articleId,
         commentId,
       },
@@ -38,7 +42,7 @@ router.post("/:commentId", async (req, res, next) => {
         commentId,
         articleId,
         userId,
-        targetType: "comment",
+        targetType: "articleComment",
         likeType,
         dislikeType: "normal", // 默认点踩状态为 normal
       },
@@ -47,7 +51,6 @@ router.post("/:commentId", async (req, res, next) => {
     // 如果记录已存在，则更新 likeType
     if (!created) {
       record.likeType = likeType
-      record.articleId = articleId
       await record.save()
     }
 

@@ -2,7 +2,7 @@
 "use strict"
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("ArticleLikeDislikes", {
+    await queryInterface.createTable("LikeDislikes", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -19,14 +19,29 @@ module.exports = {
         onDelete: "CASCADE",
       },
       targetType: {
-        type: Sequelize.ENUM("comment", "article"),
+        type: Sequelize.ENUM(
+          "articleComment",
+          "article",
+          "settingComment",
+          "setting"
+        ),
         allowNull: false,
       },
       articleId: {
         type: Sequelize.INTEGER,
-        allowNull: false, //都是对文章的操作
+        allowNull: true, //可能是文章 也可能是 设置表
         references: {
           model: "Articles", // 关联文章表
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      settingId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Settings", // 关联设置表
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -64,14 +79,14 @@ module.exports = {
     })
 
     // 添加联合唯一索引，确保一个用户对同一个目标只能有一条记录
-    await queryInterface.addIndex("ArticleLikeDislikes", {
-      fields: ["userId", "targetType", "articleId", "commentId"],
+    await queryInterface.addIndex("LikeDislikes", {
+      fields: ["userId", "targetType", "articleId", "commentId", "settingId"],
       unique: true,
       name: "unique_user_target",
     })
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("ArticleLikeDislikes")
+    await queryInterface.dropTable("LikeDislikes")
   },
 }

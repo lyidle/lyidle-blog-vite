@@ -1,6 +1,6 @@
 import express from "express"
 // 引入 模型
-const { Comment, ArticleLikeDislike, User, sequelize } = require("@/db/models")
+const { Comment, LikeDislike, User, sequelize } = require("@/db/models")
 
 const router = express.Router()
 
@@ -16,7 +16,7 @@ const handlerOrder = (order: orderType, key: orderKeyType) => {
     return [
       [
         sequelize.literal(
-          '(SELECT COUNT(*) FROM ArticleLikeDislikes WHERE ArticleLikeDislikes.commentId = Comment.id AND ArticleLikeDislikes.likeType = "like")'
+          '(SELECT COUNT(*) FROM LikeDislikes WHERE LikeDislikes.commentId = Comment.id AND LikeDislikes.likeType = "like")'
         ),
         order,
       ],
@@ -32,14 +32,37 @@ const handlerOrder = (order: orderType, key: orderKeyType) => {
 }
 
 // 查询评论
-router.get("/:articleId", async (req, res, next) => {
-  const articleId = req.params.articleId
+router.get("/", async (req, res, next) => {
   const { query } = req
   // 决定 评论的 排序
-  const { order = "desc", key = "new" } = query as {
+  let {
+    order = "desc",
+    key = "new",
+    articleId,
+    settingId,
+  } = query as {
     order: orderType
     key: orderKeyType
+    articleId: string | number
+    settingId: string | number
   }
+
+  // 判断是否冲突
+  if (articleId && settingId)
+    return res.result(
+      void 0,
+      "查询怕评论时，articleId和settingId不能同时存在",
+      false
+    )
+
+  // 判断是否冲突
+  if (!articleId && !settingId)
+    return res.result(
+      void 0,
+      "查询怕评论时，articleId和settingId至少需要有一个",
+      false
+    )
+
   /**
    * @pagesize 每页显示条目个数
    * @currentPage 当前页
@@ -48,10 +71,15 @@ router.get("/:articleId", async (req, res, next) => {
   const pageSize = Math.abs(Number(query.pageSize)) || 10
   const offset = (currentPage - 1) * pageSize
 
+  // 判断 是查询 设置还是文章
+  const articleOrSetting: any = {}
+  if (articleId) articleOrSetting.articleId = articleId
+  if (settingId) articleOrSetting.settingId = settingId
+
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
-        articleId,
+        ...articleOrSetting,
         fromId: null, // 只查询顶级评论 即文章的 评论
       },
       include: [
@@ -68,7 +96,7 @@ router.get("/:articleId", async (req, res, next) => {
           ],
         },
         {
-          model: ArticleLikeDislike,
+          model: LikeDislike,
           as: "likes", // 关联点赞
           attributes: [], // 不需要返回点赞的具体信息
           where: {

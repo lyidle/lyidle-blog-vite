@@ -17,7 +17,7 @@ export interface Data {
 export interface Pagination {
   currentPage: number
   pageSize: number
-  total?: number
+  total: number
   [property: string]: any
 }
 
@@ -27,14 +27,14 @@ export interface Reply {
   createdAt: string
   fromId: number | null
   id: number
-  parentComment: ParentComment
+  replies: Replies
   updatedAt: string
   user: CommentUser
   userId: number
   [property: string]: any
 }
 
-export interface ParentComment {
+export interface Replies {
   articleId: number
   content: string
   createdAt: string

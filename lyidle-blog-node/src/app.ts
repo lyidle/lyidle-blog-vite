@@ -92,25 +92,23 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       case "Setting":
         res.result(void 0, "设置的名字不能重复", false)
         break
-      case "ArticleLikeDislike":
+      case "LikeDislike":
         // 获取违反唯一性约束的字段
-        const articleLikeDislikeErrors = []
+        const LikeDislikeErrors = []
         if (uniqueFields.includes("userId"))
-          articleLikeDislikeErrors.push("用户ID不能重复")
+          LikeDislikeErrors.push("用户ID不能重复")
         if (uniqueFields.includes("targetType"))
-          articleLikeDislikeErrors.push("目标类型不能重复")
+          LikeDislikeErrors.push("目标类型不能重复")
         if (uniqueFields.includes("articleId"))
-          articleLikeDislikeErrors.push("文章ID不能重复")
+          LikeDislikeErrors.push("文章ID不能重复")
         if (uniqueFields.includes("commentId"))
-          articleLikeDislikeErrors.push("评论ID不能重复")
+          LikeDislikeErrors.push("评论ID不能重复")
 
         // 根据联合唯一索引的逻辑，返回更具体的错误信息
-        if (articleLikeDislikeErrors.length > 0) {
+        if (LikeDislikeErrors.length > 0) {
           res.result(
             void 0,
-            `用户对同一目标只能有一条记录：${articleLikeDislikeErrors.join(
-              ", "
-            )}`,
+            `用户对同一目标只能有一条记录：${LikeDislikeErrors.join(", ")}`,
             false
           )
         } else {

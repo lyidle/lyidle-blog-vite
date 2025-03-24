@@ -2,7 +2,8 @@
  * Request
  */
 export interface AddCommentBody {
-  articleId: number
+  articleId?: number
+  settingId?: number
   content: string
   fromId?: number | null
   parentId?: number | null
