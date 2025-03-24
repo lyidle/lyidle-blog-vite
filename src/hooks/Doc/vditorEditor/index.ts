@@ -113,6 +113,7 @@ export const useVditorEditor = (
             ElMessage.success("重置文档成功~")
           },
         },
+        // 批量上传图片
         imgToTempLink(vditor as Ref<Vditor>),
         // more
         {

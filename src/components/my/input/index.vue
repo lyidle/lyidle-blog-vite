@@ -79,6 +79,12 @@ defineExpose({
     color: var(--primary-color);
     resize: none;
   }
+  .el-input__count {
+    background-color: transparent;
+    bottom: 10px;
+    right: 5px;
+    color: var(--primary-color);
+  }
 }
 // #endregion textarea
 </style>

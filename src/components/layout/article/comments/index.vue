@@ -35,7 +35,6 @@
 
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
-        <div>comment.id:{{ comment.id }}</div>
         <div class="comment-item" v-if="comment.id">
           <!-- 评论信息 -->
           <layout-article-comments-item

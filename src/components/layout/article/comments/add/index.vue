@@ -19,6 +19,7 @@
         @focus="commentFocus"
         @blur="isFocus = false"
         @input="handlerInput"
+        @paste="handlerPaste"
         ref="textAreaInstance"
         v-bind="$attrs"
       ></my-input>
@@ -40,6 +41,13 @@
           size="small"
           @click="isPreview = !isPreview"
           >预览</my-button
+        >
+        <my-button
+          type="default"
+          class="h-30px rounded-5px"
+          size="small"
+          @click="handlerImg"
+          >批量替换图片</my-button
         >
         <my-button
           class="h-30px rounded-5px"
@@ -73,7 +81,6 @@ import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 防抖
 import debounce from "@/utils/debounce"
 import { handlerReqErr } from "@/utils/request/error/successError"
-
 // 处理 文件上传
 import {
   clickUpload,
@@ -82,6 +89,11 @@ import {
   nameToMdImg,
   tempFileUpload,
 } from "@/utils/upload"
+
+// 节流
+import throttle from "@/utils/throttle"
+// 替换的 文本中 图片的 函数
+import { contextImgToLink } from "@/hooks/Doc/vditorEditor/contextImgToLink"
 
 // 引入 UAParser
 import { UAParser } from "ua-parser-js"
@@ -99,6 +111,7 @@ const userAgent = `${systemVersion}|${browserVersion}`
 
 // 引入 仓库
 import { useAnnounceStore } from "@/store/announce"
+import { isUrl } from "@/RegExp/Url/isUrl"
 
 // 提取需要的
 const {
@@ -166,6 +179,35 @@ const handlerCounts = () => {
 
 // 输入框 输入 事件
 const handlerInput = debounce(handlerCounts, 500)
+
+// 监听 输入框的 粘贴事件
+const handlerPaste = (e: ClipboardEvent) => {
+  if (!e.clipboardData) return
+  // e.preventDefault()
+  // const items = e.clipboardData.items
+  // for (const item of items) {
+  //   // 本地 图片
+  //   if (item.type.startsWith("image/")) {
+  //     // 处理本地粘贴的图片
+  //     const file = item.getAsFile()
+  //     if (file) {
+  //       console.log("本地图片文件:", file)
+  //     }
+  //     return
+  //   }
+  //   // 文本信息
+  //   if (item.type === "text/plain") {
+  //     // 处理粘贴的文本（可能是网络图片 URL）
+  //     item.getAsString((text) => {
+  //       if (isUrl(text)) {
+  //         // comment.value = nameToMdImg(text)
+  //       } else {
+  //         // comment.value += text
+  //       }
+  //     })
+  //   }
+  // }
+}
 
 // 向上 查找 是否是 评论
 const isComments = (el: Element | null): boolean => {
@@ -281,7 +323,9 @@ const handlerSuccessFile = async (
       const regex = new RegExp(escapeUrlForRegExp(originImg), "g")
       commentContent = commentContent.replace(regex, "")
     }
-    comment.value = commentContent
+    // 更新
+    if (commentContent !== comment.value) comment.value = commentContent
+
     // 重新 计算 最大值
     handlerCounts()
     // 聚焦文本框
@@ -306,8 +350,9 @@ const handlerSuccessFile = async (
     commentContent = commentContent.replace(regex, newImg)
   }
 
-  // 更新 comment.value 为替换后的内容
-  comment.value = commentContent
+  // 更新
+  if (commentContent !== comment.value) comment.value = commentContent
+
   // 重新 计算 最大值
   handlerCounts()
 
@@ -316,6 +361,12 @@ const handlerSuccessFile = async (
     textAreaInstance.value?.instance?.focus?.()
   })
 }
+
+// 批量替换 网络图片
+const handlerImg = throttle(async () => {
+  const result = await contextImgToLink(comment.value)
+  if (result) comment.value = result
+}, 1000)
 </script>
 
 <style scoped lang="scss">

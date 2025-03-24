@@ -12,7 +12,6 @@
         class="w-100% h-100% ml-[var(--primary-pd)] gap-[var(--primary-gap)] flex flex-col"
       >
         <div class="flex gap-10px cur-text">
-          comment.id:{{ comment.id }}
           <div class="userName font-bold">
             {{ comment.user.nickName }}
           </div>
@@ -435,7 +434,7 @@ onMounted(async () => {
 // 点赞和点菜
 .moment-like {
   &.active {
-    color: red;
+    color: rgb(217, 62, 62);
   }
 }
 </style>

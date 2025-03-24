@@ -4,10 +4,7 @@ import { postImgPermanent } from "@/api/img"
 import { compressString } from "@/utils/compression"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
-import {
-  contextReplaceUrls,
-  escapeUrlForRegExp,
-} from "@/RegExp/Url/replace/escapeUrlForRegExp"
+import { contextReplaceUrls } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 替换 md的 临时链接
 export const useMdReplaceImg = async (
   content: string,

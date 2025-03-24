@@ -22,7 +22,7 @@ export const useSettingStore = defineStore(
     // 暗夜切换
     const isDark = ref<boolean>(false)
     // 主题选择
-    const themes = ref("light")
+    const themes = ref("switch")
     // 白天的主题值
     const lights = ref("normal")
     const lightOptions = [{ value: "normal", label: "纯白" }]
