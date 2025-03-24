@@ -1,6 +1,7 @@
 import { postTempImgFiles } from "@/api/img"
 import { cloneDeep } from "lodash-es"
 import { nanoid } from "nanoid"
+import { handlerReqErr } from "../request/error/successError"
 
 // 定义 类型
 export type clickUploadNameMapType = { [newName: string]: string }
@@ -136,7 +137,8 @@ export const tempFileUpload = async (
     const success = Object.entries(response.succMap)
     if (success.length) return { error, success }
   } catch (error) {
-    console.log("上传图片失败~", error)
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("上传图片失败~")
     return {
       error: files
         .map((item) => {

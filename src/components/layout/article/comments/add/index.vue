@@ -22,6 +22,8 @@
         @paste="handlerPaste"
         @click="updateCursorPosition"
         @select="updateCursorPosition"
+        @keydown.ctrl.z.prevent="handleUndo"
+        @keydown.ctrl.y.prevent="handleRedo"
         ref="textAreaInstance"
         v-bind="$attrs"
       ></my-input>
@@ -161,6 +163,12 @@ const minCounts = 20
 
 // 输入框 的实例
 const textAreaInstance = ref()
+// 保存的操作
+const saveToHistory = () => textAreaInstance.value?.saveToHistory?.()
+// 撤销和重做
+const handleRedo = () => textAreaInstance.value?.redo?.()
+const handleUndo = () => textAreaInstance.value?.undo?.()
+
 // 把 输入框暴露出去
 defineExpose({ textAreaInstance })
 
@@ -180,7 +188,10 @@ const handlerCounts = () => {
     : initialMinCounts
 }
 // 输入框 输入 事件
-const handlerInput = debounce(handlerCounts, 500)
+const handlerInput = debounce(() => {
+  saveToHistory()
+  handlerCounts()
+}, 500)
 
 // 是否 选中文本
 const isSelected = ref(false)
@@ -210,21 +221,31 @@ watch(
 
 // 处理 插入文本的信息
 const insertText = (context: string) => {
+  saveToHistory() // 保存操作前的状态
+
   const instance = textAreaInstance.value?.instance
   const textarea = instance?.textarea
   if (!textarea) return
-  const text = comment.value
+
+  const selection = {
+    start: textarea.selectionStart,
+    end: textarea.selectionEnd,
+  }
+
   // 执行插入/替换
   comment.value =
-    text.substring(0, selection.start) + context + text.substring(selection.end)
-  // 光标位置更新 textarea
-  // 计算新光标位置（插入内容末尾）
+    comment.value.substring(0, selection.start) +
+    context +
+    comment.value.substring(selection.end)
+
+  // 计算新光标位置
   const newCursorPos = selection.start + context.length
 
-  // 异步更新UI和光标位置
-  if (!textarea) return
-  // 设置新光标位置
-  textarea.setSelectionRange(newCursorPos, newCursorPos)
+  // 异步更新光标
+  nextTick(() => {
+    textarea.setSelectionRange(newCursorPos, newCursorPos)
+    saveToHistory() // 保存操作后的状态
+  })
 }
 
 // 监听 输入框的 粘贴事件
@@ -251,6 +272,7 @@ const handlerPaste = async (e: ClipboardEvent) => {
           insertText(nameToMdImg(text))
           // 提示时 替换链接 为 临时链接
           await handlerImg(false)
+          ElMessage.success("图片上传成功")
         } else {
           insertText(text)
         }
@@ -383,8 +405,11 @@ const handlerSuccessFile = async (
       const regex = new RegExp(escapeUrlForRegExp(originImg), "g")
       commentContent = commentContent.replace(regex, "")
     }
+
+    saveToHistory() // 保存操作前的状态
     // 更新
     if (commentContent !== comment.value) comment.value = commentContent
+    nextTick(saveToHistory) // 保存操作前的状态
 
     // 重新 计算 最大值
     handlerCounts()
@@ -410,8 +435,10 @@ const handlerSuccessFile = async (
     commentContent = commentContent.replace(regex, newImg)
   }
 
+  saveToHistory() // 保存操作前的状态
   // 更新
   if (commentContent !== comment.value) comment.value = commentContent
+  nextTick(saveToHistory) // 保存操作前的状态
 
   // 重新 计算 最大值
   handlerCounts()
@@ -424,8 +451,10 @@ const handlerSuccessFile = async (
 
 // 批量替换 网络图片
 const handlerImg = throttle(async (tip: boolean = true) => {
+  saveToHistory() // 保存操作前的状态
   const result = await contextImgToLink(comment.value, tip)
   if (result) comment.value = result
+  nextTick(saveToHistory) // 保存操作前的状态
 }, 1000)
 </script>
 
