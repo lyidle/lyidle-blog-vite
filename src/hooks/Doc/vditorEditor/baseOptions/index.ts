@@ -53,7 +53,7 @@ export const baseOptions = (
         length.value = len
       },
     },
-    // upload: uploadImgTempFile(),
+    upload: uploadImgTempFile(),
   }
   const changeDark = (newV: boolean) => {
     vditor.value?.setTheme("classic", "light", newV ? "github-dark" : "github")

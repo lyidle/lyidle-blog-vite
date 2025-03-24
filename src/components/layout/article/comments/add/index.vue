@@ -89,7 +89,6 @@ import {
   nameToMdImg,
   tempFileUpload,
 } from "@/utils/upload"
-
 // 节流
 import throttle from "@/utils/throttle"
 // 替换的 文本中 图片的 函数
@@ -169,12 +168,10 @@ const commentFocus = () => {
 // 处理 maxcount
 const handlerCounts = () => {
   comment.value = comment.value?.trim?.()
-  // 判断 是否 是 有图片等信息
   const reg = /!\[.*?\]\(.*?\)/
-  if (!reg.test(comment.value)) {
-    return (maxCounts.value = initialMinCounts)
-  }
-  maxCounts.value = initialMaxCounts
+  maxCounts.value = reg.test(comment.value)
+    ? initialMaxCounts
+    : initialMinCounts
 }
 
 // 输入框 输入 事件
@@ -183,30 +180,30 @@ const handlerInput = debounce(handlerCounts, 500)
 // 监听 输入框的 粘贴事件
 const handlerPaste = (e: ClipboardEvent) => {
   if (!e.clipboardData) return
-  // e.preventDefault()
-  // const items = e.clipboardData.items
-  // for (const item of items) {
-  //   // 本地 图片
-  //   if (item.type.startsWith("image/")) {
-  //     // 处理本地粘贴的图片
-  //     const file = item.getAsFile()
-  //     if (file) {
-  //       console.log("本地图片文件:", file)
-  //     }
-  //     return
-  //   }
-  //   // 文本信息
-  //   if (item.type === "text/plain") {
-  //     // 处理粘贴的文本（可能是网络图片 URL）
-  //     item.getAsString((text) => {
-  //       if (isUrl(text)) {
-  //         // comment.value = nameToMdImg(text)
-  //       } else {
-  //         // comment.value += text
-  //       }
-  //     })
-  //   }
-  // }
+  e.preventDefault()
+  const items = e.clipboardData.items
+  for (const item of items) {
+    // 本地 图片
+    if (item.type.startsWith("image/")) {
+      // 处理本地粘贴的图片
+      const file = item.getAsFile()
+      if (file) {
+        console.log("本地图片文件:", file)
+      }
+      return
+    }
+    // 文本信息
+    if (item.type === "text/plain") {
+      // 处理粘贴的文本（可能是网络图片 URL）
+      item.getAsString((text) => {
+        if (isUrl(text)) {
+          comment.value = nameToMdImg(text)
+        } else {
+          comment.value += text
+        }
+      })
+    }
+  }
 }
 
 // 向上 查找 是否是 评论
