@@ -6,7 +6,7 @@
     <!-- 右键菜单 -->
     <my-context-menu />
     <!-- 全局面板 -->
-    <global-theme></global-theme>
+    <global-panel></global-panel>
     <!-- 路由 -->
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="route.path" />

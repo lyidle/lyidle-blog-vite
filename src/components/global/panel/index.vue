@@ -33,17 +33,17 @@
         </ul>
         <div class="content">
           <!-- 全局设置 -->
-          <global-theme-global
+          <global-panel-global
             v-if="setScene === asideDataMap['全局设置']"
             class="content-container"
-          ></global-theme-global>
+          ></global-panel-global>
           <!-- 用户编辑 -->
           <div
             v-if="isShowEditor && setScene === asideDataMap['用户编辑']"
             class="content-container"
           >
             <div>
-              <global-theme-user-editor></global-theme-user-editor>
+              <global-panel-user-editor></global-panel-user-editor>
             </div>
           </div>
           <div v-if="isShowEditor && setScene === asideDataMap['test2']">
