@@ -124,10 +124,11 @@ const { reqAnnounce } = useAnnounceStore()
 
 onMounted(() => {
   // 延迟 500 毫秒 如果还没有 公告 相关信息 则 重新获取
-  setTimeout(async () => {
-    if (region_city.value) return
-    await reqAnnounce()
-  }, 500)
+  if (!region_city.value)
+    setTimeout(async () => {
+      if (region_city.value) return
+      await reqAnnounce()
+    }, 500)
 })
 
 const props = defineProps<{
@@ -224,8 +225,6 @@ const insertText = (context: string) => {
   if (!textarea) return
   // 设置新光标位置
   textarea.setSelectionRange(newCursorPos, newCursorPos)
-  // 更新全局光标状态
-  updateCursorPosition()
 }
 
 // 监听 输入框的 粘贴事件
