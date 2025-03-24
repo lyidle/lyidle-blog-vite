@@ -48,7 +48,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       commentId: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: true, // 如果 targetType 是 article，则可以为空
       },
       likeType: {

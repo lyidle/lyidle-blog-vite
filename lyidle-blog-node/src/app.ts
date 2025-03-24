@@ -99,8 +99,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
           LikeDislikeErrors.push("用户ID不能重复")
         if (uniqueFields.includes("targetType"))
           LikeDislikeErrors.push("目标类型不能重复")
-        if (uniqueFields.includes("articleId"))
-          LikeDislikeErrors.push("文章ID不能重复")
         if (uniqueFields.includes("commentId"))
           LikeDislikeErrors.push("评论ID不能重复")
 

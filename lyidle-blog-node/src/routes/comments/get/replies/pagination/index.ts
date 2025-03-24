@@ -97,6 +97,7 @@ router.get("/pagination/:parentId", async (req, res, next) => {
       order: handlerOrder(order, key), // 根据 order 和 key 排序
       limit: pageSize,
       offset,
+      distinct: true, // 避免重复计数
     })
 
     // 返回 结果

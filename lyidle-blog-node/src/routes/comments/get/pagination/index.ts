@@ -108,6 +108,7 @@ router.get("/", async (req, res, next) => {
       order: handlerOrder(order, key),
       limit: pageSize,
       offset,
+      distinct: true, // 避免重复计数
     })
 
     // 返回 结果

@@ -17,7 +17,7 @@ export interface Data {
 export interface Pagination {
   currentPage: number
   pageSize: number
-  total: number
+  total?: number
   [property: string]: any
 }
 

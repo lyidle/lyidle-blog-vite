@@ -50,7 +50,6 @@ module.exports = {
       commentId: {
         type: Sequelize.INTEGER,
         allowNull: true, // 如果 targetType 是 article，则可以为空
-        unique: true,
         references: {
           model: "Comments", // 关联评论表
           key: "id",
@@ -80,7 +79,7 @@ module.exports = {
 
     // 添加联合唯一索引，确保一个用户对同一个目标只能有一条记录
     await queryInterface.addIndex("LikeDislikes", {
-      fields: ["userId", "targetType", "articleId", "commentId", "settingId"],
+      fields: ["userId", "targetType", "commentId"],
       unique: true,
       name: "unique_user_target",
     })
