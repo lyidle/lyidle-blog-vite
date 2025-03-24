@@ -5,12 +5,13 @@ import { isUrl } from "@/RegExp/Url/isUrl"
 import { contextReplaceUrls } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 
 export const contextImgToLink = async (
-  context: string
+  context: string,
+  tip: boolean = true
 ): Promise<string | void> => {
   // 获取 md的信息
   const value = context
   if (!value?.trim()) {
-    ElMessage.warning("没有需要处理的图片")
+    tip && ElMessage.warning("没有需要处理的图片")
     return
   }
 
@@ -47,7 +48,7 @@ export const contextImgToLink = async (
 
   // 如果数组为空，直接返回警告
   if (!arr.length) {
-    ElMessage.warning("没有需要处理的图片")
+    tip && ElMessage.warning("没有需要处理的图片")
     return
   }
 
@@ -75,7 +76,7 @@ export const contextImgToLink = async (
     // 过滤掉 null 值
     let successImg = handlers.filter((item) => item !== null)
     if (!successImg.length) {
-      ElMessage.warning("没有需要处理的图片")
+      tip && ElMessage.warning("没有需要处理的图片")
       return
     }
 
@@ -86,7 +87,7 @@ export const contextImgToLink = async (
     })
 
     // 处理完后替换内容
-    ElMessage.success("批量图片转链接成功~")
+    tip && ElMessage.success("批量图片转链接成功~")
     // 返回内容
     return contentValue
   } catch (error) {

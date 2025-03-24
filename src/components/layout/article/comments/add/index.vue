@@ -20,6 +20,8 @@
         @blur="isFocus = false"
         @input="handlerInput"
         @paste="handlerPaste"
+        @click="updateCursorPosition"
+        @select="updateCursorPosition"
         ref="textAreaInstance"
         v-bind="$attrs"
       ></my-input>
@@ -154,10 +156,12 @@ const initialMaxCounts = 800
 // 最大 输入字数
 const maxCounts = ref(initialMinCounts)
 const minCounts = 20
+
 // 输入框 的实例
 const textAreaInstance = ref()
 // 把 输入框暴露出去
 defineExpose({ textAreaInstance })
+
 // 输入框 聚焦 事件
 const commentFocus = () => {
   isFocus.value = true
@@ -173,12 +177,58 @@ const handlerCounts = () => {
     ? initialMaxCounts
     : initialMinCounts
 }
-
 // 输入框 输入 事件
 const handlerInput = debounce(handlerCounts, 500)
 
+// 是否 选中文本
+const isSelected = ref(false)
+// 选中 区域
+const selection = reactive({
+  start: 0,
+  end: 0,
+})
+
+// 更新 光标位置信息
+const updateCursorPosition = () => {
+  // 得到 子组件 暴露的 方法 的 textarea 元素
+  const textarea = textAreaInstance.value.instance.textarea
+  if (!textarea) return
+  selection.start = textarea.selectionStart
+  selection.end = textarea.selectionEnd
+  isSelected.value = selection.start !== selection.end
+}
+
+// 更新 光标位置信息
+watch(
+  () => comment.value,
+  // 更新光标信息
+  updateCursorPosition,
+  { flush: "post" } // 等同于nextTick
+)
+
+// 处理 插入文本的信息
+const insertText = (context: string) => {
+  const instance = textAreaInstance.value?.instance
+  const textarea = instance?.textarea
+  if (!textarea) return
+  const text = comment.value
+  // 执行插入/替换
+  comment.value =
+    text.substring(0, selection.start) + context + text.substring(selection.end)
+  // 光标位置更新 textarea
+  // 计算新光标位置（插入内容末尾）
+  const newCursorPos = selection.start + context.length
+
+  // 异步更新UI和光标位置
+  if (!textarea) return
+  // 设置新光标位置
+  textarea.setSelectionRange(newCursorPos, newCursorPos)
+  // 更新全局光标状态
+  updateCursorPosition()
+}
+
 // 监听 输入框的 粘贴事件
-const handlerPaste = (e: ClipboardEvent) => {
+const handlerPaste = async (e: ClipboardEvent) => {
   if (!e.clipboardData) return
   e.preventDefault()
   const items = e.clipboardData.items
@@ -188,18 +238,21 @@ const handlerPaste = (e: ClipboardEvent) => {
       // 处理本地粘贴的图片
       const file = item.getAsFile()
       if (file) {
-        console.log("本地图片文件:", file)
+        // 处理文本信息
+        await upload({ virtual: false, files: [file] })
       }
       return
     }
     // 文本信息
     if (item.type === "text/plain") {
       // 处理粘贴的文本（可能是网络图片 URL）
-      item.getAsString((text) => {
+      item.getAsString(async (text) => {
         if (isUrl(text)) {
-          comment.value = nameToMdImg(text)
+          insertText(nameToMdImg(text))
+          // 提示时 替换链接 为 临时链接
+          await handlerImg(false)
         } else {
-          comment.value += text
+          insertText(text)
         }
       })
     }
@@ -287,30 +340,40 @@ const addArticleComments = async () => {
 }
 
 // 处理 点击文件的 上传 图片
-const handlerUpload = async (e: Event) => {
+const handlerUpload = async () => await upload()
+const upload = async (options?: { virtual?: boolean; files?: File[] }) => {
+  const virtual = options?.virtual ?? true
+  const files = options?.files
   try {
-    const { files, nameMap } = await clickUpload()
+    if (virtual) {
+      const { files, nameMap } = await clickUpload()
+      const mdUrl = fileToImgMd(files)
+      // 更新 值
+      insertText(mdUrl)
+      handlerSuccessFile(files, nameMap)
+      return
+    }
+    if (!files) return
     const mdUrl = fileToImgMd(files)
-    // 不等待 ，等成功后 自动替换
-    handlerSuccessFile(files, nameMap)
     // 更新 值
-    comment.value += mdUrl
+    insertText(mdUrl)
+    handlerSuccessFile(files)
   } catch (error) {
     console.error("评论区上传图片出错", error)
   }
 }
 
-// 替换文件的内容
 const handlerSuccessFile = async (
   files: File[],
-  nameMap: clickUploadNameMapType
+  nameMap?: clickUploadNameMapType
 ) => {
   const result = await tempFileUpload(files, {
     errorCallback: (name) => {
-      const errorName = nameMap[name] || name
+      const errorName = nameMap?.[name] || name
       if (errorName) ElMessage.error(`上传文件${errorName}失败`)
     },
   })
+
   // 处理 失败的 文件
   if (result?.error.length) {
     // 获取需要替换的文本内容
@@ -352,7 +415,7 @@ const handlerSuccessFile = async (
 
   // 重新 计算 最大值
   handlerCounts()
-
+  ElMessage.success("上传图片成功")
   // 聚焦文本框
   nextTick(() => {
     textAreaInstance.value?.instance?.focus?.()
@@ -360,8 +423,8 @@ const handlerSuccessFile = async (
 }
 
 // 批量替换 网络图片
-const handlerImg = throttle(async () => {
-  const result = await contextImgToLink(comment.value)
+const handlerImg = throttle(async (tip: boolean = true) => {
+  const result = await contextImgToLink(comment.value, tip)
   if (result) comment.value = result
 }, 1000)
 </script>
