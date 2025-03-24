@@ -71,9 +71,9 @@ export const useVditorPreview = (
   let destroyHighlight: undefined | (() => void)
   // 渲染的回调函数
   const preview = () => {
-    if (!article.value?.content || !docPreview.value) return
+    if (!docPreview.value) return
 
-    Vditor.preview(docPreview.value, article.value.content, {
+    Vditor.preview(docPreview.value, article.value?.content || "", {
       theme: { current: "light" },
       //代码块
       hljs: {
@@ -103,9 +103,12 @@ export const useVditorPreview = (
 
   // 是否初始化了
   let isInitialized = false
+  let isPreviewed = false
   const stopWatch = watchEffect(() => {
+    if (isPreviewed && autoPreview) preview()
     if (article.value?.content && docPreview.value) {
       preview()
+      isPreviewed = true
       mitt.on("isDark", preview)
       if (autoPreview) return
       try {
