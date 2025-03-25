@@ -111,7 +111,9 @@ onMounted(() => {
     enter: () => {
       mitt.emit("chatisEnter", { isEnter: false })
     },
-    leave: () => {
+    leave: (entry) => {
+      // 限制判断
+      if (entry.boundingClientRect.top > 0) return
       const rect = instance.value?.getBoundingClientRect()
       mitt.emit("chatisEnter", { isEnter: true, rect })
     },
