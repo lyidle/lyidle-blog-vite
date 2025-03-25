@@ -114,6 +114,17 @@ const {
 } = storeToRefs(useAnnounceStore())
 const { reqAnnounce } = useAnnounceStore()
 
+const props = defineProps<{
+  // 文章id
+  articleId?: number
+  settingId?: number
+  //  请求评论的接口
+  reqComments: () => void
+  // 添加评论的回调
+  addComments?: (updateBody: AddCommentBody) => void
+  isFixed: boolean
+}>()
+
 onMounted(() => {
   // 延迟 500 毫秒 如果还没有 公告 相关信息 则 重新获取
   if (!region_city.value)
@@ -124,38 +135,30 @@ onMounted(() => {
 })
 
 const instance = ref<HTMLDivElement>()
-mitt.on("chatisEnter", (options: { isEnter: boolean; rect?: DOMRect }) => {
-  const { isEnter, rect } = options
-  const dom = instance.value
+// 传入 需要固定的 才固定
+if (props.isFixed)
+  mitt.on("chatisEnter", (options: { isEnter: boolean; rect?: DOMRect }) => {
+    const { isEnter, rect } = options
+    const dom = instance.value
 
-  // 非空判断
-  if (!dom) return
-  // 固定
-  if (isEnter) {
     // 非空判断
-    if (!rect) return
-    dom.classList.add("fixed-top")
-    dom.style.left = rect.left + "px"
-    dom.style.bottom = 0 + "px"
-    dom.style.width = rect.width + "px"
-    return
-  }
-  // 取消 固定
-  dom.classList.remove("fixed-top")
-  dom.style.left = "initial"
-  dom.style.bottom = "initial"
-  dom.style.width = "initial"
-})
-
-const props = defineProps<{
-  // 文章id
-  articleId?: number
-  settingId?: number
-  //  请求评论的接口
-  reqComments: () => void
-  // 添加评论的回调
-  addComments?: (updateBody: AddCommentBody) => void
-}>()
+    if (!dom) return
+    // 固定
+    if (isEnter) {
+      // 非空判断
+      if (!rect) return
+      dom.classList.add("fixed-top")
+      dom.style.left = rect.left + "px"
+      dom.style.bottom = 0 + "px"
+      dom.style.width = rect.width + "px"
+      return
+    }
+    // 取消 固定
+    dom.classList.remove("fixed-top")
+    dom.style.left = "initial"
+    dom.style.bottom = "initial"
+    dom.style.width = "initial"
+  })
 
 // 创建解析器实例
 const parser = new UAParser()

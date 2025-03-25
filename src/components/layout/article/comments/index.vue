@@ -33,6 +33,7 @@
         :articleId
         :settingId
         :reqComments
+        :isFixed="true"
       ></layout-article-comments-add>
     </div>
 
