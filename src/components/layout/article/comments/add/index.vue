@@ -134,6 +134,7 @@ onMounted(() => {
     }, 500)
 })
 
+// 组件 实例
 const instance = ref<HTMLDivElement>()
 // 传入 需要固定的 才固定
 if (props.isFixed)

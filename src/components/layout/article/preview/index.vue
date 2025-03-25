@@ -118,7 +118,7 @@
           </teleport>
         </template>
         <!-- 卡片 -->
-        <div class="doc-content relative" ref="docRef">
+        <div class="doc-content" ref="docRef">
           <div
             class="observer-menu"
             v-if="asideCounts"
