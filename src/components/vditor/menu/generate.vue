@@ -14,11 +14,11 @@
 
 <script setup lang="ts" name="GenerateMenuTree">
 import { mitt } from "@/utils/emitter"
+import { scrollToHeader } from "@/utils/scrollToHeader"
 import { TocNode } from "@/views/doc/review/types"
 defineProps<{ menuData?: TocNode[] }>()
 
 // 缓存
-let headerHeight: null | number = null
 let scrollToHeight: Map<string, number> | null = null
 const anchor = ref()
 let menus: HTMLAnchorElement[] | null = null
@@ -50,11 +50,6 @@ const scrollTo = (e: MouseEvent, id: string) => {
   // 初始化 Map
   if (!scrollToHeight) scrollToHeight = new Map()
 
-  // 缓存不存在获取高度
-  if (!headerHeight)
-    headerHeight = (document.querySelector(".global-header") as HTMLDivElement)
-      ?.offsetHeight
-
   // 有缓存 直接滚动
   const height = scrollToHeight.get(id)
   if (height) {
@@ -64,21 +59,11 @@ const scrollTo = (e: MouseEvent, id: string) => {
     })
     return
   }
-
-  const toScroll =
-    tar.getBoundingClientRect().top +
-    (document.documentElement.scrollTop ||
-      window.pageYOffset ||
-      document.body.scrollTop) -
-    headerHeight -
-    3
-
+  const top = tar.getBoundingClientRect().top
+  // 调用滚动函数
+  const toScroll = scrollToHeader(top)
   // 无缓存则保存后滚动
   scrollToHeight.set(id, toScroll)
-  window.scrollTo({
-    top: toScroll,
-    behavior: "smooth",
-  })
 }
 
 onBeforeUnmount(() => {

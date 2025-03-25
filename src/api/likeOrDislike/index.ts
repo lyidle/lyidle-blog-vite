@@ -18,6 +18,13 @@ enum API {
   settingToggleCommentLikes = "/likeOrdislike/settings/comments/like",
   settingToggleCommentDislikes = "/likeOrdislike/settings/comments/dislike",
   // #endregion 设置的评论
+
+  // #region 文章的点赞
+  articleLikes = "/likeOrdislike/articles/get/like",
+  articleDislikes = "/likeOrdislike/articles/get/dislike",
+  articleToggleLikes = "/likeOrdislike/articles/like",
+  articleToggleDislikes = "/likeOrdislike/articles/dislike",
+  // #endregion 文章的点赞
 }
 
 // 引入前缀
@@ -96,6 +103,44 @@ export const settingToggleCommentDislikes = (
     server +
       prefix +
       API.settingToggleCommentDislikes +
+      `/${commentId}` +
+      `/?${new URLSearchParams(data)}`
+  )
+// #endregion 设置的评论
+
+// #region 设置的评论
+// 得到 点赞数
+export const getArticleLikes = (articleId: number) =>
+  request.get<any, LikeOrDislikeCounts["data"]>(
+    server + prefix + API.articleLikes + `/${articleId}`
+  )
+// 点赞
+export const settingArticleToggleLike = (
+  commentId: number,
+  data: AddCommentLikeOrDislikeQuery
+) =>
+  request.post<any, void>(
+    server +
+      prefix +
+      API.articleToggleLikes +
+      `/${commentId}` +
+      `/?${new URLSearchParams(data)}`
+  )
+
+// 得到 点踩数
+export const getDislikes = (articleId: number) =>
+  request.get<any, LikeOrDislikeCounts["data"]>(
+    server + prefix + API.articleDislikes + `/${articleId}`
+  )
+// 点踩
+export const settingToggleDislikes = (
+  commentId: number,
+  data: AddCommentLikeOrDislikeQuery
+) =>
+  request.post<any, void>(
+    server +
+      prefix +
+      API.articleToggleDislikes +
       `/${commentId}` +
       `/?${new URLSearchParams(data)}`
   )

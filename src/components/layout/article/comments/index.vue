@@ -106,6 +106,9 @@ import { mitt } from "@/utils/emitter"
 const ribbonInstance = ref()
 // 得到 组件的容器
 const instance = ref<HTMLDivElement>()
+// 暴露 实例
+defineExpose({ instance })
+
 onMounted(() => {
   // 使用 交叉传感器 监听 分割线
   createIntersectionObserver(ribbonInstance.value.instance, {
@@ -146,6 +149,10 @@ const pagination = ref<GetComments["data"]["pagination"]>({
   currentPage: 1,
   pageSize: 10,
 })
+
+const emit = defineEmits<{
+  (e: "computedCounts", num: number): void
+}>()
 
 // 得到 评论
 const reqComments = async () => {
@@ -188,6 +195,8 @@ const reqComments = async () => {
 // 增加 num
 const addCounts = (num: number) => {
   counts.value += num
+  // 触发 父组件 得到 具体的 评论数量
+  emit("computedCounts", counts.value)
 }
 
 // 构建 相反的 order 映射

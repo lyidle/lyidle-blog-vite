@@ -301,7 +301,7 @@ const likeTypeMap = {
   false: "like",
   true: "normal",
 } as const
-// like 的映射
+// dislike 的映射
 const dislikeTypeMap = {
   false: "dislike",
   true: "normal",

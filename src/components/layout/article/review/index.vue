@@ -132,20 +132,20 @@
               v-model:title="title"
             >
               <template #btns>
-                <div class="flex gap-15px">
+                <div class="flex gap-15px justify-center">
                   <!-- 点赞 -->
                   <div
-                    class="moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    @click="toggleLike"
+                    :class="`${isLike ? 'active' : ''}`"
                   >
-                    <i
-                      class="text-15px i-uiw:like-o w-1em h-1em"
-                      :class="`${isLike ? 'active' : ''}`"
-                    ></i>
-                    {{ 60 }}
+                    <i class="text-15px i-uiw:like-o w-1em h-1em"></i>
+                    {{ likeCounts }}
                   </div>
                   <!-- 收藏 -->
                   <div
-                    class="moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    v-if="article?.id"
                   >
                     <i
                       class="text-16px i-solar:star-linear w-1em h-1em"
@@ -155,7 +155,7 @@
                   </div>
                   <!-- 分享 -->
                   <div
-                    class="moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
                   >
                     <i
                       class="text-17px i-bitcoin-icons:share-outline w-1em h-1em"
@@ -163,15 +163,17 @@
                     ></i>
                     {{ 60 }}
                   </div>
+                  <!-- 评论 -->
                   <div
-                    class="moment-like cur-pointer flex flex-col gap-5px h-42px justify-between text-color-[var(--primary-color)] !hover:text-color-[var(--primary-links-hover)]"
+                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between text-color-[var(--primary-color)] !hover:text-color-[var(--primary-links-hover)]"
+                    @click="toComments"
                   >
                     <icon-parse
                       :icon="`<svg t='1742823144748'  viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='4471' width='200' height='200'><path d='M861.2 59H164.8C75.6 59 3 131.6 3 220.9v416.9C3 727 75.6 799.6 164.8 799.6h201.5L527.2 965l162.2-165.5h171.8c89.2 0 161.8-72.6 161.8-161.8V220.9C1023 131.6 950.4 59 861.2 59z m132.4 578.7c0 73-59.4 132.4-132.4 132.4H677.1L527.4 922.9 378.8 770.1h-214c-73 0-132.4-59.4-132.4-132.4V220.9c0-73 59.4-132.4 132.4-132.4h696.3c73 0 132.4 59.4 132.4 132.4l0.1 416.8z' fill='currentColor' p-id='4472'></path><path d='M216.3 279.7h492.8v29.4H216.3v-29.4zM795.2 294.4c0 9.3 7.6 16.9 16.9 16.9 9.3 0 16.9-7.6 16.9-16.9 0-9.3-7.6-16.9-16.9-16.9-9.4 0-16.9 7.5-16.9 16.9zM216.3 425.6h492.8V455H216.3v-29.4z m595.8-2.2c-9.3 0-16.9 7.6-16.9 16.9s7.6 16.9 16.9 16.9c9.3 0 16.9-7.6 16.9-16.9s-7.5-16.9-16.9-16.9zM216.3 545.8h492.8v29.4H216.3v-29.4z m595.8-2.2c-9.3 0-16.9 7.6-16.9 16.9s7.6 16.9 16.9 16.9c9.3 0 16.9-7.6 16.9-16.9 0-9.4-7.5-16.9-16.9-16.9z' fill='currentColor' p-id='4473'></path></svg>`"
                       class="text-15px w-1em h-1em"
                     >
                     </icon-parse>
-                    {{ 60 }}
+                    {{ counts }}
                   </div>
                 </div>
               </template>
@@ -180,11 +182,15 @@
             <layout-article-comments
               :articleId="article?.id"
               :author="article.author"
+              @computedCounts="computedCounts"
+              ref="comments"
               v-if="!settingId && article?.id && article?.id >= 0"
             ></layout-article-comments>
             <!-- 设置表的 存储杂项的表 评论 -->
             <layout-article-comments
               :settingId
+              @computedCounts="computedCounts"
+              ref="comments"
               v-if="!article?.id && settingId && settingId >= 0 && settingId"
             ></layout-article-comments>
           </my-card>
@@ -195,6 +201,8 @@
 </template>
 
 <script setup lang="ts" name="DocumentReview">
+// 引入 api
+import { getArticleLikes, settingArticleToggleLike } from "@/api/likeOrDislike"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
@@ -204,12 +212,18 @@ import moment from "@/utils/moment"
 import { numberTransform } from "@/utils/Math"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
+import { useUserStore } from "@/store/user"
 // 引入 子组件
 import ArticleCounts from "./counts/index.vue"
 import ArticleTimes from "./times/index.vue"
+// 滚动 函数
+import { scrollToHeader } from "@/utils/scrollToHeader"
+// 请求错误的 处理函数
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
+const { userId } = storeToRefs(useUserStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
@@ -218,13 +232,90 @@ const title = defineModel<string>("title")
 const settingId = defineModel<number>("settingId")
 // 文章 的点赞
 const isLike = ref(false)
-
+const likeCounts = ref(0)
+// 评论数量
+const counts = ref(0)
+// 评论的 组件实例
+const comments = ref()
 // 注入父组件提供的方法
 const reqArticle =
   inject<() => Promise<GetOneArticle["data"] | undefined>>("reqArticle")
 withDefaults(defineProps<{ isShowHeader?: boolean }>(), {
   isShowHeader: true,
 })
+
+// 处理点赞
+// like 的映射
+const likeTypeMap = {
+  false: "like",
+  true: "normal",
+} as const
+// 切换 点赞
+const toggleLike = async () => {
+  const id = article.value?.id
+  // 非法判断
+  if (!id) return
+  try {
+    const is = !!isLike.value
+    // 切换 是否点赞
+    const likeType = likeTypeMap[`${is}`]
+    // 修改 点赞 状态
+    await settingArticleToggleLike(id, {
+      likeType,
+    })
+
+    // 取反 is
+    isLike.value = !is
+    if (likeType == "like") {
+      // 自增
+      likeCounts.value = likeCounts.value + 1
+    }
+    // 自减
+    else likeCounts.value = likeCounts.value - 1 || 0
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("点赞失败")
+  }
+}
+// 获取点赞数量
+const getLikes = async () => {
+  const stop = watch(
+    () => article.value?.id,
+    async (articleId) => {
+      if (articleId) {
+        const result = await getArticleLikes(articleId)
+        // 判断用户是否点赞了
+        isLike.value = result?.userIds.includes(userId.value) || false
+        // 得到点赞数量
+        likeCounts.value = result?.count || 0
+        stop()
+      }
+    }
+  )
+}
+// 初始化点赞个数
+onMounted(getLikes)
+
+// 计算 评论个数
+const computedCounts = (num: number) => {
+  counts.value = num
+}
+let scrollTop: null | number = null
+// 到达 评论区的位置
+const toComments = () => {
+  if (scrollTop) {
+    window.scrollTo({
+      top: scrollTop,
+      behavior: "smooth",
+    })
+    return
+  }
+  const top = (
+    comments.value?.instance as HTMLDivElement
+  )?.getBoundingClientRect().top
+  scrollTop = scrollToHeader(top)
+}
+
 // 初始化
 onBeforeMount(async () => {
   if (!reqArticle) return
