@@ -5,15 +5,15 @@ const { LikeDislike } = require("@/db/models")
 const router = express.Router()
 
 // 获取设置 文章 的点赞数量
-router.get("/:commentId", async (req, res, next) => {
-  const { commentId } = req.params
+router.get("/:settingId", async (req, res, next) => {
+  const { settingId } = req.params
 
   try {
     // 查询点踩数量
     const { count, rows } = await LikeDislike.findAndCountAll({
       where: {
         targetType: "setting",
-        commentId,
+        settingId,
         dislikeType: "dislike", // 只统计点踩的记录
       },
     })

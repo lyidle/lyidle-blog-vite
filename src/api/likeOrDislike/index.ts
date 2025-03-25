@@ -25,6 +25,13 @@ enum API {
   articleToggleLikes = "/likeOrdislike/articles/like",
   articleToggleDislikes = "/likeOrdislike/articles/dislike",
   // #endregion 文章的点赞
+
+  // #region 文章的点赞
+  settingLikes = "/likeOrdislike/settings/get/like",
+  settingDislikes = "/likeOrdislike/settings/get/dislike",
+  settingToggleLikes = "/likeOrdislike/settings/like",
+  settingToggleDislikes = "/likeOrdislike/settings/dislike",
+  // #endregion 文章的点赞
 }
 
 // 引入前缀
@@ -32,7 +39,7 @@ const prefix = import.meta.env.VITE_API
 // 引入服务器
 const server = import.meta.env.VITE_SERVE
 
-// #region 文章的评论
+// #region 文章的评论点赞
 // 得到 点赞数
 export const getArticleCommentLikes = (commentId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
@@ -68,9 +75,9 @@ export const articleToggleCommentDislikes = (
       `/${commentId}` +
       `/?${new URLSearchParams(data)}`
   )
-// #endregion 文章的评论
+// #endregion 文章的评论点赞
 
-// #region 设置的评论
+// #region 设置的评论点赞
 // 得到 点赞数
 export const getSettingCommentLikes = (commentId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
@@ -106,16 +113,16 @@ export const settingToggleCommentDislikes = (
       `/${commentId}` +
       `/?${new URLSearchParams(data)}`
   )
-// #endregion 设置的评论
+// #endregion 设置的评论点赞
 
-// #region 设置的评论
+// #region 文章的点赞
 // 得到 点赞数
 export const getArticleLikes = (articleId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
     server + prefix + API.articleLikes + `/${articleId}`
   )
 // 点赞
-export const settingArticleToggleLike = (
+export const articleToggleLike = (
   commentId: number,
   data: AddCommentLikeOrDislikeQuery
 ) =>
@@ -126,22 +133,24 @@ export const settingArticleToggleLike = (
       `/${commentId}` +
       `/?${new URLSearchParams(data)}`
   )
+// #endregion 文章的点赞
 
-// 得到 点踩数
-export const getDislikes = (articleId: number) =>
+// #region 设置文章的点赞
+// 得到 点赞数
+export const getSettingLikes = (settingId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
-    server + prefix + API.articleDislikes + `/${articleId}`
+    server + prefix + API.settingLikes + `/${settingId}`
   )
-// 点踩
-export const settingToggleDislikes = (
+// 点赞
+export const settingToggleLike = (
   commentId: number,
   data: AddCommentLikeOrDislikeQuery
 ) =>
   request.post<any, void>(
     server +
       prefix +
-      API.articleToggleDislikes +
+      API.settingToggleLikes +
       `/${commentId}` +
       `/?${new URLSearchParams(data)}`
   )
-// #endregion 设置的评论
+// #endregion 设置文章的点赞

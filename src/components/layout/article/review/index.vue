@@ -202,7 +202,12 @@
 
 <script setup lang="ts" name="DocumentReview">
 // 引入 api
-import { getArticleLikes, settingArticleToggleLike } from "@/api/likeOrDislike"
+import {
+  getArticleLikes,
+  getSettingLikes,
+  articleToggleLike,
+  settingToggleLike,
+} from "@/api/likeOrDislike"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
@@ -252,17 +257,24 @@ const likeTypeMap = {
 } as const
 // 切换 点赞
 const toggleLike = async () => {
-  const id = article.value?.id
-  // 非法判断
-  if (!id) return
+  const articleId = article.value?.id
+  const _seetingId = settingId.value
   try {
+    if (!articleId && !_seetingId) {
+      throw new Error("")
+    }
     const is = !!isLike.value
     // 切换 是否点赞
     const likeType = likeTypeMap[`${is}`]
     // 修改 点赞 状态
-    await settingArticleToggleLike(id, {
-      likeType,
-    })
+    if (articleId)
+      await articleToggleLike(articleId, {
+        likeType,
+      })
+    if (_seetingId)
+      await settingToggleLike(_seetingId, {
+        likeType,
+      })
 
     // 取反 is
     isLike.value = !is
@@ -279,16 +291,37 @@ const toggleLike = async () => {
 }
 // 获取点赞数量
 const getLikes = async () => {
-  const stop = watch(
+  // 文章
+  const stopArticleId = watch(
     () => article.value?.id,
-    async (articleId) => {
-      if (articleId) {
-        const result = await getArticleLikes(articleId)
+    async (id) => {
+      if (id) {
+        const result = await getArticleLikes(id)
         // 判断用户是否点赞了
         isLike.value = result?.userIds.includes(userId.value) || false
         // 得到点赞数量
         likeCounts.value = result?.count || 0
-        stop()
+        // 停止监视 文章
+        stopArticleId()
+        // 停止监视 设置文章
+        stopSetttingId()
+      }
+    }
+  )
+  // 设置文章
+  const stopSetttingId = watch(
+    () => settingId.value,
+    async (id) => {
+      if (id) {
+        // 停止监视 文章
+        stopArticleId()
+        const result = await getSettingLikes(id)
+        // 判断用户是否点赞了
+        isLike.value = result?.userIds.includes(userId.value) || false
+        // 得到点赞数量
+        likeCounts.value = result?.count || 0
+        // 停止监视 设置文章
+        stopSetttingId()
       }
     }
   )
