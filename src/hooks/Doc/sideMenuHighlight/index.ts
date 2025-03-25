@@ -1,5 +1,5 @@
 // 引入类型
-import { observer, ObserverCallback } from "@/utils/observer"
+import { createIntersectionObserver, ObserverCallback } from "@/utils/observer"
 import type { TocNode } from "../vditorPreview/types"
 import { mitt } from "@/utils/emitter"
 
@@ -85,7 +85,7 @@ export const useSideMenuHighlight = (
       }
       // 存储监听器配置
       observerItems.push(options)
-      observer(item, options, {
+      createIntersectionObserver(item, options, {
         options: {
           // 顶部需要在 header 之下
           rootMargin: `${headerHeight}px 0px -80% 0px`, // 检测顶部交叉

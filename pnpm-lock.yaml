@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@iconify/json':
+        specifier: ^2.2.320
+        version: 2.2.320
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -54,9 +57,6 @@ importers:
         specifier: ^4.4.5
         version: 4.4.5(vue@3.5.13(typescript@5.6.3))
     devDependencies:
-      '@iconify/json':
-        specifier: ^2.2.297
-        version: 2.2.297
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -485,8 +485,8 @@ packages:
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
 
-  '@iconify/json@2.2.297':
-    resolution: {integrity: sha512-Mu7m+R8xH0EQxkZ9Zq9ZqT7twennzG2E9BojDiWEwoKialJpHB99Aj+jKdRvlEkwDE7RuHxvf0fHdamhPXZ8uw==}
+  '@iconify/json@2.2.320':
+    resolution: {integrity: sha512-vyqsYnejXrvY8To10DCdAdXMyh87TQNeaD8IrxnSoT/RDnZTGuUCuFs1wdMHUwDw7xMfVBUWR1+IbpTbdej4hg==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2067,7 +2067,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
-  '@iconify/json@2.2.297':
+  '@iconify/json@2.2.320':
     dependencies:
       '@iconify/types': 2.0.0
       pathe: 1.1.2

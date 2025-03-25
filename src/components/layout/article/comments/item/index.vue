@@ -61,28 +61,26 @@
     <!-- 评论下方的 用户、点赞等信息 与按钮 -->
     <div class="mt-[var(--primary-gap)] pl-65px flex justify-between">
       <!-- 操作按钮 -->
-      <div class="cur-text flex gap-20px">
+      <div class="flex gap-20px">
         <!-- 更新时间 -->
         <div class="h-25px flex items-center gap-5px">
           {{ moment(comment.updatedAt, "YYYY-MM-DD hh:mm") }}
         </div>
         <!-- 点赞 -->
-        <div class="h-25px flex items-center gap-5px">
-          <i
-            class="moment-like i-uiw:like-o w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
-            @click="toggleLike"
-            :class="isUserLike ? 'active' : ''"
-          ></i
-          >{{ likeCounts }}
+        <div
+          class="moment-like cur-pointer h-25px flex items-center gap-5px !hover:color-[var(--primary-links-hover)]"
+          :class="isUserLike ? 'active' : ''"
+          @click="toggleLike"
+        >
+          <i class="i-uiw:like-o w-1em h-1em"></i>{{ likeCounts }}
         </div>
         <!-- 点踩 -->
-        <div class="h-25px flex items-center gap-5px">
-          <i
-            class="moment-like i-uiw:dislike-o w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
-            @click="toggleDislike"
-            :class="isUserDislike ? 'active' : ''"
-          ></i
-          >{{ dislikeCounts }}
+        <div
+          class="moment-like cur-pointer h-25px flex items-center gap-5px !hover:color-[var(--primary-links-hover)]"
+          @click="toggleDislike"
+          :class="isUserDislike ? 'active' : ''"
+        >
+          <i class="i-uiw:dislike-o w-1em h-1em"></i>{{ dislikeCounts }}
         </div>
         <!-- 回复 -->
         <!-- 看 b站 可以自己给自己回复 所以也没有限制 -->
@@ -429,12 +427,6 @@ onMounted(async () => {
       right: unset;
       transform: unset;
     }
-  }
-}
-// 点赞和点菜
-.moment-like {
-  &.active {
-    color: rgb(217, 62, 62);
   }
 }
 </style>

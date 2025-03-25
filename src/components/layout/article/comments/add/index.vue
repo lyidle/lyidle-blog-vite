@@ -1,5 +1,5 @@
 <template>
-  <div class="add-comments pb-20px">
+  <div class="add-comments pb-20px" ref="instance">
     <div class="overflow-hidden mt-20px flex gap-10px">
       <!-- 头像 -->
       <global-avatar
@@ -101,20 +101,10 @@ import { contextImgToLink } from "@/hooks/Doc/vditorEditor/contextImgToLink"
 // 引入 UAParser
 import { UAParser } from "ua-parser-js"
 
-// 创建解析器实例
-const parser = new UAParser()
-// 获取解析结果
-const result = parser.getResult()
-// 操作系统和浏览器信息
-const systemVersion = `${result.os.name || ""} ${result.os.version || ""}`
-const browserVersion = `${result.browser.name || ""} ${
-  result.browser.version || ""
-}`
-const userAgent = `${systemVersion}|${browserVersion}`
-
 // 引入 仓库
 import { useAnnounceStore } from "@/store/announce"
 import { isUrl } from "@/RegExp/Url/isUrl"
+import { mitt } from "@/utils/emitter"
 
 // 提取需要的
 const {
@@ -133,6 +123,30 @@ onMounted(() => {
     }, 500)
 })
 
+const instance = ref<HTMLDivElement>()
+mitt.on("chatisEnter", (options: { isEnter: boolean; rect?: DOMRect }) => {
+  const { isEnter, rect } = options
+  const dom = instance.value
+
+  // 非空判断
+  if (!dom) return
+  // 固定
+  if (isEnter) {
+    // 非空判断
+    if (!rect) return
+    dom.classList.add("fixed-top")
+    dom.style.left = rect.left + "px"
+    dom.style.bottom = 0 + "px"
+    dom.style.width = rect.width + "px"
+    return
+  }
+  // 取消 固定
+  dom.classList.remove("fixed-top")
+  dom.style.left = "initial"
+  dom.style.bottom = "initial"
+  dom.style.width = "initial"
+})
+
 const props = defineProps<{
   // 文章id
   articleId?: number
@@ -143,6 +157,16 @@ const props = defineProps<{
   addComments?: (updateBody: AddCommentBody) => void
 }>()
 
+// 创建解析器实例
+const parser = new UAParser()
+// 获取解析结果
+const result = parser.getResult()
+// 操作系统和浏览器信息
+const systemVersion = `${result.os.name || ""} ${result.os.version || ""}`
+const browserVersion = `${result.browser.name || ""} ${
+  result.browser.version || ""
+}`
+const userAgent = `${systemVersion}|${browserVersion}`
 // 评论 信息
 const comment = ref("")
 // vditor 预览 需要的格式
@@ -458,8 +482,26 @@ const handlerImg = throttle(async (tip: boolean = true) => {
 }, 1000)
 </script>
 
+<style lang="scss">
+body[banner-fixed="fixed"] {
+  .add-comments {
+    &.fixed-top {
+      box-shadow: 0 -1px 3px var(--primary-shadow-color-fixed);
+    }
+  }
+}
+</style>
 <style scoped lang="scss">
 .add-comments {
+  &.fixed-top {
+    position: fixed;
+    height: fit-content;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 20;
+    background-color: var(--pages-card-bg);
+    box-shadow: 0 -1px 3px var(--primary-shadow-color);
+  }
   // 左侧 的按钮
   .tool-btns {
     width: 30px;

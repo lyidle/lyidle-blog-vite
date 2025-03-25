@@ -6,7 +6,7 @@ $pages-card-bg: #375366;
 html[themes="#{$theme}"] {
   .global-content {
     --pages-card-bg: #{$pages-card-bg};
-    --pages-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
-    --pages-card-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
+    --pages-card-shadow: -5px 5px 10px var(--primary-shadow-color);
+    --pages-card-shadow-fixed: 0px 5px 10px var(--primary-shadow-color-fixed);
   }
 }

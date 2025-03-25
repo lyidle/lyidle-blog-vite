@@ -3,7 +3,7 @@ import { useSettingStore } from "@/store/setting"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
 // 引入 交叉传感器
-import { observer } from "@/utils/observer"
+import { createIntersectionObserver } from "@/utils/observer"
 import type { ObserverCallback } from "@/utils/observer"
 import { TocNode } from "@/views/doc/review/types"
 
@@ -29,9 +29,8 @@ export const useSideMenuFixed = (
   menuCom: Ref<HTMLDivElement | undefined>
 ) => {
   // 提取数据
-  const { docMenuIsFixed, asideCounts, isAsideDocMenu } = storeToRefs(
-    useSettingStore()
-  )
+  const { docMenuIsFixed, asideCounts, isAsideDocMenu, contentIsReverse } =
+    storeToRefs(useSettingStore())
   // 判断是否有菜单要固定
   const isBad = (): boolean => {
     // 判断 是否有菜单数据 是否固定 和 菜单是否存在 还有 侧边栏个数一起判断
@@ -163,7 +162,7 @@ export const useSideMenuFixed = (
         toggleMenuPosition()
       },
     }
-    if (observerMenu) observer(observerMenu, menuOb.value)
+    if (observerMenu) createIntersectionObserver(observerMenu, menuOb.value)
   }
 
   // 交叉传感器 两个侧边栏的处理方法
@@ -197,7 +196,7 @@ export const useSideMenuFixed = (
           }
         },
       }
-      observer(threelastDiv, threelastOb.value)
+      createIntersectionObserver(threelastDiv, threelastOb.value)
     }
   }
 
@@ -216,10 +215,10 @@ export const useSideMenuFixed = (
       thirdlastOb.value = {
         leave: () => {
           if (threelastDiv && threelastOb.value)
-            observer(threelastDiv, threelastOb.value)
+            createIntersectionObserver(threelastDiv, threelastOb.value)
         },
       }
-      observer(thirdlastDiv, thirdlastOb.value)
+      createIntersectionObserver(thirdlastDiv, thirdlastOb.value)
     }
   }
 
@@ -228,12 +227,7 @@ export const useSideMenuFixed = (
     if (!menuWrap) return
     nextTick(() => {
       if (!menuWrap || !observerMenu) return
-      // 读取相邻的 内容区域 的 observerMenu 节点信息
-
-      // 因为有可能元素本身是固定的
-      const _left = observerMenu.getBoundingClientRect().left
-
-      if (_left > 100) {
+      if (contentIsReverse.value) {
         // 菜单栏在左侧
         menuWrap.classList.add("aside-menu-sticky-left")
         menuWrap.classList.remove("aside-menu-sticky-right")

@@ -1,6 +1,9 @@
 <template>
-  <div class="comment-outer" style="--normal-avatar-size: 50px">
-    <global-animations-ribbon class="my-20px"></global-animations-ribbon>
+  <div class="comment-outer" style="--normal-avatar-size: 50px" ref="instance">
+    <global-animations-ribbon
+      class="my-20px"
+      ref="ribbonInstance"
+    ></global-animations-ribbon>
     <div class="comments-container">
       <div class="flex items-center gap-5px">
         <span class="text-25px">评论</span>
@@ -94,6 +97,27 @@ import { getComments } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { handlerReplyType, orderObjType, typeOrderMap } from "./types"
+// 引入 交叉传感器
+import { createIntersectionObserver } from "@/utils/observer"
+import { mitt } from "@/utils/emitter"
+
+// 观察 ribbonInstance
+const ribbonInstance = ref()
+// 得到 组件的容器
+const instance = ref<HTMLDivElement>()
+onMounted(() => {
+  // 使用 交叉传感器 监听 分割线
+  createIntersectionObserver(ribbonInstance.value.instance, {
+    enter: () => {
+      mitt.emit("chatisEnter", { isEnter: false })
+    },
+    leave: () => {
+      const rect = instance.value?.getBoundingClientRect()
+      mitt.emit("chatisEnter", { isEnter: true, rect })
+    },
+  })
+})
+
 const props = defineProps<{ articleId?: number; settingId?: number }>()
 // 评论 数量
 const counts = ref(0)
@@ -106,15 +130,13 @@ const fromNickName = ref("")
 // 回复评论输入 的 组件的 实例
 const replyInstance = ref()
 // 回复 回复评论输入聚焦函数
-const focusCallback = computed(
-  () => replyInstance.value?.[0].addInstance?.textAreaInstance?.instance?.focus
-)
+const focusCallback = () =>
+  replyInstance.value?.[0].addInstance?.textAreaInstance?.instance?.focus()
 // 回复 评论的 组件实例
 const repliesInstance = ref()
 // 得到 子评论的 请求 函数
-const reqCallbacks = computed(() => {
-  return repliesInstance.value?.map((item: any) => item?.reqCommentsReplies)
-})
+const reqCallbacks = () =>
+  repliesInstance.value?.map((item: any) => item?.reqCommentsReplies())
 
 // 分页 器
 const pagination = ref<GetComments["data"]["pagination"]>({
@@ -156,7 +178,7 @@ const reqComments = async () => {
   // 处理 子组件的数据
   nextTick(async () => {
     // 使用 allSettled 获取 子组件对应的 回复数据
-    await Promise.allSettled(reqCallbacks.value.map((fn: Function) => fn()))
+    await Promise.allSettled(reqCallbacks())
   })
 }
 
@@ -217,7 +239,7 @@ const handlerReply = (options: handlerReplyType) => {
   if (!find) return
   // 找到 修改 相关信息
   find.isShowComment = true
-  nextTick(() => focusCallback.value?.())
+  nextTick(() => focusCallback?.())
 }
 
 onMounted(async () => {

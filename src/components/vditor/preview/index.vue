@@ -1,13 +1,16 @@
 <template>
   <div class="my-vditor-container relative">
     <div ref="docPreview" class="cur-text vditor-style"></div>
-    <my-button
-      class="absolute top-10px right-10px w-initial"
-      size="small"
-      @click="exportHtml"
-      v-if="isExportHtml"
-      >导出HTML文件</my-button
-    >
+    <div class="absolute top-10px right-10px flex flex-col gap-15px">
+      <slot name="btns"></slot>
+      <my-button
+        class="w-initial"
+        size="small"
+        @click="exportHtml"
+        v-if="isExportHtml"
+        >导出HTML文件</my-button
+      >
+    </div>
   </div>
 </template>
 

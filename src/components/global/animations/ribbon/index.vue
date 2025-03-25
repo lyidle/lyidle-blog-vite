@@ -1,6 +1,6 @@
 <template>
-  <div class="ribbon-scissors">
-    <div class="ribbon-container" ref="contain">
+  <div class="ribbon-scissors" ref="instance">
+    <div class="ribbon-container">
       <div class="i-tabler:scissors scissors"></div>
     </div>
   </div>
@@ -16,7 +16,8 @@ const props = withDefaults(
   }
 )
 const bg = props.bg
-const contain = ref()
+const instance = ref()
+defineExpose({ instance })
 </script>
 
 <style scoped lang="scss">

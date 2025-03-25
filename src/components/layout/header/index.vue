@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
-import { observer, ObserverCallback } from "@/utils/observer"
+import { createIntersectionObserver, ObserverCallback } from "@/utils/observer"
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 
@@ -32,8 +32,8 @@ const options: ObserverCallback = {
 
 onMounted(() => {
   // 有 banner 则代理动态吸附
-  const el = document.querySelector(".banner-observer")
-  el && observer(el, options)
+  const el = document.querySelector(".banner-createIntersectionObserver")
+  el && createIntersectionObserver(el, options)
   // 没有 的 则是没有图片背景的
   // 需要修改默认显示的颜色
   if (!el) {

@@ -6,6 +6,7 @@
     :style="{
       '--svg': `url(${parsedIcon(icon).data})`,
     }"
+    v-bind="$attrs"
   ></i>
   <!-- 是 svg 么 是就是svg 否则 i 加类名 -->
   <component
@@ -13,6 +14,7 @@
     :is="(parsedIcon(icon).name === 'svg' && parsedIcon(icon).data) || 'i'"
     :class="parsedIcon(icon).name === 'class' ? parsedIcon(icon).data : ''"
     class="w-1em h-1em"
+    v-bind="$attrs"
   />
 </template>
 

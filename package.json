@@ -11,6 +11,7 @@
     "preview": "vite preview --open"
   },
   "dependencies": {
+    "@iconify/json": "^2.2.320",
     "axios": "^1.7.7",
     "crypto-js": "^4.2.0",
     "echarts": "^5.6.0",
@@ -28,7 +29,6 @@
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.297",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.7.4",
     "@unocss/preset-icons": "^0.64.0",
