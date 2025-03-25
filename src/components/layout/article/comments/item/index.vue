@@ -4,8 +4,8 @@
     <div class="flex justify-between relative">
       <!-- 头像 -->
       <global-avatar-src
-        :account="comment.user.account"
-        :avatar="comment.user.avatar"
+        :account="cloneComment.user.account"
+        :avatar="cloneComment.user.avatar"
         :style="{ '--avatar-size': avatarSize }"
       ></global-avatar-src>
       <div
@@ -13,12 +13,12 @@
       >
         <div class="flex gap-10px cur-text">
           <div class="userName font-bold">
-            {{ comment.user.nickName }}
+            {{ cloneComment.user.nickName }}
           </div>
-          <div class="flex gap-8px" v-if="comment.fromId">
+          <div class="flex gap-8px" v-if="cloneComment.fromId">
             <div>回复</div>
             <div class="global-at">
-              @<span>{{ comment.replies.user.nickName }}</span>
+              @<span>{{ cloneComment.replies.user.nickName }}</span>
             </div>
             <div>:</div>
           </div>
@@ -28,29 +28,47 @@
           <!-- 渲染 评论 -->
           <vditor-preview
             :article="{
-              content: decompressStringNotError(comment.content),
+              content: decompressStringNotError(cloneComment.content),
             }"
             :isExportHtml="false"
             :autoPreview="true"
-            v-if="comment.id"
+            v-if="cloneComment.id"
             v-show="!isEditor"
           ></vditor-preview>
-          <layout-article-comments-base v-show="isEditor" ref="editorInstance">
+          <layout-article-comments-base
+            v-show="isEditor"
+            ref="editorInstance"
+            :articleId
+            :settingId
+          >
+            <template #btns>
+              <my-button
+                class="h-30px rounded-5px"
+                size="small"
+                @click="updateComment"
+                >修改评论</my-button
+              >
+            </template>
           </layout-article-comments-base>
         </div>
       </div>
       <!-- more -->
       <div class="comment-more absolute right-[var(--primary-gap)] top-0">
-        <global-header-item v-model:data="moreItem" top="5px" menu="test">
+        <global-header-item
+          v-model:data="moreItem.data"
+          top="5px"
+          menu="test"
+          :triangle="!!moreItem.len"
+        >
           <i
             class="i-ri:more-line w-1em h-1em cur-pointer !hover:color-[var(--primary-links-hover)]"
           ></i>
           <template #custom="{ item: sub }: { item: menuItemType }">
-            <my-menu-item v-if="hasEditor(sub)">
+            <my-menu-item v-if="moreItem.len && hasMoreItems(sub)">
               <my-anchor
                 :to="sub.to"
                 class="topnav-menu-item"
-                :style="{ width: moreItem.style?.width }"
+                :style="{ width: moreItem.data.style?.width }"
                 @click="sub?.click?.()"
               >
                 <i :class="sub?.icon?.icon" :style="sub?.icon?.style"></i>
@@ -67,7 +85,7 @@
       <div class="flex gap-20px">
         <!-- 更新时间 -->
         <div class="h-25px flex items-center gap-5px">
-          {{ moment(comment.updatedAt, "YYYY-MM-DD hh:mm") }}
+          {{ moment(cloneComment.updatedAt, "YYYY-MM-DD hh:mm") }}
         </div>
         <!-- 点赞 -->
         <div
@@ -87,15 +105,15 @@
         </div>
         <!-- 回复 -->
         <!-- 看 b站 可以自己给自己回复 所以也没有限制 -->
-        <!-- v-if="comment.user.account !== userAccount" -->
+        <!-- v-if="cloneComment.user.account !== userAccount" -->
         <!-- 触发自定义事件 -->
         <div
           class="h-25px flex items-center gap-5px cur-pointer [var(--primary-links-hover)]"
           @click="
             emit('reply', {
-              showId: parentId || comment.id,
-              fromId: comment.id,
-              fromNickName: comment.user.nickName,
+              showId: parentId || cloneComment.id,
+              fromId: cloneComment.id,
+              fromNickName: cloneComment.user.nickName,
             })
           "
         >
@@ -106,15 +124,20 @@
       <div class="cur-text flex gap-[var(--primary-gap)]">
         <div class="h-25px flex items-center gap-5px">
           <i class="i-jam:gps w-1em h-1em"></i>
-          {{ comment.user.userProvince }}
+          {{ cloneComment.user.userProvince }}
         </div>
         <div class="h-25px flex items-center gap-5px">
           <i class="i-icon-park-outline:system w-1em h-1em"></i
-          >{{ comment.user.userAgent?.split("|")[0].trim() || "未知系统版本" }}
+          >{{
+            cloneComment.user.userAgent?.split("|")[0].trim() || "未知系统版本"
+          }}
         </div>
         <div class="h-25px flex items-center gap-5px">
           <i class="i-arcticons:styxbrowser w-1em h-1em"></i>
-          {{ comment.user.userAgent?.split("|")[1].trim() || "未知浏览器版本" }}
+          {{
+            cloneComment.user.userAgent?.split("|")[1].trim() ||
+            "未知浏览器版本"
+          }}
         </div>
       </div>
     </div>
@@ -140,6 +163,7 @@ import {
   settingToggleCommentDislikes,
   // #endregion 设置的评论
 } from "@/api/likeOrDislike"
+import { delComment, putComment } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { GetCommentsReplies } from "@/api/comments/types/getCommentsReplies"
@@ -147,22 +171,29 @@ import type { handlerReplyType } from "../types"
 import type { menuItemType, menuView } from "@/components/layout/header/types"
 import type { LikeOrDislikeCounts } from "@/api/likeOrDislike/types/likeOrDislikeCounts"
 // 引入 解压 函数
-import { decompressStringNotError } from "@/utils/compression"
+import { compressString, decompressStringNotError } from "@/utils/compression"
 // 引入 moment
 import moment from "@/utils/moment"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { cloneDeep } from "lodash-es"
 
 const { userAccount, userToken, userId } = storeToRefs(useUserStore())
 // 是否修改
 const isEditor = ref(false)
 const editorInstance = ref()
+
 // 重新赋值
 const initContext = () =>
   editorInstance.value.clearSetValue(
-    decompressStringNotError(props.comment.content)
+    decompressStringNotError(cloneComment.content)
   )
+// 得到 内容
+const getValue = () => editorInstance.value.comment() as string
+
+// 验证 文本的 信息
+const validateContext = () => editorInstance.value.validate()
 
 const props = withDefaults(
   defineProps<{
@@ -174,14 +205,19 @@ const props = withDefaults(
     avatarSize?: string
     articleId?: number
     settingId?: number
+    //  请求评论的接口
+    reqComments: () => void
   }>(),
   {
     avatarSize: "50px",
   }
 )
 
+// 克隆 comment
+const cloneComment = reactive(cloneDeep(props.comment))
+
 // 评论的 id
-const commentId = props.comment.id
+const commentId = cloneComment.id
 // 点赞数
 const likeCounts = ref(0)
 // 点踩数
@@ -198,7 +234,7 @@ const emit = defineEmits<{
 
 // 更多按钮 的 信息
 const moreItem = computed(() => {
-  return {
+  const result: menuView = {
     data: [
       {
         id: 1,
@@ -232,7 +268,16 @@ const moreItem = computed(() => {
         id: 4,
         name: "删除",
         click: async () => {
-          // 删除的 逻辑
+          try {
+            await delComment(cloneComment.id)
+            // 通知父组件 当前组件销毁了 进行处理
+            ElMessage.success("删除评论成功")
+            // 重新 请求数据
+            await props?.reqComments?.()
+          } catch (error) {
+            const err = handlerReqErr(error, "error")
+            if (!err) ElMessage.error("删除评论失败")
+          }
         },
         // 需要 是本人的评论 或者 作者
       },
@@ -241,26 +286,49 @@ const moreItem = computed(() => {
       width: "100px",
       pl: "20px",
     },
-  } as menuView
+  }
+  let len = 0
+  result.data.forEach((item) => {
+    if (!item.hide) ++len
+  })
+  if (!isDelete.value) --len
+  if (!isUpdate.value) --len
+  return {
+    data: result,
+    len,
+  }
 })
 
+let isDelete = ref(false)
+let isUpdate = ref(false)
 // 是否 显示 编辑等按钮
-const hasEditor = (sub: menuItemType) => {
+const hasMoreItems = (sub: menuItemType) => {
   if (sub.hide) return false
 
   // 处理 删除按钮
   if (sub.name === "删除") {
     // 是作者本人 显示
-    if (props.author === userAccount.value) return true
+    if (props.author === userAccount.value) {
+      isDelete.value = true
+      return true
+    }
     // 是评论所有者 显示
-    if (props.comment.user.account === userAccount.value) return true
+    if (cloneComment.user.account === userAccount.value) {
+      isDelete.value = true
+      return true
+    }
+    isDelete.value = false
     return false
   }
 
   // 处理 修改的 按钮
   if (sub.name === "修改") {
     // 是评论所有者 显示
-    if (props.comment.user.account === userAccount.value) return true
+    if (cloneComment.user.account === userAccount.value) {
+      isUpdate.value = true
+      return true
+    }
+    isUpdate.value = false
     return false
   }
 
@@ -416,6 +484,26 @@ const toggleDislike = async () => {
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error(`${is ? "取消" : ""}点踩失败`)
+  }
+}
+
+// 更新 内容
+const updateComment = async () => {
+  // 验证 是否通过
+  if (!validateContext()) return
+  try {
+    const content = compressString(getValue()) || ""
+    // 修改 内容信息
+    await putComment({
+      commentId,
+      content: content,
+    })
+    cloneComment.content = content
+    isEditor.value = false
+    ElMessage.success("修改成功")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("修改失败")
   }
 }
 

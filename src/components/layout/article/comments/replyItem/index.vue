@@ -7,6 +7,7 @@
           :comment="item"
           :parentId="props.parentId"
           class="mt-20px"
+          v-if="!item.hide"
         >
           <template #comment-outer>
             <template v-if="isShowMore">

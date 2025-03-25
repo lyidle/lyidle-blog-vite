@@ -46,6 +46,7 @@
             :comment
             :articleId
             :settingId
+            :reqComments
             :parentId="null"
             avatarSize="var(--normal-avatar-size)"
             v-bind="$attrs"
@@ -62,6 +63,7 @@
                 :parentId="comment.id"
                 :articleId
                 :settingId
+                :reqComments
                 :orderMap
                 ref="repliesInstance"
                 v-model:order="order"

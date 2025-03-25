@@ -7,7 +7,12 @@
         {{ name }}
       </a>
     </template>
-    <my-menu :data="data?.data" :triangle="true" :left="data?.style?.left" :top>
+    <my-menu
+      :data="data?.data"
+      :triangle="triangle"
+      :left="data?.style?.left"
+      :top
+    >
       <template #custom="{ item: sub }: { item: menuItemType }">
         <slot name="custom" v-if="$slots.custom" :item="sub"></slot>
         <template v-else>
@@ -33,7 +38,17 @@
 import type { menuItemType, menuView } from "@/components/layout/header/types"
 
 const data = defineModel<menuView>("data")
-defineProps<{ top?: string; name?: string; icon?: string }>()
+withDefaults(
+  defineProps<{
+    top?: string
+    name?: string
+    icon?: string
+    triangle?: boolean
+  }>(),
+  {
+    triangle: true,
+  }
+)
 </script>
 
 <style lang="scss">

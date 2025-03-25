@@ -110,8 +110,6 @@ const addArticleComments = async () => {
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("添加评论失败~")
-    // 重新 请求数据
-    await props?.reqComments?.()
   }
 }
 </script>

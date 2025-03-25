@@ -9,6 +9,8 @@ import { GetCommentsReplies } from "./types/getCommentsReplies"
 // 统一管理 api
 enum API {
   comments = "/comments",
+  putComment = "/comments/update",
+  delComment = "/comments/delete",
   pagination = "/comments/pagination",
   repliesPagination = "/comments/replies/pagination",
 }
@@ -35,4 +37,14 @@ export const getCommentsReplies = (parentId: number, data: GetCommentQuery) =>
       API.repliesPagination +
       `/${parentId}` +
       `/?${new URLSearchParams(data)}`
+  )
+
+// 修改 评论
+export const putComment = (data: { commentId: number; content: string }) =>
+  request.put<any, AddComment["data"]>(server + prefix + API.putComment, data)
+
+// 删除 评论
+export const delComment = (commentId: number) =>
+  request.delete<any, AddComment["data"]>(
+    server + prefix + API.delComment + `/${commentId}`
   )
