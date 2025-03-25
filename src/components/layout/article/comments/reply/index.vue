@@ -3,6 +3,7 @@
   <layout-article-comments-add
     :addComments
     :placeholder="`回复 @${fromNickName}:`"
+    btnName="回复"
     ref="addInstance"
     v-bind="$attrs"
   ></layout-article-comments-add>

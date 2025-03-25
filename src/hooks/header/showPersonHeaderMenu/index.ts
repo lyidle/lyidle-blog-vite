@@ -7,7 +7,6 @@ import "./icons"
 import type { menuView } from "@/components/layout/header/types"
 // 引入 hooks
 import { useShowUserinfo } from "@/hooks/showUserinfo"
-import { nanoid } from "nanoid"
 export const useShowPersonHeaderMenu = () => {
   const { showAccount } = useShowUserinfo({ showAccount: true })
   // 提取 数据
@@ -24,7 +23,7 @@ export const useShowPersonHeaderMenu = () => {
       data: [
         // 默认展示的 数据
         {
-          id: nanoid(),
+          id: 1,
           name: "关于",
           icon: { icon: "i-akar-icons:paper-airplane" },
           to: "/person/about",
@@ -32,7 +31,7 @@ export const useShowPersonHeaderMenu = () => {
 
         // 未登录的 数据
         {
-          id: nanoid(),
+          id: 2,
           name: "登录",
           icon: { icon: "i-material-symbols:login" },
           to: "/login",
@@ -41,7 +40,7 @@ export const useShowPersonHeaderMenu = () => {
 
         // 登录后 展示的数据
         {
-          id: nanoid(),
+          id: 3,
           name: "退出登录",
           icon: {
             icon: "i-material-symbols:login",
@@ -55,14 +54,14 @@ export const useShowPersonHeaderMenu = () => {
           hide: !userToken.value,
         },
         {
-          id: nanoid(),
+          id: 4,
           name: "个人中心",
           icon: { icon: "i-charm:person" },
           to: `/user/space/${showAccount?.value}`,
           hide: !userToken.value,
         },
         {
-          id: nanoid(),
+          id: 5,
           name: "编辑用户",
           icon: { icon: "i-basil:edit-outline" },
           click: () => {
@@ -74,14 +73,14 @@ export const useShowPersonHeaderMenu = () => {
 
         // 需要 具体 权限的数据
         {
-          id: nanoid(),
+          id: 6,
           name: "发布文章",
           icon: { icon: "i-simple-line-icons:doc" },
           to: "/doc/publish",
           hide: !userPermissions.value.includes("doc:publish"),
         },
         {
-          id: nanoid(),
+          id: 7,
           name: "管理页面",
           icon: { icon: "i-charm:person" },
           to: "/admin",

@@ -57,6 +57,7 @@ declare module 'vue' {
     Layout: typeof import('./src/components/layout/index.vue')['default']
     LayoutArticleComments: typeof import('./src/components/layout/article/comments/index.vue')['default']
     LayoutArticleCommentsAdd: typeof import('./src/components/layout/article/comments/add/index.vue')['default']
+    LayoutArticleCommentsBase: typeof import('./src/components/layout/article/comments/base/index.vue')['default']
     LayoutArticleCommentsItem: typeof import('./src/components/layout/article/comments/item/index.vue')['default']
     LayoutArticleCommentsReply: typeof import('./src/components/layout/article/comments/reply/index.vue')['default']
     LayoutArticleCommentsReplyItem: typeof import('./src/components/layout/article/comments/replyItem/index.vue')['default']

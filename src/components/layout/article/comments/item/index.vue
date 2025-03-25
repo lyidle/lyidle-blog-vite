@@ -33,7 +33,10 @@
             :isExportHtml="false"
             :autoPreview="true"
             v-if="comment.id"
+            v-show="!isEditor"
           ></vditor-preview>
+          <layout-article-comments-base v-show="isEditor" ref="editorInstance">
+          </layout-article-comments-base>
         </div>
       </div>
       <!-- more -->
@@ -147,12 +150,19 @@ import type { LikeOrDislikeCounts } from "@/api/likeOrDislike/types/likeOrDislik
 import { decompressStringNotError } from "@/utils/compression"
 // 引入 moment
 import moment from "@/utils/moment"
-import { nanoid } from "nanoid"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
 import { handlerReqErr } from "@/utils/request/error/successError"
 
 const { userAccount, userToken, userId } = storeToRefs(useUserStore())
+// 是否修改
+const isEditor = ref(false)
+const editorInstance = ref()
+// 重新赋值
+const initContext = () =>
+  editorInstance.value.clearSetValue(
+    decompressStringNotError(props.comment.content)
+  )
 
 const props = withDefaults(
   defineProps<{
@@ -191,7 +201,7 @@ const moreItem = computed(() => {
   return {
     data: [
       {
-        id: nanoid(),
+        id: 1,
         name: "设为置顶",
         click: async () => {
           // 置顶的 逻辑
@@ -200,7 +210,7 @@ const moreItem = computed(() => {
         hide: userAccount.value !== props.author,
       },
       {
-        id: nanoid(),
+        id: 2,
         name: "举报",
         click: async () => {
           // 举报的 逻辑
@@ -209,15 +219,17 @@ const moreItem = computed(() => {
         hide: !userToken.value,
       },
       {
-        id: nanoid(),
-        name: "修改",
+        id: 3,
+        name: !isEditor.value ? "修改" : "取消修改",
         click: async () => {
+          isEditor.value = !isEditor.value
+          initContext()
           // 修改的 逻辑
         },
         // 需要 是本人的评论
       },
       {
-        id: nanoid(),
+        id: 4,
         name: "删除",
         click: async () => {
           // 删除的 逻辑
