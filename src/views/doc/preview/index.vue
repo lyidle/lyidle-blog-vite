@@ -1,5 +1,5 @@
 <template>
-  <layout-article-review v-model:title="title"></layout-article-review>
+  <layout-article-preview v-model:title="title"></layout-article-preview>
 </template>
 
 <script setup lang="ts" name="Document">
@@ -9,8 +9,6 @@ import { getOneArticle } from "@/api/article"
 import { decompressStringNotError } from "@/utils/compression"
 // 引入 mitt
 import { mitt } from "@/utils/emitter"
-// 引入 处理错误的 请求函数
-import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
@@ -21,16 +19,13 @@ const reqArticle = async (): Promise<GetOneArticle["data"] | undefined> => {
   try {
     // 获取文章
     const articles = await getOneArticle(route.params.id as string)
-    try {
-      // 解压缩展示文章
-      if (!articles?.content) {
-        mitt.emit("NotFound", "not article")
-        return
-      }
-      articles.content =
-        (decompressStringNotError(articles.content) as string) ||
-        articles.content
-    } catch (error) {}
+    // 解压缩展示文章
+    if (!articles?.content) {
+      mitt.emit("NotFound", "not article")
+      return
+    }
+    articles.content =
+      (decompressStringNotError(articles.content) as string) || articles.content
     return articles
   } catch (error) {
     mitt.emit("NotFound", "not article")

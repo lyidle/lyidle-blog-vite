@@ -6,7 +6,7 @@
 
 <script setup lang="ts" name="DocMenuTree">
 // 引入 类型
-import { TocNode } from "@/views/doc/review/types"
+import { TocNode } from "@/views/doc/preview/types"
 // 引入 侧边栏固定的 hook
 import { useSideMenuFixed } from "@/hooks/Doc/sideMenuFixed"
 

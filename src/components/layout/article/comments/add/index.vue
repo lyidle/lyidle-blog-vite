@@ -140,7 +140,6 @@ if (props.isFixed)
   mitt.on("chatisEnter", (options: { isEnter: boolean; rect?: DOMRect }) => {
     const { isEnter, rect } = options
     const dom = instance.value
-
     // 非空判断
     if (!dom) return
     // 固定

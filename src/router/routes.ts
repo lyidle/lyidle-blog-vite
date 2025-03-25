@@ -50,7 +50,7 @@ export const constantRoute: RouteRecordRaw[] = [
           pagesMt: "-30vh",
           bannerWaves: true,
         },
-        component: () => import("@/views/doc/review/index.vue"),
+        component: () => import("@/views/doc/preview/index.vue"),
       },
       // 发布文章 需要有对应的权限
       {

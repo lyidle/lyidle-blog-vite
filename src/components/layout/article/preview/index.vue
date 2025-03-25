@@ -118,7 +118,7 @@
           </teleport>
         </template>
         <!-- 卡片 -->
-        <div class="doc-content" ref="docRef">
+        <div class="doc-content relative" ref="docRef">
           <div
             class="observer-menu"
             v-if="asideCounts"
@@ -183,14 +183,14 @@
               :author="article.author"
               @computedCounts="computedCounts"
               ref="comments"
-              v-if="!settingId && article?.id && article?.id >= 0"
+              v-if="!settingId && article?.id"
             ></layout-article-comments>
             <!-- 设置表的 存储杂项的表 评论 -->
             <layout-article-comments
               :settingId
               @computedCounts="computedCounts"
               ref="comments"
-              v-if="!article?.id && settingId && settingId >= 0 && settingId"
+              v-if="!article?.id && settingId"
             ></layout-article-comments>
           </my-card>
         </div>
@@ -207,7 +207,12 @@ import {
   articleToggleLike,
   settingToggleLike,
 } from "@/api/likeOrDislike"
-import { getArticleShares, addArticleShare } from "@/api/share"
+import {
+  getArticleShares,
+  addArticleShare,
+  addSettingShare,
+  getSettingShares,
+} from "@/api/share"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
@@ -236,7 +241,7 @@ const { userId } = storeToRefs(useUserStore())
 const article = ref<GetOneArticle["data"]>()
 const title = defineModel<string>("title")
 // 设置 的 id
-const settingId = defineModel<number>("settingId")
+const settingId = defineModel<number | null>("settingId")
 // 文章和设置 的点赞
 const isLike = ref(false)
 const likeCounts = ref(0)
@@ -284,7 +289,7 @@ const toggleLike = async () => {
       await articleToggleLike(articleId, {
         likeType,
       })
-    if (_seetingId)
+    if (_seetingId && _seetingId >= 0)
       await settingToggleLike(_seetingId, {
         likeType,
       })
@@ -398,20 +403,23 @@ const toggleCollect = async () => {
       isBookmarked: is,
     })
     isCollect.value = is
-    ElMessage.success(`${is ? "取消" : ""}收藏成功`)
+    if (is) ++collectCounts.value
+    else --collectCounts.value
+    ElMessage.success(`${!is ? "取消" : ""}收藏成功`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error(`${is ? "取消" : ""}收藏失败`)
+    if (!err) ElMessage.error(`${!is ? "取消" : ""}收藏失败`)
   }
 }
 
 // 得到 分享数量
 const getShares = async () => {
+  const articleId = article.value?.id
+  const _seetingId = settingId.value
   // 处理文章
   if (props.isArticle) {
-    const id = article.value?.id
-    if (id) {
-      const result = await getArticleShares(id)
+    if (articleId) {
+      const result = await getArticleShares(articleId)
       shareCounts.value = result || 0
       return
     }
@@ -425,7 +433,25 @@ const getShares = async () => {
         }
       }
     )
+    return
   }
+  // 处理设置
+  if (_seetingId) {
+    const result = await getSettingShares(_seetingId)
+    shareCounts.value = result || 0
+    return
+  }
+
+  const stopSetttingId = watch(
+    () => settingId.value,
+    async (id) => {
+      if (id) {
+        const result = await getSettingShares(id)
+        shareCounts.value = result || 0
+        stopSetttingId()
+      }
+    }
+  )
 }
 
 // 增加分享数量
@@ -441,7 +467,7 @@ const addShare = throttle(async () => {
       shared = true
     }
     if (_settingId) {
-      await addArticleShare(_settingId)
+      await addSettingShare(_settingId)
       ++shareCounts.value
       shared = true
     }

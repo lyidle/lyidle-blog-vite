@@ -142,7 +142,7 @@ const focusCallback = () =>
 const repliesInstance = ref()
 // 得到 子评论的 请求 函数
 const reqCallbacks = () =>
-  repliesInstance.value?.map((item: any) => item?.reqCommentsReplies())
+  repliesInstance.value?.map((item: any) => item?.reqCommentsReplies?.())
 
 // 分页 器
 const pagination = ref<GetComments["data"]["pagination"]>({
@@ -188,7 +188,7 @@ const reqComments = async () => {
   // 处理 子组件的数据
   nextTick(async () => {
     // 使用 allSettled 获取 子组件对应的 回复数据
-    await Promise.allSettled(reqCallbacks())
+    await Promise.allSettled(reqCallbacks() || [])
   })
 }
 

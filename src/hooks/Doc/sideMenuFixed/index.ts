@@ -5,7 +5,7 @@ import { mitt } from "@/utils/emitter"
 // 引入 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 import type { ObserverCallback } from "@/utils/observer"
-import { TocNode } from "@/views/doc/review/types"
+import { TocNode } from "@/views/doc/preview/types"
 
 // 初始化需要的数据
 let menuWrap: HTMLDivElement | null = null
