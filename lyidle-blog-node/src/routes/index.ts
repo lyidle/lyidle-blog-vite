@@ -17,6 +17,8 @@ import comments from "./comments"
 import likeOrdislike from "./likeOrdislike"
 // 引入 api/mark
 import mark from "./mark"
+// 引入 api/share
+import share from "./share"
 // 引入权限判断
 import { jwtMiddleware, isTourist } from "@/middleware/auth"
 const router = express.Router()
@@ -34,4 +36,5 @@ router.use("/upload", [jwtMiddleware, isTourist], upload)
 router.use("/comments", isTourist, comments)
 router.use("/likeOrdislike", isTourist, likeOrdislike)
 router.use("/mark", isTourist, mark)
+router.use("/share", isTourist, share)
 module.exports = router

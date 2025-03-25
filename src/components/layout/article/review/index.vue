@@ -155,12 +155,12 @@
                   <!-- 分享 -->
                   <div
                     class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    @click="addShare"
                   >
                     <i
                       class="text-17px i-bitcoin-icons:share-outline w-1em h-1em"
-                      :class="`${isLike ? 'active' : ''}`"
                     ></i>
-                    {{ 60 }}
+                    {{ shareCounts }}
                   </div>
                   <!-- 评论 -->
                   <div
@@ -207,6 +207,7 @@ import {
   articleToggleLike,
   settingToggleLike,
 } from "@/api/likeOrDislike"
+import { getArticleShares, addArticleShare } from "@/api/share"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
@@ -225,6 +226,7 @@ import { scrollToHeader } from "@/utils/scrollToHeader"
 // 请求错误的 处理函数
 import { handlerReqErr } from "@/utils/request/error/successError"
 import { getArticleCollects, toggleArticleCollects } from "@/api/collect"
+import throttle from "@/utils/throttle"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
@@ -235,12 +237,14 @@ const article = ref<GetOneArticle["data"]>()
 const title = defineModel<string>("title")
 // 设置 的 id
 const settingId = defineModel<number>("settingId")
-// 文章 的点赞
+// 文章和设置 的点赞
 const isLike = ref(false)
 const likeCounts = ref(0)
 // 文章 的收藏
 const isCollect = ref(false)
 const collectCounts = ref(0)
+// 文章和设置 的分享
+const shareCounts = ref(0)
 
 // 评论数量
 const counts = ref(0)
@@ -301,56 +305,87 @@ const toggleLike = async () => {
 }
 // 获取点赞数量
 const getLikes = async () => {
+  const articleId = article.value?.id
+  const _settingId = settingId.value
   // 文章
   if (props.isArticle) {
-    const stopArticleId = watch(
-      () => article.value?.id,
+    // 没有 id监听获取
+    if (!articleId) {
+      const stopArticleId = watch(
+        () => article.value?.id,
+        async (id) => {
+          if (id) {
+            const result = await getArticleLikes(id)
+            // 判断用户是否点赞了
+            isLike.value = result?.userIds.includes(userId.value) || false
+            // 得到点赞数量
+            likeCounts.value = result?.count || 0
+            // 停止监视 文章
+            stopArticleId()
+          }
+        }
+      )
+      return
+    }
+    // 有id直接获取
+    const result = await getArticleLikes(articleId)
+    // 判断用户是否点赞了
+    isLike.value = result?.userIds.includes(userId.value) || false
+    // 得到点赞数量
+    likeCounts.value = result?.count || 0
+    return
+  }
+  // 设置文章
+  // 没有 id监听获取
+  if (!_settingId) {
+    const stopSetttingId = watch(
+      () => settingId.value,
       async (id) => {
         if (id) {
-          const result = await getArticleLikes(id)
+          const result = await getSettingLikes(id)
           // 判断用户是否点赞了
           isLike.value = result?.userIds.includes(userId.value) || false
           // 得到点赞数量
           likeCounts.value = result?.count || 0
-          // 停止监视 文章
-          stopArticleId()
+          // 停止监视 设置文章
+          stopSetttingId()
         }
       }
     )
     return
   }
-  // 设置文章
-  const stopSetttingId = watch(
-    () => settingId.value,
-    async (id) => {
-      if (id) {
-        const result = await getSettingLikes(id)
-        // 判断用户是否点赞了
-        isLike.value = result?.userIds.includes(userId.value) || false
-        // 得到点赞数量
-        likeCounts.value = result?.count || 0
-        // 停止监视 设置文章
-        stopSetttingId()
-      }
-    }
-  )
+  // 有id直接获取
+  const result = await getSettingLikes(_settingId)
+  // 判断用户是否点赞了
+  isLike.value = result?.userIds.includes(userId.value) || false
+  // 得到点赞数量
+  likeCounts.value = result?.count || 0
 }
 
 // 获取 文章的 收藏状态
 const getCollects = async () => {
   // 文章
   if (!props.isArticle) return
-  const stopArticleId = watch(
-    () => article.value?.id,
-    async (id) => {
-      if (id) {
-        const result = await getArticleCollects(id)
-        isCollect.value = result?.userIds?.includes(userId.value) || false
-        collectCounts.value = result.count || 0
-        stopArticleId()
+  const id = article.value?.id
+  // 没有 id 监听
+  if (!id) {
+    const stopArticleId = watch(
+      () => article.value?.id,
+      async (id) => {
+        if (id) {
+          const result = await getArticleCollects(id)
+          isCollect.value = result?.userIds?.includes(userId.value) || false
+          collectCounts.value = result.count || 0
+          stopArticleId()
+        }
       }
-    }
-  )
+    )
+    return
+  }
+  // 有id 获取
+  const result = await getArticleCollects(id)
+  isCollect.value = result?.userIds?.includes(userId.value) || false
+  collectCounts.value = result.count || 0
 }
 
 // 切换 文章的 收藏状态
@@ -369,12 +404,56 @@ const toggleCollect = async () => {
     if (!err) ElMessage.error(`${is ? "取消" : ""}收藏失败`)
   }
 }
+
+// 得到 分享数量
+const getShares = async () => {
+  // 处理文章
+  if (props.isArticle) {
+    const id = article.value?.id
+    if (id) {
+      const result = await getArticleShares(id)
+      shareCounts.value = result || 0
+      return
+    }
+    const stopArticleId = watch(
+      () => article.value?.id,
+      async (id) => {
+        if (id) {
+          const result = await getArticleShares(id)
+          shareCounts.value = result || 0
+          stopArticleId()
+        }
+      }
+    )
+  }
+}
+
+// 增加分享数量
+const addShare = throttle(async () => {
+  // 处理文章
+  const articleId = article.value?.id
+  const _settingId = settingId.value
+  if (articleId) {
+    await addArticleShare(articleId)
+    ++shareCounts.value
+  }
+  if (_settingId) {
+    await addArticleShare(_settingId)
+    ++shareCounts.value
+  }
+}, 1000)
+
 // 初始化
-onMounted(() => {
-  // 初始化点赞个数
-  getLikes()
-  // 初始化 收藏数
-  getCollects()
+onMounted(async () => {
+  // 初始化
+  await Promise.allSettled([
+    // 初始化点赞个数
+    getLikes(),
+    // 初始化 收藏数
+    getCollects(),
+    // 初始化 分享数量
+    getShares(),
+  ])
 })
 
 // 计算 评论个数

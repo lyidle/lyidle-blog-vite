@@ -1,0 +1,56 @@
+"use strict"
+
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("Shares", {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      articleId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Articles",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      settingId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Settings",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      shareType: {
+        type: Sequelize.ENUM("article", "setting"),
+        allowNull: false,
+        defaultValue: "article",
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+    })
+
+    // 添加普通索引
+    await queryInterface.addIndex("Shares", ["articleId"])
+    await queryInterface.addIndex("Shares", ["settingId"])
+    await queryInterface.addIndex("Shares", ["shareType"])
+  },
+
+  async down(queryInterface, Sequelize) {
+    // 然后删除表
+    await queryInterface.dropTable("Shares")
+  },
+}
