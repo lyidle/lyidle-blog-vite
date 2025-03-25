@@ -433,13 +433,21 @@ const addShare = throttle(async () => {
   // 处理文章
   const articleId = article.value?.id
   const _settingId = settingId.value
-  if (articleId) {
-    await addArticleShare(articleId)
-    ++shareCounts.value
-  }
-  if (_settingId) {
-    await addArticleShare(_settingId)
-    ++shareCounts.value
+  try {
+    let shared = false
+    if (articleId) {
+      await addArticleShare(articleId)
+      ++shareCounts.value
+      shared = true
+    }
+    if (_settingId) {
+      await addArticleShare(_settingId)
+      ++shareCounts.value
+      shared = true
+    }
+    if (shared) ElMessage.success("分享成功")
+  } catch (error) {
+    ElMessage.warning("分享失败")
   }
 }, 1000)
 
