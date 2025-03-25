@@ -119,11 +119,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       carousel: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.BOOLEAN,
         validate: {
-          isTiny(value) {
-            if (value !== 0 && value !== 1)
-              throw new Error("carousel只能为0和1")
+          isBoolean(value) {
+            // 校验 value 是否合法
+            if (typeof value !== "boolean")
+              throw new Error("carousel 必须是布尔值")
           },
         },
       },

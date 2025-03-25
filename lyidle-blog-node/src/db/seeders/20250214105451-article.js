@@ -69,7 +69,7 @@ module.exports = {
         tags: JSON.stringify(randomTags),
         // 成功 次数加一
         carousel:
-          Math.random() > 0.5 && carouselCounts <= 8 ? +!!++carouselCounts : 0,
+          Math.random() > 0.5 && carouselCounts <= 8 ? !!++carouselCounts : 0,
         desc: `文章的描述内容${i}`,
         // poster: `https://example.com/poster${i}.jpg`,
         length: lengthRender(i),

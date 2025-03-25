@@ -14,7 +14,7 @@ router.get("/", async (req, res, next) => {
     if (cacheValue) return res.result(cacheValue, "获取首页焦点图成功~")
 
     const result = await Article.findAll({
-      where: { carousel: 1 },
+      where: { carousel: true },
       attributes: [
         "author",
         "poster",

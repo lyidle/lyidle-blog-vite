@@ -52,7 +52,7 @@ router.put(
       const { carousel } = req.body
 
       // 可能为 null 的字段
-      findArticle.set("carousel", +!!carousel)
+      findArticle.set("carousel", !!carousel)
 
       // 验证 修改了的 属性字段
       await validateChangedFields(findArticle)

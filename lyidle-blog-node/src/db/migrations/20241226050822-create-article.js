@@ -38,9 +38,9 @@ module.exports = {
         allowNull: false,
       },
       carousel: {
-        type: Sequelize.TINYINT,
+        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: false,
       },
       desc: {
         type: Sequelize.STRING,
