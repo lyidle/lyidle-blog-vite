@@ -36,7 +36,6 @@
         :isFixed="true"
       ></layout-article-comments-add>
     </div>
-
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
       <template v-for="comment in comments" :key="comment.id">
         <div class="comment-item" v-if="comment.id">
@@ -91,18 +90,48 @@
         </div>
       </template>
     </div>
+    <teleport to="body">
+      <el-dialog
+        class="primary-dialog"
+        v-model="isDelete"
+        width="300"
+        align-center
+        draggable
+        @submit.prevent="deleteComment"
+      >
+        <el-form label-position="right" label-width="60" ref="formInstance">
+          <div
+            class="color-[var(--primary-color)] cur-text text-center mb-10px text-18px font-bold"
+          >
+            删除评论
+          </div>
+          <div class="color-[var(--primary-color)] cur-text text-center">
+            删除评论后，评论下所有回复都会被删除,是否继续?
+          </div>
+          <div class="flex justify-end mt-20px">
+            <my-button class="w-unset" type="default" @click="isDelete = false"
+              >取消</my-button
+            >
+            <my-button class="w-unset" type="primary" native-type="submit">
+              确认
+            </my-button>
+          </div>
+        </el-form>
+      </el-dialog>
+    </teleport>
   </div>
 </template>
 
 <script setup lang="ts" name="ArticleComments">
 // 引入 接口
-import { getComments } from "@/api/comments"
+import { delComment, getComments } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { handlerReplyType, orderObjType, typeOrderMap } from "./types"
 // 引入 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 import { mitt } from "@/utils/emitter"
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 观察 ribbonInstance
 const ribbonInstance = ref()
@@ -139,7 +168,7 @@ const fromNickName = ref("")
 const replyInstance = ref()
 // 回复 回复评论输入聚焦函数
 const focusCallback = () =>
-  replyInstance.value?.[0].addInstance?.textAreaInstance?.instance?.focus()
+  replyInstance.value?.[0].addInstance?.instance?.textAreaInstance?.instance?.focus()
 // 回复 评论的 组件实例
 const repliesInstance = ref()
 // 得到 子评论的 请求 函数
@@ -217,9 +246,10 @@ const order = reactive<orderObjType>({
 // 最新 和 最晚 的 排序 按钮
 const handlerNewOrder = async () => {
   if (!comments.value) return
+  if (order.key === "new") {
+    order.order = orderMap[order.order]
+  }
   order.key = "new"
-
-  if (order.key !== "new") order.order = orderMap[order.order]
   await reqComments()
 }
 // 处理 按照 点赞排序
@@ -256,10 +286,38 @@ const handlerReply = (options: handlerReplyType) => {
   nextTick(() => focusCallback?.())
 }
 
+const isDelete = ref(false)
+const deleteId = ref<null | number>(null)
+
+// 删除 指定评论
+const deleteComment = async () => {
+  if (!deleteId.value) return
+  try {
+    await delComment(deleteId.value)
+    ElMessage.success("删除评论成功")
+    // 重新 获取 评论
+    await reqComments()
+    isDelete.value = false
+  } catch (error) {
+    isDelete.value = false
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("删除评论失败")
+  }
+}
+const handlerDeleteComment = async (id: number) => {
+  isDelete.value = true
+  deleteId.value = id
+}
+
+// 监听 删除 指定评论
+mitt.on("deleteCommentById", handlerDeleteComment)
+
 onMounted(async () => {
   if (!props.articleId && !props.settingId) return
   await reqComments()
 })
+
+onBeforeUnmount(() => mitt.off("deleteCommentById", handlerDeleteComment))
 </script>
 
 <style lang="scss">

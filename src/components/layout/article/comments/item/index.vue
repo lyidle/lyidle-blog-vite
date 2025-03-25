@@ -163,7 +163,7 @@ import {
   settingToggleCommentDislikes,
   // #endregion 设置的评论
 } from "@/api/likeOrDislike"
-import { delComment, putComment } from "@/api/comments"
+import { putComment } from "@/api/comments"
 // 引入 类型
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { GetCommentsReplies } from "@/api/comments/types/getCommentsReplies"
@@ -178,6 +178,7 @@ import moment from "@/utils/moment"
 import { useUserStore } from "@/store/user"
 import { handlerReqErr } from "@/utils/request/error/successError"
 import { cloneDeep } from "lodash-es"
+import { mitt } from "@/utils/emitter"
 
 const { userAccount, userToken, userId } = storeToRefs(useUserStore())
 // 是否修改
@@ -267,18 +268,7 @@ const moreItem = computed(() => {
       {
         id: 4,
         name: "删除",
-        click: async () => {
-          try {
-            await delComment(cloneComment.id)
-            // 通知父组件 当前组件销毁了 进行处理
-            ElMessage.success("删除评论成功")
-            // 重新 请求数据
-            await props?.reqComments?.()
-          } catch (error) {
-            const err = handlerReqErr(error, "error")
-            if (!err) ElMessage.error("删除评论失败")
-          }
-        },
+        click: () => mitt.emit("deleteCommentById", cloneComment.id),
         // 需要 是本人的评论 或者 作者
       },
     ],

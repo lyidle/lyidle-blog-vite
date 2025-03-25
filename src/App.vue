@@ -567,3 +567,17 @@ useGlobalEmitter()
   }
 }
 </style>
+
+<style lang="scss">
+.primary-dialog {
+  --el-dialog-bg-color: var(--drawer-bg);
+  --el-dialog-box-shadow: unset;
+  .el-form-item {
+    margin-bottom: 10px;
+  }
+  .el-form-item__label {
+    color: var(--primary-color);
+    padding: 0;
+  }
+}
+</style>

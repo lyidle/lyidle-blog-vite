@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <el-dialog
-      class="manager-dialog"
+      class="primary-dialog"
       v-model="centerDialogVisible"
       width="500"
       align-center
@@ -118,17 +118,3 @@ const handlerConfirm = async () => {
 // 暴露
 defineExpose({ init })
 </script>
-
-<style lang="scss">
-.manager-dialog {
-  --el-dialog-bg-color: var(--drawer-bg);
-  --el-dialog-box-shadow: unset;
-  .el-form-item {
-    margin-bottom: 10px;
-  }
-  .el-form-item__label {
-    color: var(--primary-color);
-    padding: 0;
-  }
-}
-</style>

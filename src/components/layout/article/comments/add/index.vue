@@ -75,7 +75,7 @@ const props = defineProps<{
 }>()
 
 const instance = ref()
-
+defineExpose({ instance })
 // 得到 内容
 const comment = () => instance.value.comment() as string
 // 重置 内容
