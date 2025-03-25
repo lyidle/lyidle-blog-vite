@@ -146,12 +146,11 @@
                   <div
                     class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
                     v-if="article?.id"
+                    @click="toggleCollect"
+                    :class="`${isCollect ? 'active' : ''}`"
                   >
-                    <i
-                      class="text-16px i-solar:star-linear w-1em h-1em"
-                      :class="`${isLike ? 'active' : ''}`"
-                    ></i>
-                    {{ 60 }}
+                    <i class="text-16px i-solar:star-linear w-1em h-1em"></i>
+                    {{ collectCounts }}
                   </div>
                   <!-- 分享 -->
                   <div
@@ -225,6 +224,7 @@ import ArticleTimes from "./times/index.vue"
 import { scrollToHeader } from "@/utils/scrollToHeader"
 // 请求错误的 处理函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { getArticleCollects, toggleArticleCollects } from "@/api/collect"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
@@ -238,6 +238,10 @@ const settingId = defineModel<number>("settingId")
 // 文章 的点赞
 const isLike = ref(false)
 const likeCounts = ref(0)
+// 文章 的收藏
+const isCollect = ref(false)
+const collectCounts = ref(0)
+
 // 评论数量
 const counts = ref(0)
 // 评论的 组件实例
@@ -245,9 +249,14 @@ const comments = ref()
 // 注入父组件提供的方法
 const reqArticle =
   inject<() => Promise<GetOneArticle["data"] | undefined>>("reqArticle")
-withDefaults(defineProps<{ isShowHeader?: boolean }>(), {
-  isShowHeader: true,
-})
+
+const props = withDefaults(
+  defineProps<{ isShowHeader?: boolean; isArticle?: boolean }>(),
+  {
+    isShowHeader: true,
+    isArticle: true,
+  }
+)
 
 // 处理点赞
 // like 的映射
@@ -259,11 +268,11 @@ const likeTypeMap = {
 const toggleLike = async () => {
   const articleId = article.value?.id
   const _seetingId = settingId.value
+  const is = !!isLike.value
   try {
     if (!articleId && !_seetingId) {
       throw new Error("")
     }
-    const is = !!isLike.value
     // 切换 是否点赞
     const likeType = likeTypeMap[`${is}`]
     // 修改 点赞 状态
@@ -284,37 +293,37 @@ const toggleLike = async () => {
     }
     // 自减
     else likeCounts.value = likeCounts.value - 1 || 0
+    ElMessage.success(`${is ? "取消" : ""}点赞成功`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("点赞失败")
+    if (!err) ElMessage.error(`${is ? "取消" : ""}点赞失败`)
   }
 }
 // 获取点赞数量
 const getLikes = async () => {
   // 文章
-  const stopArticleId = watch(
-    () => article.value?.id,
-    async (id) => {
-      if (id) {
-        const result = await getArticleLikes(id)
-        // 判断用户是否点赞了
-        isLike.value = result?.userIds.includes(userId.value) || false
-        // 得到点赞数量
-        likeCounts.value = result?.count || 0
-        // 停止监视 文章
-        stopArticleId()
-        // 停止监视 设置文章
-        stopSetttingId()
+  if (props.isArticle) {
+    const stopArticleId = watch(
+      () => article.value?.id,
+      async (id) => {
+        if (id) {
+          const result = await getArticleLikes(id)
+          // 判断用户是否点赞了
+          isLike.value = result?.userIds.includes(userId.value) || false
+          // 得到点赞数量
+          likeCounts.value = result?.count || 0
+          // 停止监视 文章
+          stopArticleId()
+        }
       }
-    }
-  )
+    )
+    return
+  }
   // 设置文章
   const stopSetttingId = watch(
     () => settingId.value,
     async (id) => {
       if (id) {
-        // 停止监视 文章
-        stopArticleId()
         const result = await getSettingLikes(id)
         // 判断用户是否点赞了
         isLike.value = result?.userIds.includes(userId.value) || false
@@ -326,8 +335,47 @@ const getLikes = async () => {
     }
   )
 }
-// 初始化点赞个数
-onMounted(getLikes)
+
+// 获取 文章的 收藏状态
+const getCollects = async () => {
+  // 文章
+  if (!props.isArticle) return
+  const stopArticleId = watch(
+    () => article.value?.id,
+    async (id) => {
+      if (id) {
+        const result = await getArticleCollects(id)
+        isCollect.value = result?.userIds?.includes(userId.value) || false
+        collectCounts.value = result.count || 0
+        stopArticleId()
+      }
+    }
+  )
+}
+
+// 切换 文章的 收藏状态
+const toggleCollect = async () => {
+  const id = article.value?.id
+  if (!id) return
+  const is = !isCollect.value
+  try {
+    await toggleArticleCollects(id, {
+      isBookmarked: is,
+    })
+    isCollect.value = is
+    ElMessage.success(`${is ? "取消" : ""}收藏成功`)
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error(`${is ? "取消" : ""}收藏失败`)
+  }
+}
+// 初始化
+onMounted(() => {
+  // 初始化点赞个数
+  getLikes()
+  // 初始化 收藏数
+  getCollects()
+})
 
 // 计算 评论个数
 const computedCounts = (num: number) => {

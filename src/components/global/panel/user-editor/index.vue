@@ -126,7 +126,6 @@ import { useSettingStore } from "@/store/setting"
 const { isShowPanel } = storeToRefs(useSettingStore())
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
-import { mitt } from "@/utils/emitter"
 
 // 导入 默认的图片
 const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
@@ -290,8 +289,8 @@ const handlerUpdate = async () => {
 
     ElMessage.success("更新用户信息成功~")
   } catch (error) {
-    // 重新加载路由
-    mitt.emit("route:reload")
+    // 初始化 数据
+    initData()
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("更新用户信息失败~")
   }
@@ -367,8 +366,6 @@ const updateAvatar = async () => {
 
     ElMessage.success("更新用户头像成功~")
   } catch (error) {
-    // 重新加载路由
-    mitt.emit("route:reload")
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("更新用户头像失败~")
     avatar.value = [{ name: "default", url: avatarInit() }]
@@ -384,9 +381,7 @@ const toggleUserBin = async (isBin: string | null) => {
       ElMessage.success(
         `注销账号成功，过期时间为：${formatMilliseconds(+result)}`
       )
-
-      // 重新加载路由
-      mitt.emit("route:reload")
+      userIsBin.value = `${new Date()}`
     } catch (error) {
       ElMessage.error(`注销账号失败~`)
     }
@@ -396,9 +391,7 @@ const toggleUserBin = async (isBin: string | null) => {
   try {
     await recoverUser()
     ElMessage.success("恢复账号成功~")
-
-    // 重新加载路由
-    mitt.emit("route:reload")
+    userIsBin.value = null
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("恢复账号失败~")

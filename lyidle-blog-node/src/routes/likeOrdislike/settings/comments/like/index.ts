@@ -47,11 +47,15 @@ router.post("/:commentId", async (req, res, next) => {
     }
 
     // 返回成功响应
-    res.result(void 0, "点赞操作成功")
+    res.result(void 0, `${likeType === "normal" ? "取消" : ""}点赞操作成功`)
   } catch (error) {
     // 捕获错误并返回失败响应
     res.validateAuth(error, next, () =>
-      res.result(void 0, "点赞操作失败", false)
+      res.result(
+        void 0,
+        `${likeType === "normal" ? "取消" : ""}点赞操作失败`,
+        false
+      )
     )
   }
 })

@@ -2,6 +2,7 @@
   <layout-article-review
     v-model:title="title"
     :isShowHeader="false"
+    :isArticle="false"
     v-model:settingId="settingId"
   ></layout-article-review>
 </template>

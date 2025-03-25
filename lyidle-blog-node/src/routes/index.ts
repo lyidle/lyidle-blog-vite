@@ -15,6 +15,8 @@ import upload from "./upload"
 import comments from "./comments"
 // 引入 api/likeOrdislike
 import likeOrdislike from "./likeOrdislike"
+// 引入 api/mark
+import mark from "./mark"
 // 引入权限判断
 import { jwtMiddleware, isTourist } from "@/middleware/auth"
 const router = express.Router()
@@ -31,4 +33,5 @@ router.use("/webInfo", isTourist, webInfo)
 router.use("/upload", [jwtMiddleware, isTourist], upload)
 router.use("/comments", isTourist, comments)
 router.use("/likeOrdislike", isTourist, likeOrdislike)
+router.use("/mark", isTourist, mark)
 module.exports = router

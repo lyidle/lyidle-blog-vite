@@ -332,8 +332,8 @@ const toggleLike = async () => {
   const isArticle = validate()
   // 去除空的判断
   if (!isArticle) return
+  const is = !!isUserLike.value
   try {
-    const is = !!isUserLike.value
     // 切换 是否点赞
     const likeType = likeTypeMap[`${is}`]
     if (isArticle === "文章") {
@@ -358,9 +358,10 @@ const toggleLike = async () => {
     }
     // 自减
     else likeCounts.value = likeCounts.value - 1 || 0
+    ElMessage.success(`${is ? "取消" : ""}点赞成功`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("点赞失败")
+    if (!err) ElMessage.error(`${is ? "取消" : ""}点赞失败`)
   }
 }
 
@@ -372,8 +373,8 @@ const toggleDislike = async () => {
   const isArticle = validate()
   // 去除空的判断
   if (!isArticle) return
+  const is = !!isUserDislike.value
   try {
-    const is = !!isUserDislike.value
     // 切换 是否 点踩
     const dislikeType = dislikeTypeMap[`${is}`]
 
@@ -399,9 +400,10 @@ const toggleDislike = async () => {
     }
     // 自减
     else dislikeCounts.value = dislikeCounts.value - 1 || 0
+    ElMessage.success(`${is ? "取消" : ""}点踩成功`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("点踩失败")
+    if (!err) ElMessage.error(`${is ? "取消" : ""}点踩失败`)
   }
 }
 
