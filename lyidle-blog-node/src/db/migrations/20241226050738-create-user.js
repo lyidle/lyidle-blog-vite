@@ -52,6 +52,10 @@ module.exports = {
         type: Sequelize.DATE,
       },
     })
+
+    // 添加普通索引
+    await queryInterface.addIndex("Users", ["account"])
+    await queryInterface.addIndex("Users", ["email"])
   },
 
   async down(queryInterface, Sequelize) {

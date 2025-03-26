@@ -18,6 +18,8 @@ module.exports = {
         type: Sequelize.JSON,
       },
     })
+    // 添加普通索引
+    await queryInterface.addIndex("Settings", ["name"])
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Settings")

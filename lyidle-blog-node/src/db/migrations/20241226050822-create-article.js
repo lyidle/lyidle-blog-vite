@@ -77,6 +77,11 @@ module.exports = {
         type: Sequelize.DATE,
       },
     })
+
+    // 添加普通索引
+    await queryInterface.addIndex("Articles", ["userId"])
+    await queryInterface.addIndex("Articles", ["author"])
+    await queryInterface.addIndex("Articles", ["carousel"])
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Articles")
