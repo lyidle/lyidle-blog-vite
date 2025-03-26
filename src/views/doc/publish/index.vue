@@ -143,7 +143,6 @@ const resetDoc = async () => {
           poster.value = []
           ElMessage.warning({
             message: `删除文件${url}失败,临时图片被销毁了`,
-            customClass: "selectMessage",
           })
         },
         success: (url) => {
@@ -267,7 +266,6 @@ const handerUpload = async () => {
           tempImgNull.forEach((item) => {
             ElMessage.warning({
               message: `文章的海报临时图片:${item}不存在~`,
-              customClass: "selectMessage",
             })
           })
         }

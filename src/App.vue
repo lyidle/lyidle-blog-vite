@@ -580,4 +580,8 @@ useGlobalEmitter()
     padding: 0;
   }
 }
+.el-message__content {
+  user-select: text;
+  cursor: var(--cursor-text);
+}
 </style>

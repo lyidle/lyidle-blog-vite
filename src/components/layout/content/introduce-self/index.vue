@@ -25,11 +25,29 @@
           <!-- 头像 -->
           <global-avatar></global-avatar>
         </div>
-        <div class="username font-size-1.5625rem text-center cur-text">
-          {{ showNickName }}
-          <div class="signer text-center cur-text">
-            {{ showSigner }}
-          </div>
+        <div
+          class="text-[1.5625rem] cur-text flex flex-col gap-[5px] items-center"
+        >
+          <my-tooltip
+            class="box-item"
+            effect="dark"
+            :content="`作者:${showAccount}`"
+            placement="right-start"
+          >
+            <div class="w-fit truncate text-center text-26px">
+              {{ showNickName }}
+            </div>
+          </my-tooltip>
+          <my-tooltip
+            class="box-item"
+            effect="dark"
+            content="用户签名"
+            placement="right-start"
+          >
+            <div class="w-fit truncate text-center text-16px">
+              {{ showSigner }}
+            </div>
+          </my-tooltip>
         </div>
         <div class="side-counts-container">
           <layout-link-pages></layout-link-pages>
@@ -49,14 +67,16 @@
         <div class="links">
           <a
             class="color-[var(--aside-userinfo-wechat-color)]"
-            @click="copyToClipboard('微信号', ownerWeChat)"
+            @click="
+              copyToClipboardCallback({ type: '微信号', text: ownerWeChat })
+            "
             v-if="ownerWeChat"
           >
             <i class="i-ic:twotone-wechat"></i>
           </a>
           <a
             class="color-[var(--aside-userinfo-qq-color)]"
-            @click="copyToClipboard('QQ号', ownerQQ)"
+            @click="copyToClipboardCallback({ type: 'QQ号', text: ownerQQ })"
             v-if="ownerQQ"
           >
             <icon-qq></icon-qq>
@@ -93,11 +113,14 @@ import { useShowUserinfo } from "@/hooks/showUserinfo"
 // 切换 到编辑用户界面
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 import { mitt } from "@/utils/emitter"
+// 引入 复制到 剪贴板 的函数
+import { copyToClipboardCallback } from "@/hooks/context-menu/copyToClipboard"
 // 切换 到编辑用户界面
 const userEditorScene = useUserEditorScene()
 // 提取需要展示的信息
-const { showNickName, showSigner, showIsBin } = useShowUserinfo({
+const { showNickName, showSigner, showIsBin, showAccount } = useShowUserinfo({
   showNickName: true,
+  showAccount: true,
   showSigner: true,
   showIsBin: true,
 })
@@ -115,15 +138,6 @@ const {
   // 用户信息
   userToken,
 } = storeToRefs(useUserStore())
-
-const copyToClipboard = async (type: string, text: string) => {
-  try {
-    await navigator.clipboard.writeText(text)
-    ElMessage.success(`复制${type}成功~`)
-  } catch (error) {
-    ElMessage.warning(`复制${type}成功~`)
-  }
-}
 </script>
 
 <style scoped lang="scss">

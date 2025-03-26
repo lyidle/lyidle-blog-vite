@@ -7,7 +7,7 @@
       @mouseleave="settingsLeave"
     >
       <!-- 暗夜切换 -->
-      <div class="tools-item cur-pointer">
+      <div class="tools-item cur-pointer" v-if="themes === 'switch'">
         <div class="icon" @click="isDark = !isDark">
           <i
             :class="
@@ -45,6 +45,11 @@
         <i class="i-mage:settings-fill m-t-0.3125rem size-1.25rem setting"></i>
       </div>
     </div>
+    <div class="tools-item cur-pointer" @click="toShare">
+      <div class="icon">
+        <i class="i-tdesign:share m-t-0.3125rem size-1rem"></i>
+      </div>
+    </div>
     <!-- up -->
     <div class="tools-item cur-pointer">
       <div v-if="upValue">
@@ -75,8 +80,12 @@ import { useSettingsAnimation } from "@/hooks/side-tools/animations/settings"
 import { scrollTop, scrollBottom } from "@/utils/toTopOrBottom"
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
+// 复制到剪贴板的函数
+import { copyToClipboardCallback } from "@/hooks/context-menu/copyToClipboard"
 // 提取需要的变量
-const { isDark, isContextMenu, isMusic } = storeToRefs(useSettingStore())
+const { isDark, themes, isContextMenu, isMusic } = storeToRefs(
+  useSettingStore()
+)
 
 // 获取工具栏实列
 const settings = ref<HTMLDivElement | undefined>()
@@ -85,6 +94,14 @@ const { settingsEnter, settingsLeave } = useSettingsAnimation(settings, 500)
 
 // 使用 上下的按钮 百分比动画的动画逻辑
 const { upValue, downValue } = useUpOrDown()
+
+// 分享
+const toShare = async () =>
+  await copyToClipboardCallback({
+    text: () => window.location.href,
+    sucTip: "复制并分享链接成功",
+    warnTip: "复制并分享链接失败",
+  })
 </script>
 
 <style scoped lang="scss">

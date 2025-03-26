@@ -17,6 +17,8 @@ import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 import update from "@/routes/email/update"
 // 引入 修改头像的 api
 import avatar from "./avatar"
+// 更新 用户签名的接口
+import signer from "./signer"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
 import { resetArticle } from "@/utils/redis/resetArticle"
@@ -224,6 +226,9 @@ router.put(
   }
 )
 
+// 更新 用户签名的接口
+router.use("/signer", jwtMiddleware, signer)
+// 更新 头像的接口
 router.use("/avatar", avatar)
 // 邮箱发送接口
 router.use("/", update)

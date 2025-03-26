@@ -85,7 +85,6 @@ export const useMdImgToLinkPermanent = async (
         tempImgNull.forEach((item) => {
           ElMessage.warning({
             message: `临时图片:${item}不存在~`,
-            customClass: "selectMessage",
           })
         })
       }

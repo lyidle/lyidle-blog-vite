@@ -1,5 +1,5 @@
 <template>
-  <el-popconfirm v-bind="$attrs" ref="instance">
+  <el-popconfirm v-bind="$attrs" ref="instance" popper-class="my-popconfirm">
     <template v-for="(_, name) in slots" #[name]="scopedData">
       <slot :name="name" v-bind="scopedData" v-if="scopedData"></slot>
       <slot :name="name" v-else></slot>
@@ -20,11 +20,18 @@ defineExpose({
 
 <!-- popconfirm 是全局的不是子元素 -->
 <style lang="scss">
-.el-popper:has(.el-popconfirm) {
+.my-popconfirm {
   --el-popover-bg-color: var(--popconfirm-bg);
   --el-popover-border-color: var(--popconfirm-bg);
   --el-bg-color-overlay: var(--popconfirm-bg);
   --el-border-color-light: var(--popconfirm-bg);
-  color: var(--primary-color) !important;
+  color: var(--primary-color);
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+  .el-popconfirm__main {
+    user-select: text;
+    cursor: var(--cursor-text);
+    font-size: 13px;
+    text-align: justify;
+  }
 }
 </style>

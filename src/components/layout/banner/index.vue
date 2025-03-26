@@ -66,6 +66,7 @@ import { useUserStore } from "@/store/user"
 import { getPoetry } from "@/api/admin"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+import { mitt } from "@/utils/emitter"
 
 // 欢迎词
 const welcome = import.meta.env.VITE_INITIAL_WELCOME
@@ -143,15 +144,28 @@ onMounted(async () => {
     poetry.value = data
   } catch (error) {}
 })
+
+const fixed_pos = ref("absolute")
+const fixed_left = ref("initial")
+const fixed_index = ref("initial")
+
+const handlerAttr = () => {
+  fixed_pos.value = route.meta.fixedBannerUnAuto ? "absolute" : "fixed"
+  fixed_left.value = route.meta.fixedBannerUnAuto ? "initial" : "0"
+  fixed_index.value = route.meta.fixedBannerUnAuto ? "initial" : "1"
+}
+handlerAttr()
+mitt.on("router changed", () => nextTick(handlerAttr))
+onBeforeUnmount(() => mitt.off("router changed", handlerAttr))
 </script>
 <style lang="scss">
 body[banner-fixed="fixed"] {
   // 动画
   .header-animate {
-    position: fixed;
+    position: v-bind(fixed_pos);
     top: 50vh;
-    left: 0;
-    z-index: 1;
+    left: v-bind(fixed_left);
+    z-index: v-bind(fixed_index);
   }
 }
 </style>

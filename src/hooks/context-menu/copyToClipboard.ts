@@ -39,3 +39,37 @@ export const handleContextMenu = async (event: MouseEvent): Promise<void> => {
     ElMessage.error(`复制失败了哦，错误是:${error}`)
   }
 }
+
+/**
+ * @param options.text 需要复制的文本
+ * @param options.tip 是否 提示 默认true
+ * @param options.warnTip 错误提示
+ * @param options.sucTip 成功提示
+ * @param options.type 提示的信息类型 如 复制${type}成功
+ */
+export const copyToClipboardCallback = async (options: {
+  type?: string
+  text: string | (() => string)
+  warnTip?: string
+  sucTip?: string
+  tip?: boolean
+}) => {
+  const { type, sucTip, warnTip, tip = true } = options
+  const text =
+    typeof options.text == "string"
+      ? options.text
+      : typeof options.text === "function"
+      ? options.text()
+      : ""
+  // 没有 文本 提示错误信息
+  if (!text) {
+    if (tip) ElMessage.warning(warnTip || `复制${type}成功~`)
+    return
+  }
+  try {
+    await navigator.clipboard.writeText(text)
+    if (tip) ElMessage.success(sucTip || `复制${type}成功~`)
+  } catch (error) {
+    if (tip) ElMessage.warning(warnTip || `复制${type}成功~`)
+  }
+}

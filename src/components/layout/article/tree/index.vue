@@ -11,11 +11,15 @@
             <my-tooltip
               class="box-item"
               effect="dark"
-              content="作者"
+              :content="`作者:${
+                userId === userInfo?.id ? userAccount : userInfo?.account
+              }`"
               placement="top"
             >
               <div class="cur-text">
-                {{ account }}
+                {{
+                  userId === userInfo?.id ? userNickName : userInfo?.nickName
+                }}
               </div>
             </my-tooltip>
             <my-button
@@ -173,9 +177,11 @@
 <script setup lang="ts" name="ArticleTree">
 // 引入 api
 import { deleteArticle, removeArticle } from "@/api/article"
+import { userFindByPk } from "@/api/user"
 // 引入 类型
 import type { Article, SearchArticle } from "@/api/article/types/searchArticle"
 import type { Pagination } from "@/api/admin/types/findAllRolesPagination"
+import type { UserFindByPk } from "@/api/user/types/userFindByPk"
 // 引入 utils
 import { orderArticle } from "@/utils/doc/orderArticle"
 // 引入 moment
@@ -184,13 +190,17 @@ import moment from "@/utils/moment"
 import { formatMilliseconds } from "@/utils/times/timeFormatter"
 // 处理 url
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
+// 处理 错误
 import { handlerReqErr } from "@/utils/request/error/successError"
+// 引入 仓库
+import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
+// 提取数据
+const { userId, userAccount, userNickName } = storeToRefs(useUserStore())
 
 // 判断是否是回收站页面
 const route = useRoute()
 const isRestore = !route.path.includes("restore")
-
 // 所有文章
 // 定义按年份分组的类型
 interface YearGroupedArticles {
@@ -215,7 +225,22 @@ const reqArticles =
     (currentPage?: number, pageSize?: number) => Promise<SearchArticle["data"]>
   >("req")
 
+// 用户 id
+const _userId = ref<null | number>(null)
+// 用户信息
+const userInfo = ref<UserFindByPk["data"]>()
+
+const stopUserId = watch(
+  () => _userId.value,
+  async (newV) => {
+    if (!newV) return
+    const result = await userFindByPk(newV)
+    userInfo.value = result
+    stopUserId()
+  }
+)
 let isReq = false
+
 // 获取所有文章
 const handlerArticles = async (
   currentPage: number = 1,
@@ -224,6 +249,7 @@ const handlerArticles = async (
   if (!reqArticles) return
   const result = await reqArticles(currentPage, pageSize)
   if (!result?.article || !result?.pagination) return
+  if (result?.article?.[0]?.userId) _userId.value = result.article[0].userId
   // 处理排序
   const sortedArticles = orderArticle(result.article, true) as Article[]
   // 处理时间
@@ -245,7 +271,6 @@ const handlerArticles = async (
   // 更新数据
   articles.value = groupedArticles
   pagination.value = result.pagination
-
   if (isReq)
     // 重新加载路由
     mitt.emit("route:reload")

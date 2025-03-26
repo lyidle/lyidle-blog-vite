@@ -39,6 +39,7 @@ enum API {
   deleteUser = "/user/admin/clear",
   updateUser = "/user/admin/update",
   updateAvatar = "/user/admin/update/avatar",
+  updateSigner = "/user/admin/update/signer",
   // 邮箱 发送
   updateUserEmail = "/user/admin/update/email",
   // 管理 面板api
@@ -144,6 +145,15 @@ export const updateUserAvatar = (avatar: string) =>
   request.put<any, UpdateUser["data"]>(server + prefix + API.updateAvatar, {
     avatar,
   })
+
+// 修改用户签名 需要 是本用户的id
+export const updateUserSigner = (signer: string) =>
+  request.put<any, { signer: string; token: string }>(
+    server + prefix + API.updateSigner,
+    {
+      signer,
+    }
+  )
 
 // 不需要验证是本用户的id 需要传入 id
 // 登录用户需要拥有权限

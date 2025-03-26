@@ -16,37 +16,37 @@ export const useSettingStore = defineStore(
       { value: "dark", label: "暗夜模式" },
       { value: "auto", label: "跟随系统" },
       { value: "switch", label: "快捷切换" },
-    ]
+    ] as const
     // 背景 是否 悬浮
     const bannerIsFixed = ref<boolean>(false)
     // 暗夜切换
     const isDark = ref<boolean>(false)
     // 主题选择
-    const themes = ref("switch")
+    const themes = ref<(typeof themeOptions)[number]["value"]>("switch")
     // 白天的主题值
-    const lights = ref("normal")
-    const lightOptions = [{ value: "normal", label: "纯白" }]
+    const lightOptions = [{ value: "normal", label: "纯白" }] as const
+    const lights = ref<(typeof lightOptions)[number]["value"]>("normal")
     // 暗夜的主题值
-    const darks = ref("normal")
-    const darkOptions = [{ value: "normal", label: "深蓝" }]
+    const darkOptions = [{ value: "normal", label: "深蓝" }] as const
+    const darks = ref<(typeof darkOptions)[number]["value"]>("normal")
     // #endregion 头部设置
 
     // #region 点击特效设置
     // 是否开启 鼠标点击特效
     const clickEffect = ref<boolean>(false)
-    // 点击特效 值
-    const clicks = ref("normal")
     // 点击特效 选择
-    const clickOptions = [{ value: "normal", label: "绽放" }]
+    const clickOptions = [{ value: "normal", label: "绽放" }] as const
+    // 点击特效 值
+    const clicks = ref<(typeof clickOptions)[number]["value"]>("normal")
     // #endregion 点击特效设置
 
     // #region 移动特效设置
     // 是否开启 移动效果
     const moveEffect = ref<boolean>(true)
-    // 移动特效 的值
-    const moves = ref("normal")
     // 移动特效 选择
-    const moveOptions = [{ value: "normal", label: "群星" }]
+    const moveOptions = [{ value: "normal", label: "群星" }] as const
+    // 移动特效 的值
+    const moves = ref<(typeof moveOptions)[number]["value"]>("normal")
     // #endregion 移动特效设置
 
     // #region 布局信息设置

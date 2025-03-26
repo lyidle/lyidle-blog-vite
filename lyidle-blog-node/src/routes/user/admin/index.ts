@@ -7,9 +7,9 @@ import setRoles from "@/routes/user/admin/setRoles"
 import restore from "./restore"
 const router = express.Router()
 // 挂载api
-router.use("/", deleted)
 router.use("/setRoles", setRoles)
 router.use("/update", update)
 router.use("/create", create)
 router.use("/restore", restore)
+router.use("/", deleted)
 export default router

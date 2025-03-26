@@ -53,8 +53,6 @@ export const useUserStore = defineStore(
     const routes = ref<RouteRecordRaw[]>()
     // 获取 公开的菜单数据
     const reqUserMenuList = async () => {
-      // 重置菜单信息
-      resetMenuList()
       try {
         const roles = (userRoles.value?.length && userRoles.value) || ["user"]
         const result = await getMenuList(roles)
@@ -82,16 +80,15 @@ export const useUserStore = defineStore(
         // 得到 背景
         const banners = await getBannerImg()
         // 处理 背景
-        if (banners?.length)
-          userBannerImg.value = banners.reduce((pre, cur) => {
-            // 在 白名单 且有light或dark或height
-            if (
-              whitelist.value.includes(cur.name) &&
-              (cur.dark || cur.light || cur.height)
-            )
-              pre[cur.name] = cur
-            return pre
-          }, {} as bannerImgType)
+        userBannerImg.value = banners.reduce((pre, cur) => {
+          // 在 白名单 且有light或dark或height
+          if (
+            whitelist.value.includes(cur.name) &&
+            (cur.dark || cur.light || cur.height)
+          )
+            pre[cur.name] = cur
+          return pre
+        }, {} as bannerImgType)
       } catch (error) {
         ElMessage.error("获取菜单失败~")
       }
@@ -123,36 +120,30 @@ export const useUserStore = defineStore(
 
     // 获取 用户信息 使用 token 获取
     const reqUserInfo = async () => {
-      // 重置用户信息
-      resetUserInfo()
       // 没有 token 退出
       if (!userToken.value) return
       try {
         const result = await getUserInfo()
         const user = result?.[0]
         // 有用户信息 赋值
-        if (user) {
-          userId.value = user?.id
-          userIsBin.value = user?.isBin
-          userPermissions.value = user?.permissions
-          userRoles.value = user?.roles || []
-          userAccount.value = user?.account
-          userNickName.value = user?.nickName
-          userEmail.value = user?.email
-          userAvatar.value = user?.avatar || null
-          userSigner.value = user?.signer || null
-
-          userPages.value = user?.counts.pages
-          userTags.value = user?.counts.tags
-          userCategories.value = user?.counts.categories
-          // 删除 游客信息
-          if (touristToken.value) {
-            await reqDelTourist(touristToken.value)
-            touristToken.value = ""
-            // 重新 获取小站咨询
-            mitt.emit("reloadWebInfo")
-          }
-          return
+        userId.value = user?.id ?? -1
+        userIsBin.value = user?.isBin || null
+        userPermissions.value = user?.permissions
+        userRoles.value = user?.roles || []
+        userAccount.value = user?.account || ""
+        userNickName.value = user?.nickName || ""
+        userEmail.value = user?.email || ""
+        userAvatar.value = user?.avatar || null
+        userSigner.value = user?.signer || null
+        userPages.value = user?.counts.pages || 0
+        userTags.value = user?.counts.tags || 0
+        userCategories.value = user?.counts.categories || 0
+        // 删除 游客信息
+        if (touristToken.value) {
+          await reqDelTourist(touristToken.value)
+          touristToken.value = ""
+          // 重新 获取小站咨询
+          mitt.emit("reloadWebInfo")
         }
       } catch (error) {
         ElMessage.error("获取用户信息失败")

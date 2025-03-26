@@ -267,7 +267,6 @@ const handerUpload = async () => {
           tempImgNull.forEach((item) => {
             ElMessage.warning({
               message: `文章的海报临时图片:${item}不存在~`,
-              customClass: "selectMessage",
             })
           })
         }

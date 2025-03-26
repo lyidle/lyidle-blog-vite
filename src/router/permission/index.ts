@@ -23,8 +23,6 @@ export const usePermission = (router: Router) => {
   router.beforeEach(async (to, from, next) => {
     // 异步路由的加载 需要再 路由加载后才能处理 加载404问题
     await initMenuList()
-    // 如果路由发生变化 则触发 router changed 事件
-    if (to !== from) mitt.emit("router changed", { to, from })
     // 处理常量路由的 权限问题
     handlerConstRoutes(to, from, router)
 
@@ -36,6 +34,12 @@ export const usePermission = (router: Router) => {
     setTitle(title)
 
     next()
+
+    // 如果路由发生变化 则触发 router changed 事件
+    if (to !== from)
+      setTimeout(() => {
+        mitt.emit("router changed", { to, from })
+      }, 100)
   })
   return router
 }

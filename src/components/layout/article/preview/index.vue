@@ -21,7 +21,7 @@
             <div class="doc-pages-header">
               <div class="container">
                 <div class="title cur-text">{{ article?.title }}</div>
-                <div class="author cur-text">作者--{{ article?.author }}</div>
+                <div class="author cur-text">作者:{{ article?.author }}</div>
                 <div class="desc">
                   <div class="item">
                     <div class="item-data">
@@ -132,10 +132,10 @@
               v-model:title="title"
             >
               <template #btns>
-                <div class="flex gap-15px justify-center">
+                <div class="flex gap-15px justify-center px-5px">
                   <!-- 点赞 -->
                   <div
-                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="w-22px items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
                     @click="toggleLike"
                     :class="`${isLike ? 'active' : ''}`"
                   >
@@ -144,7 +144,7 @@
                   </div>
                   <!-- 收藏 -->
                   <div
-                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="w-22px items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
                     v-if="article?.id"
                     @click="toggleCollect"
                     :class="`${isCollect ? 'active' : ''}`"
@@ -154,7 +154,7 @@
                   </div>
                   <!-- 分享 -->
                   <div
-                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
+                    class="w-22px items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between !hover:color-[var(--primary-links-hover)]"
                     @click="addShare"
                   >
                     <i
@@ -164,7 +164,7 @@
                   </div>
                   <!-- 评论 -->
                   <div
-                    class="items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between text-color-[var(--primary-color)] !hover:text-color-[var(--primary-links-hover)]"
+                    class="w-22px items-center moment-like cur-pointer flex flex-col gap-5px h-42px justify-between text-color-[var(--primary-color)] !hover:text-color-[var(--primary-links-hover)]"
                     @click="toComments"
                   >
                     <icon-parse
@@ -213,6 +213,7 @@ import {
   addSettingShare,
   getSettingShares,
 } from "@/api/share"
+import { getArticleCollects, toggleArticleCollects } from "@/api/collect"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
@@ -230,8 +231,10 @@ import ArticleTimes from "./times/index.vue"
 import { scrollToHeader } from "@/utils/scrollToHeader"
 // 请求错误的 处理函数
 import { handlerReqErr } from "@/utils/request/error/successError"
-import { getArticleCollects, toggleArticleCollects } from "@/api/collect"
+// 引入 节流
 import throttle from "@/utils/throttle"
+// 引入 复制到 剪贴板 的函数
+import { copyToClipboardCallback } from "@/hooks/context-menu/copyToClipboard"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
@@ -459,21 +462,24 @@ const addShare = throttle(async () => {
   // 处理文章
   const articleId = article.value?.id
   const _settingId = settingId.value
+  const warnTip = "复制分享链接失败"
   try {
-    let shared = false
+    await copyToClipboardCallback({
+      text: () => window.location.href,
+      warnTip,
+      sucTip: "复制并分享链接成功",
+    })
+
     if (articleId) {
       await addArticleShare(articleId)
       ++shareCounts.value
-      shared = true
     }
     if (_settingId) {
       await addSettingShare(_settingId)
       ++shareCounts.value
-      shared = true
     }
-    if (shared) ElMessage.success("分享成功")
   } catch (error) {
-    ElMessage.warning("分享失败")
+    console.warn("复制分享数量增加失败", error)
   }
 }, 1000)
 

@@ -164,7 +164,7 @@ html[themes="#{$theme}"] {
   // tooltip
   --tooltip-bg: #3d5b6e;
   --tooltip-color: var(--primary-color);
-  --tooltip-border-color: rgb(108 122 139);
+  --tooltip-border-color: rgb(108 122 139 / 29%);
   // drawer
   --drawer-bg: #3d5b6e;
   --drawer-mask: #0000005a;

@@ -18,15 +18,40 @@
               更换头像
             </div>
           </div>
-          <div class="pl-30px flex flex-col justify-center gap-5px">
-            <div class="nickName text-24px">{{ userInfo?.nickName }}</div>
-            <div class="signer text-18px">{{ userInfo?.signer }}</div>
+          <div class="pl-30px flex flex-col justify-center gap-5px h-80px">
+            <my-tooltip
+              class="box-item"
+              effect="dark"
+              :content="`作者:${
+                userInfo?.id === userId ? userAccount : userInfo?.account
+              }`"
+              placement="top"
+            >
+              <div class="cur-text text-24px w-fit">
+                {{
+                  userInfo?.id === userId ? userNickName : userInfo?.nickName
+                }}
+              </div>
+            </my-tooltip>
+            <div class="flex">
+              <div class="flex-shrink-0 text-15px cur-text h-20px">
+                签名:<span v-if="userInfo?.id !== userId">{{
+                  userInfo?.signer
+                }}</span>
+              </div>
+              <my-input
+                v-if="userInfo?.id === userId"
+                class="h-20px text-10px"
+                v-model.trim="signer"
+                @blur="updateSinger"
+              ></my-input>
+            </div>
           </div>
           <div class="tools" v-if="false">
             <!-- 关注 -->
             <my-button
               class="p-0px w-125px h-35px pr-5px"
-              v-if="userAccount !== userInfo?.account"
+              v-if="userId !== userInfo?.id"
             >
               <i class="i-mynaui:plus size-18px"></i>
               <span>关注</span>
@@ -34,7 +59,7 @@
 
             <my-button
               class="p-0px w-125px h-35px pr-5px"
-              v-if="userAccount !== userInfo?.account"
+              v-if="userId !== userInfo?.id"
             >
               <i class="i-mynaui:plus size-18px"></i>
               <span>发消息</span>
@@ -80,7 +105,7 @@
 <script setup lang="ts" name="UserSpace">
 // 引入 api
 import { searchArticleExact } from "@/api/article"
-import { searchCounts } from "@/api/user"
+import { searchCounts, updateUserSigner } from "@/api/user"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
 import type {
@@ -91,8 +116,11 @@ import type {
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import throttle from "@/utils/throttle"
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 提取需要的数据
-const { userAccount } = storeToRefs(useUserStore())
+const { userId, userSigner, userToken, userNickName, userAccount } =
+  storeToRefs(useUserStore())
 
 // 得到 布局组件的实例
 const layoutRef = ref()
@@ -108,8 +136,14 @@ const userInfo = ref<userInfoType>()
 // 得到 用户的信息
 const reqUserInfo = async () => {
   if (account) {
-    const result = await searchCounts({ isBin: "true", account })
-    userInfo.value = result?.[0]
+    try {
+      const result = await searchCounts({ isBin: "true", account })
+      userInfo.value = result?.[0]
+      signer.value = userInfo.value?.signer || ""
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage("获取用户信息失败")
+    }
   }
 }
 
@@ -118,15 +152,39 @@ const articles = ref<SearchArticle["data"]["article"]>()
 const pagination = ref<Pagination>()
 // 得到 文章信息
 const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
-  const result = await searchArticleExact({
-    author: account,
-    currentPage,
-    pageSize,
-  })
-  articles.value = result.article
-  pagination.value = result.pagination
+  try {
+    const result = await searchArticleExact({
+      author: account,
+      currentPage,
+      pageSize,
+    })
+    articles.value = result.article
+    pagination.value = result.pagination
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage("获取文章信息失败")
+  }
 }
 
+// 签名
+const signer = ref("")
+// 更新 签名的 回调
+const updateSinger = throttle(async () => {
+  try {
+    const oldSigner = userSigner.value?.trim()
+    // 没有改变签名
+    if (oldSigner === signer.value) {
+      return
+    }
+    const result = await updateUserSigner(signer.value)
+    userSigner.value = result.signer
+    userToken.value = result.token
+    ElMessage.success("更新用户签名成功")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("更新用户签名失败")
+  }
+}, 1000)
 onMounted(async () => {
   await reqUserInfo()
   await reqArticles()

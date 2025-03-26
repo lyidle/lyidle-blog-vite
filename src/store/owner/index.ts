@@ -40,21 +40,16 @@ export const useOwnerStore = defineStore("Owner", () => {
 
   // 发起请求
   const getAdminUserInfo = async () => {
-    // 先重置 用户信息
-    resetUserInfo()
     try {
       const adminResult = await searchCounts({ roles: "owner", isBin: "true" })
+      adminAccount.value = adminResult?.[0]?.account || ""
+      adminNickName.value = adminResult?.[0]?.nickName || ""
+      adminAvatar.value = adminResult?.[0]?.avatar || null
+      adminSigner.value = adminResult?.[0]?.signer || null
 
-      if (Array.isArray(adminResult)) {
-        adminAccount.value = adminResult?.[0]?.account
-        adminNickName.value = adminResult?.[0]?.nickName
-        adminAvatar.value = adminResult?.[0]?.avatar || null
-        adminSigner.value = adminResult?.[0]?.signer || null
-
-        adminPages.value = adminResult?.[0].counts.pages
-        adminTags.value = adminResult?.[0].counts.tags
-        adminCategories.value = adminResult?.[0].counts.categories
-      }
+      adminPages.value = adminResult?.[0].counts.pages || 0
+      adminTags.value = adminResult?.[0].counts.tags || 0
+      adminCategories.value = adminResult?.[0].counts.categories || 0
     } catch (error) {
       ElMessage.error("网站所有者账号未初始化")
     }
@@ -62,18 +57,14 @@ export const useOwnerStore = defineStore("Owner", () => {
 
   // 获取设置里的联系方式
   const getOwnerInfo = async () => {
-    // 先重置 联系方式
-    resetOwnerInfo()
     try {
       const result = await findOneSetting("联系方式")
       const content: InfoContent = result?.content as InfoContent
-      if (content) {
-        const { BiliBili, QQ, email, weChat } = content
-        ownerWeChat.value = weChat
-        ownerQQ.value = QQ
-        ownerEmail.value = email
-        ownerBiliBili.value = BiliBili
-      }
+      const { BiliBili, QQ, email, weChat } = content
+      ownerWeChat.value = weChat || ""
+      ownerQQ.value = QQ || ""
+      ownerEmail.value = email || ""
+      ownerBiliBili.value = BiliBili || ""
     } catch (error) {}
   }
 
@@ -94,5 +85,6 @@ export const useOwnerStore = defineStore("Owner", () => {
     ownerEmail,
     getOwnerInfo,
     resetUserInfo,
+    resetOwnerInfo,
   }
 })

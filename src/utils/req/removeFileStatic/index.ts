@@ -30,7 +30,6 @@ export const handlerRemoveFileStatic = async (
         if (!res)
           ElMessage.warning({
             message: `删除文件${item}失败~`,
-            customClass: "selectMessage",
           })
         return
       }

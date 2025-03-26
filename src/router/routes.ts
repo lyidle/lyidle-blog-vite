@@ -6,11 +6,12 @@ import { handlerRoutes } from "./handlerRoutes"
 
 /* meta 参数
  * title 网页标签展示信息
- * bannerContextHidden Boolean 焦点图的文字信息是否展示 欢迎词 和 古诗
- * bannerWaves Boolean 波浪动画
+ * bannerContextHidden Boolean 默认显示（false) 焦点图的文字信息是否展示 欢迎词 和 古诗
+ * bannerWaves Boolean 默认不显示(false) 波浪动画
  * pagesMt 内容区域卡片的 上边距
+ * fixedBannerUnAuto Boolean  默认固定(false) 是否自动固定
  * bannerWel 欢迎词的文本信息
- * bannerWelTextShadowHidden Boolean 欢迎词的阴影是否隐藏
+ * bannerWelTextShadowHidden Boolean 默认显示(false) 欢迎词的阴影是否隐藏
  * bannerPoetry 古诗信息
  * roles [""] 角色判断
  * permissions [""] 权限判断
@@ -49,6 +50,7 @@ export const constantRoute: RouteRecordRaw[] = [
           bannerContextHidden: true,
           pagesMt: "-30vh",
           bannerWaves: true,
+          fixedBannerUnAuto: true,
         },
         component: () => import("@/views/doc/preview/index.vue"),
       },
@@ -137,7 +139,13 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/user/tags",
         name: "UserTags",
-        meta: { title: "标签", bannerWel: "标签" },
+        meta: {
+          title: "标签",
+          bannerWel: "标签",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/tags/onlyOne/index.vue"),
       },
       // 用户查询 所有分类
@@ -157,7 +165,13 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/user/categories",
         name: "UserCategory",
-        meta: { title: "分类", bannerWel: "分类" },
+        meta: {
+          title: "分类",
+          bannerWel: "分类",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/categories/onlyOne/index.vue"),
       },
     ],

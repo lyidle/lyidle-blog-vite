@@ -1,20 +1,23 @@
 <template>
   <div class="side-header-title">
-    <router-link class="contain" :to="`/user/docs/${showAccount}`">
+    <router-link class="contain items-center" :to="`/user/docs/${showAccount}`">
       <div class="title">文章</div>
-      <div class="content text-14px">
+      <div class="content text-14px max-w-40px truncate">
         {{ showPages || 0 }}
       </div>
     </router-link>
-    <router-link class="contain" :to="`/user/tags/${showAccount}`">
+    <router-link class="contain items-center" :to="`/user/tags/${showAccount}`">
       <div class="title">标签</div>
-      <div class="content text-14px">
+      <div class="content text-14px max-w-40px truncate">
         {{ showTags || 0 }}
       </div>
     </router-link>
-    <router-link class="contain" :to="`/user/categories/${showAccount}`">
+    <router-link
+      class="contain items-center"
+      :to="`/user/categories/${showAccount}`"
+    >
       <div class="title">分类</div>
-      <div class="content text-14px">
+      <div class="content text-14px max-w-40px truncate">
         {{ showCategories || 0 }}
       </div>
     </router-link>
