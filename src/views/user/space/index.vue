@@ -3,6 +3,7 @@
     <template #content-start>
       <my-card class="card_style allDocs">
         <div class="header">
+          <!-- 头像 -->
           <div class="avatar-container" v-if="pagination?.total">
             <!-- 头像 -->
             <global-avatar-src
@@ -18,6 +19,7 @@
               更换头像
             </div>
           </div>
+          <!-- 名字和签名 -->
           <div class="pl-30px flex flex-col justify-center gap-5px h-80px">
             <my-tooltip
               class="box-item"
@@ -47,20 +49,27 @@
               ></my-input>
             </div>
           </div>
-          <div class="tools" v-if="false">
+          <!-- 关注和发消息 不能是自身 -->
+          <div class="tools" v-if="userId !== userInfo?.id">
             <!-- 关注 -->
             <my-button
               class="p-0px w-125px h-35px pr-5px"
-              v-if="userId !== userInfo?.id"
+              @click="toFollow"
+              v-if="!isFollow"
             >
               <i class="i-mynaui:plus size-18px"></i>
               <span>关注</span>
             </my-button>
-
             <my-button
               class="p-0px w-125px h-35px pr-5px"
-              v-if="userId !== userInfo?.id"
+              @click="toDelFollow"
+              type="default"
+              v-else
             >
+              <i class="i-mynaui:plus size-18px"></i>
+              <span>取消关注</span>
+            </my-button>
+            <my-button class="p-0px w-125px h-35px pr-5px">
               <i class="i-mynaui:plus size-18px"></i>
               <span>发消息</span>
             </my-button>
@@ -106,6 +115,7 @@
 // 引入 api
 import { searchArticleExact } from "@/api/article"
 import { searchCounts, updateUserSigner } from "@/api/user"
+import { addFollow, delFollow, isFollowed } from "@/api/user/follow"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
 import type {
@@ -185,6 +195,55 @@ const updateSinger = throttle(async () => {
     if (!err) ElMessage.error("更新用户签名失败")
   }
 }, 1000)
+
+// 是否 关注了
+const isFollow = ref(false)
+
+// 监听是否有 userId
+const stopUserId = watch(
+  () => userInfo.value?.id,
+  (id) => {
+    if (!id) return
+    // 初始化是否关注
+    isFollowCallback()
+    stopUserId()
+  }
+)
+
+// 是否 关注了
+const isFollowCallback = async () => {
+  if (!userInfo.value?.id) return
+  const result = await isFollowed(userId.value, userInfo.value.id)
+  isFollow.value = result
+}
+
+// 关注
+const toFollow = async () => {
+  const id = userInfo.value?.id
+  if (!id) return ElMessage("关注失败，id丢失")
+  try {
+    await addFollow(id)
+    isFollow.value = true
+    ElMessage.success("关注成功")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("关注失败")
+  }
+}
+
+// 取消关注
+const toDelFollow = async () => {
+  const id = userInfo.value?.id
+  if (!id) return ElMessage("取消关注失败，id丢失")
+  try {
+    await delFollow(id)
+    isFollow.value = false
+    ElMessage.success("取消关注成功")
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("取消关注失败")
+  }
+}
 onMounted(async () => {
   await reqUserInfo()
   await reqArticles()
