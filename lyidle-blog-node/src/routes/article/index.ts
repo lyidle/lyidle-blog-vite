@@ -17,9 +17,15 @@ import getCategories from "./getCategories"
 import time from "./time"
 // 引入 api/article/look
 import look from "./look"
+// 引入 api/article/views
+import views from "./views"
+// 引入 api/article/likes
+import likes from "./likes"
 const router = express.Router()
 // 挂载路由
 router.use("/get", getArticle)
+router.use("/likes", likes)
+router.use("/views", views)
 router.use("/time", time)
 router.use("/look", look)
 router.use("/search", search)

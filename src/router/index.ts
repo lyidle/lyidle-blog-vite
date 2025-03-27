@@ -5,7 +5,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [...constantRoute, ...anyRoute],
   scrollBehavior(to, from, savedPosition) {
-    if (to.fullPath === from.fullPath) {
+    // 路径相同 不滚动
+    if (to.path === from.path) {
       return false // 不滚动
     }
     if (savedPosition) {

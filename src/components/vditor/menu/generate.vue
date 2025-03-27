@@ -15,7 +15,7 @@
 <script setup lang="ts" name="GenerateMenuTree">
 import { mitt } from "@/utils/emitter"
 import { scrollToHeader } from "@/utils/scrollToHeader"
-import { TocNode } from "@/views/doc/review/types"
+import { TocNode } from "@/views/doc/preview/types"
 defineProps<{ menuData?: TocNode[] }>()
 
 // 缓存

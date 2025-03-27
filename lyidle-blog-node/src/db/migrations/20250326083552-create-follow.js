@@ -33,6 +33,11 @@ module.exports = {
           onUpdate: "CASCADE",
           onDelete: "CASCADE",
         },
+        groupName: {
+          type: Sequelize.STRING(50),
+          allowNull: true, // 允许为空表示未分组
+          defaultValue: null,
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -56,6 +61,9 @@ module.exports = {
           // 加速查询粉丝列表
           {
             fields: ["followingId"],
+          }, // 添加分组索引
+          {
+            fields: ["followerId", "groupName"],
           },
         ],
       }

@@ -28,6 +28,22 @@ module.exports = (sequelize, DataTypes) => {
 
       // User 和 Comment 之间的一对多关系
       this.hasMany(models.Comment, { foreignKey: "userId", as: "comments" })
+
+      // 用户作为关注者 可查关注列表
+      User.belongsToMany(models.User, {
+        through: "Follow",
+        as: "Following",
+        foreignKey: "followerId",
+        otherKey: "followingId",
+      })
+
+      // 用户作为被关注者 可查粉丝列表
+      User.belongsToMany(models.User, {
+        through: "Follow",
+        as: "Followers",
+        foreignKey: "followingId",
+        otherKey: "followerId",
+      })
     }
   }
 

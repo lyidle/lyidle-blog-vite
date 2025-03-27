@@ -18,6 +18,7 @@ export function useEventListener<K extends EventType<HTMLElement | Window>>(
   ...args: any[]
 ): () => void {
   const element = typeof args[0] === "string" ? window : args.shift()
+
   let off = () => {}
 
   const stop = watch(

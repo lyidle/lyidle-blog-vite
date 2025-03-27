@@ -2,7 +2,7 @@
   <!-- 是data格式的背景么 -->
   <i
     v-if="parsedIcon(icon).name === 'bg'"
-    class="icon-svg"
+    class="icon-database"
     :style="{
       '--svg': `url(${parsedIcon(icon).data})`,
     }"
@@ -25,11 +25,7 @@ defineProps(["icon"])
 </script>
 
 <style scoped lang="scss">
-svg {
-  width: 1em;
-  height: 1em;
-}
-.icon-svg {
+.icon-database {
   display: inline-block;
   width: 1em;
   height: 1em;

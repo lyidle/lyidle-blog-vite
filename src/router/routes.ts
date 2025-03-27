@@ -15,6 +15,10 @@ import { handlerRoutes } from "./handlerRoutes"
  * bannerPoetry 古诗信息
  * roles [""] 角色判断
  * permissions [""] 权限判断
+ *    替换 :param 为 params 或 query 的值
+ *    优先找 params，再找 query
+ *    bannerWel: "Welcome to :author",
+ *    replaceWel: true, 配合 可以替换 author 到指定位置
  */
 
 // 常量路由
@@ -82,7 +86,13 @@ export const constantRoute: RouteRecordRaw[] = [
       {
         path: "/user/space/:author",
         name: "UserSpace",
-        meta: { title: "空间" },
+        meta: {
+          title: "空间",
+          bannerWel: "Welcome to the :author space",
+          replaceWel: true,
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
         component: () => import("@/views/user/space/index.vue"),
       }, // 用户查询 所有文章
       {

@@ -2,23 +2,16 @@
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class Follow extends Model {
-    static associate(models) {
-      // 粉丝
-      this.belongsTo(models.User, {
-        foreignKey: "followerId",
-        as: "follower",
-      })
-      // 关注
-      this.belongsTo(models.User, {
-        foreignKey: "followingId",
-        as: "following",
-      })
-    }
+    static associate(models) {}
   }
   Follow.init(
     {
       followerId: DataTypes.INTEGER,
       followingId: DataTypes.INTEGER,
+      groupName: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+      },
     },
     {
       sequelize,

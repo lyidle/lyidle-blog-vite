@@ -33,6 +33,18 @@ export const usePermission = (router: Router) => {
     const title = to.meta.title
     setTitle(title)
 
+    // 设置 欢迎词
+    if (to.meta.replaceWel && to.meta.bannerWel) {
+      const template = to.meta.bannerWel as string
+      // 替换 :param 为 params 或 query 的值
+      to.meta.bannerWel = template.replace(/:(\w+)/g, (_, key) => {
+        // 优先找 params，再找 query
+        return (
+          to.params[key]?.toString() || to.query[key]?.toString() || `:${key}`
+        )
+      })
+    }
+
     next()
 
     // 如果路由发生变化 则触发 router changed 事件

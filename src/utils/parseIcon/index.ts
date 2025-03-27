@@ -17,11 +17,14 @@ export const parsedIcon = (icon: string) => {
   // 是 svg
   if (icon?.startsWith("<svg")) {
     const parser = new DOMParser()
-    const doc = parser.parseFromString(icon, "image/svg+xml")
-
+    const doc = parser.parseFromString(
+      icon
+        .replace(/fill="[^"]*"/g, 'fill="currentColor"')
+        .replace(/fill:[^;"]*(;|")/g, "fill:currentColor$1"),
+      "image/svg+xml"
+    )
     if (doc.documentElement.tagName.toLowerCase() === "svg") {
       const svgElement = doc.documentElement
-
       // 指定 attributes 的类型
       const attributes: Record<string, string> = Array.from(
         svgElement.attributes
