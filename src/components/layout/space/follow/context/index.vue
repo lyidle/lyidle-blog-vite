@@ -104,7 +104,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="UserSpaceFollowerGroup">
+<script setup lang="ts" name="UserSpaceFolloweContext">
 // 引入 接口
 import { getFollower, getFollowing } from "@/api/user/follow"
 // 类型

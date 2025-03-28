@@ -3,6 +3,7 @@
     :type="isFollow ? 'default' : 'primary'"
     v-bind="$attrs"
     @click="toggleFollow"
+    v-if="isFollow !== null"
   >
     <!-- 是否是互关 -->
     <template v-if="!isFollower && userInfo?.id === userId">
@@ -33,7 +34,7 @@ const { userId } = storeToRefs(useUserStore())
 const props = defineProps<{ curId: number; isFollower?: boolean }>()
 
 // 是否 关注了
-const isFollow = ref(false)
+const isFollow = ref<boolean | null>(null)
 // 是否 关注了
 const isFollowCallback = async () => {
   if (!props.curId || !userId) return

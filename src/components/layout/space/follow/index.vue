@@ -43,16 +43,16 @@
       </div>
     </div>
     <div class="context">
-      <layout-space-follow-follower
+      <layout-space-follow-context
         group="normal"
         title="全部关注"
         :isFollower="true"
         v-if="isFollower('normal')"
-      ></layout-space-follow-follower>
-      <layout-space-follow-follower
+      ></layout-space-follow-context>
+      <layout-space-follow-context
         :title="`${userInfo?.id === userId ? '我' : 'Ta'}的粉丝`"
         v-if="isFollowing()"
-      ></layout-space-follow-follower>
+      ></layout-space-follow-context>
     </div>
   </div>
 </template>
