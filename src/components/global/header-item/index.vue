@@ -13,6 +13,7 @@
       :left="data?.style?.left"
       :top
     >
+      <slot name="menu-default"></slot>
       <template #custom="{ item: sub }: { item: menuItemType }">
         <slot name="custom" v-if="$slots.custom" :item="sub"></slot>
         <template v-else>

@@ -53,15 +53,28 @@
           <div class="text-13px cur-text">
             {{ user.signer || "这个人没有简介哦~~" }}
           </div>
-          <div class="flex items-center gap-5px">
+          <div class="flex items-center gap-5px relative">
             <layout-space-is-follower
               class="w-70px"
               :curId="user.id"
               :isFollower
             ></layout-space-is-follower>
-            <i
-              class="i-ant-design:more-outlined w-20px h-20px cur-pointer opacity-0 more"
-            ></i>
+            <global-header-item top="30px">
+              <i
+                class="i-ant-design:more-outlined w-20px h-20px cur-pointer opacity-0 more !hover:color-[var(--primary-links-hover)]"
+              ></i>
+              <template #menu-default>
+                <my-menu-item>
+                  <my-anchor
+                    :to="'/test'"
+                    class="topnav-menu-item"
+                    :style="{ width: '120px' }"
+                  >
+                    <span>发私信</span>
+                  </my-anchor>
+                </my-menu-item>
+              </template>
+            </global-header-item>
           </div>
         </div>
       </div>
