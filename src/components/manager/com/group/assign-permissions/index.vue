@@ -23,12 +23,12 @@
             @change="handleCheckedPermissionsChange"
           >
             <el-checkbox
-              v-for="city in Permissions"
-              :key="city"
-              :label="city"
-              :value="city"
+              v-for="permission in Permissions"
+              :key="permission"
+              :label="permission"
+              :value="permission"
             >
-              {{ city }}
+              {{ permission }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>

@@ -23,12 +23,12 @@
             @change="handleCheckedRolesChange"
           >
             <el-checkbox
-              v-for="city in Roles"
-              :key="city"
-              :label="city"
-              :value="city"
+              v-for="group in Groups"
+              :key="group"
+              :label="group"
+              :value="group"
             >
-              {{ city }}
+              {{ group }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -54,8 +54,8 @@ import type { CheckboxValueType } from "element-plus"
 const drawer = ref<boolean>(false)
 // 选中的数据
 const checkedRoles = ref<string[]>([])
-// 全部的roles
-const Roles = ref<string[]>([])
+// 全部的 groups
+const Groups = ref<string[]>([])
 // 中间态
 const isIndeterminate = ref(false)
 // 当前用户
@@ -72,15 +72,15 @@ const checkAll = ref(false)
 
 // 全选中状态变化
 const handleCheckAllChange = (val: CheckboxValueType) => {
-  checkedRoles.value = val ? Roles.value : []
+  checkedRoles.value = val ? Groups.value : []
   isIndeterminate.value = false
 }
 
 // 选中状态变化
 const handleCheckedRolesChange = (value: CheckboxValueType[]) => {
   const checkedCount = value.length
-  checkAll.value = checkedCount === Roles.value.length
-  isIndeterminate.value = checkedCount > 0 && checkedCount < Roles.value.length
+  checkAll.value = checkedCount === Groups.value.length
+  isIndeterminate.value = checkedCount > 0 && checkedCount < Groups.value.length
 }
 
 // 得到 所有的权限组信息
@@ -92,15 +92,15 @@ const init = async (row: Role) => {
   // 初始化权限组信息
   currentRole.value = _row
   // 初始化权限组
-  Roles.value = roles
+  Groups.value = roles
   // 赋值选中的数据
   checkedRoles.value = _row.PermissionGroups.map((item) => item.name)
   // 初始化中间态
   isIndeterminate.value =
     checkedRoles.value.length > 0 &&
-    checkedRoles.value.length < Roles.value.length
+    checkedRoles.value.length < Groups.value.length
   // 初始化 全选框
-  checkAll.value = checkedRoles.value.length === Roles.value.length
+  checkAll.value = checkedRoles.value.length === Groups.value.length
 }
 // 夫组件的自定义事件
 const emit = defineEmits<{

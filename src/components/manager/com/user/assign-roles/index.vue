@@ -23,12 +23,12 @@
             @change="handleCheckedRolesChange"
           >
             <el-checkbox
-              v-for="city in Roles"
-              :key="city"
-              :label="city"
-              :value="city"
+              v-for="role in Roles"
+              :key="role"
+              :label="role"
+              :value="role"
             >
-              {{ city }}
+              {{ role }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
