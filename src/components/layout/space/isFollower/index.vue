@@ -1,4 +1,5 @@
 <template>
+  <!-- 是否关注和或者互粉 -->
   <my-button
     :type="isFollow ? 'default' : 'primary'"
     v-bind="$attrs"
@@ -12,6 +13,15 @@
     <template v-else> {{ isFollow ? "已" : "" }}关注 </template>
     <!-- 是否是互粉 -->
   </my-button>
+  <!-- 是自身 -->
+  <my-button
+    type="primary"
+    v-bind="$attrs"
+    v-else-if="isOwner"
+    @click="handlerOwner"
+  >
+    关注
+  </my-button>
 </template>
 
 <script setup lang="ts" name="UserPsaceIsFollowered">
@@ -22,6 +32,7 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 // 引入 仓库
 import { useUserSpaceStore } from "@/store/userSpace"
 import { useUserStore } from "@/store/user"
+import { mitt } from "@/utils/emitter"
 const {
   // 关注数
   followerCounts,
@@ -31,15 +42,33 @@ const {
 // 得到本地 userId
 const { userId } = storeToRefs(useUserStore())
 
-const props = defineProps<{ curId: number; isFollower?: boolean }>()
+const props = defineProps<{
+  curId: number
+  isFollower?: boolean
+  isFollow?: boolean
+}>()
 
 // 是否 关注了
-const isFollow = ref<boolean | null>(null)
+const isFollow = ref<boolean | null>(
+  typeof props.isFollow === "boolean" ? props.isFollow : null
+)
+// 是否是自身
+const isOwner = ref(false)
 // 是否 关注了
 const isFollowCallback = async () => {
   if (!props.curId || !userId) return
-  const result = await isFollowed(userId.value, props.curId)
-  isFollow.value = result
+  // 有 默认值了
+  if (typeof props.isFollow === "boolean") return
+  try {
+    const result = await isFollowed(userId.value, props.curId)
+    isFollow.value = result
+    mitt.emit("isFollowUser", { userId: props.curId, is: isFollow.value })
+  } catch (error: any) {
+    // 查看是否是查询的自身
+    if (error?.message?.some((item: string) => item.includes("不能查询自身"))) {
+      isOwner.value = true
+    }
+  }
 }
 
 // 初始化是否关注
@@ -85,8 +114,13 @@ const toDelFollow = async () => {
 }
 
 // 聚合 关注和取消关注
-const toggleFollow = async () =>
+const toggleFollow = async () => {
   isFollow.value ? await toDelFollow() : await toFollow()
+  mitt.emit("isFollowUser", { userId: props.curId, is: isFollow.value })
+}
+
+// 处理自身
+const handlerOwner = () => ElMessage.warning("你时时刻刻都在关注你自己~~")
 </script>
 
 <style scoped></style>

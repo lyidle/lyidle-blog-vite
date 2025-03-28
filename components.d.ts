@@ -93,6 +93,7 @@ declare module 'vue' {
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     LayoutSpaceFollow: typeof import('./src/components/layout/space/follow/index.vue')['default']
     LayoutSpaceFollowContext: typeof import('./src/components/layout/space/follow/context/index.vue')['default']
+    LayoutSpaceFollowContextUser: typeof import('./src/components/layout/space/follow/context/user/index.vue')['default']
     LayoutSpaceFollowFollower: typeof import('./src/components/layout/space/follow/follower/index.vue')['default']
     LayoutSpaceHeader: typeof import('./src/components/layout/space/header/index.vue')['default']
     LayoutSpaceHome: typeof import('./src/components/layout/space/home/index.vue')['default']

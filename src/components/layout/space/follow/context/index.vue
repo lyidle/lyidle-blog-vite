@@ -5,9 +5,13 @@
       <!-- 标题 -->
       <div class="title text-24px font-bold">{{ title }}</div>
       <!-- 操作按钮 -->
-      <div class="btns">
-        <my-button type="default" v-if="userId === userInfo?.id"
-          >批量操作</my-button
+      <div class="btns" v-if="users?.length">
+        <my-button
+          type="default"
+          v-if="userId === userInfo?.id"
+          @click="isEditor = !isEditor"
+          class="w-100px"
+          >{{ isEditor ? "返回" : "批量操作" }}</my-button
         >
       </div>
     </header>
@@ -18,16 +22,33 @@
     >
       <!-- 操作按钮 -->
       <div class="btns">
+        <!-- 全选 按钮 -->
         <el-checkbox
           class="!mr-30px"
           v-model="checkAll"
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
-          >全选</el-checkbox
+          v-if="isEditor"
         >
+          <div class="color-[var(--primary-color)]">
+            全选<span class="ml-5px"
+              >已选择<span>
+                <span class="mx-5px"> {{ checkedUserId.length }}</span> </span
+              >个关注</span
+            >
+          </div>
+        </el-checkbox>
       </div>
+      <!-- 全选按钮的操作 -->
+      <my-button
+        v-if="isEditor"
+        class="w-100px"
+        type="warning"
+        @click="delAllFollower"
+        >取消关注</my-button
+      >
       <!-- 搜索 -->
-      <div class="relative w-200px">
+      <div class="relative w-200px" v-if="!isEditor">
         <my-input v-model="searchKey" placeholder="请输入关键词"> </my-input>
         <i
           class="i-weui:search-outlined w-20px h-20px absolute right-10px top-0 cur-pointer"
@@ -40,59 +61,28 @@
       :style="{ '--item-width': isAside ? '280px' : '270px' }"
       v-model="checkedUserId"
       @change="handleCheckedCitiesChange"
+      v-if="isEditor"
     >
       <el-checkbox v-for="user in users" :key="user.id" :value="user.id">
-        <div class="user flex gap-20px">
-          <!-- 头像 -->
-          <router-link :to="`/user/space/${user.account}`">
-            <global-avatar-src
-              :account="user.avatar"
-              :avatar="user.avatar"
-              style="--avatar-size: 80px"
-            ></global-avatar-src>
-          </router-link>
-          <!-- 用户信息 -->
-          <div class="flex flex-col justify-between">
-            <my-tooltip
-              class="box-item"
-              effect="dark"
-              :content="`作者:${
-                user.id === userId ? userAccount : user.account
-              }`"
-              placement="top"
-            >
-              <div class="text-17px cur-pointer w-fit">
-                {{ user.nickName }}
-              </div>
-            </my-tooltip>
-            <div class="text-13px cur-text">
-              {{ user.signer || "这个人没有简介哦~~" }}
-            </div>
-            <div class="flex items-center gap-5px">
-              <layout-space-is-follower
-                class="w-70px"
-                :curId="user.id"
-                :isFollower
-              ></layout-space-is-follower>
-              <div class="follow-more relative">
-                <global-header-item top="20px">
-                  <i
-                    class="i-ant-design:more-outlined w-20px h-20px cur-pointer opacity-0 more !hover:color-[var(--primary-links-hover)]"
-                  ></i>
-                  <template #menu-default>
-                    <my-menu-item>
-                      <my-anchor :to="'/test'" class="w-100px text-center">
-                        <span>发私信</span>
-                      </my-anchor>
-                    </my-menu-item>
-                  </template>
-                </global-header-item>
-              </div>
-            </div>
-          </div>
-        </div>
+        <layout-space-follow-context-user
+          :user
+          :isFollower
+        ></layout-space-follow-context-user>
       </el-checkbox>
     </el-checkbox-group>
+    <!-- 用户展示 -->
+    <div
+      class="userInfo"
+      :style="{ '--item-width': isAside ? '280px' : '270px' }"
+      v-else
+    >
+      <div v-for="user in users" :key="user.id">
+        <layout-space-follow-context-user
+          :user
+          :isFollower
+        ></layout-space-follow-context-user>
+      </div>
+    </div>
     <my-pagination
       background
       layout="prev, pager, next, sizes"
@@ -106,7 +96,7 @@
 
 <script setup lang="ts" name="UserSpaceFolloweContext">
 // 引入 接口
-import { getFollower, getFollowing } from "@/api/user/follow"
+import { delFollow, getFollower, getFollowing } from "@/api/user/follow"
 // 类型
 import type { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
 import type { CheckboxValueType } from "element-plus"
@@ -114,6 +104,7 @@ import type { CheckboxValueType } from "element-plus"
 import { useUserSpaceStore } from "@/store/userSpace"
 import { useUserStore } from "@/store/user"
 import { useSettingStore } from "@/store/setting"
+import { mitt } from "@/utils/emitter"
 const {
   // 关注数
   followerCounts,
@@ -123,7 +114,7 @@ const {
   userInfo,
 } = storeToRefs(useUserSpaceStore())
 // 得到本地 userId
-const { userId, userAccount } = storeToRefs(useUserStore())
+const { userId } = storeToRefs(useUserStore())
 const { isAside } = storeToRefs(useSettingStore())
 
 const props = defineProps<{
@@ -138,6 +129,9 @@ const pagination = ref<GetFollowUser["data"]["pagination"]>({
   pageSize: 10,
   total: 0,
 })
+
+// 是否是 批量编辑
+const isEditor = ref(false)
 
 // 用户 数据
 const users = ref<GetFollowUser["data"]["users"]>()
@@ -190,6 +184,97 @@ if (hasWatched) {
   stop()
 }
 
+// 关注按钮的事件 回调
+const handlerFollow = (options: { userId: number; is: boolean }) => {
+  const { userId, is } = options
+  const find = users.value?.find((item) => item.id === userId)
+  if (find) find.isFollow = is
+}
+// 注册 关注按钮的事件
+mitt.on("isFollowUser", handlerFollow)
+
+onBeforeUnmount(() => {
+  mitt.off("isFollowUser", handlerFollow)
+})
+
+// 批量取消关注
+const delAllFollower = async () => {
+  if (!checkedUserId.value.length) {
+    ElMessage.warning("请选择关注的用户")
+    return
+  }
+
+  // 包含 关注的 user过滤出来
+  const ids: number[] = users.value
+    ?.map(
+      (item) =>
+        typeof item.isFollow === "boolean" &&
+        item.isFollow &&
+        checkedUserId.value.includes(item.id) &&
+        item.id
+    )
+    .filter(Boolean) as number[]
+
+  // 批量取消，使用allSettled获取所有结果
+  const results = await Promise.allSettled(ids.map((item) => delFollower(item)))
+
+  // 统计成功和失败的数量
+  const successfulResults = results.filter(
+    (result) => result.status === "fulfilled"
+  )
+  const failedResults = results.filter((result) => result.status === "rejected")
+
+  // 如果有失败的，显示具体哪些账号失败
+  if (failedResults.length > 0) {
+    const failedAccounts = failedResults.map((result) => {
+      if (result.reason instanceof Error) {
+        return result.reason.message
+      }
+      return "未知账号取消失败"
+    })
+
+    failedAccounts.forEach((message) => {
+      ElMessage.warning(message) // 使用warning显示每个失败的具体账号
+    })
+  }
+
+  // 更新关注数量（只减去成功取消的数量）
+  if (followerCounts.value) {
+    followerCounts.value = followerCounts.value - successfulResults.length
+  } else {
+    followerCounts.value = 0
+  }
+
+  // 重新请求数据
+  await reqUsers()
+
+  // 根据结果显示不同的提示信息
+  if (failedResults.length === 0) {
+    ElMessage.success(`成功取消${successfulResults.length}个关注`)
+  } else if (successfulResults.length === 0) {
+    ElMessage.error("取消关注全部失败")
+  } else {
+    ElMessage.warning(
+      `成功取消${successfulResults.length}个关注，${failedResults.length}个取消失败`
+    )
+  }
+
+  // 退出编辑模式
+  isEditor.value = false
+}
+
+// 取消关注单个
+const delFollower = async (id: number) => {
+  try {
+    await delFollow(id)
+  } catch (error) {
+    const result = users.value?.find((item) => item.id === id)
+    const account = result?.account
+    const msg = `${account ? `账号:${account}` : `id:${id}`} 的关注取消失败`
+    throw new Error(msg) // 抛出错误以便外层捕获
+  }
+}
+
 // 多选框
 const checkAll = ref(false)
 const isIndeterminate = ref(false)
@@ -218,19 +303,26 @@ const handleCheckedCitiesChange = (value: CheckboxValueType[]) => {
     gap: 40px;
     justify-content: space-between;
     grid-template-columns: repeat(auto-fill, var(--item-width));
-    ::v-deep(> .el-checkbox) {
+    ::v-deep(.el-checkbox) {
       height: 100%;
       margin: unset;
-      .user {
-        &:hover {
-          .follow-more .more {
-            opacity: 1;
-          }
-        }
-        .follow-more:has(:hover) .more {
-          color: var(--primary-links-hover);
+    }
+    ::v-deep(.user) {
+      color: var(--primary-color);
+      &:hover {
+        .follow-more .more {
+          opacity: 1;
         }
       }
+      .follow-more:has(:hover) .more {
+        color: var(--primary-links-hover);
+      }
+    }
+  }
+  ::v-deep(.el-checkbox) {
+    cursor: var(--cursor-pointer);
+    .el-checkbox__input {
+      cursor: var(--cursor-pointer);
     }
   }
 } // 更多的 菜单项
