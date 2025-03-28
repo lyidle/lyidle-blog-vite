@@ -20,7 +20,7 @@ import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 import { useUserStore } from "@/store/user"
 // 提取需要的数据
 const { userAccount, userAvatar } = storeToRefs(useUserStore())
-const props = defineProps<{ account: string; avatar: string | null }>()
+const props = defineProps<{ account: string | null; avatar: string | null }>()
 // 计算 是否是 本地的用户
 const showAvatar = () => {
   if (props.account === userAccount.value) return userAvatar.value

@@ -35,9 +35,9 @@ export const getFollower = (data: GetFollower) =>
   )
 
 // 得到粉丝列表
-export const getFollowing = (userId: number) =>
+export const getFollowing = (data: GetFollower) =>
   request.get<any, GetFollowUser["data"]>(
-    server + prefix + API.following + `/${userId}`
+    server + prefix + API.following + `/?${new URLSearchParams(data)}`
   )
 
 // 得到关注数量

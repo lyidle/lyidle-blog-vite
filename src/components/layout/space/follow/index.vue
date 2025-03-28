@@ -3,7 +3,9 @@
     <div class="nav-bar">
       <!-- 关注 -->
       <div class="nav-container">
-        <div class="title">我的关注</div>
+        <div class="title">
+          {{ userInfo?.id === userId ? "我" : "Ta" }}的关注
+        </div>
         <ul class="nav-item-container">
           <li
             class="nav-item"
@@ -40,21 +42,29 @@
         </ul>
       </div>
     </div>
-    <div class="context"></div>
+    <div class="context">
+      <layout-space-follow-follower
+        group="normal"
+        title="全部关注"
+        :isFollower="true"
+        v-if="isFollower('normal')"
+      ></layout-space-follow-follower>
+      <layout-space-follow-follower
+        :title="`${userInfo?.id === userId ? '我' : 'Ta'}的粉丝`"
+        v-if="isFollowing()"
+      ></layout-space-follow-follower>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" name="UserSpaceFollower">
-// 引入 接口
-import { getFollower } from "@/api/user/follow"
-// 类型
-import type { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
-import type { userSpaceSceneType } from "../scene/types"
 // 引入 仓库
 import { useUserSpaceStore } from "@/store/userSpace"
 import { useUserStore } from "@/store/user"
+// 引入类型
+import type { userSpaceSceneType } from "../scene/types"
 
-const props = defineProps<{ userId: number; account: string }>()
+const props = defineProps<{ account: string }>()
 
 const route = useRoute()
 const router = useRouter()
@@ -70,47 +80,25 @@ const {
 // 得到本地 userId
 const { userId } = storeToRefs(useUserStore())
 
-const pagination = ref<GetFollowUser["data"]["pagination"]>({
-  currentPage: 1,
-  pageSize: 10,
-})
-
-// 用户 数据
-const users = ref<GetFollowUser["data"]["users"]>()
-// 监听 followerCounts 数量
-watch(
-  () => followerCounts.value,
-  async (counts) => {
-    if (typeof counts !== "number") return
-    const result = await getFollower({
-      userId: props.userId,
-      total: counts,
-      currentPage: pagination.value.currentPage,
-      pageSize: pagination.value.pageSize,
-    })
-    users.value = result.users
-    pagination.value = result.pagination
-  },
-  {
-    immediate: true,
-  }
-)
-
+// 是否 是follower 中的 一个分组
+const isFollower = (group: string) =>
+  route.query.to === "follower" && route.query.group === group
 /**
  * 关注列表
  * 计算 是否激活
  */
-const followerActive = (group: string) =>
-  route.query.to === "follower" && route.query.group === group ? "active" : ""
+const followerActive = (group: string) => (isFollower(group) ? "active" : "")
 // 关注列表的点击事件
 const followerClick = (group: string) =>
   router.push(`/user/space/${props.account}?to=follower&group=${group}`)
 
+// 是否 是follower 中的 一个分组
+const isFollowing = () => route.query.to === "following"
 /**
  * 粉丝列表
  * 计算 是否激活
  */
-const followingActive = () => (route.query.to === "following" ? "active" : "")
+const followingActive = () => (isFollowing() ? "active" : "")
 // 粉丝列表的点击事件
 const followingClick = () =>
   router.push(`/user/space/${props.account}?to=following`)
@@ -127,7 +115,6 @@ setTimeout(() => {
 // 判断 路径是否出错
 watchEffect(() => {
   const query = route.query
-
   const { group, to }: { group: string; to: userSpaceSceneType } = query as any
   // 未初始化 groups
   if (groups.value === null) return
@@ -210,7 +197,6 @@ $nav-hr: 1px solid var(--primary-color);
   }
   .context {
     width: 100%;
-    background-color: yellow;
   }
 }
 </style>

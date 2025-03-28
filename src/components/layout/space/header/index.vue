@@ -34,13 +34,14 @@
       <div class="flex">
         <div class="flex-shrink-0 text-15px cur-text h-20px">
           签名:<span v-if="userInfo?.id !== userId">{{
-            userInfo?.signer
+            userInfo?.signer || "这个人没有简介哦~~"
           }}</span>
         </div>
         <my-input
           v-if="userInfo?.id === userId"
           class="h-20px text-10px"
           v-model.trim="signer"
+          placeholder="这个人没有简介哦~~"
           @blur="updateSinger"
         ></my-input>
       </div>
@@ -48,23 +49,10 @@
     <!-- 关注和发消息 不能是自身 -->
     <div class="tools" v-if="userId !== userInfo?.id">
       <!-- 关注 -->
-      <my-button
+      <layout-space-is-follower
         class="p-0px w-125px h-35px pr-5px"
-        @click="toFollow"
-        v-if="!isFollow"
-      >
-        <i class="i-mynaui:plus size-18px"></i>
-        <span>关注</span>
-      </my-button>
-      <my-button
-        class="p-0px w-125px h-35px pr-5px"
-        @click="toDelFollow"
-        type="default"
-        v-else
-      >
-        <i class="i-mynaui:plus size-18px"></i>
-        <span>取消关注</span>
-      </my-button>
+        :curId="userInfo.id"
+      ></layout-space-is-follower>
       <my-button class="p-0px w-125px h-35px pr-5px" type="default">
         <i class="i-mynaui:plus size-18px"></i>
         <span>发消息</span>
@@ -76,7 +64,6 @@
 <script setup lang="ts" name="UserSpaceHeader">
 // 引入 api
 import { updateUserSigner } from "@/api/user"
-import { addFollow, delFollow, isFollowed } from "@/api/user/follow"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
 // 引入 hooks
@@ -115,48 +102,6 @@ const updateSinger = throttle(async () => {
     if (!err) ElMessage.error("更新用户签名失败")
   }
 }, 1000)
-
-// 是否 关注了
-const isFollow = ref(false)
-
-// 是否 关注了
-const isFollowCallback = async () => {
-  if (!userInfo.value?.id) return
-  try {
-    const result = await isFollowed(userId.value, userInfo.value.id)
-    isFollow.value = result
-  } catch (error) {}
-}
-// 初始化 是否关注了
-onMounted(isFollowCallback)
-
-// 关注
-const toFollow = async () => {
-  const id = userInfo.value?.id
-  if (!id) return ElMessage("关注失败，id丢失")
-  try {
-    await addFollow(id)
-    isFollow.value = true
-    ElMessage.success("关注成功")
-  } catch (error) {
-    const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("关注失败")
-  }
-}
-
-// 取消关注
-const toDelFollow = async () => {
-  const id = userInfo.value?.id
-  if (!id) return ElMessage("取消关注失败，id丢失")
-  try {
-    await delFollow(id)
-    isFollow.value = false
-    ElMessage.success("取消关注成功")
-  } catch (error) {
-    const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("取消关注失败")
-  }
-}
 </script>
 
 <style scoped lang="scss">
