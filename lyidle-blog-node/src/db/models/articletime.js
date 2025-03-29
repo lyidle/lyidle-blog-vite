@@ -2,12 +2,7 @@
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class ArticleTime extends Model {
-    static associate(models) {
-      this.belongsTo(models.Article, {
-        foreignKey: "articleId",
-        as: "article",
-      })
-    }
+    static associate(models) {}
   }
   ArticleTime.init(
     {

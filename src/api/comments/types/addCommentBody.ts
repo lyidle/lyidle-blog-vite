@@ -9,5 +9,6 @@ export interface AddCommentBody {
   parentId?: number | null
   userProvince?: string | null
   userAgent?: string | null
+  link?: string | null
   [property: string]: any
 }

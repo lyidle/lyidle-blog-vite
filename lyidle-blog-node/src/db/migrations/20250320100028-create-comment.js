@@ -1,20 +1,34 @@
 "use strict"
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Comments", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("Comments", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+        comment: "评论ID",
       },
       content: {
         type: Sequelize.TEXT,
         allowNull: false,
+        comment: "评论内容",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        comment: "发送者的用户id",
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      fromUserId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        comment: "被回复的用户ID",
         references: {
           model: "Users",
           key: "id",
@@ -25,8 +39,9 @@ module.exports = {
       articleId: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        comment: "关联文章ID",
         references: {
-          model: "Articles", // 关联文章表
+          model: "Articles",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -35,8 +50,20 @@ module.exports = {
       settingId: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        comment: "关联设置ID",
         references: {
-          model: "Settings", // 关联设置表
+          model: "Settings",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      targetUserId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        comment: "目标内容所有者的用户ID",
+        references: {
+          model: "Users",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -44,9 +71,10 @@ module.exports = {
       },
       fromId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // 允许为空，表示顶级评论
+        allowNull: true,
+        comment: "回复的评论ID",
         references: {
-          model: "Comments", // 自引用，指向同一张表
+          model: "Comments",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -54,25 +82,38 @@ module.exports = {
       },
       parentId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // 允许为空，表示顶级评论
+        allowNull: true,
+        comment: "顶层评论ID",
         references: {
-          model: "Comments", // 自引用，指向同一张表
+          model: "Comments",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      link: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        comment: "原文链接",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        comment: "创建时间",
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        comment: "更新时间",
       },
     })
+
+    // 复合索引 - 根据实际查询需求选择添加
+    await queryInterface.addIndex("Comments", ["settingId", "fromId"])
+    await queryInterface.addIndex("Comments", ["articleId", "fromId"])
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Comments")
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("Comments")
   },
 }

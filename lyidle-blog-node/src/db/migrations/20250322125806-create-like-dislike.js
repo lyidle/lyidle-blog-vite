@@ -4,9 +4,10 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("LikeDislikes", {
       id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -77,26 +78,10 @@ module.exports = {
       },
     })
 
-    // 在 up 函数中添加以下索引
-    await queryInterface.addIndex("LikeDislikes", ["userId"])
-    await queryInterface.addIndex("LikeDislikes", ["targetType"])
-    await queryInterface.addIndex("LikeDislikes", ["articleId"])
-    await queryInterface.addIndex("LikeDislikes", ["settingId"])
-    await queryInterface.addIndex("LikeDislikes", ["commentId"])
-    await queryInterface.addIndex("LikeDislikes", ["likeType"])
-    await queryInterface.addIndex("LikeDislikes", ["dislikeType"])
-
-    // 复合索引 - 根据实际查询需求选择添加
-    await queryInterface.addIndex("LikeDislikes", ["targetType", "articleId"])
-    await queryInterface.addIndex("LikeDislikes", ["targetType", "commentId"])
-    await queryInterface.addIndex("LikeDislikes", ["targetType", "settingId"])
-    await queryInterface.addIndex("LikeDislikes", ["likeType", "dislikeType"])
-
     // 添加联合唯一索引，确保一个用户对同一个目标只能有一条记录
     await queryInterface.addIndex("LikeDislikes", {
       fields: ["userId", "targetType", "commentId"],
       unique: true,
-      name: "unique_user_target",
     })
   },
 

@@ -184,6 +184,19 @@ export const constantRoute: RouteRecordRaw[] = [
         },
         component: () => import("@/views/user/categories/onlyOne/index.vue"),
       },
+      // 消息
+      {
+        path: "/user/msg",
+        name: "UserMessage",
+        meta: {
+          title: "消息中心",
+          bannerWel: "消息",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
+        component: () => import("@/views/user/msg/index.vue"),
+      },
     ],
   },
   //  查询标签

@@ -31,7 +31,12 @@ module.exports = (sequelize, DataTypes) => {
 
       // 用户作为关注者 可查关注列表
       User.belongsToMany(models.User, {
-        through: "Follow",
+        through: {
+          model: models.Follow,
+          scope: {
+            groupName: null, // 默认作用域
+          },
+        },
         as: "Following",
         foreignKey: "followerId",
         otherKey: "followingId",

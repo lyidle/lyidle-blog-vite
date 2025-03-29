@@ -83,6 +83,7 @@
               :settingId
               :reqComments
               :fromNickName
+              v-model:fromUserId="fromUserId"
               class="w-100%"
               ref="replyInstance"
             ></layout-article-comments-reply>
@@ -139,6 +140,20 @@ const ribbonInstance = ref()
 const instance = ref<HTMLDivElement>()
 // 暴露 实例
 defineExpose({ instance })
+
+// 回复的 id
+const fromUserId = ref<number | null>(null)
+
+// 接收并赋值 回复的user id
+const handlerFromUserId = (id: number | null) => {
+  fromUserId.value = id
+}
+
+// 触发 回复的   fromUserId: number | null
+mitt.on("reply:userId", handlerFromUserId)
+onBeforeUnmount(() => {
+  mitt.off("reply:userId", handlerFromUserId)
+})
 
 onMounted(() => {
   // 使用 交叉传感器 监听 分割线

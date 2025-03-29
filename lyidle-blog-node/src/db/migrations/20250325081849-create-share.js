@@ -4,9 +4,10 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Shares", {
       id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       articleId: {
         type: Sequelize.INTEGER,
@@ -42,11 +43,6 @@ module.exports = {
         type: Sequelize.DATE,
       },
     })
-
-    // 添加普通索引
-    await queryInterface.addIndex("Shares", ["articleId"])
-    await queryInterface.addIndex("Shares", ["settingId"])
-    await queryInterface.addIndex("Shares", ["shareType"])
   },
 
   async down(queryInterface, Sequelize) {

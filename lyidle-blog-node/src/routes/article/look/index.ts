@@ -16,8 +16,7 @@ router.post("/", async (req, res, next) => {
   if (cacheValue) return res.result(void 0, "更新文章浏览量成功")
 
   // 校验参数
-  if (!articleId)
-    return res.result(void 0, "articleId 和 count 是必填项", false)
+  if (!articleId) return res.result(void 0, "articleId是必填项", false)
 
   try {
     // 查找文章

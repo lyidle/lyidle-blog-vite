@@ -12,6 +12,7 @@ module.exports = {
       articleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: true,
         references: {
           model: "Articles", // 关联文章表
           key: "id",

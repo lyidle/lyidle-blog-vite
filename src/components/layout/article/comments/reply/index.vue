@@ -18,11 +18,15 @@ const props = defineProps<{
   fromNickName: string
 }>()
 
+// 回复的 id
+const fromUserId = defineModel<number | null>("fromUserId")
+
 // 处理 上传数据 的回调 添加 fromId
 const addComments = (updateBody: AddCommentBody) => {
   if (!props.fromId) throw new Error("没有fromId，不能回复")
   updateBody.fromId = props.fromId
   updateBody.parentId = props.parentId
+  updateBody.fromUserId = fromUserId.value
 }
 // 得到 添加组件的 实例
 const addInstance = ref()

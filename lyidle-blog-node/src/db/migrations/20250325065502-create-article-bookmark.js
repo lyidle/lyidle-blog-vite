@@ -5,9 +5,10 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("ArticleBookmarks", {
       id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -50,11 +51,6 @@ module.exports = {
       unique: true,
       name: "unique_user_article_bookmark",
     })
-
-    // 添加其他索引
-    await queryInterface.addIndex("ArticleBookmarks", ["userId"])
-    await queryInterface.addIndex("ArticleBookmarks", ["articleId"])
-    await queryInterface.addIndex("ArticleBookmarks", ["isBookmarked"])
   },
 
   async down(queryInterface, Sequelize) {

@@ -2,11 +2,6 @@
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // 评论属于用户
       this.belongsTo(models.User, {
@@ -50,28 +45,47 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.TEXT,
         allowNull: false,
+        comment: "评论内容",
       },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        comment: "发送者的用户id",
+      },
+      fromUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "被回复的用户ID",
       },
       articleId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        comment: "关联文章ID",
       },
       settingId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        comment: "关联设置ID",
       },
-      // 回复 的 那个评论
+      targetUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "目标内容所有者的用户ID",
+      },
       fromId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        comment: "回复的评论ID",
       },
-      // 最顶层的 id
       parentId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        comment: "顶层评论ID",
+      },
+      link: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "原文链接",
       },
     },
     {

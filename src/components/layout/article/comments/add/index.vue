@@ -83,6 +83,8 @@ const reset = () => instance.value.reset()
 // 验证 内容
 const validate = () => instance.value.validate()
 
+const route = useRoute()
+
 // 增加 评论
 const addArticleComments = async () => {
   // 验证 内容
@@ -95,6 +97,8 @@ const addArticleComments = async () => {
       content: "",
       userProvince: region_province.value,
       userAgent,
+      // 记录当前页面的地址信息
+      link: route.path || null,
     }
     props?.addComments?.(updateBody)
     await useMdReplaceImg(comment(), updateBody, {

@@ -109,13 +109,7 @@
         <!-- 触发自定义事件 -->
         <div
           class="h-25px flex items-center gap-5px cur-pointer [var(--primary-links-hover)]"
-          @click="
-            emit('reply', {
-              showId: parentId || cloneComment.id,
-              fromId: cloneComment.id,
-              fromNickName: cloneComment.user.nickName,
-            })
-          "
+          @click="handlerReply"
         >
           <span class="!hover:color-[var(--primary-links-hover)]">回复</span>
         </div>
@@ -495,6 +489,22 @@ const updateComment = async () => {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("修改失败")
   }
+}
+
+// 回复 的回调
+const handlerReply = () => {
+  // 触发 回复的信息框
+  emit("reply", {
+    showId: props.parentId || cloneComment.id,
+    fromId: cloneComment.id,
+    fromNickName: cloneComment.user.nickName,
+  })
+
+  // 不等于自身 且有 id
+  const fromUserId =
+    (userId.value !== cloneComment.user.id && cloneComment.user.id) || null
+  // 触发 回复的   fromUserId: number | null
+  mitt.emit("reply:userId", fromUserId)
 }
 
 onMounted(async () => {
