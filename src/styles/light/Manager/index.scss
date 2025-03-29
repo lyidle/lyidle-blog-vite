@@ -6,17 +6,17 @@
 html[themes="#{$theme}"] {
   .manager-container {
     // 内容 区域 共同的 变量
-    $pages-card-bg: white;
+    $primary-card-bg: white;
     --primary-color: #{$primary-color};
     // 左侧 侧边栏
     --aside-bg: #394754;
     --aside-shadow: 0 0 3px #d2e2ec;
     // 右侧 顶部 header
-    --header-bg: #{$pages-card-bg};
+    --header-bg: #{$primary-card-bg};
     --header-color: #{$primary-color};
     --header-shadow: 1px 1px 3px #d2e2ec;
     // 右侧 内容区域 卡片
-    --manager-card-bg: #{$pages-card-bg};
+    --manager-card-bg: #{$primary-card-bg};
     --manager-card-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
     --manager-card-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
     // 头部导航 底部线条

@@ -7,7 +7,7 @@
 html[themes="#{$theme}"] {
   .vditor-style {
     /* 书写区域 */
-    --editor-bg: #{$pages-card-bg};
+    --editor-bg: #{$primary-card-bg};
     --editor-h1-border-l: 10px solid #{$primary-color};
     --editor-h1-border-b: 2px solid #{$primary-color};
     --editor-h2-p-l: 10px;

@@ -41,9 +41,13 @@ html[themes="#{$theme}"] {
   --primary-shadow-color: rgba(28, 48, 67, 0.5);
   --primary-shadow-color-fixed: rgba(28, 48, 67, 0.8);
   // 卡片
-  --pages-card-bg: #{$pages-card-bg};
-  --pages-card-shadow: -5px 5px 10px var(--primary-shadow-color);
-  --pages-card-shadow-fixed: 0px 5px 10px var(--primary-shadow-color-fixed);
+  --primary-card-bg: #{$primary-card-bg};
+  --primary-card-shadow: -5px 5px 10px var(--primary-shadow-color);
+  --primary-card-shadow-fixed: 0px 5px 10px var(--primary-shadow-color-fixed);
+
+  // 次要的 卡片
+  --scend-opacity-card-bg: rgba(92, 92, 92, 0.685);
+  --scend-opacity-card-shadow: -5px 5px 10px rgb(28 48 67 / 48%);
 
   // @联系人的 样式
   $at-person-color: #41c0ed;

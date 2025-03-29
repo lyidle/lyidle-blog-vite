@@ -41,7 +41,7 @@ $scr: (
 }
 
 // 快速 设置 card的shadow 分为 fixed 和 普通的
-@mixin setCardShadow($var: --pages, $isFixed: true) {
+@mixin setCardShadow($var: --primary, $isFixed: true) {
   .card_style {
     @each $key, $value in $them {
       html[themes="#{$key}"] body[banner-fixed="fixed"] & {
@@ -59,7 +59,7 @@ $scr: (
 }
 
 // 设置卡片的样式
-@mixin setCardStyle($var: pages, $isFixed: true) {
+@mixin setCardStyle($var: primary, $isFixed: true) {
   @include setCardShadow(--#{$var}, $isFixed);
   .card_style {
     background-color: var(--#{$var}-card-bg);
