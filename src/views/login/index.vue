@@ -18,7 +18,7 @@ const regRef = ref()
 $rotate-during: var(--login-rotate-during);
 $link-color: var(--login-link-color);
 // 设置 卡片 样式
-@include setCardStyle(scend);
+@include setCardStyle(login);
 .login-container {
   position: absolute;
   width: 50%;

@@ -26,7 +26,7 @@ document.body.setAttribute("banner-fixed", "")
 </script>
 <style lang="scss">
 // 设置 卡片 样式
-@include setManagerCardStyle;
+@include setCardStyle(manager);
 // 抽屉
 .manager-drawer {
   // 设置drawer 的层级

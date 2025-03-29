@@ -59,17 +59,10 @@ $scr: (
 }
 
 // 设置卡片的样式
-@mixin setCardStyle($var: --pages, $isFixed: true) {
-  @include setCardShadow($var, $isFixed);
+@mixin setCardStyle($var: pages, $isFixed: true) {
+  @include setCardShadow(--#{$var}, $isFixed);
   .card_style {
-    background-color: var(#{$var}-card-bg);
-  }
-}
-// 设置卡片的样式
-@mixin setManagerCardStyle($var: --manager, $isFixed: true) {
-  @include setCardShadow($var);
-  .card_style {
-    background-color: var(#{$var}-card-bg);
+    background-color: var(--#{$var}-card-bg);
   }
 }
 
