@@ -14,8 +14,6 @@
 @use "./content/index.scss" as *;
 // 引入 内容 区域 的 侧边栏 样式
 @use "./content/aside.scss" as *;
-// 内容 区域 共有的 样式
-@use "./content/global/index.scss" as *;
 // 引入 登录 页面 的 样式
 @use "./login/index.scss" as *;
 // 引入 全局 面板的样式
@@ -42,6 +40,10 @@ html[themes="#{$theme}"] {
   // 阴影的颜色
   --primary-shadow-color: rgba(28, 48, 67, 0.5);
   --primary-shadow-color-fixed: rgba(28, 48, 67, 0.8);
+  // 卡片
+  --pages-card-bg: #{$pages-card-bg};
+  --pages-card-shadow: -5px 5px 10px var(--primary-shadow-color);
+  --pages-card-shadow-fixed: 0px 5px 10px var(--primary-shadow-color-fixed);
 
   // @联系人的 样式
   $at-person-color: #41c0ed;

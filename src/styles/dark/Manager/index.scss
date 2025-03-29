@@ -3,10 +3,10 @@
 // 引入 函数
 @use "sass:color";
 
-// 内容 区域 共同的 变量
-$pages-card-bg: #0a2335;
 html[themes="#{$theme}"] {
   .manager-container {
+    // 内容 区域 共同的 变量
+    $pages-card-bg: #0a2335;
     --primary-color: #{$primary-color};
     // 左侧 侧边栏
     --aside-bg: #1b232b;

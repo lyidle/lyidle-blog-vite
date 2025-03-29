@@ -3,8 +3,6 @@
 
 // 引入 全局 变量
 @use "../global/index.scss" as *;
-// 引入 内容 的 变量
-@use "../content/global/index.scss" as *;
 
 html[themes="#{$theme}"] {
   .vditor-style {
