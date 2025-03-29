@@ -43,7 +43,7 @@ const {
 const { userId } = storeToRefs(useUserStore())
 
 const props = defineProps<{
-  curId: number
+  curId: number | undefined
   isFollower?: boolean
   isFollow?: boolean
 }>()
@@ -56,6 +56,9 @@ const isFollow = ref<boolean | null>(
 const isOwner = ref(false)
 // 是否 关注了
 const isFollowCallback = async () => {
+  // 非法判断
+  const id = props.curId
+  if (typeof id !== "number") return
   if (!props.curId || !userId) return
   // 有 默认值了
   if (typeof props.isFollow === "boolean") return
@@ -76,8 +79,9 @@ onMounted(isFollowCallback)
 
 // 关注
 const toFollow = async () => {
+  // 非法判断
   const id = props.curId
-  if (!id) return ElMessage("关注失败，id丢失")
+  if (typeof id !== "number") return ElMessage("关注失败，id丢失")
   try {
     await addFollow(id)
     isFollow.value = true
@@ -95,8 +99,9 @@ const toFollow = async () => {
 
 // 取消关注
 const toDelFollow = async () => {
+  // 非法判断
   const id = props.curId
-  if (!id) return ElMessage("取消关注失败，id丢失")
+  if (typeof id !== "number") return ElMessage("取消关注失败，id丢失")
   try {
     await delFollow(id)
     isFollow.value = false

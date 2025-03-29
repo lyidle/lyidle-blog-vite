@@ -7,17 +7,13 @@
           :account
           v-model:signer="signer"
           v-model:userInfo="userInfo"
-          v-if="userInfo?.id"
         ></layout-space-header>
         <!-- 分割线 -->
         <global-animations-ribbon
           bg="var(--primary-color)"
           class="mt-15px"
         ></global-animations-ribbon>
-        <layout-space-scene
-          :userId="userInfo?.id"
-          v-if="userInfo?.id"
-        ></layout-space-scene>
+        <layout-space-scene :userId="userInfo?.id"></layout-space-scene>
         <!-- 主页 -->
         <layout-space-home
           v-if="scene === 'home'"

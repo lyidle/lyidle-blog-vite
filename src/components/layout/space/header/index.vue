@@ -1,13 +1,14 @@
 <template>
   <!-- 头部 -->
-  <div class="header" v-if="userInfo?.id">
+  <div class="header">
     <!-- 头像 -->
     <div class="avatar-container">
       <!-- 头像 -->
       <global-avatar-src
         :account="account"
-        :avatar="userInfo?.avatar"
+        :avatar="userInfo?.avatar || null"
         style="--avatar-size: 80px"
+        v-if="account"
       ></global-avatar-src>
       <div
         class="mask cur-pointer"
@@ -23,12 +24,18 @@
         class="box-item"
         effect="dark"
         :content="`作者:${
-          userInfo?.id === userId ? userAccount : userInfo?.account
+          userInfo?.id === userId
+            ? userAccount
+            : userInfo?.account || '账号未知'
         }`"
         placement="top"
       >
         <div class="cur-text text-24px w-fit">
-          {{ userInfo?.id === userId ? userNickName : userInfo?.nickName }}
+          {{
+            userInfo?.id === userId
+              ? userNickName
+              : userInfo?.nickName || "用户名未知"
+          }}
         </div>
       </my-tooltip>
       <div class="flex">
@@ -51,7 +58,7 @@
       <!-- 关注 -->
       <layout-space-is-follower
         class="p-0px w-125px h-35px pr-5px"
-        :curId="userInfo.id"
+        :curId="userInfo?.id"
       ></layout-space-is-follower>
       <my-button class="p-0px w-125px h-35px pr-5px" type="default">
         <i class="i-mynaui:plus size-18px"></i>

@@ -57,7 +57,7 @@ import { useEventListener } from "@/hooks/useEventListener"
 // 引入 仓库
 import { useUserSpaceStore } from "@/store/userSpace"
 
-const props = defineProps<{ userId: number }>()
+const props = defineProps<{ userId: number | undefined }>()
 
 // 提取数据
 const {
@@ -75,21 +75,29 @@ const {
 
 // 获取 关注数
 const reqFollowers = async () => {
+  // 非法判断
+  if (typeof props.userId !== "number") return
   const counts = await getFollowerCounts(props.userId)
   followerCounts.value = counts || 0
 }
 // 获取 粉丝数
 const reqFollowingCounts = async () => {
+  // 非法判断
+  if (typeof props.userId !== "number") return
   const counts = await getFollowingCounts(props.userId)
   followingCounts.value = counts || 0
 }
 // 获取 获赞量
 const reqViewLikes = async () => {
+  // 非法判断
+  if (typeof props.userId !== "number") return
   const counts = await getUserArticleLikes(props.userId)
   likeCounts.value = counts || 0
 }
 // 获取 浏览量
 const reqViewViews = async () => {
+  // 非法判断
+  if (typeof props.userId !== "number") return
   const counts = await getUserArticleViews(props.userId)
   viewCounts.value = counts || 0
 }
