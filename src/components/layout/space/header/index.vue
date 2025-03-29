@@ -54,7 +54,7 @@
       </div>
     </div>
     <!-- 关注和发消息 不能是自身 -->
-    <div class="tools" v-if="userId !== userInfo?.id">
+    <div class="tools" v-if="userId !== userInfo?.id && userInfo?.id">
       <!-- 关注 -->
       <layout-space-is-follower
         class="p-0px w-125px h-35px pr-5px"

@@ -19,6 +19,7 @@ import { handlerRoutes } from "./handlerRoutes"
  *    优先找 params，再找 query
  *    bannerWel: "Welcome to :author",
  *    replaceWel: true, 配合 可以替换 author 到指定位置
+ * isLogin 验证是否登录 没登陆的 跳转登录界面
  */
 
 // 常量路由
@@ -189,11 +190,9 @@ export const constantRoute: RouteRecordRaw[] = [
         path: "/user/msg",
         name: "UserMessage",
         meta: {
-          title: "消息中心",
-          bannerWel: "消息",
-          bannerPoetry: "",
-          bannerWaves: true,
-          pagesMt: "-30vh",
+          bannerContextHidden: true,
+          bannerWaves: false,
+          isLogin: true,
         },
         component: () => import("@/views/user/msg/index.vue"),
       },
@@ -240,7 +239,7 @@ export const constantRoute: RouteRecordRaw[] = [
   {
     path: "/login",
     name: "Login",
-    meta: { title: "登录" },
+    meta: { title: "登录", bannerContextHidden: true },
     component: () => import("@/views/login/index.vue"),
   },
   // 404

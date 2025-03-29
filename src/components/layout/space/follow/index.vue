@@ -37,7 +37,7 @@
             <span class="label">
               {{ userInfo?.id === userId ? "我" : "Ta" }}的粉丝
             </span>
-            <span class="counts">{{ followingCounts }}</span>
+            <span class="counts">{{ followingCounts || 0 }}</span>
           </li>
         </ul>
       </div>

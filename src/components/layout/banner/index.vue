@@ -15,7 +15,7 @@
     >
       <div
         class="detail"
-        v-if="!$route.meta.bannerContextHidden"
+        v-if="$route.path !== '/' && !$route.meta.bannerContextHidden"
         :style="{
           marginTop: `${$route.meta.pagesMt}`,
         }"

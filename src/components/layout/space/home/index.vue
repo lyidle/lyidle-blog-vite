@@ -80,7 +80,7 @@ $translate-y: -5px;
     justify-content: center;
   }
   // 设置 卡片 样式
-  @include setCardStyle(--pages, false);
+  @include setCardStyle(pages, false);
   // 内容区的卡片
   ::v-deep(.layout-content) {
     flex: 0 0 calc(100% / var(--pages-card-contentNum) - $item-gap);

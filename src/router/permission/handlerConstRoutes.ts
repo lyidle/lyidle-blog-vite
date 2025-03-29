@@ -12,7 +12,15 @@ export const handlerConstRoutes = (
   router: Router
 ): boolean | void => {
   // 提取数据
-  const { userRoles, userPermissions } = storeToRefs(useUserStore())
+  const { userRoles, userPermissions, userToken } = storeToRefs(useUserStore())
+  // 判断 是否需要登录
+  if (to.meta.isLogin) {
+    if (!userToken.value) {
+      ElMessage.warning(`访问当前页面需要登录哦~`)
+      router.push({ path: "/login", replace: true })
+      return
+    }
+  }
 
   if (!to.meta.roles) return
   if (!Array.isArray(to.meta.roles)) {

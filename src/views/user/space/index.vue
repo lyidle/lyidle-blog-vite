@@ -13,7 +13,11 @@
           bg="var(--primary-color)"
           class="mt-15px"
         ></global-animations-ribbon>
-        <layout-space-scene :userId="userInfo?.id"></layout-space-scene>
+        <layout-space-scene
+          :userId="userInfo?.id"
+          v-if="userInfo?.id"
+        ></layout-space-scene>
+        <layout-space-scene :userId="userInfo?.id" v-else></layout-space-scene>
         <!-- 主页 -->
         <layout-space-home
           v-if="scene === 'home'"
@@ -30,7 +34,6 @@
         <layout-space-follow
           v-if="scene === 'follower' || scene === 'following'"
           :account
-          :userId="userInfo?.id"
         ></layout-space-follow>
       </my-card>
     </template>
@@ -55,6 +58,8 @@ const account = route.params.author as string
 
 // 得到 用户的信息
 const reqUserInfo = async () => {
+  // 每次 请求时 重置
+  userInfo.value = undefined
   if (!account) return
   try {
     const result = await searchCounts({ isBin: "true", account })

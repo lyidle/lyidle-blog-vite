@@ -42,11 +42,17 @@ const {
 // 得到本地 userId
 const { userId } = storeToRefs(useUserStore())
 
-const props = defineProps<{
-  curId: number | undefined
-  isFollower?: boolean
-  isFollow?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    curId: number | undefined
+    isFollower?: boolean
+    isFollow?: boolean
+  }>(),
+  {
+    isFollower: undefined,
+    isFollow: undefined,
+  }
+)
 
 // 是否 关注了
 const isFollow = ref<boolean | null>(
@@ -59,7 +65,7 @@ const isFollowCallback = async () => {
   // 非法判断
   const id = props.curId
   if (typeof id !== "number") return
-  if (!props.curId || !userId) return
+  if (!props.curId || !userId.value) return
   // 有 默认值了
   if (typeof props.isFollow === "boolean") return
   try {

@@ -8,7 +8,7 @@
       <div class="btns" v-if="users?.length">
         <my-button
           type="default"
-          v-if="userId === userInfo?.id"
+          v-if="route.query.to === 'follower' && userId === userInfo?.id"
           @click="isEditor = !isEditor"
           class="w-100px"
           >{{ isEditor ? "返回" : "批量操作" }}</my-button
@@ -28,7 +28,7 @@
           v-model="checkAll"
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
-          v-if="isEditor"
+          v-if="isShowEditor"
         >
           <div class="color-[var(--primary-color)]">
             全选<span class="ml-5px"
@@ -41,7 +41,7 @@
       </div>
       <!-- 全选按钮的操作 -->
       <my-button
-        v-if="isEditor"
+        v-if="isShowEditor"
         class="w-100px"
         type="warning"
         @click="delAllFollower"
@@ -61,7 +61,7 @@
       :style="{ '--item-width': isAside ? '280px' : '270px' }"
       v-model="checkedUserId"
       @change="handleCheckedCitiesChange"
-      v-if="isEditor"
+      v-if="isShowEditor"
     >
       <el-checkbox v-for="user in users" :key="user.id" :value="user.id">
         <layout-space-follow-context-user
@@ -132,6 +132,11 @@ const pagination = ref<GetFollowUser["data"]["pagination"]>({
 
 // 是否是 批量编辑
 const isEditor = ref(false)
+const route = useRoute()
+const isShowEditor = computed(() => {
+  const to = route.query.to
+  return to === "follower" && isEditor.value
+})
 
 // 用户 数据
 const users = ref<GetFollowUser["data"]["users"]>()
