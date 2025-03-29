@@ -41,28 +41,35 @@ $scr: (
 }
 
 // 快速 设置 card的shadow 分为 fixed 和 普通的
-@mixin setCardShadow($var: --primary, $isFixed: true) {
-  .card_style {
+@mixin setCardShadow($var: primary, $isFixed: true, $class: card_style) {
+  .#{$class} {
     @each $key, $value in $them {
       html[themes="#{$key}"] body[banner-fixed="fixed"] & {
         @if $isFixed {
-          box-shadow: var(#{$var}-card-shadow-fixed);
+          box-shadow: var(--#{$var}-card-shadow-fixed);
         } @else {
-          box-shadow: var(#{$var}-card-shadow);
+          box-shadow: var(--#{$var}-card-shadow);
         }
       }
       html[themes="#{$key}"] & {
-        box-shadow: var(#{$var}-card-shadow);
+        box-shadow: var(--#{$var}-card-shadow);
       }
     }
   }
 }
 
 // 设置卡片的样式
-@mixin setCardStyle($var: primary, $isFixed: true) {
-  @include setCardShadow(--#{$var}, $isFixed);
-  .card_style {
-    background-color: var(--#{$var}-card-bg);
+@mixin setCardStyle(
+  $var: primary,
+  $isFixed: true,
+  $isBg: true,
+  $class: card_style
+) {
+  @include setCardShadow(#{$var}, $isFixed);
+  @if $isBg {
+    .#{$class} {
+      background-color: var(--#{$var}-card-bg);
+    }
   }
 }
 

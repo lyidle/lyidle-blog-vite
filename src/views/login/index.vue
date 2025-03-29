@@ -22,9 +22,15 @@ $link-color: var(--login-link-color);
 .login-container {
   position: absolute;
   width: 50%;
+  transition: width var(--primary-during);
+  @include media(sm) {
+    width: 90%;
+  }
   z-index: $global-content-index;
   // 水平居中
   inset: 0;
+  // 需要 移动到 导航条下方
+  top: var(--header-height);
   margin: auto;
   color: var(--primary-color);
   // 使用flex 内容居中
