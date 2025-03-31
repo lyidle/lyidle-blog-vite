@@ -26,12 +26,12 @@ enum API {
   articleToggleDislikes = "/likeOrdislike/articles/dislike",
   // #endregion 文章的点赞
 
-  // #region 文章的点赞
+  // #region 设置文章的点赞
   settingLikes = "/likeOrdislike/settings/get/like",
   settingDislikes = "/likeOrdislike/settings/get/dislike",
   settingToggleLikes = "/likeOrdislike/settings/like",
   settingToggleDislikes = "/likeOrdislike/settings/dislike",
-  // #endregion 文章的点赞
+  // #endregion 设置文章的点赞
 }
 
 // 引入前缀

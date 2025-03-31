@@ -325,7 +325,7 @@ const getLikes = async () => {
           if (id) {
             const result = await getArticleLikes(id)
             // 判断用户是否点赞了
-            isLike.value = result?.userIds.includes(userId.value) || false
+            isLike.value = result?.userIds.includes(userId.value!) || false
             // 得到点赞数量
             likeCounts.value = result?.count || 0
             // 停止监视 文章
@@ -338,7 +338,7 @@ const getLikes = async () => {
     // 有id直接获取
     const result = await getArticleLikes(articleId)
     // 判断用户是否点赞了
-    isLike.value = result?.userIds.includes(userId.value) || false
+    isLike.value = result?.userIds.includes(userId.value!) || false
     // 得到点赞数量
     likeCounts.value = result?.count || 0
     return
@@ -352,7 +352,7 @@ const getLikes = async () => {
         if (id) {
           const result = await getSettingLikes(id)
           // 判断用户是否点赞了
-          isLike.value = result?.userIds.includes(userId.value) || false
+          isLike.value = result?.userIds.includes(userId.value!) || false
           // 得到点赞数量
           likeCounts.value = result?.count || 0
           // 停止监视 设置文章
@@ -365,7 +365,7 @@ const getLikes = async () => {
   // 有id直接获取
   const result = await getSettingLikes(_settingId)
   // 判断用户是否点赞了
-  isLike.value = result?.userIds.includes(userId.value) || false
+  isLike.value = result?.userIds.includes(userId.value!) || false
   // 得到点赞数量
   likeCounts.value = result?.count || 0
 }
@@ -382,7 +382,7 @@ const getCollects = async () => {
       async (id) => {
         if (id) {
           const result = await getArticleCollects(id)
-          isCollect.value = result?.userIds?.includes(userId.value) || false
+          isCollect.value = result?.userIds?.includes(userId.value!) || false
           collectCounts.value = result.count || 0
           stopArticleId()
         }
@@ -392,7 +392,7 @@ const getCollects = async () => {
   }
   // 有id 获取
   const result = await getArticleCollects(id)
-  isCollect.value = result?.userIds?.includes(userId.value) || false
+  isCollect.value = result?.userIds?.includes(userId.value!) || false
   collectCounts.value = result.count || 0
 }
 

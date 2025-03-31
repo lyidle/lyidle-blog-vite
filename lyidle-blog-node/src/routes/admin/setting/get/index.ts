@@ -8,6 +8,7 @@ import pagination from "./pagination"
 const { Setting } = require("@/db/models")
 const router = express.Router()
 
+// 根据名字 获取 设置表的信息
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   // 提取需要的信息
   const { name } = req.query
@@ -37,6 +38,30 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     )
   }
 })
+
+// 根据id 获取 设置表的信息
+router.get(
+  "/:settingId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    // 提取需要的信息
+    const settingId = req.params.settingId
+
+    try {
+      const findSetting = await Setting.findByPk(settingId)
+
+      if (!findSetting)
+        return res.result(void 0, `获取id为：${settingId}的设置失败~`, false)
+
+      const { dataValues } = findSetting
+
+      return res.result(dataValues, `获取${dataValues.name}成功~`)
+    } catch (error) {
+      res.validateAuth(error, next, () =>
+        res.result(void 0, `获取id为：${settingId}的设置失败~`, false)
+      )
+    }
+  }
+)
 
 router.use("/manager", pagination)
 // 挂载路由

@@ -101,7 +101,7 @@ export const useUserStore = defineStore(
     }
 
     // 用户信息
-    const userId = ref<number>(-1)
+    const userId = ref<number | null>(null)
     const userAccount = ref<string>("")
     const userIsBin = ref<string | null>(null)
     const userNickName = ref<string>("")
@@ -126,7 +126,7 @@ export const useUserStore = defineStore(
         const result = await getUserInfo()
         const user = result?.[0]
         // 有用户信息 赋值
-        userId.value = user?.id ?? -1
+        userId.value = user?.id ?? null
         userIsBin.value = user?.isBin || null
         userPermissions.value = user?.permissions
         userRoles.value = user?.roles || []
@@ -180,7 +180,7 @@ export const useUserStore = defineStore(
     // 重置用户信息 没有 重置 token
     const resetUserInfo = () => {
       // 用户信息
-      userId.value = -1
+      userId.value = null
       userAccount.value = ""
       userIsBin.value = null
       userNickName.value = ""

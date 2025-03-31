@@ -1,4 +1,6 @@
 <template>
+  <div>id:{{ cloneComment.id }}</div>
+  <div>fromId:{{ cloneComment.fromId }}</div>
   <div class="comment-item-container">
     <!-- 头像和评论 -->
     <div class="flex justify-between relative">
@@ -31,7 +33,6 @@
               content: decompressStringNotError(cloneComment.content),
             }"
             :isExportHtml="false"
-            :autoPreview="true"
             v-if="cloneComment.id"
             v-show="!isEditor"
           ></vditor-preview>
@@ -84,7 +85,7 @@
       <!-- 操作按钮 -->
       <div class="flex gap-20px">
         <!-- 更新时间 -->
-        <div class="h-25px flex items-center gap-5px">
+        <div class="cur-text h-25px flex items-center gap-5px">
           {{ moment(cloneComment.updatedAt, "YYYY-MM-DD hh:mm") }}
         </div>
         <!-- 点赞 -->
@@ -322,6 +323,7 @@ const hasMoreItems = (sub: menuItemType) => {
 
 // 得到 点赞数量
 const reqCommentLikes = async () => {
+  if (!userId.value) return
   // 没有 评论id
   if (!commentId) return
   // 判断是文章 还是 设置
@@ -341,6 +343,7 @@ const reqCommentLikes = async () => {
 }
 // 得到 点踩数量
 const reqCommentDislikes = async () => {
+  if (!userId.value) return
   // 没有 评论id
   if (!commentId) return
   // 判断是文章 还是 设置

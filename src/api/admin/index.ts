@@ -121,6 +121,11 @@ export const findOneSetting = (name: string) =>
   request.get<any, FindOneSetting["data"]>(
     server + prefix + API.Setting + `/?name=${name}`
   )
+// 通过id获取设置信息
+export const findByPkSetting = (id: number) =>
+  request.get<any, FindOneSetting["data"]>(
+    server + prefix + API.Setting + `/${id}`
+  )
 // 获取 所有的设置信息 分页器
 export const findAllSettingsPagination = (data?: OrdinarySearchQuery) =>
   request.get<any, FindAllSettingsPagination["data"]>(

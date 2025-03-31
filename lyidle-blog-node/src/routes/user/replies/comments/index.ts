@@ -1,6 +1,7 @@
 import express from "express"
 // 引入 jwt
 import { jwtMiddleware } from "@/middleware/auth"
+import { Op } from "sequelize"
 
 // 引入模型
 const { Comment, User } = require("@/db/models")
@@ -22,8 +23,10 @@ router.get("/", jwtMiddleware, async (req, res, next) => {
   try {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
-        // 查询回复该用户的评论
-        fromUserId: userId,
+        [Op.or]: {
+          fromUserId: userId,
+          targetUserId: userId,
+        },
       },
       include: [
         {
@@ -34,6 +37,18 @@ router.get("/", jwtMiddleware, async (req, res, next) => {
         {
           model: Comment,
           as: "parentComment", // 父评论信息
+          include: [
+            {
+              model: User,
+              as: "user", // 父评论的用户信息
+              attributes: ["id", "account", "nickName", "avatar"],
+            },
+          ],
+          required: false,
+        },
+        {
+          model: Comment,
+          as: "replies", // 关联父评论
           include: [
             {
               model: User,
