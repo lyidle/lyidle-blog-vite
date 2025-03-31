@@ -1,7 +1,8 @@
 import express from "express"
 // 引入 api
-import comments from "./comments"
+import reply from "./reply"
+
 const router = express.Router()
-// 挂载 api
-router.use("/comments", comments)
+// 挂载路由
+router.use("/reply", reply)
 export default router

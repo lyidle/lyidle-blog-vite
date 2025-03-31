@@ -39,6 +39,8 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 })
 
+router.use("/manager", pagination)
+
 // 根据id 获取 设置表的信息
 router.get(
   "/:settingId",
@@ -62,7 +64,5 @@ router.get(
     }
   }
 )
-
-router.use("/manager", pagination)
 // 挂载路由
 export default router

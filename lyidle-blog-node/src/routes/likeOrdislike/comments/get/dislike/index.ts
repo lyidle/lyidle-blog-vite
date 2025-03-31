@@ -12,7 +12,7 @@ router.get("/:commentId", async (req, res, next) => {
     // 查询点踩数量
     const { count, rows } = await LikeDislike.findAndCountAll({
       where: {
-        targetType: "articleComment",
+        targetType: "comment",
         commentId,
         dislikeType: "dislike", // 只统计点踩的记录
       },

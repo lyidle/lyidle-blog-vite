@@ -30,12 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       targetType: {
-        type: DataTypes.ENUM(
-          "articleComment",
-          "article",
-          "settingComment",
-          "setting"
-        ),
+        type: DataTypes.ENUM("comment", "article", "setting"),
         allowNull: false,
       },
       articleId: {

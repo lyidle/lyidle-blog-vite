@@ -1,6 +1,4 @@
 import express from "express"
-// 引入 jwt
-import { jwtMiddleware } from "@/middleware/auth"
 import { Op } from "sequelize"
 
 // 引入模型
@@ -8,7 +6,7 @@ const { Comment, User } = require("@/db/models")
 
 const router = express.Router()
 // 获取用户的回复信息
-router.get("/", jwtMiddleware, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   const userId = req.auth.id
   const { query } = req
 

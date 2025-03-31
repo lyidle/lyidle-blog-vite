@@ -604,12 +604,6 @@ $header-container-h: 12.5rem;
 }
 // 模块样式
 .doc-pages-pr {
-  // 点赞和点菜
-  ::v-deep(.moment-like) {
-    &.active {
-      color: rgb(217, 62, 62);
-    }
-  }
   .observer-menu {
     $height: 12.5rem;
     position: absolute;

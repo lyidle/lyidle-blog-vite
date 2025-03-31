@@ -7,7 +7,7 @@ const router = express.Router()
 // 点赞接口
 router.post("/:commentId", async (req, res, next) => {
   const { commentId } = req.params
-  const { likeType, articleId } = req.query
+  const { likeType, articleId, settingId } = req.query
   const userId = req.auth.id
   // 校验 commentId 是否合法
   if (!commentId) return res.result(void 0, "commentId必须要有值", false)
@@ -16,12 +16,11 @@ router.post("/:commentId", async (req, res, next) => {
   if (!["like", "normal"].includes(likeType as string)) {
     return res.result(void 0, "likeType 必须是 like 或 normal", false)
   }
-  // 校验 是否有 articleId
-  if (!articleId) return res.result(void 0, "articleId 必须要有值", false)
-
-  // 检查 文章 是否存在
-  const article = await Article.findByPk(articleId)
-  if (!article) return res.result(void 0, "文章不存在", false)
+  // 校验
+  if (!articleId && !settingId)
+    return res.result(void 0, "articleId、settingId必须有一个", false)
+  if (articleId && settingId)
+    return res.result(void 0, "articleId、settingId不能同时存在", false)
 
   // 检查评论是否存在
   const comment = await Comment.findByPk(commentId)
@@ -30,22 +29,27 @@ router.post("/:commentId", async (req, res, next) => {
   }
 
   try {
+    const whereCommend: any = {
+      userId,
+      targetType: "comment",
+      commentId,
+    }
+    if (articleId) whereCommend.articleId = articleId
+    if (settingId) whereCommend.settingId = settingId
+    const defaultCommend: any = {
+      commentId,
+      userId,
+      targetType: "comment",
+      likeType,
+      dislikeType: "normal", // 默认点踩状态为 normal
+    }
+    if (articleId) defaultCommend.articleId = articleId
+    if (settingId) defaultCommend.settingId = settingId
+
     // 查找或创建记录
     const [record, created] = await LikeDislike.findOrCreate({
-      where: {
-        userId,
-        targetType: "articleComment",
-        articleId,
-        commentId,
-      },
-      defaults: {
-        commentId,
-        articleId,
-        userId,
-        targetType: "articleComment",
-        likeType,
-        dislikeType: "normal", // 默认点踩状态为 normal
-      },
+      where: whereCommend,
+      defaults: defaultCommend,
     })
 
     // 如果记录已存在，则更新 likeType

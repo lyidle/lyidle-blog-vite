@@ -50,7 +50,7 @@
             </span>
           </div>
           <!-- 来源的 信息 -->
-          <div v-if="reply.replies?.id">
+          <div v-if="reply.replies?.id" class="origin">
             <div class="cur-text flex">
               <my-tooltip
                 class="box-item"
@@ -69,38 +69,52 @@
           </div>
           <!-- 时间、回复、点赞 -->
           <div class="flex gap-20px h-25px items-center">
-            <div class="cur-text">
+            <div class="cur-text h-inherit flex items-center">
               {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
             </div>
             <div class="flex gap-10px items-center h-inherit">
-              <div
-                class="cur-pointer !hover:color-[var(--primary-links-hover)]"
-              >
-                回复<i class="i-mynaui:chat w-14px h-14px ml-5px"></i>
-              </div>
-              {{ reply.fromId || reply.parentId }}
-              <layout-msg-reply-like
+              <!-- 点赞 -->
+              <layout-article-comments-likes
                 :settingId="reply.settingId"
                 :articleId="reply.articleId"
-              ></layout-msg-reply-like>
+                :commentId="reply.id"
+                class="msg-tools"
+              ></layout-article-comments-likes>
+              <!-- 点踩 -->
+              <layout-article-comments-dislikes
+                :settingId="reply.settingId"
+                :articleId="reply.articleId"
+                :commentId="reply.id"
+                class="msg-tools"
+              ></layout-article-comments-dislikes>
+              <!-- 回复 -->
+              <div
+                class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
+              >
+                <i class="i-mynaui:chat w-14px h-14px ml-5px"></i>
+                <span>回复</span>
+              </div>
+              <!-- 查看 -->
               <router-link
                 v-if="reply.articleId"
                 :to="`/doc/${reply.articleId}`"
-                class="!hover:color-[var(--primary-links-hover)]"
+                class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
-                查看<i
+                <i
                   class="i-lsicon:view-outline w-15px h-15px ml-5px translate-y-1px"
                 ></i>
+                <span>查看</span>
               </router-link>
               <!-- 如果是settingId的话 暂时就只有about -->
               <router-link
                 v-if="reply.settingId"
                 :to="`/person/about`"
-                class="!hover:color-[var(--primary-links-hover)]"
+                class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
-                查看<i
+                <i
                   class="i-lsicon:view-outline w-15px h-15px ml-5px translate-y-1px"
                 ></i>
+                <span>查看</span>
               </router-link>
             </div>
           </div>
@@ -157,6 +171,25 @@ onMounted(reqReplies)
 
 <style scoped lang="scss">
 .reply-msg-item {
-  border-bottom: 1px solid red;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.703);
+  // 点赞回复等 按钮
+  ::v-deep(.msg-tools) {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    i {
+      $size: 13px;
+      width: $size;
+      height: $size;
+    }
+    span {
+      font-size: 15px;
+    }
+  }
+  // 来源的 信息
+  .origin {
+    border-left: 2px solid rgba(128, 128, 128, 0.703);
+    padding-left: 10px;
+  }
 }
 </style>

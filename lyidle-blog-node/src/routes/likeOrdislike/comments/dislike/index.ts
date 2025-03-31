@@ -7,22 +7,20 @@ const router = express.Router()
 // 点踩接口
 router.post("/:commentId", async (req, res, next) => {
   const { commentId } = req.params
-  const { dislikeType, articleId } = req.query
+  const { dislikeType, articleId, settingId } = req.query
   const userId = req.auth.id
-
   // 校验 commentId 是否合法
   if (!commentId) return res.result(void 0, "commentId必须要有值", false)
 
   // 校验 dislikeType 是否合法
   if (!["dislike", "normal"].includes(dislikeType as string)) {
-    return res.result(void 0, "dislikeType 必须是 dislike 或 normal", false)
+    return res.result(void 0, "dislikeType 必须是 like 或 normal", false)
   }
-  // 校验 是否有 articleId
-  if (!articleId) return res.result(void 0, "articleId 必须要有值", false)
-
-  // 检查 文章 是否存在
-  const article = await Article.findByPk(articleId)
-  if (!article) return res.result(void 0, "文章不存在", false)
+  // 校验
+  if (!articleId && !settingId)
+    return res.result(void 0, "articleId、settingId必须有一个", false)
+  if (articleId && settingId)
+    return res.result(void 0, "articleId、settingId不能同时存在", false)
 
   // 检查评论是否存在
   const comment = await Comment.findByPk(commentId)
@@ -31,22 +29,27 @@ router.post("/:commentId", async (req, res, next) => {
   }
 
   try {
+    const whereCommend: any = {
+      userId,
+      targetType: "comment",
+      commentId,
+    }
+    if (articleId) whereCommend.articleId = articleId
+    if (settingId) whereCommend.settingId = settingId
+    const defaultCommend: any = {
+      commentId,
+      userId,
+      targetType: "comment",
+      dislikeType,
+      likeType: "normal", // 默认点赞状态为 normal
+    }
+    if (articleId) defaultCommend.articleId = articleId
+    if (settingId) defaultCommend.settingId = settingId
+
     // 查找或创建记录
     const [record, created] = await LikeDislike.findOrCreate({
-      where: {
-        userId,
-        targetType: "articleComment",
-        articleId,
-        commentId,
-      },
-      defaults: {
-        articleId,
-        commentId,
-        userId,
-        targetType: "articleComment",
-        dislikeType,
-        likeType: "normal", // 默认点赞状态为 normal
-      },
+      where: whereCommend,
+      defaults: defaultCommend,
     })
 
     // 如果记录已存在，则更新 dislikeType

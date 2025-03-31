@@ -20,12 +20,7 @@ module.exports = {
         onDelete: "CASCADE",
       },
       targetType: {
-        type: Sequelize.ENUM(
-          "articleComment",
-          "article",
-          "settingComment",
-          "setting"
-        ),
+        type: Sequelize.ENUM("comment", "article", "setting"),
         allowNull: false,
       },
       articleId: {

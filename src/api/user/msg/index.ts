@@ -5,7 +5,7 @@ import { paginationQuery } from "@/api/types/paginationQuery"
 // 统一管理 api
 enum API {
   // 回复我的
-  reply = "/user/replies/comments",
+  reply = "/user/msg/reply",
 }
 
 // API 的 key 的类型

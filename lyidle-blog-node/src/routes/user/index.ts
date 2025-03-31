@@ -15,8 +15,8 @@ import search from "@/routes/user/search"
 import admin from "@/routes/user/admin"
 // 引入 api/user/follow
 import follow from "@/routes/user/follow"
-// 引入 api/user/replies
-import replies from "./replies"
+// 引入 api/user/msg
+import msg from "./msg"
 
 const router = express.Router()
 // 挂载路由
@@ -27,5 +27,5 @@ router.use("/userinfo", userinfo)
 router.use("/search", search)
 router.use("/admin", admin)
 router.use("/follow", follow)
-router.use("/replies", replies)
+router.use("/msg", jwtMiddleware, msg)
 export default router

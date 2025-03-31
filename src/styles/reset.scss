@@ -46,6 +46,14 @@ input {
 .route-link {
   @include pages-links-hover;
 }
+
+// 点赞和点踩
+.moment-like {
+  &.active {
+    color: rgb(217, 62, 62);
+  }
+}
+
 .cur-text {
   cursor: var(--cursor-text);
   user-select: text;
