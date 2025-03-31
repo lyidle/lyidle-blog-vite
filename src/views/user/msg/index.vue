@@ -53,9 +53,11 @@
         我的消息
       </div>
       <!-- 内容 -->
-      <div class="bg-[var(--msg-bg)] rounded-[var(--r)] h-100%">
+      <div
+        class="bg-[var(--msg-bg)] rounded-[var(--r)] h-100% overflow-y-auto overflow-hidden"
+      >
         <!-- 回复我的 -->
-        <div v-if="$route.query.to === 'reply'">132134</div>
+        <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
       </div>
     </div>
   </my-card>

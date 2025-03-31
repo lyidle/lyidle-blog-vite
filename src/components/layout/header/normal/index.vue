@@ -7,6 +7,35 @@
       首页
     </router-link>
   </li>
+  <!-- 消息 -->
+  <global-header-item v-if="userId">
+    <my-anchor to="/user/msg?to=whisper">
+      <i class="i-formkit:email w-1em h-1em"></i>
+      消息
+    </my-anchor>
+    <template #menu-default>
+      <my-menu-item>
+        <my-anchor to="/user/msg?to=reply" class="w-100px text-center">
+          <span>回复我的</span>
+        </my-anchor>
+      </my-menu-item>
+      <my-menu-item>
+        <my-anchor to="/user/msg?to=at" class="w-100px text-center">
+          <span>@我的</span>
+        </my-anchor>
+      </my-menu-item>
+      <my-menu-item>
+        <my-anchor to="/user/msg?to=like" class="w-100px text-center">
+          <span>收到的赞</span>
+        </my-anchor>
+      </my-menu-item>
+      <my-menu-item>
+        <my-anchor to="/user/msg?to=system" class="w-100px text-center">
+          <span>我的消息</span>
+        </my-anchor>
+      </my-menu-item>
+    </template>
+  </global-header-item>
   <!-- 笔记 -->
   <layout-header-notes></layout-header-notes>
   <slot name="scend"></slot>
@@ -33,9 +62,13 @@
 <script setup lang="ts" name="TopNavNormal">
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
-
+// 引入 仓库
+import { useUserStore } from "@/store/user"
 // 个人页面
 const PersonData = useShowPersonHeaderMenu()
+
+// 提取数据
+const { userId } = storeToRefs(useUserStore())
 </script>
 
 <style scoped lang="scss"></style>

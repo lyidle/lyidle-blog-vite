@@ -340,7 +340,7 @@ Current colors taken from GitHub's CSS
         --header-bg-initial-during: 0.3s;
         --header-topnav-mask-height: 2px;
         --header-pd: 50px;
-        --header-topmenu-margin-left: 20px;
+        --header-topmenu-margin-left: 1.25rem;
         --header-topmenu-icon-mr: 5px;
         --header-topmenu-icon-pl: 15px;
         --header-topmenu-h: 25px;
@@ -1330,7 +1330,7 @@ Current colors taken from GitHub's CSS
         --aside-item-height: 50px;
         --primary-during: 0.3s;
         --header-topnav-mask-height: 2px;
-        --header-topmenu-margin-left: 20px;
+        --header-topmenu-margin-left: 1.25rem;
         --header-topmenu-h: 25px;
         --header-topmenu-icon-mr: 5px;
         --header-topmenu-icon-pl: 15px;
@@ -1684,7 +1684,7 @@ Current colors taken from GitHub's CSS
         --header-bg-initial-during: 0.3s;
         --header-topnav-mask-height: 2px;
         --header-pd: 50px;
-        --header-topmenu-margin-left: 20px;
+        --header-topmenu-margin-left: 1.25rem;
         --header-topmenu-icon-mr: 5px;
         --header-topmenu-icon-pl: 15px;
         --header-topmenu-h: 25px;
@@ -2646,7 +2646,7 @@ Current colors taken from GitHub's CSS
         --aside-item-height: 50px;
         --primary-during: 0.3s;
         --header-topnav-mask-height: 2px;
-        --header-topmenu-margin-left: 20px;
+        --header-topmenu-margin-left: 1.25rem;
         --header-topmenu-h: 25px;
         --header-topmenu-icon-mr: 5px;
         --header-topmenu-icon-pl: 15px;
