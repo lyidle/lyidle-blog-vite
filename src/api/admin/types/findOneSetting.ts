@@ -12,5 +12,6 @@ export interface Data {
   content: string[] | { [key: string]: any } | string
   id: number
   name: string
+  userId: number
   [property: string]: any
 }

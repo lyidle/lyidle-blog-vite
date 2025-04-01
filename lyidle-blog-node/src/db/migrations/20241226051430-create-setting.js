@@ -14,6 +14,17 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        comment: "所属用户的id",
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       content: {
         type: Sequelize.JSON,
       },

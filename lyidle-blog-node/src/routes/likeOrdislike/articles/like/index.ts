@@ -6,7 +6,7 @@ const router = express.Router()
 // 点赞接口
 router.post("/:articleId", async (req, res, next) => {
   const { articleId } = req.params
-  const { likeType } = req.query
+  const { likeType, targetUserId } = req.query
   const userId = req.auth.id
 
   // 校验 likeType 是否合法
@@ -28,6 +28,7 @@ router.post("/:articleId", async (req, res, next) => {
         userId,
         targetType: "article",
         articleId,
+        targetUserId,
       },
       defaults: {
         userId,
@@ -35,6 +36,7 @@ router.post("/:articleId", async (req, res, next) => {
         likeType,
         dislikeType: "normal", // 默认点踩状态为 normal
         articleId, // 关联的文章 ID
+        targetUserId,
       },
     })
 

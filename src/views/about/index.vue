@@ -17,7 +17,7 @@ const reqArticle = async () => {
   const result = await findOneSetting("关于")
   let content = decompressStringNotError(result?.content as string)
   settingId.value = result?.id || null
-  return { content }
+  return { content, userId: result?.userId }
 }
 const title = ref("关于")
 // 提供方法

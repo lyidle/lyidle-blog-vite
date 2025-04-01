@@ -7,7 +7,7 @@ const router = express.Router()
 // 点踩接口
 router.post("/:settingId", async (req, res, next) => {
   const { settingId } = req.params
-  const { dislikeType } = req.query
+  const { dislikeType, targetUserId } = req.query
   const userId = req.auth.id
 
   // 校验 dislikeType 是否合法
@@ -29,6 +29,7 @@ router.post("/:settingId", async (req, res, next) => {
         userId,
         targetType: "setting",
         settingId,
+        targetUserId,
       },
       defaults: {
         userId,
@@ -36,6 +37,7 @@ router.post("/:settingId", async (req, res, next) => {
         dislikeType,
         likeType: "normal", // 默认点赞状态为 normal
         settingId, // 关联的设置 ID
+        targetUserId,
       },
     })
 

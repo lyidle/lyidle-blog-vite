@@ -5,9 +5,11 @@ import { Request, Response, NextFunction } from "express"
 import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 const router = express.Router()
 // 引入 模型
-const { Setting } = require("@/db/models")
+const { Setting, User, Role } = require("@/db/models")
 // 引入redis 设置缓存
 import { setKey, getKey } from "@/utils/redis"
+
+const default_owner = process.env.default_owner
 router.post(
   "/",
   [jwtMiddleware, isAdmin],
@@ -23,8 +25,30 @@ router.post(
       if (!name) errorArray.push("name是必传项")
       if (!content) errorArray.push("content或者jsonContent是必传项")
       if (errorArray.length) return res.result(void 0, errorArray, false)
-
-      const setData: any = { name, content }
+      let ownerId = await getKey("ownerId")
+      if (!ownerId) {
+        const findUser = await User.findOne({
+          attributes: ["id"], // 只获取角色名称
+          include: [
+            {
+              model: Role,
+              attributes: ["id"],
+              through: { attributes: [] },
+              where: { name: default_owner },
+              required: true,
+            },
+          ],
+        })
+        if (!findUser)
+          return res.result(
+            void 0,
+            `设置${name}失败,没有初始化owner账户~`,
+            false
+          )
+        ownerId = findUser.id
+        await setKey("ownerId", ownerId)
+      }
+      const setData: any = { name, content, userId: ownerId }
 
       const { dataValues } = await Setting.create(setData)
 

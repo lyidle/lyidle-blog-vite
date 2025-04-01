@@ -91,12 +91,14 @@
           :settingId="settingId"
           :articleId="articleId"
           :commentId
+          :targetUserId="cloneComment.userId"
         ></layout-article-comments-likes>
         <!-- 点踩 -->
         <layout-article-comments-dislikes
           :settingId="settingId"
           :articleId="articleId"
           :commentId
+          :targetUserId="cloneComment.userId"
         ></layout-article-comments-dislikes>
         <!-- 回复 -->
         <!-- 看 b站 可以自己给自己回复 所以也没有限制 -->

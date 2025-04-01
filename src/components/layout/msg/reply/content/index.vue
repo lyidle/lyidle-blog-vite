@@ -1,10 +1,11 @@
 <template>
-  <div>{{ content }}</div>
+  <div>{{ decompressStringNotError(content) }}</div>
 </template>
 
 <script setup lang="ts" name="UserMessageReplyContent">
 import { findByPkSetting } from "@/api/admin"
 import { getOneArticle } from "@/api/article"
+import { decompressStringNotError } from "@/utils/compression"
 
 const props = defineProps<{
   settingId: number | undefined

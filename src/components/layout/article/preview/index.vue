@@ -242,6 +242,7 @@ const { userId } = storeToRefs(useUserStore())
 
 // 存储文章
 const article = ref<GetOneArticle["data"]>()
+
 const title = defineModel<string>("title")
 // 设置 的 id
 const settingId = defineModel<number | null>("settingId")
@@ -263,7 +264,10 @@ const reqArticle =
   inject<() => Promise<GetOneArticle["data"] | undefined>>("reqArticle")
 
 const props = withDefaults(
-  defineProps<{ isShowHeader?: boolean; isArticle?: boolean }>(),
+  defineProps<{
+    isShowHeader?: boolean
+    isArticle?: boolean
+  }>(),
   {
     isShowHeader: true,
     isArticle: true,
@@ -283,18 +287,22 @@ const toggleLike = async () => {
   const is = !!isLike.value
   try {
     if (!articleId && !_seetingId) {
-      throw new Error("")
+      throw new Error("没有id")
     }
+    const userId = article.value?.userId
+    if (!userId) throw new Error("没有用户的id")
     // 切换 是否点赞
     const likeType = likeTypeMap[`${is}`]
     // 修改 点赞 状态
     if (articleId)
       await articleToggleLike(articleId, {
         likeType,
+        targetUserId: userId,
       })
     if (_seetingId && _seetingId >= 0)
       await settingToggleLike(_seetingId, {
         likeType,
+        targetUserId: userId,
       })
 
     // 取反 is
@@ -323,24 +331,32 @@ const getLikes = async () => {
         () => article.value?.id,
         async (id) => {
           if (id) {
-            const result = await getArticleLikes(id)
-            // 判断用户是否点赞了
-            isLike.value = result?.userIds.includes(userId.value!) || false
-            // 得到点赞数量
-            likeCounts.value = result?.count || 0
-            // 停止监视 文章
-            stopArticleId()
+            try {
+              const result = await getArticleLikes(id)
+              // 判断用户是否点赞了
+              isLike.value = result?.userIds.includes(userId.value!) || false
+              // 得到点赞数量
+              likeCounts.value = result?.count || 0
+              // 停止监视 文章
+              stopArticleId()
+            } catch (error) {
+              console.error("初始化点赞数失败", error)
+            }
           }
         }
       )
       return
     }
-    // 有id直接获取
-    const result = await getArticleLikes(articleId)
-    // 判断用户是否点赞了
-    isLike.value = result?.userIds.includes(userId.value!) || false
-    // 得到点赞数量
-    likeCounts.value = result?.count || 0
+    try {
+      // 有id直接获取
+      const result = await getArticleLikes(articleId)
+      // 判断用户是否点赞了
+      isLike.value = result?.userIds.includes(userId.value!) || false
+      // 得到点赞数量
+      likeCounts.value = result?.count || 0
+    } catch (error) {
+      console.error("初始化点赞数失败", error)
+    }
     return
   }
   // 设置文章
@@ -350,24 +366,32 @@ const getLikes = async () => {
       () => settingId.value,
       async (id) => {
         if (id) {
-          const result = await getSettingLikes(id)
-          // 判断用户是否点赞了
-          isLike.value = result?.userIds.includes(userId.value!) || false
-          // 得到点赞数量
-          likeCounts.value = result?.count || 0
-          // 停止监视 设置文章
-          stopSetttingId()
+          try {
+            const result = await getSettingLikes(id)
+            // 判断用户是否点赞了
+            isLike.value = result?.userIds.includes(userId.value!) || false
+            // 得到点赞数量
+            likeCounts.value = result?.count || 0
+            // 停止监视 设置文章
+            stopSetttingId()
+          } catch (error) {
+            console.error("初始化点赞数失败", error)
+          }
         }
       }
     )
     return
   }
-  // 有id直接获取
-  const result = await getSettingLikes(_settingId)
-  // 判断用户是否点赞了
-  isLike.value = result?.userIds.includes(userId.value!) || false
-  // 得到点赞数量
-  likeCounts.value = result?.count || 0
+  try {
+    // 有id直接获取
+    const result = await getSettingLikes(_settingId)
+    // 判断用户是否点赞了
+    isLike.value = result?.userIds.includes(userId.value!) || false
+    // 得到点赞数量
+    likeCounts.value = result?.count || 0
+  } catch (error) {
+    console.error("初始化点赞数失败", error)
+  }
 }
 
 // 获取 文章的 收藏状态
@@ -381,19 +405,27 @@ const getCollects = async () => {
       () => article.value?.id,
       async (id) => {
         if (id) {
-          const result = await getArticleCollects(id)
-          isCollect.value = result?.userIds?.includes(userId.value!) || false
-          collectCounts.value = result.count || 0
-          stopArticleId()
+          try {
+            const result = await getArticleCollects(id)
+            isCollect.value = result?.userIds?.includes(userId.value!) || false
+            collectCounts.value = result.count || 0
+            stopArticleId()
+          } catch (error) {
+            console.error("初始化收藏数失败", error)
+          }
         }
       }
     )
     return
   }
-  // 有id 获取
-  const result = await getArticleCollects(id)
-  isCollect.value = result?.userIds?.includes(userId.value!) || false
-  collectCounts.value = result.count || 0
+  try {
+    // 有id 获取
+    const result = await getArticleCollects(id)
+    isCollect.value = result?.userIds?.includes(userId.value!) || false
+    collectCounts.value = result.count || 0
+  } catch (error) {
+    console.error("初始化收藏数失败", error)
+  }
 }
 
 // 切换 文章的 收藏状态
@@ -422,17 +454,25 @@ const getShares = async () => {
   // 处理文章
   if (props.isArticle) {
     if (articleId) {
-      const result = await getArticleShares(articleId)
-      shareCounts.value = result || 0
+      try {
+        const result = await getArticleShares(articleId)
+        shareCounts.value = result || 0
+      } catch (error) {
+        console.warn("获取分享数失败", error)
+      }
       return
     }
     const stopArticleId = watch(
       () => article.value?.id,
       async (id) => {
         if (id) {
-          const result = await getArticleShares(id)
-          shareCounts.value = result || 0
-          stopArticleId()
+          try {
+            const result = await getArticleShares(id)
+            shareCounts.value = result || 0
+            stopArticleId()
+          } catch (error) {
+            console.warn("获取分享数失败", error)
+          }
         }
       }
     )
@@ -440,8 +480,12 @@ const getShares = async () => {
   }
   // 处理设置
   if (_seetingId) {
-    const result = await getSettingShares(_seetingId)
-    shareCounts.value = result || 0
+    try {
+      const result = await getSettingShares(_seetingId)
+      shareCounts.value = result || 0
+    } catch (error) {
+      console.warn("获取分享数失败", error)
+    }
     return
   }
 
@@ -449,9 +493,13 @@ const getShares = async () => {
     () => settingId.value,
     async (id) => {
       if (id) {
-        const result = await getSettingShares(id)
-        shareCounts.value = result || 0
-        stopSetttingId()
+        try {
+          const result = await getSettingShares(id)
+          shareCounts.value = result || 0
+          stopSetttingId()
+        } catch (error) {
+          console.warn("获取分享数失败", error)
+        }
       }
     }
   )

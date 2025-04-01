@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      targetUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       targetType: {
         type: DataTypes.ENUM("comment", "article", "setting"),
         allowNull: false,

@@ -78,6 +78,7 @@
                 :settingId="reply.settingId"
                 :articleId="reply.articleId"
                 :commentId="reply.id"
+                :targetUserId="reply.userId"
                 class="msg-tools"
               ></layout-article-comments-likes>
               <!-- 点踩 -->
@@ -85,6 +86,7 @@
                 :settingId="reply.settingId"
                 :articleId="reply.articleId"
                 :commentId="reply.id"
+                :targetUserId="reply.userId"
                 class="msg-tools"
               ></layout-article-comments-dislikes>
               <!-- 回复 -->

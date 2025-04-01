@@ -7,7 +7,7 @@ const router = express.Router()
 // 点踩接口
 router.post("/:commentId", async (req, res, next) => {
   const { commentId } = req.params
-  const { dislikeType, articleId, settingId } = req.query
+  const { dislikeType, articleId, settingId, targetUserId } = req.query
   const userId = req.auth.id
   // 校验 commentId 是否合法
   if (!commentId) return res.result(void 0, "commentId必须要有值", false)
@@ -33,6 +33,7 @@ router.post("/:commentId", async (req, res, next) => {
       userId,
       targetType: "comment",
       commentId,
+      targetUserId,
     }
     if (articleId) whereCommend.articleId = articleId
     if (settingId) whereCommend.settingId = settingId
@@ -41,6 +42,7 @@ router.post("/:commentId", async (req, res, next) => {
       userId,
       targetType: "comment",
       dislikeType,
+      targetUserId,
       likeType: "normal", // 默认点赞状态为 normal
     }
     if (articleId) defaultCommend.articleId = articleId

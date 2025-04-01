@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       content: DataTypes.JSON,
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
     {
       sequelize,

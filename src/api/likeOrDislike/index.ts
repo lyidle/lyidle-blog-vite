@@ -35,12 +35,12 @@ const server = import.meta.env.VITE_SERVE
 
 // #region 文章的评论点赞
 // 得到 点赞数
-export const getArticleCommentLikes = (commentId: number) =>
+export const getCommentLikes = (commentId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
     server + prefix + API.commentLike + `/${commentId}`
   )
 // 点赞
-export const articleToggleCommentLikes = (
+export const toggleCommentLikes = (
   commentId: number,
   data: AddCommentLikeOrDislikeQuery
 ) =>
@@ -53,12 +53,12 @@ export const articleToggleCommentLikes = (
   )
 
 // 得到 点踩数
-export const getArticleCommentDislikes = (commentId: number) =>
+export const getCommentDislikes = (commentId: number) =>
   request.get<any, LikeOrDislikeCounts["data"]>(
     server + prefix + API.commentDislike + `/${commentId}`
   )
 // 点踩
-export const articleToggleCommentDislikes = (
+export const toggleCommentDislikes = (
   commentId: number,
   data: AddCommentLikeOrDislikeQuery
 ) =>

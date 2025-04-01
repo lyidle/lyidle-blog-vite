@@ -7,7 +7,6 @@ const router = express.Router()
 // 获取文章的点赞数量
 router.get("/:articleId", async (req, res, next) => {
   const { articleId } = req.params
-
   try {
     // 查询点赞数量
     const { count, rows } = await LikeDislike.findAndCountAll({
@@ -17,7 +16,6 @@ router.get("/:articleId", async (req, res, next) => {
         likeType: "like", // 只统计点赞的记录
       },
     })
-
     // 返回结果
     res.result(
       { count, userIds: rows.map((item: any) => item?.userId) },

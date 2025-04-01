@@ -7,10 +7,13 @@ import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 import { setRoles } from "@/utils/db/user/setRoles"
 // 清除 对应 User 的缓存
 import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { Op } from "sequelize"
+import { setKey } from "@/utils/redis"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 const router = express.Router()
 
+const default_owner = process.env.default_owner!
 // 不需要验证 角色信息
 // 需要验证 登录用户拥有权限 admin
 router.post(
@@ -19,11 +22,40 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 得到id
-      const { id, roles } = req.body
+      let { id, roles } = req.body
 
       if (!id || !roles?.length)
         return res.result(void 0, "设置用户权限时,id和roles是必传项", false)
+      if (roles.includes(default_owner)) {
+        const findRole = await User.findOne({
+          attributes: ["id"], // 只获取角色名称
+          where: {
+            id: { [Op.ne]: id }, // 排除当前的这条记录
+          },
+          include: [
+            {
+              model: Role,
+              attributes: ["id"],
+              through: { attributes: [] },
+              where: { name: default_owner },
+              required: true,
+            },
+          ],
+        })
+        // 找到有 owner 的去除掉
+        if (findRole)
+          return res.result(
+            void 0,
+            `设置用户权限时,${default_owner}只能拥有一个~`,
+            false
+          )
 
+        // 没有找到说明是 自身
+        if (!findRole) {
+          // 设置role 为owner 的 ownerId 缓存
+          await setKey("ownerId", id)
+        }
+      }
       // 查询对应id的信息
       const findUser = await User.findByPk(id, {
         paranoid: false,

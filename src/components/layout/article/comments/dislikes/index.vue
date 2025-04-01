@@ -10,10 +10,7 @@
 
 <script setup lang="ts" name="CommentDislikes">
 // 引入 api
-import {
-  articleToggleCommentDislikes,
-  getArticleCommentDislikes,
-} from "@/api/likeOrDislike"
+import { toggleCommentDislikes, getCommentDislikes } from "@/api/likeOrDislike"
 // 引入 类型
 import type { AddCommentLikeOrDislikeQuery } from "@/api/likeOrDislike/types/addCommentLikeOrDislikeQuery"
 // 引入 处理错误的函数
@@ -29,6 +26,7 @@ const props = withDefaults(
     commentId?: number
     articleId?: number
     settingId?: number
+    targetUserId: number
   }>(),
   {
     commentId: undefined,
@@ -47,7 +45,7 @@ const reqCommentDislikes = async () => {
   // 去除空的判断
   if (!validate()) return
   // 处理 点赞数量
-  let result = await getArticleCommentDislikes(props.commentId!)
+  let result = await getCommentDislikes(props.commentId!)
   // 处理 点赞数量
   if (result?.count) dislikeCounts.value = result?.count
   // 判断是否 点赞
@@ -94,10 +92,11 @@ const toggleDislike = async () => {
     // 修改 点踩 状态
     const commend: AddCommentLikeOrDislikeQuery = {
       dislikeType,
+      targetUserId: props.targetUserId,
     }
     if (props.articleId) commend.articleId = props.articleId
     if (props.settingId) commend.settingId = props.settingId
-    await articleToggleCommentDislikes(props.commentId!, commend)
+    await toggleCommentDislikes(props.commentId!, commend)
 
     // 取反 is
     isUserDislike.value = !is

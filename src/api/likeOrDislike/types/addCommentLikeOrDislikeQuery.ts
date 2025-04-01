@@ -5,5 +5,6 @@ export interface AddCommentLikeOrDislikeQuery {
    * "like" | "normal" | "dislike"
    */
   likeType?: "like" | "normal" | "dislike"
+  targetUserId: number
   [property: string]: any
 }

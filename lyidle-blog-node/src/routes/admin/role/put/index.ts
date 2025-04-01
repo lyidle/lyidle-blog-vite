@@ -19,6 +19,7 @@ const { Role, User } = require("@/db/models")
 // 引入 环境变量
 const default_owner = process.env.default_owner!
 const default_admin = process.env.default_admin!
+const default_user = process.env.default_user!
 
 const router = express.Router()
 
@@ -58,13 +59,20 @@ router.put(
       if (!findRole) return res.result(void 0, "没有找到需要更新的角色", false)
 
       // 得到 name
-      const _name = findRole.dataValues?.name
-      // 找到 了 则更新
+      const _name = findRole.name
+      const isName =
+        (_name === default_owner && name !== default_owner && default_owner) ||
+        (_name === default_admin && name !== default_admin && default_admin) ||
+        (_name === default_user && name !== default_user && default_user)
       // 限制指定的name 不能修改
-      _name !== default_owner &&
-        _name !== default_admin &&
-        name &&
-        findRole.set("name", name)
+      if (isName)
+        return res.result(
+          void 0,
+          `更新角色失败,不能修改角色为${isName}的名字`,
+          false
+        )
+
+      findRole.set("name", name)
       findRole.set("desc", desc || null)
 
       // 验证 修改了的 属性字段

@@ -19,6 +19,17 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      targetUserId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        comment: "被点赞的用户id",
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       targetType: {
         type: Sequelize.ENUM("comment", "article", "setting"),
         allowNull: false,

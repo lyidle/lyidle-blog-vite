@@ -3,10 +3,28 @@ import { readFileSync } from "fs"
 import { join } from "path"
 
 // 引入模型
-const { User, Article, Setting, Visitor } = require("@/db/models")
+const { User, Article, Setting, Visitor, Role } = require("@/db/models")
 const is_production = JSON.parse(process.env.is_production!)
-
+const default_owner = process.env.default_owner
 export default async () => {
+  let ownerId = await getKey("ownerId")
+  if (!ownerId) {
+    const findUser = await User.findOne({
+      attributes: ["id"], // 只获取角色名称
+      include: [
+        {
+          model: Role,
+          attributes: ["id"],
+          through: { attributes: [] },
+          where: { name: default_owner },
+          required: true,
+        },
+      ],
+    })
+    if (!findUser) throw new Error("没有初始化owner账户")
+    ownerId = findUser.id
+    await setKey("ownerId", ownerId)
+  }
   // 并行执行所有初始化任务
   const results = await Promise.allSettled([
     // 初始化 创站时间
@@ -77,6 +95,7 @@ export default async () => {
       if (announce === null) {
         const { dataValues } = await Setting.create({
           name: "公告",
+          userId: ownerId,
           content: is_production
             ? ""
             : "公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容",
@@ -91,6 +110,7 @@ export default async () => {
       if (copyright === null) {
         const { dataValues } = await Setting.create({
           name: "版权",
+          userId: ownerId,
           content: is_production ? "" : "©2024-2025",
         })
         await setKey("setting:版权", dataValues)
@@ -103,6 +123,7 @@ export default async () => {
       if (follow === null) {
         const { dataValues } = await Setting.create({
           name: "联系方式",
+          userId: ownerId,
           content: {
             weChat: "LIDSGOA",
             QQ: "912512766",
@@ -125,6 +146,7 @@ export default async () => {
       if (about === null) {
         const { dataValues } = await Setting.create({
           name: "关于",
+          userId: ownerId,
           content: aboutMd,
         })
         await setKey("setting:关于", dataValues)
@@ -135,6 +157,7 @@ export default async () => {
       if (note === null) {
         const { dataValues } = await Setting.create({
           name: "笔记菜单项",
+          userId: ownerId,
           content: ["前端", "后端"],
         })
         await setKey("setting:笔记菜单项", dataValues)
