@@ -1,5 +1,5 @@
 <template>
-  <!-- 蒙版透明 -->
+  <!-- loading -->
   <teleport to="body">
     <div
       ref="obEl"
@@ -589,11 +589,6 @@ useGlobalEmitter()
   --mask: rgba(0, 0, 0, 0.644);
   color: rgb(199, 212, 228);
   opacity: v-bind(_opacity);
-  transition: opacity 0.3s;
-  > div {
-    top: 50%;
-    left: 50%;
-  }
 }
 </style>
 
@@ -629,12 +624,13 @@ useGlobalEmitter()
   --mask: rgba(255, 255, 255, 0.312);
   pointer-events: var(--event);
   width: 100%;
-  height: calc(var(--size-1) * 2 + 20px);
+  height: 100%;
   position: relative;
   background-color: var(--mask);
+  transition: all 0.3s;
   > div {
     position: absolute;
-    top: 35%;
+    top: 50%;
     left: 50%;
     &[class^="line"] {
       border-radius: 50%;

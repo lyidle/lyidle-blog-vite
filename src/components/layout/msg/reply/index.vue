@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col p-10px">
+  <div class="flex flex-col p-10px h-100%">
     <div v-for="reply in replies" class="p-10px reply-msg-item">
       <div class="flex gap-20px justify-between">
         <!-- 头像 -->
@@ -153,7 +153,7 @@
     <div
       ref="obEl"
       v-my-loading="() => ({ show: isLoading })"
-      :style="{ '--mask': '#0000' }"
+      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0px' }"
     ></div>
   </div>
 </template>

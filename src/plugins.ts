@@ -21,7 +21,7 @@ import { useUserStore } from "@/store/user"
 import { useSettingStore } from "@/store/setting"
 // 重试 次数
 let tryCounts: number | null = 0
-const maxCounts = 3
+const maxCounts = 5
 export default {
   // 安装插件
   install(app: any) {
