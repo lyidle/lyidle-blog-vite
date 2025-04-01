@@ -1,13 +1,11 @@
 <template>
   <div class="user flex gap-20px">
     <!-- 头像 -->
-    <router-link :to="`/user/space/${user.account}`">
-      <global-avatar-src
-        :account="user.avatar"
-        :avatar="user.avatar"
-        style="--avatar-size: 80px"
-      ></global-avatar-src>
-    </router-link>
+    <global-avatar-src
+      :account="user.account"
+      :avatar="user.avatar"
+      style="--avatar-size: 80px"
+    ></global-avatar-src>
     <!-- 用户信息 -->
     <div class="flex flex-col justify-between">
       <my-tooltip

@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "settingId",
         as: "setting",
       })
+
+      // 定义与评论表关联
+      this.belongsTo(models.Comment, {
+        foreignKey: "commentId",
+        as: "comment",
+      })
     }
   }
   LikeDislike.init(

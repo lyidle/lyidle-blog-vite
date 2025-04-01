@@ -45,7 +45,7 @@
         </li>
       </ul>
     </aside>
-    <div class="w-100% p-10px flex flex-col gap-15px">
+    <div class="p-10px flex flex-col gap-15px flex-1 overflow-hidden">
       <!-- title -->
       <div
         class="bg-[var(--msg-bg)] flex-shrink-0 text-1.0625rem rounded-[var(--r)] cur-text py-10px pl-15px"
@@ -54,10 +54,11 @@
       </div>
       <!-- 内容 -->
       <div
-        class="bg-[var(--msg-bg)] rounded-[var(--r)] h-100% overflow-y-auto overflow-hidden"
+        class="bg-[var(--msg-bg)] rounded-[var(--r)] h-100% overflow-y-auto overflow-hidden rounded-[var(--r)]"
       >
         <!-- 回复我的 -->
         <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
+        <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
       </div>
     </div>
   </my-card>

@@ -1,7 +1,7 @@
 <template>
   <div class="avatar">
     <my-anchor
-      :to="isTo ? `/user/space/${showAccount}` : ''"
+      :to="isTo ? `/user/space/${account || showAccount}` : ''"
       class="w-100% h-100% block"
       :style="{
         cursor: !isCursor ? 'unset!important' : 'var(--cursor-pointer)',
@@ -35,6 +35,7 @@ const props = withDefaults(
     isCursor?: boolean
     isCenter?: boolean
     imgSrc?: string
+    account?: string
   }>(),
   {
     isTo: true,

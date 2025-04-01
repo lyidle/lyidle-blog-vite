@@ -613,7 +613,7 @@ useGlobalEmitter()
 
 <!-- lading -->
 <style lang="scss">
-@property --r {
+@property --angle {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
@@ -627,7 +627,7 @@ useGlobalEmitter()
   height: 100%;
   position: relative;
   background-color: var(--mask);
-  transition: all 0.3s;
+  transition: width 0.3s, opacity 0.3s;
   > div {
     position: absolute;
     top: 50%;
@@ -640,7 +640,7 @@ useGlobalEmitter()
       border-color: currentColor;
       border-right-color: transparent;
       border-left-color: transparent;
-      transform: translate(-50%, -50%) rotate(var(--r));
+      transform: translate(-50%, -50%) rotate(var(--angle));
       animation: line-rotate 1s linear infinite;
       &.line-1 {
         width: var(--size-1);
@@ -657,13 +657,13 @@ useGlobalEmitter()
       }
       @keyframes line-rotate {
         0% {
-          --r: 0deg;
+          --angle: 0deg;
         }
         50% {
-          --r: 180deg;
+          --angle: 180deg;
         }
         100% {
-          --r: 360deg;
+          --angle: 360deg;
         }
       }
     }

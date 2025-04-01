@@ -5,6 +5,8 @@
     <div class="avatar-container">
       <!-- 头像 -->
       <global-avatar-src
+        :isTo="false"
+        :isCursor="false"
         :account="account"
         :avatar="userInfo?.avatar || null"
         style="--avatar-size: 80px"

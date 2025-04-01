@@ -1,13 +1,12 @@
 import express from "express"
 import { Op } from "sequelize"
-
-// 引入模型
-const { Comment, User, Article, Setting } = require("@/db/models")
+const { LikeDislike, User, Article, Setting, Comment } = require("@/db/models")
 
 const router = express.Router()
-// 获取用户的回复信息
+
+// 获取用户的点赞/点踩信息
 router.get("/", async (req, res, next) => {
-  const userId = req.auth.id
+  const targetUserId = req.auth.id
   const { query } = req
 
   /**
@@ -19,21 +18,16 @@ router.get("/", async (req, res, next) => {
   const offset = (currentPage - 1) * pageSize
 
   try {
-    const { count, rows } = await Comment.findAndCountAll({
+    const { count, rows } = await LikeDislike.findAndCountAll({
       where: {
-        [Op.or]: {
-          fromUserId: userId,
-          targetUserId: userId,
-        },
-        [Op.not]: {
-          // 不能是自身
-          userId,
-        },
+        targetUserId,
+        likeType: "like",
+        userId: { [Op.ne]: targetUserId },
       },
       include: [
         {
           model: User,
-          as: "user", // 评论作者信息
+          as: "user", // 点赞/点踩的用户信息
           attributes: ["id", "account", "nickName", "avatar"],
         },
         {
@@ -50,26 +44,7 @@ router.get("/", async (req, res, next) => {
         },
         {
           model: Comment,
-          as: "parentComment", // 父评论信息
-          include: [
-            {
-              model: User,
-              as: "user", // 父评论的用户信息
-              attributes: ["id", "account", "nickName", "avatar"],
-            },
-          ],
-          required: false,
-        },
-        {
-          model: Comment,
-          as: "replies", // 关联父评论
-          include: [
-            {
-              model: User,
-              as: "user", // 父评论的用户信息
-              attributes: ["id", "account", "nickName", "avatar"],
-            },
-          ],
+          as: "comment", // 关联的设置信息
           required: false,
         },
       ],
@@ -89,13 +64,13 @@ router.get("/", async (req, res, next) => {
         currentPage,
         pageSize,
       },
-      replies: rows,
+      likes: rows,
     }
 
-    res.result(result, "获取用户回复信息成功")
+    res.result(result, "获取用户点赞信息成功")
   } catch (error) {
     res.validateAuth(error, next, () =>
-      res.result(void 0, "获取用户回复信息失败", false)
+      res.result(void 0, "获取用户点赞信息失败", false)
     )
   }
 })

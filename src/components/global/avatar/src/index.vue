@@ -1,9 +1,8 @@
 <template>
   <global-avatar
     :isCenter="false"
-    :isTo="false"
-    :isCursor="false"
     v-bind="$attrs"
+    :account
     :imgSrc="
       showAvatar()
         ? `url('${escapeUrlForRegExp(showAvatar())}')`

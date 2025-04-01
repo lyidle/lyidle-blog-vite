@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col p-10px h-100%">
+  <div class="flex flex-col p-10px">
     <div v-for="reply in replies" class="p-10px reply-msg-item">
-      <div class="flex gap-20px justify-between">
+      <div class="flex gap-10px justify-between overflow-hidden">
         <!-- 头像 -->
         <global-avatar-src
           :account="reply.user.account"
@@ -10,19 +10,21 @@
           class="flex-shrink-0"
         ></global-avatar-src>
         <!-- 中间的信息 -->
-        <div class="flex flex-col gap-10px flex-1">
+        <div class="flex flex-col gap-15px flex-1 overflow-hidden">
           <!-- 谁回复谁 -->
-          <div class="cur-text w-fit">
+          <div class="cur-text w-fit flex gap-10px">
             <my-tooltip
               class="box-item"
               effect="dark"
               :content="`作者:${reply.user.account}`"
-              placement="right-start"
+              placement="right"
             >
               <router-link
                 :to="`/user/space/${reply.user.account}`"
                 class="!hover:color-[var(--primary-links-hover)] font-bold"
-                >{{ reply.user.nickName }}
+                ><span class="max-w-100px line-clamp-1"
+                  >{{ reply.user.nickName }}
+                </span>
               </router-link>
             </my-tooltip>
             {{ reply.replies?.id ? "回复了我的评论" : "对我的文章发布了评论" }}
@@ -35,17 +37,19 @@
                 class="box-item"
                 effect="dark"
                 :content="`作者:${userAccount}`"
-                placement="right-start"
+                placement="right"
               >
                 <router-link
                   :to="`/user/space/${userAccount}`"
-                  class="color-[var(--at-person-color)] hover:color-[var(--at-person-color-hover)]"
+                  class="color-[var(--at-person-color)] hover:color-[var(--at-person-color-hover)] flex"
                 >
-                  @{{ userNickName }}:
+                  @<span class="max-w-100px line-clamp-1"
+                    >{{ userNickName }} </span
+                  >:
                 </router-link>
               </my-tooltip>
             </span>
-            <span class="flex-1 line-clamp-1">
+            <span class="flex-1 truncate">
               {{ decompressStringNotError(reply.content) }}
             </span>
           </div>
@@ -56,18 +60,17 @@
                 class="box-item"
                 effect="dark"
                 :content="`作者:${reply.replies.user.account}`"
-                placement="right-start"
+                placement="right"
               >
                 <span>{{ reply.replies.user.nickName }}</span>
               </my-tooltip>
               :
               <span class="line-clamp-1">
                 {{ decompressStringNotError(reply.replies?.content) }}
-                quo.
               </span>
             </div>
           </div>
-          <!-- 时间、回复、点赞 -->
+          <!-- 时间、回复、点赞、查看 -->
           <div class="flex gap-20px h-25px items-center">
             <div class="cur-text h-inherit flex items-center">
               {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
@@ -94,31 +97,25 @@
                 class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
                 @click="emitReply(reply)"
               >
-                <i class="i-mynaui:chat w-14px h-14px ml-5px"></i>
+                <i class="i-mynaui:chat w-14px h-14px"></i>
                 <span>回复</span>
               </div>
               <!-- 查看 -->
-              <router-link
-                v-if="reply.articleId"
-                :to="`/doc/${reply.articleId}`"
+              <my-anchor
+                :to="
+                  reply.articleId
+                    ? `/doc/${reply.articleId}`
+                    : reply.settingId
+                    ? '/person/about'
+                    : ''
+                "
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
                 <i
-                  class="i-lsicon:view-outline w-15px h-15px ml-5px translate-y-1px"
+                  class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
                 ></i>
                 <span>查看</span>
-              </router-link>
-              <!-- 如果是settingId的话 暂时就只有about -->
-              <router-link
-                v-if="reply.settingId"
-                :to="`/person/about`"
-                class="!hover:color-[var(--primary-links-hover)] msg-tools"
-              >
-                <i
-                  class="i-lsicon:view-outline w-15px h-15px ml-5px translate-y-1px"
-                ></i>
-                <span>查看</span>
-              </router-link>
+              </my-anchor>
             </div>
           </div>
           <!-- 回复框 -->
@@ -135,29 +132,25 @@
           ></layout-article-comments-add>
         </div>
         <!-- 顶层的信息 -->
-        <div
-          v-if="reply.parentComment?.id"
-          class="h-90px w-100px cur-text line-clamp-5"
-        >
-          {{ decompressStringNotError(reply.parentComment?.content || "") }}
+        <div class="h-90px w-100px cur-text line-clamp-5 flex-shrink-0">
+          {{
+            decompressStringNotError(
+              reply.parentComment?.content ||
+                reply.article?.title ||
+                reply.setting?.name ||
+                ""
+            )
+          }}
         </div>
-        <!-- 不是评论 是文章 -->
-        <layout-msg-reply-content
-          v-else
-          :articleId="reply.articleId"
-          :settingId="reply.settingId"
-          class="h-90px w-100px cur-text line-clamp-5"
-        >
-        </layout-msg-reply-content>
       </div>
     </div>
-    <!-- 蒙版透明 -->
-    <div
-      ref="obEl"
-      v-my-loading="() => ({ show: isLoading })"
-      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0px' }"
-    ></div>
   </div>
+  <!-- loading -->
+  <div
+    ref="obEl"
+    v-my-loading="() => ({ show: isLoading })"
+    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+  ></div>
 </template>
 
 <script setup lang="ts" name="UserMessageReply">
@@ -174,7 +167,7 @@ import { createIntersectionObserver } from "@/utils/observer"
 // 提取 需要的数据
 const { userNickName, userAccount } = storeToRefs(useUserStore())
 
-const isLoading = ref(false)
+const isLoading = ref(true)
 
 const obEl = ref<HTMLElement>()
 onMounted(() => {
@@ -200,33 +193,35 @@ let init = false
 const reqReplies = async () => {
   isLoading.value = true
   // 判断是否超出
-  if (pagination.value.total) {
+  if (init && pagination.value.total) {
     const is =
       pagination.value.total -
         pagination.value.currentPage * pagination.value.pageSize >
       0
     if (is) {
-      const result = await getUserReply({
-        currentPage: pagination.value.currentPage,
-        pageSize: pagination.value.pageSize,
-      })
-      replies.value = replies.value.concat(result.replies)
-      pagination.value = result.pagination
+      await reqUserReplyCallback()
     }
     isLoading.value = false
     return
   }
   // 初始化数据
   if (!init) {
-    const result = await getUserReply({
-      currentPage: pagination.value.currentPage,
-      pageSize: pagination.value.pageSize,
+    await reqUserReplyCallback(() => {
+      init = true
+      isLoading.value = false
     })
-    replies.value = replies.value.concat(result.replies)
-    pagination.value = result.pagination
-    init = true
-    isLoading.value = false
   }
+}
+
+// 得到 数据的回调
+const reqUserReplyCallback = async (cb?: () => void) => {
+  const result = await getUserReply({
+    currentPage: pagination.value.currentPage,
+    pageSize: pagination.value.pageSize,
+  })
+  replies.value = replies.value.concat(result.replies)
+  pagination.value = result.pagination
+  cb?.()
 }
 
 type curReplyType = GetUserReply["data"]["replies"][0]
