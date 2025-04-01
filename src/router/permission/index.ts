@@ -12,6 +12,7 @@ import { handlerAsyncRoutes } from "./handlerAsyncRoutes"
 import { handlerConstRoutes } from "./handlerConstRoutes"
 // 引入 设置title 的函数
 import { setTitle } from "./setTitle"
+import { useSettingStore } from "@/store/setting"
 /**
  * 配置权限控制逻辑
  * @param router - Vue Router 实例
@@ -21,6 +22,8 @@ export const usePermission = (router: Router) => {
   // 配置事件处理
   routerEventHandlered(router)
   router.beforeEach(async (to, from, next) => {
+    const { isLoading } = storeToRefs(useSettingStore())
+    isLoading.value = true
     // 异步路由的加载 需要再 路由加载后才能处理 加载404问题
     await initMenuList()
     // 处理常量路由的 权限问题
@@ -46,12 +49,15 @@ export const usePermission = (router: Router) => {
     }
 
     next()
-
     // 如果路由发生变化 则触发 router changed 事件
     if (to !== from)
       setTimeout(() => {
         mitt.emit("router changed", { to, from })
       }, 100)
+  })
+  router.afterEach(() => {
+    const { isLoading } = storeToRefs(useSettingStore())
+    isLoading.value = false
   })
   return router
 }

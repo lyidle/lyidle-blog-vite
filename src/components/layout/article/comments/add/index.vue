@@ -68,7 +68,7 @@ const props = defineProps<{
   articleId?: number
   settingId?: number
   //  请求评论的接口
-  reqComments: () => void
+  reqComments?: () => void
   // 添加评论的回调
   addComments?: (updateBody: AddCommentBody) => void
   btnName?: string

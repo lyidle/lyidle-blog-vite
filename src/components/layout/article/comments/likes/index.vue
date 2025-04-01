@@ -65,13 +65,13 @@ const validate = (): void | boolean => {
   const id = props.articleId || props.settingId
   // 验证 信息
   if (!id) {
-    console.error("评论区加载失败，没有id")
-    ElMessage.warning("评论区加载失败，没有id")
+    console.error("操作失败，没有id")
+    ElMessage.warning("操作失败，没有id")
     return
   }
   if (props.articleId && props.settingId) {
-    console.error("评论区加载失败，id冲突")
-    ElMessage.warning("评论区加载失败，id冲突")
+    console.error("操作失败，id冲突")
+    ElMessage.warning("操作失败，id冲突")
     return
   }
   // 没有 评论id

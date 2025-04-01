@@ -453,7 +453,7 @@ Current colors taken from GitHub's CSS
       }
 
       html[themes="normal-light"] .global-content {
-        --pages-card-bg: white;
+        --primary-card-bg: white;
         --pages-card-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
         --pages-card-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
       }
@@ -890,7 +890,7 @@ Current colors taken from GitHub's CSS
       }
 
       html[themes="normal-dark"] .global-content {
-        --pages-card-bg: #375366;
+        --primary-card-bg: #375366;
         --pages-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
         --pages-card-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
       }
@@ -1791,7 +1791,7 @@ Current colors taken from GitHub's CSS
         );
       }
       html[themes="normal-light"] .global-content {
-        --pages-card-bg: white;
+        --primary-card-bg: white;
         --pages-card-shadow: -5px 5px 10px rgba(180, 203, 225, 0.5);
         --pages-card-shadow-fixed: 0px 5px 10px rgba(204, 152, 164, 0.8);
       }
@@ -2215,7 +2215,7 @@ Current colors taken from GitHub's CSS
         );
       }
       html[themes="normal-dark"] .global-content {
-        --pages-card-bg: #375366;
+        --primary-card-bg: #375366;
         --pages-card-shadow: 5px 5px 10px rgba(28, 48, 67, 0.5);
         --pages-card-shadow-fixed: -5px 5px 10px rgba(28, 48, 67, 0.8);
       }

@@ -1,4 +1,13 @@
 <template>
+  <!-- 蒙版透明 -->
+  <teleport to="body">
+    <div
+      ref="obEl"
+      v-my-loading="() => ({ show: isLoading })"
+      class="full-loading"
+      :style="{ '--event': isLoading ? 'auto' : 'none' }"
+    ></div>
+  </teleport>
   <layout-header v-if="!$route.meta.headerHidden" />
   <layout-banner v-if="!$route.meta.bannerHidden" />
   <!-- element-plus的配置 -->
@@ -19,13 +28,18 @@
 import { useGlobalEmitter } from "@/hooks/globalEmitter"
 // 中文化
 import zhCn from "element-plus/es/locale/lang/zh-cn"
+import { useSettingStore } from "@/store/setting"
+const { isLoading } = storeToRefs(useSettingStore())
 
+const _opacity = computed(() => {
+  return isLoading.value ? 1 : 0
+})
 // 全局的 监听事件 使用 mitt 管理 和 效果等
 useGlobalEmitter()
 </script>
 
-<!-- 文章 的css 代码 -->
 <style lang="scss">
+// 文章 的css 代码
 .my-vditor-container {
   * {
     font-family: $global-font !important;
@@ -566,8 +580,24 @@ useGlobalEmitter()
     }
   }
 }
+// loading
+.loading.full-loading {
+  position: fixed;
+  height: 100vh;
+  inset: 0;
+  z-index: $menu-context-index - 1;
+  --mask: rgba(0, 0, 0, 0.644);
+  color: rgb(199, 212, 228);
+  opacity: v-bind(_opacity);
+  transition: opacity 0.3s;
+  > div {
+    top: 50%;
+    left: 50%;
+  }
+}
 </style>
 
+<!-- el-dialog -->
 <style lang="scss">
 .primary-dialog {
   --el-dialog-bg-color: var(--drawer-bg);
@@ -583,5 +613,69 @@ useGlobalEmitter()
 .el-message__content {
   user-select: text;
   cursor: var(--cursor-text);
+}
+</style>
+
+<!-- lading -->
+<style lang="scss">
+@property --r {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.loading {
+  --size-1: 30px;
+  --size-2: 18px;
+  --mask: rgba(255, 255, 255, 0.312);
+  pointer-events: var(--event);
+  width: 100%;
+  height: calc(var(--size-1) * 2 + 20px);
+  position: relative;
+  background-color: var(--mask);
+  > div {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    &[class^="line"] {
+      border-radius: 50%;
+      border: 0px solid var(--primary-color);
+      border-width: 2px;
+      // 左右的圆环
+      border-color: currentColor;
+      border-right-color: transparent;
+      border-left-color: transparent;
+      transform: translate(-50%, -50%) rotate(var(--r));
+      animation: line-rotate 1s linear infinite;
+      &.line-1 {
+        width: var(--size-1);
+        height: var(--size-1);
+      }
+      &.line-2 {
+        width: var(--size-2);
+        height: var(--size-2);
+        // 上下的圆环
+        border-color: currentColor;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        animation-direction: reverse;
+      }
+      @keyframes line-rotate {
+        0% {
+          --r: 0deg;
+        }
+        50% {
+          --r: 180deg;
+        }
+        100% {
+          --r: 360deg;
+        }
+      }
+    }
+    &.text {
+      position: relative;
+      width: fit-content;
+      transform: translate(-50%, -50%) translateY(calc(var(--size-1) + 5px));
+    }
+  }
 }
 </style>

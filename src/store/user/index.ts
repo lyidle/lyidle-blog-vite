@@ -152,17 +152,13 @@ export const useUserStore = defineStore(
 
     // 增加游客数量
     const addTourist = async () => {
-      try {
-        // 有 访客标识了 退出
-        if (getPersistedData("User", "touristToken")) return
-        const result = await reqAddTourist()
-        if (result) {
-          touristToken.value = result
-          // 重新 获取小站咨询
-          mitt.emit("reloadWebInfo")
-        }
-      } catch (error) {
-        console.error(error, "增加游客标识失败")
+      // 有 访客标识了 退出
+      if (getPersistedData("User", "touristToken")) return
+      const result = await reqAddTourist()
+      if (result) {
+        touristToken.value = result
+        // 重新 获取小站咨询
+        mitt.emit("reloadWebInfo")
       }
     }
 

@@ -34,6 +34,8 @@
         :settingId
         :reqComments
         :isFixed="true"
+        :pl="26"
+        :pr="26"
       ></layout-article-comments-add>
     </div>
     <div class="comments-content mb-20px comment-data" v-if="pagination.total">
@@ -159,13 +161,7 @@ onMounted(() => {
   // 使用 交叉传感器 监听 分割线
   createIntersectionObserver(ribbonInstance.value.instance, {
     enter: () => {
-      mitt.emit("chatisEnter", { isEnter: false })
-    },
-    leave: (entry) => {
-      // 限制判断
-      if (entry.boundingClientRect.top > 0) return
-      const rect = instance.value?.getBoundingClientRect()
-      mitt.emit("chatisEnter", { isEnter: true, rect })
+      mitt.emit("chatisEnter", false)
     },
   })
 })
@@ -336,36 +332,6 @@ onBeforeUnmount(() => mitt.off("deleteCommentById", handlerDeleteComment))
 </script>
 
 <style lang="scss">
-%vditor-style {
-  // 改变 vditor 的样式
-  .vditor-style {
-    padding: var(--primary-pd);
-    border: 1px solid var(--primary-scend-color);
-    cursor: var(--cursor-default);
-    min-height: 30px;
-    p,
-    a {
-      @extend %text-cursor;
-    }
-    @for $i from 1 through 6 {
-      h#{$i} {
-        @extend %text-cursor;
-      }
-    }
-    img {
-      max-width: 500px;
-      display: block;
-      $m: 15px;
-      margin-top: $m;
-    }
-    // 隐藏 描点后的 跳转
-    a[id^="vditorAnchor"] {
-      svg {
-        display: none;
-      }
-    }
-  }
-}
 // 容器的 padding
 $container-pd: 0 26px;
 .comment-outer {

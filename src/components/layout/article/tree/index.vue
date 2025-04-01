@@ -321,7 +321,7 @@ $year-line-size: 3px;
 $circle-size: 15px;
 $line-bg: #60a2ce;
 $circle-bg: #60a2ce;
-$circle-central: var(--pages-card-bg);
+$circle-central: var(--primary-card-bg);
 $circle-bg-hover: #29597a;
 $circle-bg-dur: var(--primary-during);
 .allDocs {

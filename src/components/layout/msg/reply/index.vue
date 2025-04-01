@@ -90,6 +90,7 @@
               <!-- 回复 -->
               <div
                 class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
+                @click="emitReply(reply)"
               >
                 <i class="i-mynaui:chat w-14px h-14px ml-5px"></i>
                 <span>回复</span>
@@ -118,6 +119,18 @@
               </router-link>
             </div>
           </div>
+          <!-- 回复框 -->
+          <layout-article-comments-add
+            v-if="reply.isShow"
+            :addComments="handlerReply"
+            :placeholder="`回复 @${reply.user.nickName}:`"
+            btnName="回复"
+            :settingId="reply.settingId"
+            :articleId="reply.articleId"
+            :commentId="reply.id"
+            ref="addInstance"
+            v-bind="$attrs"
+          ></layout-article-comments-add>
         </div>
         <!-- 顶层的信息 -->
         <div
@@ -136,11 +149,18 @@
         </layout-msg-reply-content>
       </div>
     </div>
+    <!-- 蒙版透明 -->
+    <div
+      ref="obEl"
+      v-my-loading="() => ({ show: isLoading })"
+      :style="{ '--mask': '#0000' }"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts" name="UserMessageReply">
 // 引入 接口
+import { AddCommentBody } from "@/api/comments/types/addCommentBody"
 import { getUserReply } from "@/api/user/msg"
 // 引入 类型
 import type { GetUserReply } from "@/api/user/msg/types/getUserReply"
@@ -148,8 +168,24 @@ import type { GetUserReply } from "@/api/user/msg/types/getUserReply"
 import { useUserStore } from "@/store/user"
 import { decompressStringNotError } from "@/utils/compression"
 import moment from "@/utils/moment"
+import { createIntersectionObserver } from "@/utils/observer"
 // 提取 需要的数据
 const { userNickName, userAccount } = storeToRefs(useUserStore())
+
+const isLoading = ref(false)
+
+const obEl = ref<HTMLElement>()
+onMounted(() => {
+  // 初始化 交叉传感器，用于更新数据
+  if (obEl.value)
+    createIntersectionObserver(obEl.value, {
+      enter: async () => {
+        // 初始化 后 自增当前页
+        if (init) ++pagination.value.currentPage
+        await reqReplies()
+      },
+    })
+})
 
 const replies = ref<GetUserReply["data"]["replies"]>([])
 const pagination = ref<GetUserReply["data"]["pagination"]>({
@@ -157,17 +193,68 @@ const pagination = ref<GetUserReply["data"]["pagination"]>({
   pageSize: 10,
 })
 
+let init = false
 // 请求 得到用户 回复的信息数据
 const reqReplies = async () => {
-  const result = await getUserReply({
-    currentPage: pagination.value.currentPage,
-    pageSize: pagination.value.pageSize,
-  })
-  replies.value = replies.value.concat(result.replies)
-  pagination.value = result.pagination
+  isLoading.value = true
+  // 判断是否超出
+  if (pagination.value.total) {
+    const is =
+      pagination.value.total -
+        pagination.value.currentPage * pagination.value.pageSize >
+      0
+    if (is) {
+      const result = await getUserReply({
+        currentPage: pagination.value.currentPage,
+        pageSize: pagination.value.pageSize,
+      })
+      replies.value = replies.value.concat(result.replies)
+      pagination.value = result.pagination
+    }
+    isLoading.value = false
+    return
+  }
+  // 初始化数据
+  if (!init) {
+    const result = await getUserReply({
+      currentPage: pagination.value.currentPage,
+      pageSize: pagination.value.pageSize,
+    })
+    replies.value = replies.value.concat(result.replies)
+    pagination.value = result.pagination
+    init = true
+    isLoading.value = false
+  }
 }
-onMounted(reqReplies)
+
+type curReplyType = GetUserReply["data"]["replies"][0]
+let curReply: curReplyType | null = null
+
+// 触发 回复
+const emitReply = (reply: curReplyType) => {
+  reply.isShow = !reply.isShow
+  curReply = reply
+}
+
+// 处理 回复的数据信息
+const handlerReply = (data: AddCommentBody) => {
+  if (!curReply) throw new Error("没有回复的人的数据信息")
+  // 处理链接
+  data.link = curReply?.link || ""
+  data.fromId = curReply.id
+  data.parentId = curReply.parentId
+  data.fromUserId = curReply.user.id
+}
 </script>
+
+<!-- vditor 预览 -->
+<style lang="scss">
+.reply-msg-item {
+  --primary-gap: 10px;
+  --primary-pd: 10px;
+  @extend %vditor-style;
+}
+</style>
 
 <style scoped lang="scss">
 .reply-msg-item {

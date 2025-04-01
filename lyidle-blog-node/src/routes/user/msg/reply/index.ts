@@ -25,6 +25,10 @@ router.get("/", async (req, res, next) => {
           fromUserId: userId,
           targetUserId: userId,
         },
+        [Op.not]: {
+          // 不能是自身
+          userId,
+        },
       },
       include: [
         {

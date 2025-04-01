@@ -97,6 +97,9 @@ export const useSettingStore = defineStore(
 
     /* 右键菜单复制功能 */
     const isCopyText = ref<boolean>(false)
+
+    // 是全屏否加载
+    const isLoading = ref(true)
     return {
       // 头部设置
       isDark,
@@ -139,6 +142,7 @@ export const useSettingStore = defineStore(
       isContextMenu,
       isMusic,
       isCopyText,
+      isLoading,
     }
   },
   {

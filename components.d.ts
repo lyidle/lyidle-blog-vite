@@ -7,11 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
-    ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
-    ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElEmpty: typeof import('element-plus/es')['ElEmpty']
@@ -23,9 +19,6 @@ declare module 'vue' {
     ElPopconfirm: typeof import('element-plus/es')['ElPopconfirm']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTable: typeof import('element-plus/es')['ElTable']
-    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     GlobalAnimationsOrnaments: typeof import('./src/components/global/animations/ornaments/index.vue')['default']
@@ -68,11 +61,9 @@ declare module 'vue' {
     LayoutArticleComments: typeof import('./src/components/layout/article/comments/index.vue')['default']
     LayoutArticleCommentsAdd: typeof import('./src/components/layout/article/comments/add/index.vue')['default']
     LayoutArticleCommentsBase: typeof import('./src/components/layout/article/comments/base/index.vue')['default']
-    LayoutArticleCommentsDislike: typeof import('./src/components/layout/article/comments/dislike/index.vue')['default']
     LayoutArticleCommentsDislikes: typeof import('./src/components/layout/article/comments/dislikes/index.vue')['default']
     LayoutArticleCommentsItem: typeof import('./src/components/layout/article/comments/item/index.vue')['default']
     LayoutArticleCommentsLikes: typeof import('./src/components/layout/article/comments/likes/index.vue')['default']
-    LayoutArticleCommentsLikescopy: typeof import('./src/components/layout/article/comments/likes copy/index.vue')['default']
     LayoutArticleCommentsReply: typeof import('./src/components/layout/article/comments/reply/index.vue')['default']
     LayoutArticleCommentsReplyItem: typeof import('./src/components/layout/article/comments/replyItem/index.vue')['default']
     LayoutArticlePreview: typeof import('./src/components/layout/article/preview/index.vue')['default']
@@ -98,12 +89,9 @@ declare module 'vue' {
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     LayoutMsgReply: typeof import('./src/components/layout/msg/reply/index.vue')['default']
     LayoutMsgReplyContent: typeof import('./src/components/layout/msg/reply/content/index.vue')['default']
-    LayoutMsgReplyIsLike: typeof import('./src/components/layout/msg/reply/isLike/index.vue')['default']
-    LayoutMsgReplyLike: typeof import('./src/components/layout/msg/reply/like/index.vue')['default']
     LayoutSpaceFollow: typeof import('./src/components/layout/space/follow/index.vue')['default']
     LayoutSpaceFollowContext: typeof import('./src/components/layout/space/follow/context/index.vue')['default']
     LayoutSpaceFollowContextUser: typeof import('./src/components/layout/space/follow/context/user/index.vue')['default']
-    LayoutSpaceFollowFollower: typeof import('./src/components/layout/space/follow/follower/index.vue')['default']
     LayoutSpaceHeader: typeof import('./src/components/layout/space/header/index.vue')['default']
     LayoutSpaceHome: typeof import('./src/components/layout/space/home/index.vue')['default']
     LayoutSpaceIsFollower: typeof import('./src/components/layout/space/isFollower/index.vue')['default']
@@ -165,5 +153,8 @@ declare module 'vue' {
     VditorMenu: typeof import('./src/components/vditor/menu/index.vue')['default']
     VditorMenuGenerate: typeof import('./src/components/vditor/menu/generate.vue')['default']
     VditorPreview: typeof import('./src/components/vditor/preview/index.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

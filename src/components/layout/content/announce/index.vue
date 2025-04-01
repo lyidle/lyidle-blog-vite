@@ -57,7 +57,12 @@ const {
 
 // 初始化 发起请求
 onMounted(async () => {
-  await reqAnnounce()
+  // 延迟 500 毫秒 如果还没有 公告 相关信息 则 重新获取
+  if (!region_city.value)
+    setTimeout(async () => {
+      if (region_city.value) return
+      await reqAnnounce()
+    }, 500)
   // 自动更新 时间
   updateTime = setInterval(() => {
     currentTime.value = moment(new Date(), "a h:mm:ss")

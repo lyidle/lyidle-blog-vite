@@ -7,12 +7,15 @@ import { vDebounce } from "./v-debounce"
 import { vThrottle } from "./v-throttle"
 // 权限判断 不是当前用户 隐藏元素
 import { vAuthor } from "./v-author"
+// 加载动画
+import { vMyLoading } from "./v-loading"
 
 const directives: Record<string, Directive> = {
   vTip,
   vDebounce,
   vThrottle,
   vAuthor,
+  vMyLoading,
 }
 export default {
   install(app: App) {

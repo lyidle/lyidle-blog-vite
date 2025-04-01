@@ -69,6 +69,8 @@ import { useEventListener } from "@/hooks/useEventListener"
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 防抖
 import debounce from "@/utils/debounce"
+// 引入 交叉传感器
+import { createIntersectionObserver } from "@/utils/observer"
 // 处理 文件上传
 import {
   clickUpload,
@@ -90,34 +92,56 @@ const props = defineProps<{
   articleId?: number
   settingId?: number
   isFixed?: boolean
+  // 左右padding
+  pl?: number
+  pr?: number
 }>()
 
 // 组件 实例
-const instance = ref<HTMLDivElement>()
-// 传入 需要固定的 才固定
-if (props.isFixed)
-  mitt.on("chatisEnter", (options: { isEnter: boolean; rect?: DOMRect }) => {
-    const { isEnter, rect } = options
-    const dom = instance.value
-    // 非空判断
-    if (!dom) return
-    // 固定
-    if (isEnter) {
+const instance = ref<HTMLElement>()
+let rect: DOMRect | null = null
+onMounted(() => {
+  const dom = instance.value
+  // 传入 需要固定的 才固定
+  if (props.isFixed && dom) {
+    const handlerFixed = (isEnter: boolean) => {
       // 非空判断
-      if (!rect) return
-      dom.classList.add("fixed-top")
-      dom.style.left = rect.left + "px"
-      dom.style.bottom = 0 + "px"
-      dom.style.width = rect.width + "px"
-      return
+      if (!dom) return
+      // 固定
+      if (isEnter) {
+        if (!rect) rect = dom.getBoundingClientRect()
+        if (rect.top > 0) return
+        dom.classList.add("fixed-top")
+        let left = rect.left
+        let width = rect.width
+        if (props.pl && props.pr) {
+          left = left - props.pl
+          width = width + props.pl + props.pr
+        }
+        dom.style.left = left + "px"
+        dom.style.bottom = 0 + "px"
+        dom.style.width = width + "px"
+        return
+      }
+      // 取消 固定
+      dom.classList.remove("fixed-top")
+      dom.style.left = "initial"
+      dom.style.bottom = "initial"
+      dom.style.width = "initial"
     }
-    // 取消 固定
-    dom.classList.remove("fixed-top")
-    dom.style.left = "initial"
-    dom.style.bottom = "initial"
-    dom.style.width = "initial"
-  })
-
+    mitt.on("chatisEnter", handlerFixed)
+    // 使用 交叉传感器 监听 分割线
+    createIntersectionObserver(dom, {
+      leave: () => {
+        const rect = dom.getBoundingClientRect()
+        if (rect.top < 0) mitt.emit("chatisEnter", true)
+      },
+    })
+    onBeforeUnmount(() => {
+      mitt.off("chatisEnter", handlerFixed)
+    })
+  }
+})
 // 评论 信息
 const comment = ref("")
 // vditor 预览 需要的格式
@@ -240,14 +264,15 @@ const handlerPaste = async (e: ClipboardEvent) => {
     if (item.type === "text/plain") {
       // 处理粘贴的文本（可能是网络图片 URL）
       item.getAsString(async (text) => {
-        if (isUrl(text)) {
-          insertText(nameToMdImg(text))
-          // 提示时 替换链接 为 临时链接
-          await handlerImg(false)
-          ElMessage.success("图片上传成功")
-        } else {
-          insertText(text)
-        }
+        // if (isUrl(text)) {
+        //   insertText(nameToMdImg(text))
+        //   // 提示时 替换链接 为 临时链接
+        //   await handlerImg(false)
+        //   ElMessage.success("图片上传成功")
+        // } else {
+        //   insertText(text)
+        // }
+        insertText(text)
       })
     }
   }
@@ -386,13 +411,13 @@ const validate = () => {
   const id = props.articleId || props.settingId
   // 验证 信息
   if (!id) {
-    console.error("评论区加载失败，没有id")
-    ElMessage.warning("评论区加载失败，没有id")
+    console.error("发布评论失败，没有id")
+    ElMessage.warning("发布评论失败，没有id")
     return
   }
   if (props.articleId && props.settingId) {
-    console.error("评论区加载失败，id冲突")
-    ElMessage.warning("评论区加载失败，id冲突")
+    console.error("发布评论失败，id冲突")
+    ElMessage.warning("发布评论失败，id冲突")
     return
   }
 
@@ -444,7 +469,7 @@ body[banner-fixed="fixed"] {
     border-radius: 10px;
     padding: 10px;
     z-index: 20;
-    background-color: var(--pages-card-bg);
+    background-color: var(--primary-card-bg);
     box-shadow: 0 -1px 3px var(--primary-shadow-color);
   }
   // 左侧 的按钮

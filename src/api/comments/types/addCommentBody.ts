@@ -6,6 +6,7 @@ export interface AddCommentBody {
   settingId?: number
   content: string
   fromId?: number | null
+  fromUserId?: number | null
   parentId?: number | null
   userProvince?: string | null
   userAgent?: string | null
