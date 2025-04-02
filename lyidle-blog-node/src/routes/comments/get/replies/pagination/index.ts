@@ -76,11 +76,11 @@ router.get("/pagination/:parentId", async (req, res, next) => {
         },
         {
           model: Comment,
-          as: "replies", // 关联父评论
+          as: "fromComment", // 来源评论
           include: [
             {
               model: User,
-              as: "user", // 父评论的用户信息
+              as: "user", // 来源评论的用户信息
               attributes: [
                 "id",
                 "account",

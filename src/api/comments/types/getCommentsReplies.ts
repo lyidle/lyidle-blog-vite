@@ -25,16 +25,16 @@ export interface Reply {
   articleId: number
   content: string
   createdAt: string
+  fromComment: FromComment
   fromId: number | null
   id: number
-  replies: Replies
   updatedAt: string
   user: CommentUser
   userId: number
   [property: string]: any
 }
 
-export interface Replies {
+export interface FromComment {
   articleId: number
   content: string
   createdAt: string

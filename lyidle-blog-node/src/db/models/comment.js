@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "setting",
       })
 
-      // 评论可以有 回复评论（自引用）
+      // 评论可以有 来源评论[回复评论（自引用）]
       this.belongsTo(models.Comment, {
         foreignKey: "fromId",
-        as: "replies",
+        as: "fromComment",
       })
 
       // 评论属于父评论（自引用）

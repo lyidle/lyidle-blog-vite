@@ -26,6 +26,7 @@ export interface Reply {
   articleId: number | null
   content: string
   createdAt: string
+  fromComment: null | FromComment
   fromId: number | null
   fromUserId: number | null
   id: number
@@ -36,11 +37,8 @@ export interface Reply {
   settingId: number | null
   targetUserId: number
   updatedAt: string
-  user: ReplyUser
+  user: User
   userId: number
-
-  // 页面需要的
-  type?: string
   [property: string]: any
 }
 
@@ -51,39 +49,29 @@ export interface Article {
   [property: string]: any
 }
 
-export interface ParentComment {
-  articleId: number | null
+export interface FromComment {
   content: string
-  createdAt: string
-  fromId: number | null
-  fromUserId: number | null
   id: number
   link: string
-  parentId: number | null
-  settingId: number | null
-  targetUserId: number
-  updatedAt: string
-  user: ParentCommentUser
-  userId: number
   [property: string]: any
 }
 
-export interface ParentCommentUser {
-  account: string
-  avatar: null | string
+export interface ParentComment {
+  content: string
   id: number
-  nickName: string
+  link: string
   [property: string]: any
 }
 
 export interface Setting {
   id: number
+  link: string
   name: string
   updatedAt: string
   [property: string]: any
 }
 
-export interface ReplyUser {
+export interface User {
   account: string
   avatar: null | string
   id: number

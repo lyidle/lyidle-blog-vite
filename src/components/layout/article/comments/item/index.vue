@@ -18,7 +18,7 @@
           <div class="flex gap-8px" v-if="cloneComment.fromId">
             <div>回复</div>
             <div class="global-at">
-              @<span>{{ cloneComment.replies.user.nickName }}</span>
+              @<span>{{ cloneComment.fromComment.user.nickName }}</span>
             </div>
             <div>:</div>
           </div>

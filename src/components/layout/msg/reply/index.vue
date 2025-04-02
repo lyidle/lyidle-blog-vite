@@ -36,7 +36,9 @@
               class="!hover:color-[var(--primary-links-hover)] msg-tools"
             >
               {{
-                reply.replies?.id ? "回复了我的评论" : "对我的文章发布了评论"
+                reply.fromComment?.id
+                  ? "回复了我的评论"
+                  : "对我的文章发布了评论"
               }}
             </my-anchor>
           </div>
@@ -65,19 +67,19 @@
             </span>
           </div>
           <!-- 来源的 信息 -->
-          <div v-if="reply.replies?.id" class="origin">
+          <div v-if="reply.fromComment?.id" class="origin">
             <div class="cur-text flex">
               <my-tooltip
                 class="box-item"
                 effect="dark"
-                :content="`作者:${reply.replies.user.account}`"
+                :content="`作者:${reply.fromComment.user.account}`"
                 placement="right"
               >
-                <span>{{ reply.replies.user.nickName }}</span>
+                <span>{{ reply.fromComment.user.nickName }}</span>
               </my-tooltip>
               :
               <span class="line-clamp-1">
-                {{ decompressStringNotError(reply.replies?.content) }}
+                {{ decompressStringNotError(reply.fromComment?.content) }}
               </span>
             </div>
           </div>
@@ -234,7 +236,7 @@ const reqUserReplyCallback = async (cb?: () => void) => {
 
 // 添加上类型
 const addType = (data: GetUserReply["data"]["replies"]) => {
-  return data.map((item) => ({
+  return data?.map((item) => ({
     ...item,
     type: item.articleId
       ? "article"

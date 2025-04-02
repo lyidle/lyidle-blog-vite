@@ -52,17 +52,19 @@ router.get("/", async (req, res, next) => {
           model: Comment,
           as: "parentComment", // 父评论信息
           required: false,
+          attributes: ["id", "content", "link"],
         },
         {
           model: Comment,
-          as: "replies", // 关联父评论
+          as: "fromComment", // 关联来源评论
           include: [
             {
               model: User,
-              as: "user", // 父评论的用户信息
+              as: "user", // 来源评论的用户信息
               attributes: ["id", "account", "nickName", "avatar"],
             },
           ],
+          attributes: ["id", "content", "link"],
           required: false,
         },
       ],
