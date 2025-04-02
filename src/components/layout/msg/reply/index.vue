@@ -72,7 +72,7 @@
           </div>
           <!-- 时间、回复、点赞、查看 -->
           <div class="flex gap-20px h-25px items-center">
-            <div class="cur-text h-inherit flex items-center">
+            <div class="cur-text h-inherit flex items-center text-15px">
               {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
             </div>
             <div class="flex gap-10px items-center h-inherit">
