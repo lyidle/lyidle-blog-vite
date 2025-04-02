@@ -19,7 +19,7 @@ export const createIntersectionObserver = (
   element: Element,
   callback: ObserverCallback,
   config: ObserverConfig = {}
-): void => {
+): (() => void) | void => {
   // 如果传入的不是有效的 DOM 元素，直接返回
   if (!(element instanceof Element)) return
 
@@ -51,4 +51,7 @@ export const createIntersectionObserver = (
   callback.stop = () => {
     intersectionObserver.disconnect()
   }
+
+  // 手动停止的方法
+  return () => intersectionObserver.disconnect()
 }

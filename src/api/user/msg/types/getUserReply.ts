@@ -38,6 +38,9 @@ export interface Reply {
   updatedAt: string
   user: ReplyUser
   userId: number
+
+  // 页面需要的
+  type?: string
   [property: string]: any
 }
 

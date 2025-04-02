@@ -28,6 +28,11 @@ module.exports = {
       content: {
         type: Sequelize.JSON,
       },
+      link: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        comment: "原文链接",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

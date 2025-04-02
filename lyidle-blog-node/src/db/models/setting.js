@@ -2,7 +2,13 @@
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
   class Setting extends Model {
-    static associate(models) {}
+    static associate(models) {
+      // 一篇 设置 有多个 点赞
+      this.hasMany(models.LikeDislike, {
+        foreignKey: "settingId",
+        as: "settingLikes",
+      })
+    }
   }
   Setting.init(
     {
@@ -15,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      link: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "原文链接",
       },
     },
     {

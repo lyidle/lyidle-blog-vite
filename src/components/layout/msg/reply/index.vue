@@ -27,7 +27,22 @@
                 </span>
               </router-link>
             </my-tooltip>
-            {{ reply.replies?.id ? "回复了我的评论" : "对我的文章发布了评论" }}
+            <my-anchor
+              :to="
+                reply.type === 'article'
+                  ? `/doc/${reply.articleId}`
+                  : reply.type == 'setting' && reply.setting?.name === '关于'
+                  ? '/person/about'
+                  : reply.type === 'comment'
+                  ? reply.link
+                  : ''
+              "
+              class="!hover:color-[var(--primary-links-hover)] msg-tools"
+            >
+              {{
+                reply.replies?.id ? "回复了我的评论" : "对我的文章发布了评论"
+              }}
+            </my-anchor>
           </div>
           <!-- 回复信息 -->
           <div class="flex cur-text">
@@ -103,10 +118,12 @@
               <!-- 查看 -->
               <my-anchor
                 :to="
-                  reply.articleId
+                  reply.type === 'article'
                     ? `/doc/${reply.articleId}`
-                    : reply.settingId
+                    : reply.type == 'setting' && reply.setting?.name === '关于'
                     ? '/person/about'
+                    : reply.type === 'comment'
+                    ? reply.link
                     : ''
                 "
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
@@ -134,12 +151,9 @@
         <!-- 顶层的信息 -->
         <div class="h-90px w-100px cur-text line-clamp-5 flex-shrink-0">
           {{
-            decompressStringNotError(
-              reply.parentComment?.content ||
-                reply.article?.title ||
-                reply.setting?.name ||
-                ""
-            )
+            reply.article?.title ||
+            reply.setting?.name ||
+            decompressStringNotError(reply.parentComment?.content || "")
           }}
         </div>
       </div>
@@ -169,11 +183,13 @@ const { userNickName, userAccount } = storeToRefs(useUserStore())
 
 const isLoading = ref(true)
 
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
 const obEl = ref<HTMLElement>()
 onMounted(() => {
   // 初始化 交叉传感器，用于更新数据
   if (obEl.value)
-    createIntersectionObserver(obEl.value, {
+    stopObserver = createIntersectionObserver(obEl.value, {
       enter: async () => {
         // 初始化 后 自增当前页
         if (init) ++pagination.value.currentPage
@@ -219,11 +235,24 @@ const reqUserReplyCallback = async (cb?: () => void) => {
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
   })
-  replies.value = replies.value.concat(result.replies)
+  replies.value = replies.value.concat(addType(result.replies))
   pagination.value = result.pagination
   cb?.()
 }
 
+// 添加上类型
+const addType = (data: GetUserReply["data"]["replies"]) => {
+  return data.map((item) => ({
+    ...item,
+    type: item.articleId
+      ? "article"
+      : item.settingId
+      ? "setting"
+      : item.id
+      ? "comment"
+      : "",
+  }))
+}
 type curReplyType = GetUserReply["data"]["replies"][0]
 let curReply: curReplyType | null = null
 

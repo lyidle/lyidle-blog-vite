@@ -84,7 +84,6 @@ import throttle from "@/utils/throttle"
 // 替换的 文本中 图片的 函数
 import { contextImgToLink } from "@/hooks/Doc/vditorEditor/contextImgToLink"
 
-import { isUrl } from "@/RegExp/Url/isUrl"
 import { mitt } from "@/utils/emitter"
 
 const props = defineProps<{
@@ -96,6 +95,9 @@ const props = defineProps<{
   pl?: number
   pr?: number
 }>()
+
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
 
 // 组件 实例
 const instance = ref<HTMLElement>()
@@ -131,7 +133,7 @@ onMounted(() => {
     }
     mitt.on("chatisEnter", handlerFixed)
     // 使用 交叉传感器 监听 分割线
-    createIntersectionObserver(dom, {
+    stopObserver = createIntersectionObserver(dom, {
       leave: () => {
         const rect = dom.getBoundingClientRect()
         if (rect.top < 0) mitt.emit("chatisEnter", true)

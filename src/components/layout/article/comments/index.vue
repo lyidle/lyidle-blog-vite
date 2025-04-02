@@ -157,9 +157,12 @@ onBeforeUnmount(() => {
   mitt.off("reply:userId", handlerFromUserId)
 })
 
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
+
 onMounted(() => {
   // 使用 交叉传感器 监听 分割线
-  createIntersectionObserver(ribbonInstance.value.instance, {
+  stopObserver = createIntersectionObserver(ribbonInstance.value.instance, {
     enter: () => {
       mitt.emit("chatisEnter", false)
     },

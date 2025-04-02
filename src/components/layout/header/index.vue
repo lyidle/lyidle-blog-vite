@@ -30,10 +30,12 @@ const options: ObserverCallback = {
   },
 }
 
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
 onMounted(() => {
   // 有 banner 则代理动态吸附
   const el = document.querySelector(".banner-createIntersectionObserver")
-  el && createIntersectionObserver(el, options)
+  if (el) stopObserver = createIntersectionObserver(el, options)
   // 没有 的 则是没有图片背景的
   // 需要修改默认显示的颜色
   if (!el) {

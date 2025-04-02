@@ -45,6 +45,9 @@ export const useSideMenuFixed = (
     return false
   }
 
+  // 存储监听器，用于组件销毁时结束监听
+  const observerItems: ObserverCallback[] = []
+
   // 挂载
   const enterScrollListener = () => {
     // 判断是否有菜单要固定
@@ -162,6 +165,9 @@ export const useSideMenuFixed = (
         toggleMenuPosition()
       },
     }
+
+    // 存储监听器配置
+    observerItems.push(menuOb.value)
     if (observerMenu) createIntersectionObserver(observerMenu, menuOb.value)
   }
 
@@ -196,6 +202,8 @@ export const useSideMenuFixed = (
           }
         },
       }
+      // 存储监听器配置
+      observerItems.push(threelastOb.value)
       createIntersectionObserver(threelastDiv, threelastOb.value)
     }
   }
@@ -214,10 +222,15 @@ export const useSideMenuFixed = (
       }
       thirdlastOb.value = {
         leave: () => {
-          if (threelastDiv && threelastOb.value)
+          if (threelastDiv && threelastOb.value) {
+            // 存储监听器配置
+            observerItems.push(threelastOb.value)
             createIntersectionObserver(threelastDiv, threelastOb.value)
+          }
         },
       }
+      // 存储监听器配置
+      observerItems.push(thirdlastOb.value)
       createIntersectionObserver(thirdlastDiv, thirdlastOb.value)
     }
   }
@@ -279,5 +292,9 @@ export const useSideMenuFixed = (
     mitt.off("isAside:true", reloadEnterScrollListener)
     // 取消订阅 数量变化 事件
     mitt.off("asideCounts", countsVariable)
+    // 销毁监听
+    observerItems.forEach((item) => {
+      item.stop?.()
+    })
   })
 }

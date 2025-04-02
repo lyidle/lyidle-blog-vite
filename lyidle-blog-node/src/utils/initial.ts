@@ -148,6 +148,7 @@ export default async () => {
           name: "关于",
           userId: ownerId,
           content: aboutMd,
+          link: "/person/about",
         })
         await setKey("setting:关于", dataValues)
       }

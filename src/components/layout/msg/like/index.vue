@@ -5,62 +5,118 @@
       <div class="like-item py-15px">
         <div class="flex justify-between">
           <!-- 头像 只要 前两个 -->
-          <div class="avatar-single">
-            <global-avatar-src
-              :account="item.user?.account"
-              :avatar="item.user?.avatar"
-              :style="{ '--avatar-size': 'var(--size)' }"
-              class="avatar flex-shrink-0"
-            ></global-avatar-src>
+          <div :class="item.likeCount > 1 ? 'avatars' : 'avatar-single'">
+            <template v-for="(user, i) in item.recentLikers" :key="user.id">
+              <global-avatar-src
+                :account="user.account"
+                :avatar="user.avatar"
+                :isCenter="item.likeCount == 1 ? true : false"
+                :style="{ '--avatar-size': 'var(--size)' }"
+                class="avatar flex-shrink-0"
+                v-if="i < 2"
+              ></global-avatar-src>
+            </template>
           </div>
           <!-- 中间信息 -->
-          <div class="flex-1 flex flex-col justify-center gap-10px">
+          <div class="flex-1 flex flex-col justify-center gap-10px ml-5px">
             <!-- 名字 -->
             <div class="flex h-fit">
-              <!-- 名字 只要 前两个  -->
-              <my-tooltip
-                class="box-item"
-                effect="dark"
-                :content="`作者:${item.user?.account}`"
-                placement="top"
-              >
-                <div class="flex cur-text font-bold">
-                  {{ item.user?.nickName }}
-                </div>
-              </my-tooltip>
+              <template v-for="(user, i) in item.recentLikers" :key="user.id">
+                <!-- 名字 只要 前两个  -->
+                <my-tooltip
+                  class="box-item"
+                  effect="dark"
+                  :content="`作者:${user.account}`"
+                  placement="top"
+                  v-if="i < 2"
+                >
+                  <router-link
+                    :to="`/user/space/${user.account}`"
+                    class="!hover:color-[var(--primary-links-hover)] font-bold"
+                    ><span class="max-w-100px line-clamp-1"
+                      >{{ user.nickName }}
+                    </span>
+                  </router-link>
+                </my-tooltip>
+                <span v-if="i < 1 && item.likeCount > 1">、</span>
+              </template>
               <my-anchor
                 :to="
-                  item.articleId
+                  item.type === 'article'
                     ? `/doc/${item.articleId}`
-                    : item.settingId
+                    : item.type == 'setting' && item.name === '关于'
                     ? '/person/about'
+                    : item.type === 'comment'
+                    ? item.link
                     : ''
                 "
                 class="ml-10px !hover:color-[var(--primary-links-hover)] cur-pointer"
               >
-                赞了我的{{ item.comment?.id ? "评论" : "文章" }}
+                等总计<span>{{ item.likeCount }}</span
+                >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
               </my-anchor>
             </div>
-            <!-- 时间等信息 -->
-            <div class="cur-text text-15px">
-              {{
-                moment(
-                  item.article?.updatedAt ||
-                    item.comment?.updatedAt ||
-                    item.setting?.updatedAt,
-                  "YYYY年MM月DD日 hh:mm"
-                )
-              }}
+            <div class="flex gap-10px text-15px">
+              <!-- 时间等信息 -->
+              <div class="cur-text">
+                {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
+              </div>
+              <div class="flex gap-7px">
+                <!-- 查看 -->
+                <my-anchor
+                  :to="
+                    item.type === 'article'
+                      ? `/doc/${item.articleId}`
+                      : item.type == 'setting' && item.name === '关于'
+                      ? '/person/about'
+                      : item.type === 'comment'
+                      ? item.link
+                      : ''
+                  "
+                  class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center"
+                >
+                  <i
+                    class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
+                  ></i>
+                  <span>查看</span>
+                </my-anchor>
+                <div
+                  class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center cur-pointer"
+                >
+                  <i
+                    class="i-material-symbols-light:list-alt-outline w-15px h-15px"
+                  ></i>
+                  <span>详情</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="m-5px w-100px cur-text line-clamp-2">
+          <div class="m-5px w-100px h-35px cur-text line-clamp-2">
             {{
-              item.article?.title ||
-              item.setting?.name ||
-              decompressStringNotError(item.comment?.content || "")
+              item.title ||
+              item.name ||
+              decompressStringNotError(item.content || "")
             }}
           </div>
         </div>
+      </div>
+    </template>
+    <template v-for="item in likesData" v-if="false">
+      <div class="bg-red-100 mt-10px h-50vh">
+        <div>{{ item.type }}</div>
+        <div>
+          {{
+            decompressStringNotError(item.content || "") ||
+            item.title ||
+            item.name
+          }}
+        </div>
+        <!-- 点赞数量 -->
+        <div>{{ item.likeCount }}</div>
+        <!-- 前两个点赞的人 -->
+        <div>{{ item.recentLikers }}</div>
+        <!-- 最新的点赞时间 -->
+        <div>{{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}</div>
       </div>
     </template>
   </div>
@@ -76,14 +132,18 @@
 <script setup lang="ts" name="UserMessageLike">
 // 引入 api
 import { getUserLikes } from "@/api/user/msg"
+// 引入 类型
 import { GetUserLikes } from "@/api/user/msg/types/getUserLikes"
+// 解压文本
 import { decompressStringNotError } from "@/utils/compression"
+// 时间处理
 import moment from "@/utils/moment"
+// 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 
 const pagination = ref<GetUserLikes["data"]["pagination"]>({
   currentPage: 1,
-  pageSize: 10,
+  pageSize: 3,
 })
 
 const isLoading = ref(true)
@@ -100,7 +160,8 @@ const reqLikes = async () => {
   if (init && pagination.value.total) {
     const is =
       pagination.value.total -
-        pagination.value.currentPage * pagination.value.pageSize >
+        // currentPage需要乘以 3 因为是按照comment、article、setting分别分页进行查询的
+        pagination.value.currentPage * 3 * pagination.value.pageSize >
       0
     if (is) {
       await reqLikesCallback()
@@ -118,11 +179,14 @@ const reqLikes = async () => {
   }
 }
 
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
+
 const obEl = ref<HTMLElement>()
 onMounted(() => {
   // 初始化 交叉传感器，用于更新数据
   if (obEl.value)
-    createIntersectionObserver(obEl.value, {
+    stopObserver = createIntersectionObserver(obEl.value, {
       enter: async () => {
         // 初始化 后 自增当前页
         if (init) ++pagination.value.currentPage
@@ -136,7 +200,7 @@ const reqLikesCallback = async (cb?: () => void) => {
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
   })
-  likesData.value = likesData.value.concat(data.likes)
+  likesData.value = likesData.value.concat(data.items)
   pagination.value = data.pagination
   cb?.()
 }
@@ -146,7 +210,7 @@ const reqLikesCallback = async (cb?: () => void) => {
 .like-container {
   $avatar-size: 40px;
   > .like-item {
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.703);
     // 两个的 头像
     .avatars {
       position: relative;
@@ -158,15 +222,12 @@ const reqLikesCallback = async (cb?: () => void) => {
           position: absolute;
           right: 5px;
           bottom: 0;
-          border: 1px solid red;
+          border: 1px solid rgba(128, 128, 128, 0.292);
         }
       }
     }
     .avatar-single {
       width: $avatar-size * 1.8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       > .avatar {
         --size: 50px;
       }
