@@ -51,11 +51,7 @@
                   :to="
                     item.type === 'article'
                       ? `/doc/${item.articleId}`
-                      : item.type == 'setting' && item.name === '关于'
-                      ? '/person/about'
-                      : item.type === 'comment'
-                      ? item.link
-                      : ''
+                      : item.link || ''
                   "
                   class="ml-10px !hover:color-[var(--primary-links-hover)] cur-pointer"
                 >
@@ -74,11 +70,7 @@
                     :to="
                       item.type === 'article'
                         ? `/doc/${item.articleId}`
-                        : item.type == 'setting' && item.name === '关于'
-                        ? '/person/about'
-                        : item.type === 'comment'
-                        ? item.link
-                        : ''
+                        : item.link || ''
                     "
                     class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center"
                   >
@@ -146,7 +138,7 @@ import { createIntersectionObserver } from "@/utils/observer"
 
 const pagination = ref<GetUserLikes["data"]["pagination"]>({
   currentPage: 1,
-  pageSize: 3,
+  pageSize: 10,
 })
 
 const isLoading = ref(true)

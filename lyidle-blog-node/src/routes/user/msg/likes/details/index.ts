@@ -1,6 +1,13 @@
 import express from "express"
 import { Op } from "sequelize"
-const { LikeDislike, User, Article, Setting, Comment } = require("@/db/models")
+const {
+  LikeDislike,
+  User,
+  Article,
+  Setting,
+  Comment,
+  sequelize,
+} = require("@/db/models")
 
 const router = express.Router()
 
@@ -29,40 +36,34 @@ router.get("/", async (req, res, next) => {
     )
   }
 
-  // 构建基础查询条件
-  const whereCondition: any = {
-    targetUserId,
-    likeType: "like",
-    userId: { [Op.ne]: targetUserId },
-  }
-
   // 确定目标类型和ID
   let targetType: string | null = null
   let targetId: string | null = null
   let targetModel: any
   let targetAttributes: string[] = []
+  let targetField: string = ""
 
   if (articleId) {
-    whereCondition.articleId = articleId
     targetType = "article"
     targetId = articleId as string
     targetModel = Article
+    targetField = "articleId"
     targetAttributes = ["id", "title", "content"]
   } else if (settingId) {
-    whereCondition.settingId = settingId
     targetType = "setting"
     targetId = settingId as string
     targetModel = Setting
-    targetAttributes = ["id", "name", "content"]
+    targetField = "settingId"
+    targetAttributes = ["id", "name", "content", "link"]
   } else if (commentId) {
-    whereCondition.commentId = commentId
     targetType = "comment"
     targetId = commentId as string
     targetModel = Comment
-    targetAttributes = ["id", "content"]
+    targetField = "commentId"
+    targetAttributes = ["id", "content", "link"]
   }
 
-  // 非法 判断
+  // 非法判断
   if (targetId === null || targetType === null)
     return res.result(void 0, "目标对象不存在", false)
 
@@ -78,49 +79,79 @@ router.get("/", async (req, res, next) => {
     }
     findtargetModel = JSON.parse(JSON.stringify(findtargetModel))
 
-    // 查询点赞记录
-    const { count, rows } = await LikeDislike.findAndCountAll({
-      where: whereCondition,
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "account", "nickName", "avatar"],
+    // 使用原始SQL查询实现按用户分页和去重
+    const queryStr = `
+      SELECT 
+        u.id, 
+        u.account, 
+        u.nickName, 
+        u.avatar,
+        MAX(ld.updatedAt) AS lastLikeAt,
+        COUNT(ld.id) AS likeCount
+      FROM Users u
+      JOIN LikeDislikes ld ON ld.userId = u.id
+      WHERE ld.${targetField} = :targetId
+        AND ld.targetUserId = :targetUserId
+        AND ld.likeType = 'like'
+        AND ld.userId != :targetUserId
+      GROUP BY u.id
+      ORDER BY lastLikeAt DESC, u.id DESC
+      LIMIT :limit OFFSET :offset
+    `
+
+    const countQueryStr = `
+      SELECT COUNT(DISTINCT userId) AS total
+      FROM LikeDislikes
+      WHERE ${targetField} = :targetId
+        AND targetUserId = :targetUserId
+        AND likeType = 'like'
+        AND userId != :targetUserId
+    `
+
+    // 执行查询
+    const [users, countResult] = await Promise.all([
+      sequelize.query(queryStr, {
+        replacements: {
+          targetId,
+          targetUserId,
+          limit: pageSize,
+          offset,
         },
-      ],
-      order: [
-        ["updatedAt", "desc"],
-        ["id", "desc"],
-      ],
-      limit: pageSize,
-      offset,
-      distinct: true,
-      attributes: ["id", "createdAt", "updatedAt"],
-    })
+        type: sequelize.QueryTypes.SELECT,
+      }),
+      sequelize.query(countQueryStr, {
+        replacements: {
+          targetId,
+          targetUserId,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }),
+    ])
+
+    const total = countResult[0]?.total || 0
 
     // 构造返回结果
     const result = {
       pagination: {
-        total: count,
+        total,
         currentPage,
         pageSize,
       },
       target: {
         id: findtargetModel.id,
-        ...(targetType === "article" && {
-          ...findtargetModel,
-          type: targetType,
-        }),
-        ...(targetType === "setting" && {
-          ...findtargetModel,
-          type: targetType,
-        }),
-        ...(targetType === "comment" && {
-          ...findtargetModel,
-          type: targetType,
-        }),
+        ...findtargetModel,
+        type: targetType,
       },
-      likes: rows,
+      likes: users.map((user: any) => ({
+        user: {
+          id: user.id,
+          account: user.account,
+          nickName: user.nickName,
+          avatar: user.avatar,
+        },
+        lastLikeAt: user.lastLikeAt,
+        likeCount: user.likeCount,
+      })),
     }
 
     res.result(result, "获取点赞详情成功")

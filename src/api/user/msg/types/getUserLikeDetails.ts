@@ -16,9 +16,8 @@ export interface Data {
 }
 
 export interface Like {
-  createdAt: string
-  id: number
-  updatedAt: string
+  lastLikeAt: string
+  likeCount: number
   user: User
   [property: string]: any
 }
@@ -43,6 +42,7 @@ export interface Target {
   id: number
   name?: string
   title?: string
-  type: "article" | "comment" | "setting"
+  link?: string
+  type: string
   [property: string]: any
 }

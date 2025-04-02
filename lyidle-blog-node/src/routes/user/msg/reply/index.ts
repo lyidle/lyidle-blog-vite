@@ -45,19 +45,12 @@ router.get("/", async (req, res, next) => {
         {
           model: Setting,
           as: "setting", // 关联的设置信息
-          attributes: ["id", "name", "updatedAt"],
+          attributes: ["id", "name", "updatedAt", "link"],
           required: false,
         },
         {
           model: Comment,
           as: "parentComment", // 父评论信息
-          include: [
-            {
-              model: User,
-              as: "user", // 父评论的用户信息
-              attributes: ["id", "account", "nickName", "avatar"],
-            },
-          ],
           required: false,
         },
         {

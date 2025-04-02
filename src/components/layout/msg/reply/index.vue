@@ -31,11 +31,7 @@
               :to="
                 reply.type === 'article'
                   ? `/doc/${reply.articleId}`
-                  : reply.type == 'setting' && reply.setting?.name === '关于'
-                  ? '/person/about'
-                  : reply.type === 'comment'
-                  ? reply.link
-                  : ''
+                  : reply.link || ''
               "
               class="!hover:color-[var(--primary-links-hover)] msg-tools"
             >
@@ -120,11 +116,7 @@
                 :to="
                   reply.type === 'article'
                     ? `/doc/${reply.articleId}`
-                    : reply.type == 'setting' && reply.setting?.name === '关于'
-                    ? '/person/about'
-                    : reply.type === 'comment'
-                    ? reply.link
-                    : ''
+                    : reply.link || ''
                 "
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
@@ -151,9 +143,9 @@
         <!-- 顶层的信息 -->
         <div class="h-90px w-100px cur-text line-clamp-5 flex-shrink-0">
           {{
+            decompressStringNotError(reply.parentComment?.content || "") ||
             reply.article?.title ||
-            reply.setting?.name ||
-            decompressStringNotError(reply.parentComment?.content || "")
+            reply.setting?.name
           }}
         </div>
       </div>

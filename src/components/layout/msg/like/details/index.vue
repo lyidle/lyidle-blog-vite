@@ -10,27 +10,26 @@
       >
         <my-button size="small">返回</my-button>
       </my-anchor>
-      <!-- 评论 -->
-      <div v-if="target?.type === 'comment'" class="text-justify line-clamp-3">
-        <span>评论：</span>{{ decompressStringNotError(target.content || "") }}
-      </div>
-      <!-- 文章 -->
-      <div v-if="target?.type === 'article'" class="text-justify line-clamp-3">
-        <span>文章：《{{ target.title }}》</span>
-        {{ decompressStringNotError(target.content || "") }}
-      </div>
-      <!-- 设置项的 页面 -->
-      <div v-if="target?.type === 'setting'" class="text-justify line-clamp-3">
-        <span>文章：</span>
-        {{ decompressStringNotError(target.content || "") }}
-      </div>
+      <my-anchor
+        class="text-justify line-clamp-3"
+        :to="
+          target?.type === 'article' ? `/doc/${target.id}` : target?.link || ''
+        "
+      >
+        <span
+          >{{ target?.type === "comment" ? "评论" : "文章" }}：<span
+            v-if="target?.title"
+            >《{{ target.title }}》</span
+          ></span
+        >
+        {{ decompressStringNotError(target?.content || "") }}
+      </my-anchor>
     </div>
     <!-- 具体的 用户 -->
     <div
       class="user-container msg-box max-h-70% flex flex-col gap-[var(--gap-y)] overflow-y-auto"
     >
       <div class="flex flex-col" v-for="item in likes" :key="item.id">
-        {{ item.user.id }}
         <div class="p-15px flex gap-10px justify-between">
           <!-- 头像 -->
           <global-avatar-src
@@ -62,7 +61,7 @@
             </div>
             <!-- 时间 -->
             <div class="cur-text">
-              {{ moment(item.updatedAt, "YYYY年MM月DD日 hh:mm") }}
+              {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
             </div>
           </div>
           <!-- 是否关注 -->
