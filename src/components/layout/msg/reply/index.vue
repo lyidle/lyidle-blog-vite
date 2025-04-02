@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col p-10px">
-    <div v-for="reply in replies" class="p-10px reply-msg-item">
-      <div class="flex gap-10px justify-between overflow-hidden">
+  <div class="flex flex-col">
+    <div v-for="reply in replies" class="reply-msg-item">
+      <div class="flex gap-10px justify-between overflow-hidden p-[var(--p)]">
         <!-- 头像 -->
         <global-avatar-src
           :account="reply.user.account"

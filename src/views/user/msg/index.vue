@@ -2,7 +2,7 @@
   <my-card class="msg-container card_style flex">
     <!-- 侧边栏 -->
     <aside
-      class="nav-container bg-[var(--msg-bg)] flex flex-col items-center gap-0.9375rem flex-shrink-0"
+      class="nav-container msg-box flex flex-col items-center gap-[var(--gap-y)] flex-shrink-0"
     >
       <div class="text-1.1875rem cur-text flex items-center gap-5px mt-1.25rem">
         <i class="i-uil:message w-1.125rem h-1.125rem"></i>消息中心
@@ -45,17 +45,19 @@
         </li>
       </ul>
     </aside>
-    <div class="p-10px flex flex-col gap-15px flex-1 overflow-hidden">
+    <div class="p-10px flex flex-col gap-[var(--gap-y)] flex-1 overflow-hidden">
       <!-- title -->
       <div
-        class="bg-[var(--msg-bg)] flex-shrink-0 text-1.0625rem rounded-[var(--r)] cur-text py-10px pl-15px"
+        class="msg-box flex-shrink-0 text-0.9688rem cur-text py-10px pl-[var(--p)] flex items-center"
       >
-        我的消息
+        {{ sceneZh[$route.query.to as sceneMsgType] }}
+        <!-- 收到的赞二级 -->
+        <span v-if="$route.query.to === 'like' && $route.query.type">
+          <i class="i-ep:arrow-right w-15px h-15px translate-y-1px"></i>点赞详情
+        </span>
       </div>
       <!-- 内容 -->
-      <div
-        class="bg-[var(--msg-bg)] rounded-[var(--r)] h-100% overflow-y-auto overflow-hidden rounded-[var(--r)]"
-      >
+      <div class="msg-scene h-100% overflow-y-auto overflow-hidden">
         <!-- 回复我的 -->
         <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
         <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
@@ -74,7 +76,23 @@ const router = useRouter()
 const curPath = route.path
 
 // 场景的 常量
-const sceneArr = ["whisper", "reply", "at", "like", "system", "config"] as const
+const sceneArr: sceneMsgType[] = [
+  "whisper",
+  "reply",
+  "at",
+  "like",
+  "system",
+  "config",
+]
+// 场景 映射中文
+const sceneZh = {
+  whisper: "我的消息",
+  reply: "回复我的",
+  at: "@我的",
+  like: "收到的赞",
+  system: "系统通知",
+  config: "消息设置",
+}
 
 // 控制场景
 const scene = ref<sceneMsgType>("whisper")
@@ -98,12 +116,24 @@ watch(
 )
 </script>
 
+<style lang="scss">
+// 容器的基础样式
+.msg-box,
+.msg-scene {
+  background-color: var(--msg-bg);
+  border-radius: var(--r);
+}
+</style>
 <style scoped lang="scss">
 // 设置 卡片 样式
 @include setCardStyle(scend-opacity, false);
 .msg-container {
   // 圆角
   --r: 8px;
+  // 常用的 内边距
+  --p: 15px;
+  // 常用的 上下gap
+  --gap-y: 15px;
   position: fixed;
   height: 80%;
   width: 80%;
@@ -118,6 +148,7 @@ watch(
   @include media(sm) {
     width: 90%;
   }
+
   // 左侧 导航
   .nav-container {
     width: 9.375rem;

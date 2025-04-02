@@ -94,6 +94,7 @@ declare module 'vue' {
     LayoutHeaderTopnavMini: typeof import('./src/components/layout/header/topnav-mini/index.vue')['default']
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     LayoutMsgLike: typeof import('./src/components/layout/msg/like/index.vue')['default']
+    LayoutMsgLikeDetails: typeof import('./src/components/layout/msg/like/details/index.vue')['default']
     LayoutMsgReply: typeof import('./src/components/layout/msg/reply/index.vue')['default']
     LayoutMsgReplyContent: typeof import('./src/components/layout/msg/reply/content/index.vue')['default']
     LayoutSpaceFollow: typeof import('./src/components/layout/space/follow/index.vue')['default']

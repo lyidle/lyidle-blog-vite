@@ -186,8 +186,9 @@ router.get("/", async (req, res, next) => {
 
     res.result(result, "获取用户点赞信息成功")
   } catch (error) {
-    console.error(error)
-    res.result(void 0, "获取用户点赞信息失败", false)
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "获取用户点赞信息失败", false)
+    )
   }
 })
 

@@ -1,68 +1,52 @@
 <template>
-  <div class="like-container flex flex-col p-10px gap-10px">
-    <template v-for="item in likesData" :id="key">
-      <!-- 每一项 -->
-      <div class="like-item py-15px">
-        <div class="flex justify-between">
-          <!-- 头像 只要 前两个 -->
-          <div :class="item.likeCount > 1 ? 'avatars' : 'avatar-single'">
-            <template v-for="(user, i) in item.recentLikers" :key="user.id">
-              <global-avatar-src
-                :account="user.account"
-                :avatar="user.avatar"
-                :isCenter="item.likeCount == 1 ? true : false"
-                :style="{ '--avatar-size': 'var(--size)' }"
-                class="avatar flex-shrink-0"
-                v-if="i < 2"
-              ></global-avatar-src>
-            </template>
-          </div>
-          <!-- 中间信息 -->
-          <div class="flex-1 flex flex-col justify-center gap-10px ml-5px">
-            <!-- 名字 -->
-            <div class="flex h-fit">
+  <!-- 没有 id时显示 信息 -->
+  <div class="msg-like-container" v-show="!$route.query.id">
+    <div class="like-container flex flex-col gap-10px">
+      <template
+        v-for="item in likesData"
+        :id="`${item.type}:${
+          item.articleId || item.settingId || item.commentId
+        }`"
+      >
+        <!-- 每一项 -->
+        <div class="like-item p-[var(--p)]">
+          <div class="flex justify-between">
+            <!-- 头像 只要 前两个 -->
+            <div :class="item.likeCount > 1 ? 'avatars' : 'avatar-single'">
               <template v-for="(user, i) in item.recentLikers" :key="user.id">
-                <!-- 名字 只要 前两个  -->
-                <my-tooltip
-                  class="box-item"
-                  effect="dark"
-                  :content="`作者:${user.account}`"
-                  placement="top"
+                <global-avatar-src
+                  :account="user.account"
+                  :avatar="user.avatar"
+                  :isCenter="item.likeCount == 1 ? true : false"
+                  :style="{ '--avatar-size': 'var(--size)' }"
+                  class="avatar flex-shrink-0"
                   v-if="i < 2"
-                >
-                  <router-link
-                    :to="`/user/space/${user.account}`"
-                    class="!hover:color-[var(--primary-links-hover)] font-bold"
-                    ><span class="max-w-100px line-clamp-1"
-                      >{{ user.nickName }}
-                    </span>
-                  </router-link>
-                </my-tooltip>
-                <span v-if="i < 1 && item.likeCount > 1">、</span>
+                ></global-avatar-src>
               </template>
-              <my-anchor
-                :to="
-                  item.type === 'article'
-                    ? `/doc/${item.articleId}`
-                    : item.type == 'setting' && item.name === '关于'
-                    ? '/person/about'
-                    : item.type === 'comment'
-                    ? item.link
-                    : ''
-                "
-                class="ml-10px !hover:color-[var(--primary-links-hover)] cur-pointer"
-              >
-                等总计<span>{{ item.likeCount }}</span
-                >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
-              </my-anchor>
             </div>
-            <div class="flex gap-10px text-15px">
-              <!-- 时间等信息 -->
-              <div class="cur-text">
-                {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
-              </div>
-              <div class="flex gap-7px">
-                <!-- 查看 -->
+            <!-- 中间信息 -->
+            <div class="flex-1 flex flex-col justify-center gap-10px ml-5px">
+              <!-- 名字 -->
+              <div class="flex h-fit">
+                <template v-for="(user, i) in item.recentLikers" :key="user.id">
+                  <!-- 名字 只要 前两个  -->
+                  <my-tooltip
+                    class="box-item"
+                    effect="dark"
+                    :content="`作者:${user.account}`"
+                    placement="top"
+                    v-if="i < 2"
+                  >
+                    <router-link
+                      :to="`/user/space/${user.account}`"
+                      class="!hover:color-[var(--primary-links-hover)] font-bold"
+                      ><span class="max-w-100px line-clamp-1"
+                        >{{ user.nickName }}
+                      </span>
+                    </router-link>
+                  </my-tooltip>
+                  <span v-if="i < 1 && item.likeCount > 1">、</span>
+                </template>
                 <my-anchor
                   :to="
                     item.type === 'article'
@@ -73,60 +57,79 @@
                       ? item.link
                       : ''
                   "
-                  class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center"
+                  class="ml-10px !hover:color-[var(--primary-links-hover)] cur-pointer"
                 >
-                  <i
-                    class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
-                  ></i>
-                  <span>查看</span>
+                  等总计<span>{{ item.likeCount }}</span
+                  >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
                 </my-anchor>
-                <div
-                  class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center cur-pointer"
-                >
-                  <i
-                    class="i-material-symbols-light:list-alt-outline w-15px h-15px"
-                  ></i>
-                  <span>详情</span>
+              </div>
+              <div class="flex gap-10px text-15px">
+                <!-- 时间等信息 -->
+                <div class="cur-text">
+                  {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
+                </div>
+                <div class="flex gap-7px">
+                  <!-- 查看 -->
+                  <my-anchor
+                    :to="
+                      item.type === 'article'
+                        ? `/doc/${item.articleId}`
+                        : item.type == 'setting' && item.name === '关于'
+                        ? '/person/about'
+                        : item.type === 'comment'
+                        ? item.link
+                        : ''
+                    "
+                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center"
+                  >
+                    <i
+                      class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
+                    ></i>
+                    <span>查看</span>
+                  </my-anchor>
+                  <my-anchor
+                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center cur-pointer"
+                    :to="
+                      $route.fullPath +
+                      `&id=${
+                        item.type === 'article'
+                          ? item.articleId
+                          : item.type == 'setting'
+                          ? item.settingId
+                          : item.type === 'comment'
+                          ? item.commentId
+                          : ''
+                      }&type=${item.type}`
+                    "
+                  >
+                    <i
+                      class="i-material-symbols-light:list-alt-outline w-15px h-15px"
+                    ></i>
+                    <span>详情</span>
+                  </my-anchor>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="m-5px w-100px h-35px cur-text line-clamp-2">
-            {{
-              item.title ||
-              item.name ||
-              decompressStringNotError(item.content || "")
-            }}
+            <div class="m-5px w-100px h-35px cur-text line-clamp-2">
+              {{
+                item.title ||
+                item.name ||
+                decompressStringNotError(item.content || "")
+              }}
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <template v-for="item in likesData" v-if="false">
-      <div class="bg-red-100 mt-10px h-50vh">
-        <div>{{ item.type }}</div>
-        <div>
-          {{
-            decompressStringNotError(item.content || "") ||
-            item.title ||
-            item.name
-          }}
-        </div>
-        <!-- 点赞数量 -->
-        <div>{{ item.likeCount }}</div>
-        <!-- 前两个点赞的人 -->
-        <div>{{ item.recentLikers }}</div>
-        <!-- 最新的点赞时间 -->
-        <div>{{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}</div>
-      </div>
-    </template>
+      </template>
+    </div>
+    <!-- loading -->
+    <div
+      ref="obEl"
+      v-my-loading="() => ({ show: isLoading })"
+      class="w-100%"
+      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '20px' }"
+    ></div>
   </div>
-  <!-- loading -->
-  <div
-    ref="obEl"
-    v-my-loading="() => ({ show: isLoading })"
-    class="w-100%"
-    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '20px' }"
-  ></div>
+  <layout-msg-like-details v-if="$route.query.id"></layout-msg-like-details>
 </template>
 
 <script setup lang="ts" name="UserMessageLike">

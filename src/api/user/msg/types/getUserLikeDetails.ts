@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface GetUserLikes {
+export interface GetUserLikeDetails {
   code: number
   data: Data
   message: string[] | string
@@ -9,28 +9,21 @@ export interface GetUserLikes {
 }
 
 export interface Data {
-  items: Item[]
+  likes: Like[]
   pagination: Pagination
+  target: Target
   [property: string]: any
 }
 
-export interface Item {
-  articleId?: number
-  commentId?: number
-  content?: string
-  lastLikeAt: string
-  likeCount: number
-  link?: string
-  name?: string
-  recentLikers: RecentLiker[]
-  settingId?: number
-  title?: string
-  type: "article" | "setting" | "comment" | ""
+export interface Like {
+  createdAt: string
+  id: number
   updatedAt: string
+  user: User
   [property: string]: any
 }
 
-export interface RecentLiker {
+export interface User {
   account: string
   avatar: null | string
   id: number
@@ -39,11 +32,17 @@ export interface RecentLiker {
 }
 
 export interface Pagination {
-  articleCount?: number
-  commentCount?: number
   currentPage: number
   pageSize: number
-  settingCount?: number
   total?: number
+  [property: string]: any
+}
+
+export interface Target {
+  content?: string
+  id: number
+  name?: string
+  title?: string
+  type: "article" | "comment" | "setting"
   [property: string]: any
 }

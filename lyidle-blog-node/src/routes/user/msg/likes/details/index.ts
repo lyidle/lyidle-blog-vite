@@ -36,49 +36,58 @@ router.get("/", async (req, res, next) => {
     userId: { [Op.ne]: targetUserId },
   }
 
-  // 确定目标类型和关联模型
-  let targetType: string
-  let includeModels: any = [
-    {
-      model: User,
-      as: "user",
-      attributes: ["id", "account", "nickName", "avatar"],
-    },
-  ]
+  // 确定目标类型和ID
+  let targetType: string | null = null
+  let targetId: string | null = null
+  let targetModel: any
+  let targetAttributes: string[] = []
 
   if (articleId) {
     whereCondition.articleId = articleId
     targetType = "article"
-    includeModels.push({
-      model: Article,
-      as: "article",
-      attributes: ["id", "title"],
-    })
-  }
-  if (settingId) {
+    targetId = articleId as string
+    targetModel = Article
+    targetAttributes = ["id", "title", "content"]
+  } else if (settingId) {
     whereCondition.settingId = settingId
     targetType = "setting"
-    includeModels.push({
-      model: Setting,
-      as: "setting",
-      attributes: ["id", "name"],
-    })
-  }
-  if (commentId) {
+    targetId = settingId as string
+    targetModel = Setting
+    targetAttributes = ["id", "name", "content"]
+  } else if (commentId) {
     whereCondition.commentId = commentId
     targetType = "comment"
-    includeModels.push({
-      model: Comment,
-      as: "comment",
-      attributes: ["id", "content"],
-    })
+    targetId = commentId as string
+    targetModel = Comment
+    targetAttributes = ["id", "content"]
   }
 
+  // 非法 判断
+  if (targetId === null || targetType === null)
+    return res.result(void 0, "目标对象不存在", false)
+
   try {
+    // 查询目标对象
+    let findtargetModel = await targetModel.findOne({
+      where: { id: targetId },
+      attributes: targetAttributes,
+    })
+
+    if (!findtargetModel) {
+      return res.result(void 0, "目标对象不存在", false)
+    }
+    findtargetModel = JSON.parse(JSON.stringify(findtargetModel))
+
     // 查询点赞记录
     const { count, rows } = await LikeDislike.findAndCountAll({
       where: whereCondition,
-      include: includeModels,
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "account", "nickName", "avatar"],
+        },
+      ],
       order: [
         ["updatedAt", "desc"],
         ["id", "desc"],
@@ -86,47 +95,7 @@ router.get("/", async (req, res, next) => {
       limit: pageSize,
       offset,
       distinct: true,
-    })
-
-    // 格式化返回数据
-    const formattedLikes = rows.map((like: any) => {
-      const baseItem = {
-        id: like.id,
-        createdAt: like.createdAt,
-        updatedAt: like.updatedAt,
-        user: like.user,
-        type: targetType,
-      }
-
-      // 根据目标类型添加目标信息
-      switch (targetType) {
-        case "article":
-          return {
-            ...baseItem,
-            target: {
-              id: like.article.id,
-              title: like.article.title,
-            },
-          }
-        case "setting":
-          return {
-            ...baseItem,
-            target: {
-              id: like.setting.id,
-              name: like.setting.name,
-            },
-          }
-        case "comment":
-          return {
-            ...baseItem,
-            target: {
-              id: like.comment.id,
-              content: like.comment.content,
-            },
-          }
-        default:
-          return baseItem
-      }
+      attributes: ["id", "createdAt", "updatedAt"],
     })
 
     // 构造返回结果
@@ -136,13 +105,29 @@ router.get("/", async (req, res, next) => {
         currentPage,
         pageSize,
       },
-      likes: formattedLikes,
+      target: {
+        id: findtargetModel.id,
+        ...(targetType === "article" && {
+          ...findtargetModel,
+          type: targetType,
+        }),
+        ...(targetType === "setting" && {
+          ...findtargetModel,
+          type: targetType,
+        }),
+        ...(targetType === "comment" && {
+          ...findtargetModel,
+          type: targetType,
+        }),
+      },
+      likes: rows,
     }
 
     res.result(result, "获取点赞详情成功")
   } catch (error) {
-    console.error("获取点赞详情失败:", error)
-    res.result(void 0, "获取点赞详情失败", false)
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "获取点赞详情失败", false)
+    )
   }
 })
 

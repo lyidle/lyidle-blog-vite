@@ -124,6 +124,14 @@ const _left = ref("0px")
 const _width = ref("60px")
 const _display = ref("block")
 
+// to的常量
+const toConst: userSpaceSceneType[] = [
+  "collect",
+  "follower",
+  "following",
+  "home",
+]
+
 // 左侧导航的子元素
 let children: HTMLLIElement[]
 // 初始化 元素
@@ -140,7 +148,12 @@ const initLineCallback = () => {
     () => route.query,
     (query) => {
       const { to, group } = query
-      const id = typeof to === "string" ? to : "home"
+      const validateTo = toConst.includes(to as userSpaceSceneType)
+      const id = validateTo ? to : "home"
+      if (!validateTo) {
+        ElMessage.warning("to的值不合法")
+      }
+
       activeNav(id as userSpaceSceneType, group as string)
     },
     {
