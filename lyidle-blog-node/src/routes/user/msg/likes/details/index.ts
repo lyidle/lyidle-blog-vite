@@ -1,73 +1,68 @@
 import express from "express"
-import { Op } from "sequelize"
-const {
-  LikeDislike,
-  User,
-  Article,
-  Setting,
-  Comment,
-  sequelize,
-} = require("@/db/models")
+const { Article, Setting, Comment, sequelize } = require("@/db/models")
 
 const router = express.Router()
 
 router.get("/", async (req, res, next) => {
   const targetUserId = req.auth.id
   const { query } = req
-
-  // 分页参数处理
-  const currentPage = Math.abs(Number(query.currentPage)) || 1
-  const pageSize = Math.abs(Number(query.pageSize)) || 10
-  const offset = (currentPage - 1) * pageSize
-
-  // 验证查询参数
-  const { articleId, settingId, commentId } = query
-  const idCount = [articleId, settingId, commentId].filter(Boolean).length
-
-  if (idCount > 1) {
-    return res.result(void 0, "只能指定一种ID类型进行查询", false)
-  }
-
-  if (idCount === 0) {
-    return res.result(
-      void 0,
-      "必须指定articleId、settingId或commentId中的一个",
-      false
-    )
-  }
-
-  // 确定目标类型和ID
-  let targetType: string | null = null
-  let targetId: string | null = null
-  let targetModel: any
-  let targetAttributes: string[] = []
-  let targetField: string = ""
-
-  if (articleId) {
-    targetType = "article"
-    targetId = articleId as string
-    targetModel = Article
-    targetField = "articleId"
-    targetAttributes = ["id", "title", "content"]
-  } else if (settingId) {
-    targetType = "setting"
-    targetId = settingId as string
-    targetModel = Setting
-    targetField = "settingId"
-    targetAttributes = ["id", "name", "content", "link"]
-  } else if (commentId) {
-    targetType = "comment"
-    targetId = commentId as string
-    targetModel = Comment
-    targetField = "commentId"
-    targetAttributes = ["id", "content", "link"]
-  }
-
-  // 非法判断
-  if (targetId === null || targetType === null)
-    return res.result(void 0, "目标对象不存在", false)
-
   try {
+    // 分页参数处理
+    const currentPage = Math.abs(Number(query.currentPage)) || 1
+    const pageSize = Math.abs(Number(query.pageSize)) || 10
+    const offset = (currentPage - 1) * pageSize
+
+    // 验证查询参数
+    const { articleId, settingId, commentId } = query
+    const idCount = [articleId, settingId, commentId].filter(Boolean).length
+
+    if (idCount > 1) {
+      return res.result(
+        void 0,
+        "获取点赞详情失败,只能指定一种ID类型进行查询",
+        false
+      )
+    }
+
+    if (idCount === 0) {
+      return res.result(
+        void 0,
+        "获取点赞详情失败,必须指定articleId、settingId或commentId中的一个",
+        false
+      )
+    }
+
+    // 确定目标类型和ID
+    let targetType: string | null = null
+    let targetId: number | null = null
+    let targetModel: any
+    let targetAttributes: string[] = []
+    let targetField: string = ""
+
+    if (articleId) {
+      targetType = "article"
+      targetId = +articleId
+      targetModel = Article
+      targetField = "articleId"
+      targetAttributes = ["id", "title", "content"]
+    } else if (settingId) {
+      targetType = "setting"
+      targetId = +settingId
+      targetModel = Setting
+      targetField = "settingId"
+      targetAttributes = ["id", "name", "content", "link"]
+    } else if (commentId) {
+      targetType = "comment"
+      targetId = +commentId
+      targetModel = Comment
+      targetField = "commentId"
+      targetAttributes = ["id", "content", "link"]
+    }
+
+    // 非法判断
+    if (targetId === null || targetType === null || !Number.isInteger(targetId))
+      return res.result(void 0, "获取点赞详情失败,目标对象不存在", false)
+
     // 查询目标对象
     let findtargetModel = await targetModel.findOne({
       where: { id: targetId },
@@ -75,7 +70,7 @@ router.get("/", async (req, res, next) => {
     })
 
     if (!findtargetModel) {
-      return res.result(void 0, "目标对象不存在", false)
+      return res.result(void 0, "获取点赞详情失败,目标对象不存在", false)
     }
     findtargetModel = JSON.parse(JSON.stringify(findtargetModel))
 

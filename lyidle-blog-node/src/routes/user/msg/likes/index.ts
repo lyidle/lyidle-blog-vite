@@ -11,11 +11,10 @@ router.get("/", async (req, res, next) => {
   const targetUserId = req.auth.id
   const { query } = req
 
-  const currentPage = Math.abs(Number(query.currentPage)) || 1
-  const pageSize = Math.abs(Number(query.pageSize)) || 10
-  const offset = (currentPage - 1) * pageSize
-
   try {
+    const currentPage = Math.abs(Number(query.currentPage)) || 1
+    const pageSize = Math.abs(Number(query.pageSize)) || 10
+    const offset = (currentPage - 1) * pageSize
     const [articles, settings, comments] = await Promise.all([
       // 查询文章及其点赞信息
       sequelize.query(
@@ -180,8 +179,10 @@ router.get("/", async (req, res, next) => {
           ...item,
           type: "comment",
         })),
-        // @ts-ignore
-      ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)),
+      ].sort(
+        (a, b) =>
+          (new Date(b.updatedAt) as any) - (new Date(a.updatedAt) as any)
+      ),
     }
 
     res.result(result, "获取用户点赞信息成功")
