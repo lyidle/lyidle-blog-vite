@@ -1,10 +1,10 @@
 <template>
   <div class="add-comments pb-20px" ref="instance">
-    <div class="overflow-hidden mt-20px flex gap-10px">
+    <div class="mt-20px flex gap-10px">
       <slot name="outer"></slot>
       <div class="w-100%">
         <!-- 输入框 -->
-        <my-input
+        <my-search-account
           type="textarea"
           v-model="comment"
           :autosize="{ minRows: 2, maxRows: 4 }"
@@ -13,15 +13,13 @@
           :minlength="minCounts"
           @focus="commentFocus"
           @blur="isFocus = false"
-          @input="handlerInput"
+          @input="handlerCounts"
           @paste="handlerPaste"
           @click="updateCursorPosition"
           @select="updateCursorPosition"
-          @keydown.ctrl.z.prevent="handleUndo"
-          @keydown.ctrl.y.prevent="handleRedo"
           ref="textAreaInstance"
           v-bind="$attrs"
-        ></my-input>
+        ></my-search-account>
         <!-- 文本框下的 工具栏 -->
         <div v-show="isShowTools" class="my-10px flex justify-between">
           <!-- 左侧 按钮 -->
@@ -67,8 +65,6 @@
 import { useEventListener } from "@/hooks/useEventListener"
 // 处理 特殊字符 正则替换
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
-// 防抖
-import debounce from "@/utils/debounce"
 // 引入 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 // 处理 文件上传
@@ -166,9 +162,6 @@ const minCounts = 20
 const textAreaInstance = ref()
 // 保存的操作
 const saveToHistory = () => textAreaInstance.value?.saveToHistory?.()
-// 撤销和重做
-const handleRedo = () => textAreaInstance.value?.redo?.()
-const handleUndo = () => textAreaInstance.value?.undo?.()
 
 // 输入框 聚焦 事件
 const commentFocus = () => {
@@ -185,12 +178,6 @@ const handlerCounts = () => {
     ? initialMaxCounts
     : initialMinCounts
 }
-// 输入框 输入 事件
-const handlerInput = debounce(() => {
-  saveToHistory()
-  handlerCounts()
-}, 500)
-
 // 是否 选中文本
 const isSelected = ref(false)
 // 选中 区域

@@ -22,24 +22,12 @@
     </div>
     <!-- 名字和签名 -->
     <div class="pl-30px flex flex-col justify-center gap-5px h-80px">
-      <my-tooltip
+      <global-name
         class="box-item"
-        effect="dark"
-        :content="`作者:${
-          userInfo?.id === userId
-            ? userAccount
-            : userInfo?.account || '账号未知'
-        }`"
-        placement="top"
-      >
-        <div class="cur-text text-24px w-fit">
-          {{
-            userInfo?.id === userId
-              ? userNickName
-              : userInfo?.nickName || "用户名未知"
-          }}
-        </div>
-      </my-tooltip>
+        :account="userInfo?.account"
+        :nick="userInfo?.nickName"
+        nickClass="text-24px w-fit"
+      ></global-name>
       <div class="flex">
         <div class="flex-shrink-0 text-15px cur-text h-20px">
           签名:<span v-if="userInfo?.id !== userId">{{

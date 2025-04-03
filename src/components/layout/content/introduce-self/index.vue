@@ -25,26 +25,20 @@
           <!-- 头像 -->
           <global-avatar></global-avatar>
         </div>
-        <div
-          class="text-[1.5625rem] cur-text flex flex-col gap-[5px] items-center"
-        >
-          <my-tooltip
+        <div class="text-[1.5625rem] flex flex-col gap-[5px] items-center">
+          <global-name
             class="box-item"
-            effect="dark"
-            :content="`作者:${showAccount}`"
-            placement="right-start"
-          >
-            <div class="w-fit truncate text-center text-26px">
-              {{ showNickName }}
-            </div>
-          </my-tooltip>
+            :account="showAccount"
+            :nick="showNickName"
+            nickClass="text-26px w-fit"
+          ></global-name>
           <my-tooltip
             class="box-item"
             effect="dark"
             content="用户签名"
             placement="right-start"
           >
-            <div class="w-fit truncate text-center text-16px">
+            <div class="w-fit line-clamp-1 cur-text text-center text-16px">
               {{ showSigner }}
             </div>
           </my-tooltip>

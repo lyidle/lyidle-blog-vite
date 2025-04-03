@@ -30,21 +30,24 @@
               <div class="flex h-fit">
                 <template v-for="(user, i) in item.recentLikers" :key="user.id">
                   <!-- 名字 只要 前两个  -->
-                  <my-tooltip
+
+                  <global-name
                     class="box-item"
-                    effect="dark"
-                    :content="`作者:${user.account}`"
+                    :account="user.account"
+                    :nick="user.nickName"
                     placement="top"
                     v-if="i < 2"
                   >
-                    <router-link
-                      :to="`/user/space/${user.account}`"
-                      class="!hover:color-[var(--primary-links-hover)] font-bold"
-                      ><span class="max-w-100px line-clamp-1"
-                        >{{ user.nickName }}
-                      </span>
-                    </router-link>
-                  </my-tooltip>
+                    <template #nick="{ nick, account }">
+                      <router-link
+                        :to="`/user/space/${account}`"
+                        class="!hover:color-[var(--primary-links-hover)] font-bold"
+                        ><span class="max-w-100px line-clamp-1"
+                          >{{ nick }}
+                        </span>
+                      </router-link>
+                    </template>
+                  </global-name>
                   <span v-if="i < 1 && item.likeCount > 1">、</span>
                 </template>
                 <my-anchor

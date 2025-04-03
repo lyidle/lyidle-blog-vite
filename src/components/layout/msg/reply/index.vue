@@ -13,20 +13,19 @@
         <div class="flex flex-col gap-15px flex-1 overflow-hidden">
           <!-- 谁回复谁 -->
           <div class="cur-text w-fit flex gap-10px">
-            <my-tooltip
+            <global-name
               class="box-item"
-              effect="dark"
-              :content="`作者:${reply.user.account}`"
-              placement="right"
+              :account="reply.user.account"
+              :nick="reply.user.nickName"
             >
-              <router-link
-                :to="`/user/space/${reply.user.account}`"
-                class="!hover:color-[var(--primary-links-hover)] font-bold"
-                ><span class="max-w-100px line-clamp-1"
-                  >{{ reply.user.nickName }}
-                </span>
-              </router-link>
-            </my-tooltip>
+              <template #nick="{ nick, account }">
+                <router-link
+                  :to="`/user/space/${account}`"
+                  class="!hover:color-[var(--primary-links-hover)] font-bold"
+                  ><span class="max-w-100px line-clamp-1">{{ nick }} </span>
+                </router-link>
+              </template>
+            </global-name>
             <my-anchor
               :to="
                 reply.type === 'article'
@@ -69,14 +68,11 @@
           <!-- 来源的 信息 -->
           <div v-if="reply.fromComment?.id" class="origin">
             <div class="cur-text flex">
-              <my-tooltip
+              <global-name
                 class="box-item"
-                effect="dark"
-                :content="`作者:${reply.fromComment.user.account}`"
-                placement="right"
-              >
-                <span>{{ reply.fromComment.user.nickName }}</span>
-              </my-tooltip>
+                :account="reply.fromComment.user.account"
+                :nick="reply.fromComment.user.nickName"
+              ></global-name>
               :
               <span class="line-clamp-1">
                 {{ decompressStringNotError(reply.fromComment?.content) }}

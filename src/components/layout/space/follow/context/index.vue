@@ -148,7 +148,7 @@ const searchKey = ref<string>("")
 const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
   if (!userInfo.value) return
   let result: GetFollowUser["data"] | null = null
-  // 是否是关注
+  // 得到关注列表
   if (props.isFollower) {
     result = await getFollower({
       userId: userInfo.value.id,
@@ -157,7 +157,7 @@ const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
       pageSize: pagination.value.pageSize,
     })
   } else {
-    // 是否是粉丝
+    // 得到粉丝列表
     result = await getFollowing({
       userId: userInfo.value.id,
       total: followingCounts.value || 0,

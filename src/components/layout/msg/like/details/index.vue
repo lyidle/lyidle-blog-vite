@@ -42,21 +42,22 @@
           <div class="flex flex-col justify-center gap-10px flex-1">
             <!-- 名字 -->
             <div class="flex gap-10px">
-              <my-tooltip
+              <global-name
                 class="box-item"
-                effect="dark"
-                :content="`作者:${item.user.account}`"
-                placement="top"
+                :account="item.user.account"
+                :nick="item.user.nickName"
               >
-                <router-link
-                  :to="`/user/space/${item.user.account}`"
-                  class="!hover:color-[var(--primary-links-hover)] font-bold w-fit"
-                >
-                  <span class="max-w-100px line-clamp-1">
-                    {{ item.user.nickName }}
-                  </span>
-                </router-link>
-              </my-tooltip>
+                <template #nick="{ nick, account }">
+                  <router-link
+                    :to="`/user/space/${account}`"
+                    class="!hover:color-[var(--primary-links-hover)] font-bold w-fit"
+                  >
+                    <span class="max-w-100px line-clamp-1">
+                      {{ nick }}
+                    </span>
+                  </router-link>
+                </template>
+              </global-name>
               <span class="cur-text">赞了我</span>
             </div>
             <!-- 时间 -->

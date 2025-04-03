@@ -18,6 +18,7 @@ import { CreateUserBody } from "./types/createUserBody"
 import { managerSetUserRolesBody } from "./types/setUserRolesBody"
 import { UserFindByPk } from "./types/userFindByPk"
 import { FindByAccountQuery } from "./types/findByAccountQuery"
+import { FindByAccount } from "./types/findByAccount"
 // 统一管理 api
 enum API {
   // 注册相关
@@ -117,7 +118,7 @@ export const userFindByPk = (userId: number) =>
 
 // 通过 account 搜索 用户 只有 用户表的 信息
 export const findByAccount = (data: FindByAccountQuery) =>
-  request.get<any, UserFindByPk["data"]>(
+  request.get<any, FindByAccount["data"]>(
     server + prefix + API.findByAccount + `/?${new URLSearchParams(data)}`
   )
 

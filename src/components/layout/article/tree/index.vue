@@ -8,20 +8,10 @@
             {{ title }} - {{ pagination?.total || 0 }}
           </div>
           <div class="flex gap-10px items-center" v-if="account">
-            <my-tooltip
-              class="box-item"
-              effect="dark"
-              :content="`作者:${
-                userId === userInfo?.id ? userAccount : userInfo?.account
-              }`"
-              placement="top"
-            >
-              <div class="cur-text">
-                {{
-                  userId === userInfo?.id ? userNickName : userInfo?.nickName
-                }}
-              </div>
-            </my-tooltip>
+            <global-name
+              :account="userInfo?.account"
+              :nick="userInfo?.nickName"
+            ></global-name>
             <my-button
               class="w-70px"
               size="small"
@@ -196,7 +186,7 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
 // 提取数据
-const { userId, userAccount, userNickName } = storeToRefs(useUserStore())
+const { userNickName } = storeToRefs(useUserStore())
 
 // 判断是否是回收站页面
 const route = useRoute()

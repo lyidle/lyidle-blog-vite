@@ -8,16 +8,12 @@
     ></global-avatar-src>
     <!-- 用户信息 -->
     <div class="flex flex-col justify-between">
-      <my-tooltip
+      <global-name
         class="box-item"
-        effect="dark"
-        :content="`作者:${user.id === userId ? userAccount : user.account}`"
-        placement="top"
-      >
-        <div class="text-17px cur-pointer w-fit">
-          {{ user.nickName }}
-        </div>
-      </my-tooltip>
+        :account="user.account"
+        :nick="user.nickName"
+        nickClass="w-fit"
+      ></global-name>
       <div class="text-13px cur-text">
         {{ user.signer || "这个人没有简介哦~~" }}
       </div>
@@ -50,10 +46,6 @@
 <script setup lang="ts" name="UserSpaceFolloweContextUser">
 // 类型
 import type { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
-// 引入 仓库
-import { useUserStore } from "@/store/user"
-// 得到本地 userId
-const { userId, userAccount } = storeToRefs(useUserStore())
 
 defineProps<{ user: GetFollowUser["data"]["users"][0]; isFollower: boolean }>()
 </script>
