@@ -21,7 +21,7 @@ router.post(
       return res.result(void 0, `${name}信息已设置~`, false)
     try {
       // 汇总 错误信息
-      const errorArray = []
+      const errorArray: string[] = []
       if (!name) errorArray.push("name是必传项")
       if (!content) errorArray.push("content或者jsonContent是必传项")
       if (errorArray.length) return res.result(void 0, errorArray, false)

@@ -22,7 +22,6 @@ router.get("/", async (req, res, next) => {
     const { count, rows } = await Comment.findAndCountAll({
       where: {
         [Op.or]: {
-          fromUserId: userId,
           targetUserId: userId,
         },
         [Op.not]: {

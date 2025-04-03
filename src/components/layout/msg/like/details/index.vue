@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="like-detail-container flex flex-col gap-[var(--gap-y)] h-100% relative"
-  >
-    <div class="msg-box p-[var(--p)] h-80px">
+  <div class="like-detail-container">
+    <div class="msg-box p-[var(--p)]">
       <!-- 返回按钮 -->
       <my-anchor
         to="/user/msg?to=like"
@@ -26,11 +24,13 @@
       </my-anchor>
     </div>
     <!-- 具体的 用户 -->
-    <div
-      class="user-container msg-box max-h-70% flex flex-col gap-[var(--gap-y)] overflow-y-auto"
-    >
-      <div class="flex flex-col" v-for="item in likes" :key="item.id">
-        <div class="p-15px flex gap-10px justify-between">
+    <div class="msg-box flex flex-col overflow-y-auto flex-shrink-0">
+      <div class="flex flex-col flex-shrink-0">
+        <div
+          v-for="item in likes"
+          :key="item.id"
+          class="user-items p-15px flex gap-10px justify-between"
+        >
           <!-- 头像 -->
           <global-avatar-src
             :account="item.user.account"
@@ -73,6 +73,13 @@
           ></layout-space-is-follower>
         </div>
       </div>
+      <!-- loading -->
+      <div
+        ref="obEl"
+        v-my-loading="() => ({ show: isLoading })"
+        class="w-100% flex-shrink-0"
+        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '20px' }"
+      ></div>
     </div>
   </div>
 </template>
@@ -81,13 +88,14 @@
 // 引入 api
 import { getUserLikeDetails } from "@/api/user/msg"
 // 引入 类型
-import { likeQueryType } from "./types"
-import { GetUserLikeDetails } from "@/api/user/msg/types/getUserLikeDetails"
-import { GetUserLikeDetailsQuery } from "@/api/user/msg/types/getUserLikeDetailsQuery"
+import type { likeQueryType } from "./types"
+import type { GetUserLikeDetails } from "@/api/user/msg/types/getUserLikeDetails"
+import type { GetUserLikeDetailsQuery } from "@/api/user/msg/types/getUserLikeDetailsQuery"
+// 解压文本
 import { decompressStringNotError } from "@/utils/compression"
+// 处理时间
 import moment from "@/utils/moment"
-
-// 引入 类型
+import { createIntersectionObserver } from "@/utils/observer"
 
 const route = useRoute()
 const router = useRouter()
@@ -103,11 +111,37 @@ const pagination = ref<GetUserLikeDetails["data"]["pagination"]>({
 const likes = ref<GetUserLikeDetails["data"]["likes"]>([])
 const target = ref<GetUserLikeDetails["data"]["target"]>()
 
+const isLoading = ref(true)
+
 // 初始化 数据
-const initLikes = async () => {
+const reqLikeDetails = async () => {
   // 判断 type 与 id 是否合法
   const va = validate()
   if (!va) return
+  // 判断是否超出
+  if (init && pagination.value.total) {
+    // 需要是 上次的 当前页 来进行判断是否加载下一页
+    const is =
+      (pagination.value.currentPage - 1) * pagination.value.pageSize <
+      pagination.value.total
+    if (is) {
+      await reqLikeDetailsCallback()
+    }
+    return
+  }
+
+  // 初始化数据
+  if (!init) {
+    await reqLikeDetailsCallback(() => {
+      init = true
+    })
+  }
+}
+const reqLikeDetailsCallback = async (cb?: () => void) => {
+  // 判断 type 与 id 是否合法
+  const va = validate()
+  if (!va) return
+  isLoading.value = true
   const { id, type } = va
   // 得到 对应的id
   const curId: GetUserLikeDetailsQuery = {}
@@ -120,12 +154,29 @@ const initLikes = async () => {
     ...curId,
   })
   pagination.value = result.pagination
-  likes.value = result.likes
+  likes.value = likes.value.concat(result.likes)
   target.value = result.target
+  cb?.()
+  isLoading.value = false
 }
 
 // 初始化数据
-onMounted(initLikes)
+let stopObserver: (() => void) | void
+onBeforeUnmount(() => stopObserver?.())
+
+let init = false
+const obEl = ref<HTMLElement>()
+onMounted(() => {
+  // 初始化 交叉传感器，用于更新数据
+  if (obEl.value)
+    stopObserver = createIntersectionObserver(obEl.value, {
+      enter: async () => {
+        // 初始化 后 自增当前页
+        if (init) ++pagination.value.currentPage
+        await reqLikeDetails()
+      },
+    })
+})
 
 // 判断 type 与 id 是否合法
 const validate = (): void | { id: number; type: likeQueryType } => {
@@ -150,21 +201,25 @@ watchEffect(async () => {
   // 判断 type 与 id 是否合法
   const va = validate()
   if (!va) return
-  // const { id, type } = va
 })
 </script>
 
 <style scoped lang="scss">
 .like-detail-container {
   position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 80px 1fr;
+  gap: var(--gap-y);
+  .user-items {
+    border-bottom: 1px solid red;
+  }
 }
 </style>
 
-<!-- 重新设置颜色 -->
+<!-- 重置颜色 -->
 <style lang="scss">
 .msg-scene:has(.like-detail-container) {
-  all: unset;
-  width: 100%;
-  height: 100%;
+  background-color: unset;
 }
 </style>

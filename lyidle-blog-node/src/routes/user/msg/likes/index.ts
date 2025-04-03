@@ -15,6 +15,59 @@ router.get("/", async (req, res, next) => {
     const currentPage = Math.abs(Number(query.currentPage)) || 1
     const pageSize = Math.abs(Number(query.pageSize)) || 10
     const offset = (currentPage - 1) * pageSize
+
+    // 先查询总数
+    const [articleCount, settingCount, commentCount] = await Promise.all([
+      sequelize
+        .query(
+          `SELECT COUNT(DISTINCT a.id) AS count 
+         FROM Articles a
+         JOIN LikeDislikes ld ON ld.articleId = a.id
+           AND ld.targetUserId = :targetUserId
+           AND ld.likeType = 'like'
+           AND ld.userId != :targetUserId`,
+          {
+            replacements: { targetUserId },
+            type: sequelize.QueryTypes.SELECT,
+            plain: true,
+          }
+        )
+        .then((res) => res?.count || 0),
+
+      sequelize
+        .query(
+          `SELECT COUNT(DISTINCT s.id) AS count 
+         FROM Settings s
+         JOIN LikeDislikes ld ON ld.settingId = s.id
+           AND ld.targetUserId = :targetUserId
+           AND ld.likeType = 'like'
+           AND ld.userId != :targetUserId`,
+          {
+            replacements: { targetUserId },
+            type: sequelize.QueryTypes.SELECT,
+            plain: true,
+          }
+        )
+        .then((res) => res?.count || 0),
+
+      sequelize
+        .query(
+          `SELECT COUNT(DISTINCT c.id) AS count 
+         FROM Comments c
+         JOIN LikeDislikes ld ON ld.commentId = c.id
+           AND ld.targetUserId = :targetUserId
+           AND ld.likeType = 'like'
+           AND ld.userId != :targetUserId`,
+          {
+            replacements: { targetUserId },
+            type: sequelize.QueryTypes.SELECT,
+            plain: true,
+          }
+        )
+        .then((res) => res?.count || 0),
+    ])
+
+    // 查询具体数据
     const [articles, settings, comments] = await Promise.all([
       // 查询文章及其点赞信息
       sequelize.query(
@@ -159,23 +212,23 @@ router.get("/", async (req, res, next) => {
     // 构造返回结果
     const result = {
       pagination: {
-        total: articles.length + settings.length + comments.length,
+        total: articleCount + settingCount + commentCount, // 使用准确的总数
         currentPage,
         pageSize,
-        articleCount: articles.length,
-        settingCount: settings.length,
-        commentCount: comments.length,
+        articleCount,
+        settingCount,
+        commentCount,
       },
       items: [
-        ...articles.map((item: any) => ({
+        ...articles.map((item) => ({
           ...item,
           type: "article",
         })),
-        ...settings.map((item: any) => ({
+        ...settings.map((item) => ({
           ...item,
           type: "setting",
         })),
-        ...comments.map((item: any) => ({
+        ...comments.map((item) => ({
           ...item,
           type: "comment",
         })),

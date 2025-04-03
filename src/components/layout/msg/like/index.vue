@@ -118,7 +118,7 @@
       ref="obEl"
       v-my-loading="() => ({ show: isLoading })"
       class="w-100%"
-      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '20px' }"
+      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
     ></div>
   </div>
   <layout-msg-like-details v-if="$route.query.id"></layout-msg-like-details>
@@ -136,46 +136,43 @@ import moment from "@/utils/moment"
 // 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 
+const normalSize = 3
 const pagination = ref<GetUserLikes["data"]["pagination"]>({
   currentPage: 1,
-  pageSize: 10,
+  pageSize: normalSize,
 })
 
 const isLoading = ref(true)
 
 // 存储 数据
 const likesData = ref<GetUserLikes["data"]["likes"]>([])
-
-let init = false
+let preItemLen = normalSize
 
 // 初始化 数据
 const reqLikes = async () => {
-  isLoading.value = true
   // 判断是否超出
   if (init && pagination.value.total) {
+    // 需要是 上次的 当前页 来进行判断是否加载下一页
     const is =
-      pagination.value.total -
-        // currentPage需要乘以 3 因为是按照comment、article、setting分别分页进行查询的
-        pagination.value.currentPage * 3 * pagination.value.pageSize >
-      0
+      (pagination.value.currentPage - 1) * pagination.value.pageSize <
+        pagination.value.total && preItemLen >= pagination.value.pageSize
     if (is) {
       await reqLikesCallback()
     }
-    isLoading.value = false
     return
   }
-
   // 初始化数据
   if (!init) {
     await reqLikesCallback(() => {
       init = true
-      isLoading.value = false
     })
   }
 }
 
 let stopObserver: (() => void) | void
 onBeforeUnmount(() => stopObserver?.())
+
+let init = false
 
 const obEl = ref<HTMLElement>()
 onMounted(() => {
@@ -191,13 +188,16 @@ onMounted(() => {
 })
 // 初始化数据的回调函数
 const reqLikesCallback = async (cb?: () => void) => {
+  isLoading.value = true
   const data = await getUserLikes({
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
   })
   likesData.value = likesData.value.concat(data.items)
   pagination.value = data.pagination
+  preItemLen = data.items.length
   cb?.()
+  isLoading.value = false
 }
 </script>
 

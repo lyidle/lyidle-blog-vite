@@ -201,30 +201,28 @@ const pagination = ref<GetUserReply["data"]["pagination"]>({
 let init = false
 // 请求 得到用户 回复的信息数据
 const reqReplies = async () => {
-  isLoading.value = true
   // 判断是否超出
   if (init && pagination.value.total) {
+    // 需要是 上次的 当前页 来进行判断是否加载下一页
     const is =
-      pagination.value.total -
-        pagination.value.currentPage * pagination.value.pageSize >
-      0
+      (pagination.value.currentPage - 1) * pagination.value.pageSize <
+      pagination.value.total
     if (is) {
       await reqUserReplyCallback()
     }
-    isLoading.value = false
     return
   }
   // 初始化数据
   if (!init) {
     await reqUserReplyCallback(() => {
       init = true
-      isLoading.value = false
     })
   }
 }
 
 // 得到 数据的回调
 const reqUserReplyCallback = async (cb?: () => void) => {
+  isLoading.value = true
   const result = await getUserReply({
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
@@ -232,6 +230,7 @@ const reqUserReplyCallback = async (cb?: () => void) => {
   replies.value = replies.value.concat(addType(result.replies))
   pagination.value = result.pagination
   cb?.()
+  isLoading.value = false
 }
 
 // 添加上类型

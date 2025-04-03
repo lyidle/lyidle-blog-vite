@@ -94,7 +94,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         break
       case "LikeDislike":
         // 获取违反唯一性约束的字段
-        const LikeDislikeErrors = []
+        const LikeDislikeErrors: string[] = []
         if (uniqueFields.includes("userId"))
           LikeDislikeErrors.push("用户ID不能重复")
         if (uniqueFields.includes("targetType"))

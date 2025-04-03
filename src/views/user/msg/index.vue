@@ -45,10 +45,10 @@
         </li>
       </ul>
     </aside>
-    <div class="p-10px flex flex-col gap-[var(--gap-y)] flex-1 overflow-hidden">
+    <div class="msg-content p-10px flex-1 overflow-hidden">
       <!-- title -->
       <div
-        class="msg-box flex-shrink-0 text-0.9688rem cur-text py-10px pl-[var(--p)] flex items-center"
+        class="msg-box text-0.9688rem cur-text py-10px pl-[var(--p)] flex items-center"
       >
         {{ sceneZh[$route.query.to as sceneMsgType] }}
         <!-- 收到的赞二级 -->
@@ -57,7 +57,7 @@
         </span>
       </div>
       <!-- 内容 -->
-      <div class="msg-scene h-100% overflow-y-auto overflow-hidden">
+      <div class="msg-scene overflow-y-auto">
         <!-- 回复我的 -->
         <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
         <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
@@ -178,6 +178,12 @@ watch(
         @include pages-links-hover;
       }
     }
+  }
+
+  .msg-content {
+    display: grid;
+    grid-template-rows: 40px 1fr;
+    gap: var(--gap-y);
   }
 }
 </style>
