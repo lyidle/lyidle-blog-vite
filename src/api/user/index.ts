@@ -17,6 +17,7 @@ import { UpdateUser } from "./types/updateUser"
 import { CreateUserBody } from "./types/createUserBody"
 import { managerSetUserRolesBody } from "./types/setUserRolesBody"
 import { UserFindByPk } from "./types/userFindByPk"
+import { FindByAccountQuery } from "./types/findByAccountQuery"
 // 统一管理 api
 enum API {
   // 注册相关
@@ -30,6 +31,7 @@ enum API {
   // 用户信息
   userInfo = "/user/userinfo",
   findByPk = "/user/search/findByPk",
+  findByAccount = "/user/search/findByAccount",
   search = "/user/search",
   exactSearch = "/user/search/exact",
   searchCounts = "/user/search/user",
@@ -111,6 +113,12 @@ export const searchCounts = (data: SearchByIdOrAccountOrRoleQuery) =>
 export const userFindByPk = (userId: number) =>
   request.get<any, UserFindByPk["data"]>(
     server + prefix + API.findByPk + `/${userId}`
+  )
+
+// 通过 account 搜索 用户 只有 用户表的 信息
+export const findByAccount = (data: FindByAccountQuery) =>
+  request.get<any, UserFindByPk["data"]>(
+    server + prefix + API.findByAccount + `/?${new URLSearchParams(data)}`
   )
 
 // 删除的回调

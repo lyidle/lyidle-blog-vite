@@ -1,11 +1,12 @@
 // 引入api
-import { searchUser } from "@/api/user"
+import { findByAccount } from "@/api/user"
 // 引入类型
 import type { searchData } from "@/api/user/types/searchUserPagination"
-import { SearchUserQuery } from "@/api/user/types/searchUserQuery"
-import { mitt } from "@/utils/emitter"
+import type { FindByAccountQuery } from "@/api/user/types/findByAccountQuery"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { mitt } from "@/utils/emitter"
+
 export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
   const tableData = ref<searchData["users"]>([])
@@ -70,10 +71,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 获取用户
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
-      const search = { currentPage, pageSize } as SearchUserQuery
+      const search = { currentPage, pageSize } as FindByAccountQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey.value) search.account = searchKey.value
-      const result = await searchUser(search)
+      if (searchKey.value) search.keyword = searchKey.value
+      const result = await findByAccount(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
     } catch (error) {

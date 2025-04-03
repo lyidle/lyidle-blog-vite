@@ -2,6 +2,7 @@ import express from "express"
 // 引入搜素函数
 import search from "./search"
 import { getKey, setKey } from "@/utils/redis"
+import { Op } from "sequelize"
 // 导入模型
 const { User } = require("@/db/models")
 const router = express.Router()
@@ -142,6 +143,47 @@ router.get("/findByPk/:id", async (req, res, next) => {
     res.validateAuth(error, next, () =>
       res.result(void 0, "查询用户失败", false)
     )
+  }
+})
+
+router.get("/findByAccount", async (req, res, next) => {
+  try {
+    const {
+      keyword,
+      currentPage = 1,
+      pageSize = 10,
+    }: {
+      keyword: string
+      currentPage: number
+      pageSize: number
+    } = req.query as any
+
+    const { count, rows } = await User.findAndCountAll({
+      where: keyword
+        ? {
+            account: {
+              [Op.like]: `%${keyword}%`, // 模糊匹配
+            },
+          }
+        : undefined,
+      attributes: { exclude: ["pwd"] }, // 排除密码字段
+      offset: (currentPage - 1) * pageSize, // 分页偏移量
+      limit: Number(pageSize), // 每页数量
+    })
+
+    res.result(
+      {
+        pagination: {
+          total: count,
+          currentPage,
+          pageSize,
+        },
+        users: rows,
+      },
+      "搜索成功"
+    )
+  } catch (error) {
+    res.validateAuth(error, next, () => res.result(void 0, "搜索失败", false))
   }
 })
 export default router
