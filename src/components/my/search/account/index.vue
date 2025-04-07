@@ -8,26 +8,30 @@
       </div>
       <!-- 用户列表 -->
       <div class="flex-1 overflow-hidden overflow-y-auto flex flex-col gap-5px">
-        <div class="cur-text p-5px pl-10px w-fit">我的关注</div>
-        <div
-          v-for="user in users"
-          :key="user.id"
-          class="flex gap-10px p-x-10px p-y-5px hover:bg-blue-50 cur-pointer"
-        >
-          <!-- 头像 -->
-          <global-avatar-src
-            :account="user.account"
-            :avatar="user.avatar"
-            :style="{ '--avatar-size': '40px' }"
-          ></global-avatar-src>
-          <div class="flex flex-col gap-5px justify-center cur-pointer">
-            <global-name
+        <div class="cur-text p-5px pl-10px w-fit flex-shrink-0">我的关注</div>
+        <template v-if="users.length">
+          <div
+            class="flex flex-shrink-0 mt-5px gap-10px p-x-10px p-y-5px hover:bg-blue-50 cur-pointer"
+            v-for="user in users"
+            @click="replaceAt(user)"
+          >
+            <!-- 头像 -->
+            <global-avatar-src
               :account="user.account"
-              :nick="user.nickName"
-            ></global-name>
-            <div>{{ 100 }}粉丝</div>
+              :avatar="user.avatar"
+              :isTo="false"
+              :style="{ '--avatar-size': '40px' }"
+            ></global-avatar-src>
+            <div class="flex flex-col gap-5px justify-center cur-pointer">
+              <global-name
+                :account="user.account"
+                :nick="user.nickName"
+                nickClass="cur-pointer"
+              ></global-name>
+              <div>{{ 100 }}粉丝</div>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
     <el-input
@@ -46,7 +50,6 @@
         <slot :name="name" v-else></slot>
       </template>
     </el-input>
-    {{ isSearch }}
   </div>
 </template>
 
@@ -70,12 +73,7 @@ const isSearch = ref(false)
 // 事件处理
 const handlerClick = async (...args: any[]) => {
   emit("click", args)
-  const textarea = args[0].target as HTMLTextAreaElement
-  const text = textarea?.value
-  const start = textarea.selectionStart
-  const value = text.substring(0, start)
-  // 搜索 通过文本提取 是否 @并搜索用户
-  searchAccountByText(value)
+  searchCallback()
 }
 const handleInput = debounce(async (value: string) => {
   // 保存值
@@ -84,10 +82,21 @@ const handleInput = debounce(async (value: string) => {
   emit("update:modelValue", value)
   emit("input", value)
   // 搜索 通过文本提取 是否 @并搜索用户
-  searchAccountByText(value)
+  searchCallback()
 }, 500)
 const handleModelUpdate = (value: string) => {
   emit("update:modelValue", value)
+}
+const searchCallback = () => {
+  const textarea = instance.value?.textarea as HTMLTextAreaElement
+  if (!textarea) return
+  const text = textarea?.value
+  const start =
+    textarea.selectionStart - 10 < 0 ? 0 : textarea.selectionStart - 10
+  const end = textarea.selectionStart
+  const value = text.substring(start, end)
+  // 搜索 通过文本提取 是否 @并搜索用户
+  searchAccountByText(value)
 }
 
 const normalPagination = {
@@ -175,6 +184,42 @@ const searchAccountByText = async (text: string): Promise<void> => {
   isSearch.value = false
 }
 
+const replaceAt = (user: userType[0]) => {
+  // 得到账户名
+  const account = user.account
+  // 获取 textarea 的 DOM 元素
+  const textarea = instance.value?.textarea
+
+  if (!textarea) return
+
+  // 获取当前光标位置
+  const cursorPos = textarea.selectionStart
+
+  // 获取输入框的值
+  const currentValue = textarea.value
+
+  // 查找光标位置之前的 [@.*?] 模式
+  const textBeforeCursor = currentValue.substring(0, cursorPos)
+  const regex = /\[@.*?\]$/ // 匹配以 [@ 开头，] 结尾的最短字符串
+  const match = textBeforeCursor.match(regex)
+
+  if (match) {
+    // 找到匹配项，进行替换
+    const matchedText = match[0]
+    const startPos = cursorPos - matchedText.length
+    const endPos = cursorPos
+    saveToHistory()
+    // 构建新值：匹配文本之前的部分 + 账户名 + 匹配文本之后的部分
+    const newValue =
+      currentValue.substring(0, startPos) +
+      `[@${account}]` +
+      currentValue.substring(endPos)
+    // 更新输入框的值
+    textarea.value = newValue
+    saveToHistory()
+  }
+}
+
 // 提取出 at的人
 const extractLastAtTag = (text: string): string | null => {
   const match = text.match(/\[@([^\]]+)\](?!.*\[@[^\]]+\])/)
@@ -182,10 +227,12 @@ const extractLastAtTag = (text: string): string | null => {
 }
 
 const handlerBlur = (...args: any[]) => {
-  // 重置 数据
-  isSearch.value = false
-  pagination.value = normalPagination
-  users.value = []
+  setTimeout(() => {
+    // 重置 数据
+    isSearch.value = false
+    pagination.value = normalPagination
+    users.value = []
+  }, 100)
   emit("blur", args)
 }
 // 是否 at人 包含 [@]

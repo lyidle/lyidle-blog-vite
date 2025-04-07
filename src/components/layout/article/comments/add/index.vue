@@ -84,7 +84,16 @@ const reset = () => instance.value.reset()
 const validate = () => instance.value.validate()
 
 const route = useRoute()
-
+/**
+ * 从文本中全局提取所有[@...]标签的内容
+ * @param text 要提取的文本
+ * @returns 包含所有匹配内容的数组，如果没有匹配则返回空数组
+ */
+const extractAllAtTags = (text: string): string[] | null => {
+  const matches = text.matchAll(/\[@([^\]]+)\]/g)
+  const result = Array.from(matches, (match) => match[1])
+  return result.length ? result : null
+}
 // 增加 评论
 const addArticleComments = async () => {
   // 验证 内容
@@ -100,8 +109,16 @@ const addArticleComments = async () => {
       // 记录当前页面的地址信息
       link: route.path || null,
     }
+    const content = comment()
+    // 提取是否有at的人
+    const atArr = extractAllAtTags(content)
+    if (atArr) {
+      // 有at的人
+    }
+    throw new Error("")
+
     props?.addComments?.(updateBody)
-    await useMdReplaceImg(comment(), updateBody, {
+    await useMdReplaceImg(content, updateBody, {
       path: "/comments",
     })
     // 添加 评论
