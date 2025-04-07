@@ -9,29 +9,27 @@
       <!-- 用户列表 -->
       <div class="flex-1 overflow-hidden overflow-y-auto flex flex-col gap-5px">
         <div class="cur-text p-5px pl-10px w-fit flex-shrink-0">我的关注</div>
-        <template v-if="users.length">
-          <div
-            class="flex flex-shrink-0 mt-5px gap-10px p-x-10px p-y-5px hover:bg-blue-50 cur-pointer"
-            v-for="user in users"
-            @click="replaceAt(user)"
-          >
-            <!-- 头像 -->
-            <global-avatar-src
+        <div
+          class="flex flex-shrink-0 mt-5px gap-10px p-x-10px p-y-5px hover:bg-blue-50 cur-pointer"
+          v-for="user in users"
+          @click="replaceAt(user)"
+        >
+          <!-- 头像 -->
+          <global-avatar-src
+            :account="user.account"
+            :avatar="user.avatar"
+            :isTo="false"
+            :style="{ '--avatar-size': '40px' }"
+          ></global-avatar-src>
+          <div class="flex flex-col gap-5px justify-center cur-pointer">
+            <global-name
               :account="user.account"
-              :avatar="user.avatar"
-              :isTo="false"
-              :style="{ '--avatar-size': '40px' }"
-            ></global-avatar-src>
-            <div class="flex flex-col gap-5px justify-center cur-pointer">
-              <global-name
-                :account="user.account"
-                :nick="user.nickName"
-                nickClass="cur-pointer"
-              ></global-name>
-              <div>{{ 100 }}粉丝</div>
-            </div>
+              :nick="user.nickName"
+              nickClass="cur-pointer"
+            ></global-name>
+            <div>{{ 100 }}粉丝</div>
           </div>
-        </template>
+        </div>
       </div>
     </div>
     <el-input
@@ -56,7 +54,7 @@
 <script setup lang="ts" name="MySearchAccountInput">
 // api
 import { getFollower } from "@/api/user/follow"
-import { findByAccount } from "@/api/user"
+import { findByAccountPagination } from "@/api/user"
 // 防抖
 import debounce from "@/utils/debounce"
 // 类型
@@ -64,7 +62,8 @@ import type { ElInput } from "element-plus"
 import type { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
 // 仓库
 import { useUserStore } from "@/store/user"
-import { FindByAccount } from "@/api/user/types/findByAccount"
+import { getPersistedData, setPersistedData } from "@/utils/crypto/crypto-aes"
+import { saveUsersWithDeduplication } from "@/utils/saveUsersWithDeduplication"
 
 const { userId } = storeToRefs(useUserStore())
 
@@ -109,17 +108,6 @@ type userType = GetFollowUser["data"]["users"]
 // 存储用户的数据
 const users = ref<userType>([])
 
-// 缓存 关注列表
-const cacheUsersFollow = new Map<number, GetFollowUser["data"]>()
-// 缓存 搜索列表
-const cacheUsersSearch = new Map<string, FindByAccount["data"]>()
-
-// 清除缓存
-onBeforeUnmount(() => {
-  cacheUsersFollow.clear()
-  cacheUsersSearch.clear()
-})
-
 // 搜索 通过文本提取 是否 @并搜索用户
 const searchAccountByText = async (text: string): Promise<void> => {
   // 没有 userId 不需要查询
@@ -131,59 +119,86 @@ const searchAccountByText = async (text: string): Promise<void> => {
     isSearch.value = false
     return
   }
+
   // 判断是否是 @
   const keyword = extractLastAtTag(text)
+
   // 判断有无 [@keyword]
   if (keyword) {
     isSearch.value = true
-    // 得到缓存
-    const cache = cacheUsersSearch.get(keyword)
-    // 有缓存 则不需要查询
+    // 从 localStorage 获取缓存
+    const cache = getPersistedData(`searchUsers_${keyword}`)
+
+    // 有缓存且未过期则不需要查询
     if (cache) {
       users.value = cache.users
       pagination.value = cache.pagination
+      // 保存用户数据到本地缓存（自动去重）
+      saveUsersWithDeduplication(cache.users)
       return
     }
-    // 搜索 用户
-    const result = await findByAccount({
+
+    // 搜索用户
+    const result = await findByAccountPagination({
       keyword,
       currentPage: pagination.value.currentPage,
       pageSize: pagination.value.pageSize,
     })
+
     users.value = result.users
     pagination.value = result.pagination
-    // 缓存值
-    cacheUsersSearch.set(keyword, result)
+
+    // 缓存到 localStorage，设置1小时过期时间
+    setPersistedData(`searchUsers_${keyword}`, result, 60 * 60 * 1000)
+
+    // 保存用户数据到本地缓存（自动去重）
+    saveUsersWithDeduplication(result.users)
     return
   }
+
   // 是否 at人 包含 [@]
   if (hasAtTag(text)) {
     isSearch.value = true
-    // 得到 当前的 页码
+    // 得到当前的页码
     const cur = pagination.value.currentPage
-    // 得到缓存
-    const cache = cacheUsersFollow.get(cur)
-    // 有缓存 则不需要查询
+    // 从 localStorage 获取缓存
+    const cache = getPersistedData(`followUsers_${userId.value}_${cur}`)
+
+    // 有缓存且未过期则不需要查询
     if (cache) {
       users.value = cache.users
       pagination.value = cache.pagination
+      // 保存用户数据到本地缓存（自动去重）
+      saveUsersWithDeduplication(cache.users)
       return
     }
+
     // 查询关注
     const result = await getFollower({
       userId: userId.value,
       currentPage: pagination.value.currentPage,
       pageSize: pagination.value.pageSize,
     })
+
     users.value = result.users
     pagination.value = result.pagination
-    // 保存缓存
-    cacheUsersFollow.set(cur, result)
+
+    // 缓存到 localStorage，设置1小时过期时间
+    setPersistedData(
+      `followUsers_${userId.value}_${cur}`,
+      result,
+      60 * 60 * 1000
+    )
+
+    // 保存用户数据到本地缓存（自动去重）
+    saveUsersWithDeduplication(result.users)
     return
   }
+
   isSearch.value = false
 }
 
+// 点击替换at的人
 const replaceAt = (user: userType[0]) => {
   // 得到账户名
   const account = user.account

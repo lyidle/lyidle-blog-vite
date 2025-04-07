@@ -34,6 +34,10 @@ import { UAParser } from "ua-parser-js"
 
 // 引入 仓库
 import { useAnnounceStore } from "@/store/announce"
+import { getPersistedData } from "@/utils/crypto/crypto-aes"
+import { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
+import { findByAccount } from "@/api/user"
+import { saveUsersWithDeduplication } from "@/utils/saveUsersWithDeduplication"
 
 // 提取需要的
 const {
@@ -112,8 +116,58 @@ const addArticleComments = async () => {
     const content = comment()
     // 提取是否有at的人
     const atArr = extractAllAtTags(content)
+    // 有at的人
     if (atArr) {
-      // 有at的人
+      // 获取本地已有用户数据
+      const localUsers = getPersistedData(
+        "atUserSearchs"
+      ) as GetFollowUser["data"]["users"]
+
+      const userIdsSet = new Map<string, number>()
+
+      // 保存还需要搜索的account
+      const searchAccountSet = new Set()
+
+      // 判断是否存在
+      if (localUsers && Array.isArray(localUsers)) {
+        for (const account of atArr) {
+          // 拥有 了 account 跳过
+          if (userIdsSet.get(account)) continue
+          // 查找到对应的 at的 userId
+          const findAccount = localUsers.find(
+            (item) => item.account === account
+          )
+          // 找到则保存id
+          if (findAccount) userIdsSet.set(account, findAccount.id)
+          // 没找到则 添加需要搜索的
+          else {
+            searchAccountSet.add(account)
+          }
+        }
+      } else {
+        atArr.forEach((account) => searchAccountSet.add(account))
+      }
+      // 得到 还需要搜索的 账户
+      const searchAccount = Array.from(searchAccountSet) as string[]
+      searchAccountSet.clear()
+      // 并行处理 搜索account 得到 id
+      await Promise.allSettled(
+        searchAccount.map(async (account) => {
+          if (userIdsSet.get(account)) return
+          const find = await findByAccount(account)
+          if (find) {
+            userIdsSet.set(account, find.id)
+            // 保存用户数据到本地缓存（自动去重）
+            saveUsersWithDeduplication([find] as GetFollowUser["data"]["users"])
+          }
+        })
+      )
+
+      // 得到 at的 id值
+      const userIds = Object.values(Object.fromEntries(userIdsSet))
+      console.log(userIds)
+
+      userIdsSet.clear()
     }
     throw new Error("")
 

@@ -146,7 +146,7 @@ router.get("/findByPk/:id", async (req, res, next) => {
   }
 })
 
-router.get("/findByAccount", async (req, res, next) => {
+router.get("/findByAccount/pagination", async (req, res, next) => {
   try {
     const {
       keyword,
@@ -180,10 +180,35 @@ router.get("/findByAccount", async (req, res, next) => {
         },
         users: rows,
       },
-      "搜索成功"
+      "搜索用户成功"
     )
   } catch (error) {
-    res.validateAuth(error, next, () => res.result(void 0, "搜索失败", false))
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "搜索用户失败", false)
+    )
+  }
+})
+
+router.get("/findByAccount", async (req, res, next) => {
+  try {
+    const keyword = req.query.keyword
+    if (!keyword)
+      return res.result(void 0, "搜索用户失败,keyword是必传项", false)
+
+    const findUser = await User.findOne({
+      where: {
+        account: keyword,
+      },
+      attributes: { exclude: ["pwd"] }, // 排除密码字段
+    })
+
+    if (!findUser) return res.result(void 0, "搜索用户失败", false)
+
+    res.result(findUser, "搜索用户成功")
+  } catch (error) {
+    res.validateAuth(error, next, () =>
+      res.result(void 0, "搜索用户失败", false)
+    )
   }
 })
 export default router

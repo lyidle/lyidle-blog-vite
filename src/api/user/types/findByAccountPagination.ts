@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface FindByAccount {
+export interface FindByAccountPagination {
   code: number
   data: Data
   message: string[] | string

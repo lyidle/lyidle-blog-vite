@@ -1,7 +1,7 @@
 // 引入api
-import { findByAccount } from "@/api/user"
+import { findByAccountPagination } from "@/api/user"
 // 引入类型
-import type { searchData } from "@/api/user/types/searchUserPagination"
+import { FindByAccountPagination } from "@/api/user/types/findByAccountPagination"
 import type { FindByAccountQuery } from "@/api/user/types/findByAccountQuery"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
@@ -9,9 +9,9 @@ import { mitt } from "@/utils/emitter"
 
 export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
-  const tableData = ref<searchData["users"]>([])
+  const tableData = ref<FindByAccountPagination["data"]["users"]>([])
   // 分页器
-  const pagination = ref<searchData["pagination"]>()
+  const pagination = ref<FindByAccountPagination["data"]["pagination"]>()
 
   // 当前是第几页
   const currentPage = ref(1)
@@ -63,7 +63,9 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 选中的 userId
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
-  const handleSelectionChange = (user: searchData["users"]) => {
+  const handleSelectionChange = (
+    user: FindByAccountPagination["data"]["users"]
+  ) => {
     // 得到 选择的user的id
     userIds.value = user.map((item) => item.id)
   }
@@ -74,7 +76,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       const search = { currentPage, pageSize } as FindByAccountQuery
       // 如果搜索了 则按照搜索的来
       if (searchKey.value) search.keyword = searchKey.value
-      const result = await findByAccount(search)
+      const result = await findByAccountPagination(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
     } catch (error) {
