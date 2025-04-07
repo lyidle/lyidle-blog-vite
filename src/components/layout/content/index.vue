@@ -29,6 +29,8 @@
     </div>
     <slot name="outer"></slot>
   </div>
+  <!-- footer -->
+  <div class="h-30vh w-100% bg-red"></div>
 </template>
 
 <script setup lang="ts" name="Content">

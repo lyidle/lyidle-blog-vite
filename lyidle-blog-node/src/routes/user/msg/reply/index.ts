@@ -45,7 +45,7 @@ router.get("/", async (req, res, next) => {
         {
           model: Setting,
           as: "setting", // 关联的设置信息
-          attributes: ["id", "name", "updatedAt", "link"],
+          attributes: ["id", "name", "updatedAt"],
           required: false,
         },
         {

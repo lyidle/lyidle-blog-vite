@@ -61,6 +61,7 @@
         <!-- 回复我的 -->
         <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
         <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
+        <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
       </div>
     </div>
   </my-card>

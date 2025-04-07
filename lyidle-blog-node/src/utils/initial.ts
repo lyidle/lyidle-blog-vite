@@ -93,12 +93,17 @@ export default async () => {
     (async () => {
       const announce = await getKey("setting:公告")
       if (announce === null) {
-        const { dataValues } = await Setting.create({
-          name: "公告",
-          userId: ownerId,
-          content: is_production
-            ? ""
-            : "公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容",
+        const [dataValues] = await Setting.findOrCreate({
+          where: {
+            name: "公告",
+          },
+          defaults: {
+            name: "公告",
+            userId: ownerId,
+            content: is_production
+              ? ""
+              : "公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容公告内容",
+          },
         })
         await setKey("setting:公告", dataValues)
       }
@@ -108,10 +113,15 @@ export default async () => {
     (async () => {
       const copyright = await getKey("setting:版权")
       if (copyright === null) {
-        const { dataValues } = await Setting.create({
-          name: "版权",
-          userId: ownerId,
-          content: is_production ? "" : "©2024-2025",
+        const [dataValues] = await Setting.findOrCreate({
+          where: {
+            name: "版权",
+          },
+          defaults: {
+            name: "版权",
+            userId: ownerId,
+            content: is_production ? "" : "©2024-2025",
+          },
         })
         await setKey("setting:版权", dataValues)
       }
@@ -121,15 +131,20 @@ export default async () => {
     (async () => {
       const follow = await getKey("setting:联系方式")
       if (follow === null) {
-        const { dataValues } = await Setting.create({
-          name: "联系方式",
-          userId: ownerId,
-          content: {
-            weChat: "LIDSGOA",
-            QQ: "912512766",
-            BiliBili:
-              "https://space.bilibili.com/238728646?spm_id_from=333.1007.0.0",
-            email: "912512766@qq.com",
+        const [dataValues] = await Setting.findOrCreate({
+          where: {
+            name: "联系方式",
+          },
+          defaults: {
+            name: "联系方式",
+            userId: ownerId,
+            content: {
+              weChat: "LIDSGOA",
+              QQ: "912512766",
+              BiliBili:
+                "https://space.bilibili.com/238728646?spm_id_from=333.1007.0.0",
+              email: "912512766@qq.com",
+            },
           },
         })
         await setKey("setting:联系方式", dataValues)
@@ -144,11 +159,15 @@ export default async () => {
       )
       const about = await getKey("setting:关于")
       if (about === null) {
-        const { dataValues } = await Setting.create({
-          name: "关于",
-          userId: ownerId,
-          content: aboutMd,
-          link: "/person/about",
+        const [dataValues] = await Setting.findOrCreate({
+          where: {
+            name: "关于",
+          },
+          defaults: {
+            name: "关于",
+            userId: ownerId,
+            content: aboutMd,
+          },
         })
         await setKey("setting:关于", dataValues)
       }
@@ -156,10 +175,15 @@ export default async () => {
     (async () => {
       const note = await getKey("setting:笔记菜单项")
       if (note === null) {
-        const { dataValues } = await Setting.create({
-          name: "笔记菜单项",
-          userId: ownerId,
-          content: ["前端", "后端"],
+        const [dataValues] = await Setting.findOrCreate({
+          where: {
+            name: "笔记菜单项",
+          },
+          defaults: {
+            name: "笔记菜单项",
+            userId: ownerId,
+            content: ["前端", "后端"],
+          },
         })
         await setKey("setting:笔记菜单项", dataValues)
       }

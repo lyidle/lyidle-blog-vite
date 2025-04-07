@@ -213,7 +213,7 @@ watchEffect(async () => {
   grid-template-rows: 80px 1fr;
   gap: var(--gap-y);
   .user-items {
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.703);
   }
 }
 </style>

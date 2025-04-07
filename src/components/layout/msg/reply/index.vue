@@ -29,13 +29,13 @@
             <my-anchor
               :to="
                 reply.type === 'article'
-                  ? `/doc/${reply.articleId}`
+                  ? reply.link || `/doc/${reply.articleId}`
                   : reply.link || ''
               "
               class="!hover:color-[var(--primary-links-hover)] msg-tools"
             >
               {{
-                reply.fromComment?.id
+                reply.type === "comment"
                   ? "回复了我的评论"
                   : "对我的文章发布了评论"
               }}
@@ -44,6 +44,7 @@
           <!-- 回复信息 -->
           <div class="flex cur-text">
             <span>回复</span>
+            <!-- 是自身本地的用户 -->
             <span class="mx-5px">
               <my-tooltip
                 class="box-item"
@@ -231,16 +232,18 @@ const reqUserReplyCallback = async (cb?: () => void) => {
 
 // 添加上类型
 const addType = (data: GetUserReply["data"]["replies"]) => {
-  return data?.map((item) => ({
-    ...item,
-    type: item.articleId
-      ? "article"
-      : item.settingId
-      ? "setting"
-      : item.id
-      ? "comment"
-      : "",
-  }))
+  return data?.map((item) => {
+    return {
+      ...item,
+      type: item.parentComment?.id
+        ? "comment"
+        : item.articleId
+        ? "article"
+        : item.settingId
+        ? "setting"
+        : "",
+    }
+  })
 }
 type curReplyType = GetUserReply["data"]["replies"][0]
 let curReply: curReplyType | null = null

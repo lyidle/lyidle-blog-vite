@@ -5,6 +5,7 @@ import { paginationQuery } from "@/api/types/paginationQuery"
 import { GetUserLikes } from "./types/getUserLikes"
 import { GetUserLikeDetailsQuery } from "./types/getUserLikeDetailsQuery"
 import { GetUserLikeDetails } from "./types/getUserLikeDetails"
+import { GetUserAt } from "./types/getUserAt"
 // 统一管理 api
 enum API {
   // 回复我的
@@ -13,6 +14,8 @@ enum API {
   likes = "/user/msg/likes",
   // 收到的赞详情
   likeDetails = "/user/msg/likes/details",
+  // at我的
+  at = "/user/msg/at",
 }
 
 // API 的 key 的类型
@@ -39,4 +42,10 @@ export const getUserLikes = (data?: paginationQuery) =>
 export const getUserLikeDetails = (data: GetUserLikeDetailsQuery) =>
   request.get<any, GetUserLikeDetails["data"]>(
     server + prefix + API.likeDetails + `/?${new URLSearchParams(data)}`
+  )
+
+// at我的
+export const getUserAt = (data?: paginationQuery) =>
+  request.get<any, GetUserAt["data"]>(
+    server + prefix + API.at + `/?${new URLSearchParams(data)}`
   )

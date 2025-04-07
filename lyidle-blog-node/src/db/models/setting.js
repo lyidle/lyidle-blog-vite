@@ -22,11 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      link: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        comment: "原文链接",
-      },
     },
     {
       sequelize,
