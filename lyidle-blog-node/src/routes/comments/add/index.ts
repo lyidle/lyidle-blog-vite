@@ -1,5 +1,12 @@
 import express from "express"
-const { Comment, User, Article, Setting } = require("@/db/models")
+const {
+  Comment,
+  User,
+  Article,
+  Setting,
+  Mention,
+  sequelize,
+} = require("@/db/models")
 
 const router = express.Router()
 
@@ -15,6 +22,7 @@ router.post("/", async (req, res, next) => {
     fromUserId,
     articleId,
     settingId,
+    mentionsUserIds,
   } = req.body
 
   // 验证必填字段
@@ -29,8 +37,13 @@ router.post("/", async (req, res, next) => {
     return res.result(void 0, "必须提供articleId或settingId", false)
   }
 
+  if (!link) return res.result(void 0, "必须提供link,用于记录位置信息", false)
+
   const userId = req.auth.id
   const targetType = articleId ? "article" : "setting"
+
+  // 开启事务
+  const transaction = await sequelize.transaction()
 
   try {
     // 验证目标是否存在
@@ -42,6 +55,7 @@ router.post("/", async (req, res, next) => {
     }
 
     if (!targetExists) {
+      await transaction.rollback() // 回滚事务
       return res.result(
         void 0,
         `${targetType === "article" ? "文章" : "设置项"}不存在`,
@@ -53,6 +67,7 @@ router.post("/", async (req, res, next) => {
     if (fromId) {
       const parentComment = await Comment.findByPk(fromId)
       if (!parentComment) {
+        await transaction.rollback() // 回滚事务
         return res.result(void 0, "被回复的评论不存在", false)
       }
 
@@ -63,33 +78,70 @@ router.post("/", async (req, res, next) => {
     }
 
     // 创建评论
-    const newComment = await Comment.create({
-      userId,
-      content,
-      fromId: fromId || null,
-      parentId: parentId || null,
-      link: link || null,
-      fromUserId: fromUserId || null,
-      articleId: articleId || null,
-      settingId: settingId || null,
-      targetUserId: targetExists.userId || null,
-    })
+    const newComment = await Comment.create(
+      {
+        userId,
+        content,
+        fromId: fromId || null,
+        parentId: parentId || null,
+        link: null, // 先设置为null，创建后再更新
+        fromUserId: fromUserId || null,
+        articleId: articleId || null,
+        settingId: settingId || null,
+        targetUserId: targetExists.userId || null,
+      },
+      {
+        transaction,
+      }
+    )
 
-    // 更新用户地理位置和UA信息（非必须操作）
-    try {
-      await User.update(
+    if (link) {
+      // 更新link字段，包含新创建的评论ID
+      await newComment.update(
+        {
+          link: link ? (link = `${link}?commentId=${newComment.id}`) : null,
+        },
+        {
+          transaction,
+        }
+      )
+    }
+
+    // 更新提及的用户表和发布的用户的位置等信息
+    await Promise.allSettled([
+      ...(mentionsUserIds?.map(async (mentionId: number) => {
+        if (!mentionId || !Number.isInteger(mentionId)) return
+        return Mention.create(
+          {
+            userId,
+            commentId: newComment.id,
+            mentionedUserId: mentionId,
+            link,
+          },
+          {
+            transaction,
+          }
+        )
+      }) || []),
+      // 更新用户地理位置和UA信息
+      User.update(
         {
           userProvince: userProvince || null,
           userAgent: userAgent || null,
         },
         {
           where: { id: userId },
+          transaction,
         }
-      )
-    } catch (error) {}
+      ),
+    ])
+
+    // 提交事务
+    await transaction.commit()
 
     res.result(newComment, "评论添加成功")
   } catch (error) {
+    await transaction.rollback() // 回滚事务
     console.error("评论添加失败:", error)
     res.validateAuth(error, next, () =>
       res.result(void 0, "评论添加失败", false)

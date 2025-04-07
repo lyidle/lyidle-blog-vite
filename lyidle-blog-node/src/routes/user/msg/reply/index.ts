@@ -23,6 +23,7 @@ router.get("/", async (req, res, next) => {
       where: {
         [Op.or]: {
           targetUserId: userId,
+          fromUserId: userId,
         },
         [Op.not]: {
           // 不能是自身

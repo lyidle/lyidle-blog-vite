@@ -11,5 +11,6 @@ export interface AddCommentBody {
   userProvince?: string | null
   userAgent?: string | null
   link?: string | null
+  mentionsUserIds?: number[]
   [property: string]: any
 }

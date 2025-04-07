@@ -165,12 +165,10 @@ const addArticleComments = async () => {
 
       // 得到 at的 id值
       const userIds = Object.values(Object.fromEntries(userIdsSet))
-      console.log(userIds)
-
+      // 添加at的数据id
+      updateBody.mentionsUserIds = userIds
       userIdsSet.clear()
     }
-    throw new Error("")
-
     props?.addComments?.(updateBody)
     await useMdReplaceImg(content, updateBody, {
       path: "/comments",
