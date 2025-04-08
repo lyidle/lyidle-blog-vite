@@ -1,5 +1,5 @@
 import { delKey, getKey } from "@/utils/redis"
-import express from "express"
+import express, { Request } from "express"
 const router = express.Router()
 
 // 得到标记状态
@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
         false
       )
     // 判断是否有新消息
-    const result = await getKey(`userMsgTip:${senderId}:${receiverId}`)
+    const result = await getKey(`userMsgTip:${receiverId}:${senderId}`)
 
     res.result(result || false, "得到对应的用户消息的状态成功")
   } catch (error) {
@@ -31,7 +31,8 @@ router.get("/", async (req, res, next) => {
 })
 
 // 清除标记状态
-router.put("/clear", async (req, res, next) => {
+export const delMark = async (req: Request) => {
+  const cacheKey = `userMsgTip:${req.query.receiverId}:${req.auth.id}`
   try {
     const senderId = req.auth.id
 
@@ -41,20 +42,14 @@ router.put("/clear", async (req, res, next) => {
       !receiverId ||
       (receiverId && !Number.isInteger(+receiverId)) ||
       senderId === +receiverId
-    )
-      return res.result(
-        void 0,
-        "清除对应的用户消息的状态失败,receiverId不合法",
-        false
-      )
-    // 判断是否有新消息
-    const result = await delKey(`userMsgTip:${senderId}:${receiverId}`)
-
-    res.result(result, "清除对应的用户消息的状态成功")
+    ) {
+      console.warn("清除对应的用户消息的状态失败,receiverId不合法", cacheKey)
+      return
+    }
+    // 清除消息的状态
+    await delKey(cacheKey)
   } catch (error) {
-    res.validateAuth(error, next, () =>
-      res.result(void 0, "清除对应的用户消息的状态失败", false)
-    )
+    console.warn("清除对应的用户消息的状态失败", cacheKey)
   }
-})
+}
 export default router

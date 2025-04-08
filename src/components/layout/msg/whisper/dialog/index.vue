@@ -24,13 +24,13 @@
             v-for="item in list"
             :key="item.id"
             class="flex-shrink-0 flex"
-            :style="`${isSender(item.receiverId) ? 'justify-content:end' : ''}`"
+            :style="`${isSender(item.senderId) ? 'justify-content:end' : ''}`"
           >
             <!-- 消息 占 包含块的 一半的位置 -->
             <div
               class="flex gap-[var(--msg-avatar-gap)] w-50%"
               :style="`${
-                isSender(item.receiverId)
+                isSender(item.senderId)
                   ? 'justify-content: end'
                   : 'flex-direction:row-reverse;justify-content:flex-end;'
               }`"
@@ -39,7 +39,7 @@
                 <div
                   class="cur-text flex"
                   :style="`${
-                    isSender(item.receiverId) ? 'justify-content: end' : ''
+                    isSender(item.senderId) ? 'justify-content: end' : ''
                   }`"
                 >
                   <!-- 气泡 -->
@@ -52,9 +52,7 @@
                 <!-- 时间 -->
                 <div
                   class="cur-text"
-                  :style="`${
-                    isSender(item.receiverId) ? 'text-align:end;' : ''
-                  }`"
+                  :style="`${isSender(item.senderId) ? 'text-align:end;' : ''}`"
                 >
                   {{ moment(item.createdAt, "YYYY年MM月DD日 hh:mm:ss") }}
                 </div>
@@ -83,13 +81,21 @@
       </div>
     </div>
     <!-- 回复框 -->
-    <div class="flex-shrink-0 h-100px"></div>
+    <div class="flex-shrink-0 h-125px overflow-hidden overflow-y-auto p-10px">
+      <layout-article-comments-base ref="instance" mt="0" pb="0" prefix="消息">
+        <template #btns>
+          <my-button class="h-30px rounded-5px" size="small" @click="sendMsg">
+            发送</my-button
+          >
+        </template>
+      </layout-article-comments-base>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" name="UserMessageWhisperDialog">
 // 引入 api
-import { getUserMsgDetails } from "@/api/user/msg"
+import { getUserMsgDetails, sendUserMsg, userMsgStatus } from "@/api/user/msg"
 // 引入 类型
 import type { GetUserMsgDetails } from "@/api/user/msg/types/getUserMsgDetails"
 // 处理时间
@@ -103,7 +109,45 @@ import { decompressStringNotError } from "@/utils/compression"
 const { userId } = storeToRefs(useUserStore())
 
 const route = useRoute()
+const router = useRouter()
 
+// 输入框的 组件实例
+const instance = ref()
+// 得到 内容
+const comment = () => instance.value.comment() as string
+// 重置 内容
+const reset = () => instance.value.reset()
+// 验证 内容
+const validateContext = () => {
+  // 验证内容长度
+  if (!instance.value.validate()) return
+  return true
+}
+
+// 发送消息
+const sendMsg = async () => {
+  // 非法判断
+  let receiverId: number | string = route.query.id as string
+  if (!receiverId) return
+  receiverId = +receiverId
+  // 不是整数
+  if (!Number.isInteger(receiverId)) return
+
+  // 验证内容信息
+  if (!validateContext()) return
+  // 得到内容
+  const text = comment()
+  // 发送内容
+  const result = await sendUserMsg({
+    content: text,
+    receiverId,
+  })
+  list.value.unshift(result)
+  // 重置 内容
+  reset()
+}
+
+// 初始化 轮播状态的函数
 const initialPagination = () => ({
   currentPage: 1,
   pageSize: 10,
@@ -129,7 +173,13 @@ const validate = () => {
 
 let init = false
 let stopObserver: (() => void) | void
-onBeforeUnmount(() => stopObserver?.())
+const stopIntersection = () => {
+  // 停止交叉传感器
+  stopObserver?.()
+  // 停止轮询
+  pollingController.stop()
+}
+onBeforeUnmount(stopIntersection)
 const obEl = ref<HTMLElement>()
 // 初始化 交叉传感器
 const initCallback = () => {
@@ -139,21 +189,36 @@ const initCallback = () => {
       enter: async () => {
         // 初始化 后 自增当前页
         if (init) ++pagination.value.currentPage
+        let temp = init
         await reqWhisper()
+        // 没有初始化
+        if (!temp) {
+          // 初始化消息轮询
+          pollingController.start()
+        }
       },
     })
 }
 // 重载交叉传感器
 const reloadInitCallback = () => {
-  stopObserver?.()
+  stopIntersection()
   stopObserver = undefined
   init = false
   initCallback()
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const userId = route.query.id
+  if (!userId || !Number.isInteger(+userId)) {
+    ElMessage.warning("查询的消息id不合法")
+    isLoading.value = false
+    router.replace("/user/msg?to=whisper")
+    return
+  }
+  // 初始化 交叉传感器
   initCallback()
 })
+
 // 请求 得到用户 回复的信息数据
 const reqWhisper = async () => {
   // 判断是否超出
@@ -169,36 +234,115 @@ const reqWhisper = async () => {
   }
   // 初始化数据
   if (!init) {
-    await reqWhisperCallback(() => {
-      init = true
+    await reqWhisperCallback({
+      cb: () => {
+        init = true
+      },
     })
   }
 }
 
+type pollingControllerType = {
+  isRunning: boolean
+  retryCount: number
+  maxDelay: number
+  timer: null | setTimout
+  start: () => void
+  stop: () => void
+  _poll: () => void
+}
+
+// 消息轮询控制器（可全局管理）
+const pollingController: pollingControllerType = {
+  isRunning: false,
+  retryCount: 0,
+  maxDelay: 5000, // 最大延迟5秒
+  timer: null,
+  // 启动轮询
+  start: async function () {
+    if (this.isRunning) return
+    this.isRunning = true
+    console.log(`开始轮询:${route.query.id}`)
+    this._poll()
+  },
+
+  // 停止轮询
+  stop: function () {
+    this.timer && clearTimeout(this.timer)
+    this.isRunning = false
+    this.retryCount = 0
+  },
+
+  // 实际轮询逻辑
+  _poll: async function () {
+    try {
+      const userId = route.query.id
+      if (!userId || !Number.isInteger(+userId))
+        throw new Error("查询的消息id不合法")
+
+      // 1. 检查新消息状态
+      const statusRes = await userMsgStatus(+userId)
+      console.log(statusRes, "轮询状态")
+      if (statusRes) {
+        // 重载数据 重新请求
+        reloadInstance()
+        this.retryCount = 0 // 重置重试计数
+      }
+    } catch (error) {
+      console.error("轮询异常:", error)
+    } finally {
+      // 3. 计算下次轮询时间（指数退避）
+      const delay = Math.min(5000 * Math.pow(2, this.retryCount), this.maxDelay)
+      this.retryCount++
+
+      // 4. 继续轮询
+      if (this.isRunning) {
+        this.timer = setTimeout(() => this._poll(), delay)
+      }
+    }
+  },
+}
+
 // 请求
-const reqWhisperCallback = async (cb?: () => void) => {
+const reqWhisperCallback = async (options?: {
+  cb?: () => void
+  notConbin?: boolean
+}) => {
   if (!validate()) return
+  const cb = options?.cb
+  const notConbin = options?.notConbin
   isLoading.value = true
   const result = await getUserMsgDetails({
     currentPage: pagination.value.currentPage,
     pageSize: pagination.value.pageSize,
     receiverId: +(route.query.id as string) as number,
   })
-  list.value = list.value.concat(result.list)
-  pagination.value = result.pagination
-  receiver.value = result.receiver
+  // 是否自动赋值
+  if (!notConbin) {
+    list.value = list.value.concat(result.list)
+    pagination.value = result.pagination
+    receiver.value = result.receiver
+  }
   isLoading.value = false
   cb?.()
+  return result
 }
+
+// 重载数据 重新请求
+const reloadInstance = () => {
+  list.value = []
+  receiver.value = undefined
+  pagination.value = initialPagination()
+  reloadInitCallback()
+}
+
 let preId = route.query.id
 watchEffect(async () => {
   if (!validate()) return
   const id = route.query.id
   if (init === true && preId !== id) {
-    list.value = []
-    receiver.value = undefined
-    pagination.value = initialPagination()
-    reloadInitCallback()
+    // 重载数据 重新请求
+    reloadInstance()
   }
   preId = id
 })

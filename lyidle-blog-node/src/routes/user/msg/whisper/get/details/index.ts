@@ -1,5 +1,6 @@
 import express from "express"
 import { Op } from "sequelize"
+import { delMark } from "../../mark"
 // 引入模型
 const { Message, User } = require("@/db/models")
 
@@ -59,7 +60,8 @@ router.get("/", async (req, res, next) => {
       receiver,
       list: messageResult.rows,
     }
-
+    // 清除消息的标记
+    delMark(req)
     // 成功返回
     res.result(result, "成功获取用户消息列表")
   } catch (error) {

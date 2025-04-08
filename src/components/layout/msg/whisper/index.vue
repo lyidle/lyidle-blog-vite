@@ -59,6 +59,8 @@ import type { GetUserMsg } from "@/api/user/msg/types/getUserMsg"
 import { decompressStringNotError } from "@/utils/compression"
 import { createIntersectionObserver } from "@/utils/observer"
 
+const router = useRouter()
+
 const isLoading = ref(true)
 
 const list = ref<GetUserMsg["data"]["list"]>([])
@@ -127,18 +129,27 @@ const initSendUser = async () => {
     const is = list.value.some((item) => item.user.id === +id)
     if (is) return
     // 不存在则查询和添加信息 到最开头
-    const result = await userFindByPk(+id)
-    if (!result) return
-    // 添加信息到最开始
-    list.value.unshift({
-      user: {
-        account: result.account,
-        avatar: result.avatar,
-        id: result.id,
-        nickName: result.nickName,
-        signer: result.signer,
-      },
-    })
+    try {
+      const result = await userFindByPk(+id)
+      if (!result) {
+        ElMessage.warning(`没有查询到id为:${id}的用户`)
+        router.replace("/user/msg?to=whisper")
+        return
+      }
+      // 添加信息到最开始
+      list.value.unshift({
+        user: {
+          account: result.account,
+          avatar: result.avatar,
+          id: result.id,
+          nickName: result.nickName,
+          signer: result.signer,
+        },
+      })
+    } catch (error) {
+      ElMessage.warning(`没有查询到id为:${id}的用户`)
+      router.replace("/user/msg?to=whisper")
+    }
   }
 }
 </script>

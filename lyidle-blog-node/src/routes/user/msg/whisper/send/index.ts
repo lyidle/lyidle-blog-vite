@@ -5,7 +5,7 @@ const router = express.Router()
 const { Message } = require("@/db/models")
 
 // 发送消息
-router.get("/", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const senderId = req.auth.id
 
@@ -20,6 +20,8 @@ router.get("/", async (req, res, next) => {
     const message = await Message.create({ senderId, receiverId, content })
 
     // 设置消息信息 为true
+    console.log("发送-*---------------")
+    console.log(`userMsgTip:${senderId}:${receiverId}`)
     await setKey(`userMsgTip:${senderId}:${receiverId}`, true)
     res.result(message, "发送消息成功")
   } catch (error) {

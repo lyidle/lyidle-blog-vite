@@ -1,6 +1,10 @@
 <template>
-  <div class="add-comments pb-20px" ref="instance">
-    <div class="mt-20px flex gap-10px">
+  <div
+    class="add-comments"
+    :style="{ paddingBottom: pb ? pb : '20px' }"
+    ref="instance"
+  >
+    <div class="flex gap-10px" :style="{ marginTop: mt ? mt : '20px' }">
       <slot name="outer"></slot>
       <div class="w-100%">
         <!-- 输入框 -->
@@ -82,15 +86,20 @@ import { contextImgToLink } from "@/hooks/Doc/vditorEditor/contextImgToLink"
 
 import { mitt } from "@/utils/emitter"
 
-const props = defineProps<{
-  // 文章id
-  articleId?: number
-  settingId?: number
-  isFixed?: boolean
-  // 左右padding
-  pl?: number
-  pr?: number
-}>()
+const props = withDefaults(
+  defineProps<{
+    isFixed?: boolean
+    // 左右padding
+    pl?: number | string
+    pr?: number | string
+    pb?: number | string
+    mt?: number | string
+    prefix?: string
+  }>(),
+  {
+    prefix: "评论",
+  }
+)
 
 let stopObserver: (() => void) | void
 onBeforeUnmount(() => stopObserver?.())
@@ -113,8 +122,8 @@ onMounted(() => {
         let left = rect.left
         let width = rect.width
         if (props.pl && props.pr) {
-          left = left - props.pl
-          width = width + props.pl + props.pr
+          left = left - +props.pl
+          width = +width + +props.pl + +props.pr
         }
         dom.style.left = left + "px"
         dom.style.bottom = 0 + "px"
@@ -319,7 +328,7 @@ const upload = async (options?: { virtual?: boolean; files?: File[] }) => {
     insertText(mdUrl)
     handlerSuccessFile(files)
   } catch (error) {
-    console.error("评论区上传图片出错", error)
+    console.error(`${props.prefix}区上传图片出错`, error)
   }
 }
 
@@ -397,23 +406,12 @@ const handlerImg = throttle(async (tip: boolean = true) => {
 
 // 增加 评论
 const validate = () => {
-  const id = props.articleId || props.settingId
-  // 验证 信息
-  if (!id) {
-    console.error("发布评论失败，没有id")
-    ElMessage.warning("发布评论失败，没有id")
-    return
-  }
-  if (props.articleId && props.settingId) {
-    console.error("发布评论失败，id冲突")
-    ElMessage.warning("发布评论失败，id冲突")
-    return
-  }
-
   // 判断 字数是否 符合
   const len = comment.value.trim().length
   if (len < minCounts || len > maxCounts.value) {
-    ElMessage.warning(`评论字数需要在:${minCounts}到${maxCounts.value}之间哦`)
+    ElMessage.warning(
+      `${props.prefix}字数需要在:${minCounts}到${maxCounts.value}之间哦`
+    )
     return
   }
   return true

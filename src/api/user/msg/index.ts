@@ -28,9 +28,7 @@ enum API {
   // 获取消息 分页形式的 用户之间的
   details = "/user/msg/whisper/get/details",
   // 是否有新消息
-  status = "/user/msg/whisper/mark/",
-  // 清除消息状态
-  clearStatus = "/user/msg/whisper/mark/clear",
+  status = "/user/msg/whisper/mark",
 }
 
 // API 的 key 的类型
@@ -79,18 +77,10 @@ export const getUserMsgDetails = (data: GetUserMsgDetailsQuery) =>
 
 // 发送 用户消息
 export const sendUserMsg = (data: SendUserMsgBody) =>
-  request.get<any, SendUserMsg["data"]>(
-    server + prefix + API.send + `/?${new URLSearchParams(data)}`
-  )
+  request.post<any, SendUserMsg["data"]>(server + prefix + API.send, data)
 
 // 得到消息的状态
 export const userMsgStatus = (receiverId: number) =>
-  request.get<any, GetUserAt["data"]>(
+  request.get<any, boolean>(
     server + prefix + API.status + `/?receiverId=${receiverId}`
-  )
-
-// 清除消息的状态
-export const userMsgStatusDel = (receiverId: number) =>
-  request.put<any, GetUserAt["data"]>(
-    server + prefix + API.clearStatus + `/?receiverId=${receiverId}`
   )

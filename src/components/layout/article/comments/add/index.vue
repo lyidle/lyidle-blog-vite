@@ -1,5 +1,5 @@
 <template>
-  <layout-article-comments-base :articleId :settingId ref="instance">
+  <layout-article-comments-base ref="instance">
     <template #outer>
       <!-- 头像 -->
       <global-avatar
@@ -85,7 +85,24 @@ const comment = () => instance.value.comment() as string
 // 重置 内容
 const reset = () => instance.value.reset()
 // 验证 内容
-const validate = () => instance.value.validate()
+const validate = () => {
+  // 验证内容长度
+  if (!instance.value.validate()) return
+  // 其他验证信息
+  const id = props.articleId || props.settingId
+  // 验证 信息
+  if (!id) {
+    console.error("发布评论失败，没有id")
+    ElMessage.warning("发布评论失败，没有id")
+    return
+  }
+  if (props.articleId && props.settingId) {
+    console.error("发布评论失败，id冲突")
+    ElMessage.warning("发布评论失败，id冲突")
+    return
+  }
+  return true
+}
 
 const route = useRoute()
 /**

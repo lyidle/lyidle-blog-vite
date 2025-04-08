@@ -12,13 +12,33 @@
         class="w-100% h-100% ml-[var(--primary-pd)] gap-[var(--primary-gap)] flex flex-col"
       >
         <div class="flex gap-10px cur-text">
-          <div class="userName font-bold">
-            {{ cloneComment.user.nickName }}
+          <div class="userName">
+            <global-name
+              :account="cloneComment.user.account"
+              :nick="cloneComment.user.nickName"
+            >
+              <template #nick="{ nick, account }">
+                <router-link
+                  :to="`/user/space/${account}`"
+                  class="font-bold hover:color-[var(--at-person-color-hover)]"
+                  ><div class="max-w-100px truncate">{{ nick }}</div>
+                </router-link>
+              </template>
+            </global-name>
           </div>
           <div class="flex gap-8px" v-if="cloneComment.fromId">
             <div>回复</div>
             <div class="global-at">
-              @<span>{{ cloneComment.fromComment.user.nickName }}</span>
+              <global-name
+                :account="cloneComment.fromComment.user.account"
+                :nick="cloneComment.fromComment.user.nickName"
+              >
+                <template #nick="{ nick, account }">
+                  <router-link :to="`/user/space/${account}`">
+                    <div class="max-w-100px truncate">@{{ nick }}</div>
+                  </router-link>
+                </template>
+              </global-name>
             </div>
             <div>:</div>
           </div>
@@ -34,12 +54,7 @@
             v-if="cloneComment.id"
             v-show="!isEditor"
           ></vditor-preview>
-          <layout-article-comments-base
-            v-show="isEditor"
-            ref="editorInstance"
-            :articleId
-            :settingId
-          >
+          <layout-article-comments-base v-show="isEditor" ref="editorInstance">
             <template #btns>
               <my-button
                 class="h-30px rounded-5px"
@@ -308,7 +323,14 @@ const updateComment = async () => {
       commentId,
       content: content,
     })
+    // 记录id
+    const tempId = cloneComment.id
+    // @ts-ignore 重置id
+    cloneComment.id = false
     cloneComment.content = content
+    // 页面渲染后再次赋值回来 触发v-if 的评论预览
+    nextTick(() => (cloneComment.id = tempId))
+
     isEditor.value = false
     ElMessage.success("修改成功")
   } catch (error) {
