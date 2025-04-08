@@ -1,5 +1,5 @@
 <template>
-  <div class="avatar">
+  <div class="avatar" :class="$attrs.containerClass">
     <my-anchor
       :to="isTo ? `/user/space/${account || showAccount}` : ''"
       class="w-100% h-100% block"

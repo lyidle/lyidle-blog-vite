@@ -149,13 +149,13 @@ const initLineCallback = () => {
     (query) => {
       const { to, group } = query
       const validateTo = toConst.includes(to as userSpaceSceneType)
-        ? to
-        : "home"
-      if (!validateTo) {
+      if (to && !validateTo) {
         ElMessage.warning("to的值不合法")
       }
-
-      activeNav(validateTo as userSpaceSceneType, group as string)
+      activeNav(
+        (validateTo ? to : "home") as userSpaceSceneType,
+        group as string
+      )
     },
     {
       immediate: true,

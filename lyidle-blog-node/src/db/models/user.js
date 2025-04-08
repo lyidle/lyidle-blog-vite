@@ -49,6 +49,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "followingId",
         otherKey: "followerId",
       })
+
+      // 用户发送的消息
+      this.hasMany(models.Message, {
+        foreignKey: "senderId",
+        as: "SentMessages",
+      })
+
+      // 用户接收的消息
+      this.hasMany(models.Message, {
+        foreignKey: "receiverId",
+        as: "ReceivedMessages",
+      })
     }
   }
 

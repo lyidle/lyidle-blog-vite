@@ -62,6 +62,9 @@
         <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
         <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
         <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
+        <layout-msg-whisper
+          v-if="$route.query.to === 'whisper'"
+        ></layout-msg-whisper>
       </div>
     </div>
   </my-card>
@@ -103,6 +106,10 @@ watch(
   () => route.query,
   (query) => {
     const { to } = query as { to: sceneMsgType }
+    // 先判断 有无 to 与是否合法 提示
+    if (to && !sceneArr.includes(to)) {
+      nextTick(() => ElMessage.warning("to的路径不合法"))
+    }
     // 先判断 有无 to 与是否合法 违规则 设置
     if (!to || !sceneArr.includes(to)) {
       router.push(`${curPath}?to=whisper`)
