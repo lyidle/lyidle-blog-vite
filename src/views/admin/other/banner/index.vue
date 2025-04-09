@@ -143,11 +143,11 @@ import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 引入 默认banner 图片
 // 导入 默认的图片
 const default_light = new URL(
-  "@/assets/images/base-bg-light.png",
+  "https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/base-bg-light.png",
   import.meta.url
 ).href
 const default_dark = new URL(
-  "@/assets/images/base-bg-dark.png",
+  "https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/base-bg-dark.png",
   import.meta.url
 ).href
 

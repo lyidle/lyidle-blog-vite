@@ -5,7 +5,7 @@ html[themes="#{$theme}"] {
   .global-banner {
     // banner
     --banner-detail-color: #cfd3dc;
-    --banner-img: url("@/assets/images/base-bg-dark.png");
+    --banner-img: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/base-bg-dark.png");
     // banner 遮罩
     --banner-mask: linear-gradient(
       to right,
