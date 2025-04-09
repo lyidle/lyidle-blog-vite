@@ -9,6 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER,
         comment: "评论ID",
       },
+      commentId: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING,
+        comment: "评论ID 自己手动生成",
+      },
       content: {
         type: Sequelize.TEXT,
         allowNull: false,

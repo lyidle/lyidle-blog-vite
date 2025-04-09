@@ -23,7 +23,10 @@ router.post("/", async (req, res, next) => {
     articleId,
     settingId,
     mentionsUserIds,
+    commentId,
   } = req.body
+
+  if (!commentId) return res.result(void 0, "评论id是必传项", false)
 
   // 验证必填字段
   if (!content) return res.result(void 0, "评论内容不能为空", false)
@@ -89,23 +92,12 @@ router.post("/", async (req, res, next) => {
         articleId: articleId || null,
         settingId: settingId || null,
         targetUserId: targetExists.userId || null,
+        commentId,
       },
       {
         transaction,
       }
     )
-
-    if (link) {
-      // 更新link字段，包含新创建的评论ID
-      await newComment.update(
-        {
-          link: link ? (link = `${link}?commentId=${newComment.id}`) : null,
-        },
-        {
-          transaction,
-        }
-      )
-    }
 
     // 更新提及的用户表和发布的用户的位置等信息
     await Promise.allSettled([
@@ -134,6 +126,19 @@ router.post("/", async (req, res, next) => {
           transaction,
         }
       ),
+      (async () => {
+        if (link) {
+          // 更新link字段，包含新创建的评论ID
+          await newComment.update(
+            {
+              link: link ? (link = `${link}?commentId=${newComment.id}`) : null,
+            },
+            {
+              transaction,
+            }
+          )
+        }
+      })(),
     ])
 
     // 提交事务

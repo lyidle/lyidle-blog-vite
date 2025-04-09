@@ -1,6 +1,6 @@
 <template>
   <!-- 头部 -->
-  <div class="header">
+  <div class="header" v-if="userInfo?.id">
     <!-- 头像 -->
     <div class="avatar-container">
       <!-- 头像 -->
@@ -10,7 +10,6 @@
         :account="account"
         :avatar="userInfo?.avatar || null"
         style="--avatar-size: 80px"
-        v-if="account"
       ></global-avatar-src>
       <div
         class="mask cur-pointer"

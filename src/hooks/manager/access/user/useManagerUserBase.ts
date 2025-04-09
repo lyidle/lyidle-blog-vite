@@ -1,17 +1,16 @@
 // 引入api
-import { findByAccountPagination } from "@/api/user"
+import { searchUser } from "@/api/user"
 // 引入类型
-import { FindByAccountPagination } from "@/api/user/types/findByAccountPagination"
-import type { FindByAccountQuery } from "@/api/user/types/findByAccountQuery"
+import type { searchData } from "@/api/user/types/searchUserPagination"
+import { SearchUserQuery } from "@/api/user/types/searchUserQuery"
+import { mitt } from "@/utils/emitter"
 // 引入 处理错误的 请求函数
 import { handlerReqErr } from "@/utils/request/error/successError"
-import { mitt } from "@/utils/emitter"
-
 export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 表格
-  const tableData = ref<FindByAccountPagination["data"]["users"]>([])
+  const tableData = ref<searchData["users"]>([])
   // 分页器
-  const pagination = ref<FindByAccountPagination["data"]["pagination"]>()
+  const pagination = ref<searchData["pagination"]>()
 
   // 当前是第几页
   const currentPage = ref(1)
@@ -63,9 +62,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 选中的 userId
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
-  const handleSelectionChange = (
-    user: FindByAccountPagination["data"]["users"]
-  ) => {
+  const handleSelectionChange = (user: searchData["users"]) => {
     // 得到 选择的user的id
     userIds.value = user.map((item) => item.id)
   }
@@ -73,10 +70,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 获取用户
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
-      const search = { currentPage, pageSize } as FindByAccountQuery
+      const search = { currentPage, pageSize } as SearchUserQuery
       // 如果搜索了 则按照搜索的来
-      if (searchKey.value) search.keyword = searchKey.value
-      const result = await findByAccountPagination(search)
+      if (searchKey) search.account = searchKey.value
+      const result = await searchUser(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
     } catch (error) {

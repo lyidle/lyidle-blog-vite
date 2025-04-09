@@ -38,6 +38,7 @@ import { getPersistedData } from "@/utils/crypto/crypto-aes"
 import { GetFollowUser } from "@/api/user/follow/types/getFollowUser"
 import { findByAccount } from "@/api/user"
 import { saveUsersWithDeduplication } from "@/utils/saveUsersWithDeduplication"
+import { nanoid } from "nanoid"
 
 // 提取需要的
 const {
@@ -120,7 +121,9 @@ const addArticleComments = async () => {
   // 验证 内容
   if (!validate()) return
   try {
+    const commentId = nanoid()
     const updateBody: AddCommentBody = {
+      commentId,
       // articleId 或者 settingId
       articleId: props.articleId,
       settingId: props.settingId,
@@ -188,7 +191,7 @@ const addArticleComments = async () => {
     }
     props?.addComments?.(updateBody)
     await useMdReplaceImg(content, updateBody, {
-      path: "/comments",
+      path: `/comments/${commentId}/`,
     })
     // 添加 评论
     await addComment(updateBody)

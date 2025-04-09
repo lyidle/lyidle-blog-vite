@@ -48,6 +48,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init(
     {
+      // 生成id 标志评论的id，唯一，用于保存评论的的图片
+      commentId: DataTypes.STRING,
       content: {
         type: DataTypes.TEXT,
         allowNull: false,
