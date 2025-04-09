@@ -44,7 +44,8 @@
                 >
                   <!-- 气泡 -->
                   <div
-                    class="max-w-100% w-fit bg-[var(--msg-pop-bg)] rounded-10px rounded-tr-5px p-10px"
+                    class="popmsg max-w-100% w-fit rounded-10px rounded-tr-5px p-10px"
+                    :class="isSender(item.senderId) && 'owner'"
                   >
                     {{ decompressStringNotError(item.content) }}
                   </div>
@@ -54,13 +55,22 @@
                   class="cur-text"
                   :style="`${isSender(item.senderId) ? 'text-align:end;' : ''}`"
                 >
-                  {{ moment(item.createdAt, "YYYY年MM月DD日 hh:mm:ss") }}
+                  {{ handlerTime(item.createdAt) }}
                 </div>
               </div>
-              <!-- 头像 -->
+              <!-- 接收者的 头像 -->
               <global-avatar-src
+                v-if="!isSender(item.senderId)"
                 :account="receiver.account"
                 :avatar="receiver.avatar"
+                :style="{ '--avatar-size': '40px' }"
+                containerClass="flex-shrink-0"
+              ></global-avatar-src>
+              <!-- 发送者的 头像 -->
+              <global-avatar-src
+                v-else
+                :account="userAccount"
+                :avatar="userNickName"
                 :style="{ '--avatar-size': '40px' }"
                 containerClass="flex-shrink-0"
               ></global-avatar-src>
@@ -98,15 +108,22 @@
 import { getUserMsgDetails, sendUserMsg, userMsgStatus } from "@/api/user/msg"
 // 引入 类型
 import type { GetUserMsgDetails } from "@/api/user/msg/types/getUserMsgDetails"
-// 处理时间
-import moment from "@/utils/moment"
 // 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { decompressStringNotError } from "@/utils/compression"
+import { formatMilliseconds } from "@/utils/times/timeFormatter"
+import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 // 提取数据
-const { userId } = storeToRefs(useUserStore())
+const { userId, userAccount, userNickName } = storeToRefs(useUserStore())
+
+// 处理时间
+const handlerTime = (time: string) => {
+  // @ts-ignore
+  const now = formatMilliseconds(Date.now() - new Date(time))
+  return now + "前"
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -137,11 +154,18 @@ const sendMsg = async () => {
   if (!validateContext()) return
   // 得到内容
   const text = comment()
-  // 发送内容
-  const result = await sendUserMsg({
+  const updateBody = {
     content: text,
     receiverId,
+  }
+  // 处理图片
+  await useMdReplaceImg(text, updateBody, {
+    path: "/msg",
   })
+  console.log(updateBody)
+  // 发送内容
+  const result = await sendUserMsg(updateBody)
+
   list.value.unshift(result)
   // 重置 内容
   reset()
@@ -356,8 +380,32 @@ watchEffect(async () => {
   --msg-time-gap: 8px;
   // 消息和头像的间距
   --msg-avatar-gap: 5px;
-  // 消息气泡的颜色
-  --msg-pop-bg: #f5f1f4;
+  // 消息气泡
+  .popmsg {
+    // 接收者
+    background-color: var(--primary-card-bg);
+    color: var(--primary-color);
+    // 自身
+    &.owner {
+      background-color: #80b9f2;
+      color: #eef7ff;
+    }
+  }
+  border: var(--whisper-border);
+  border-left: none;
+  border-right: none;
   background-color: rgba(175, 175, 175, 0.189);
+}
+html[themes$="dark"] {
+  .msg-context {
+    .popmsg {
+      // 自身
+      &.owner {
+        background-color: #4c7dae;
+        color: #eef7ff;
+      }
+    }
+    background-color: rgba(51, 51, 51, 0.233);
+  }
 }
 </style>

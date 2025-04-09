@@ -1,44 +1,50 @@
 <template>
-  <div class="w-100% h-100% flex justify-between">
+  <div class="whisper-container w-100% h-100% flex justify-between">
     <!-- 消息选择 -->
-    <div
-      class="flex-shrink-0 w-200px h-100% overflow-hidden overflow-y-auto flex flex-col"
-    >
-      <div
-        v-for="item in list"
-        :key="item.id"
-        class="flex flex-shrink-0 gap-8px py-15px items-center cur-pointer list-nav-item"
-        :class="{
-          active: $route.query.id && +$route.query.id === item.user.id,
-        }"
-        @click="$router.push($route.path + `?to=whisper&id=${item.user.id}`)"
-      >
-        <!-- 头像 -->
-        <global-avatar-src
-          :account="item.user.account"
-          :avatar="item.user.avatar"
-          :style="{ '--avatar-size': '50px' }"
-          :isTo="false"
-          containerClass="ml-15px flex-shrink-0"
-        ></global-avatar-src>
-        <div class="flex h-100% flex-col justify-center gap-5px">
-          <global-name :account="item.user.account" :nick="item.user.nickName">
-            <template #nick="{ nick }">
-              <span class="w-fit max-w-100px line-clamp-1">{{ nick }} </span>
-            </template>
-          </global-name>
-          <div class="line-clamp-1">
-            {{ decompressStringNotError(item.message?.content || "") }}
+    <div class="users-container flex-shrink-0 w-200px h-100% flex flex-col">
+      <div class="p-5px text-center bg-[var(--msg-bg)] title h-31px">
+        <span class="cur-text">近期消息</span>
+      </div>
+      <div class="flex-shrink-0 flex-1 overflow-hidden overflow-y-auto">
+        <div
+          v-for="item in list"
+          :key="item.id"
+          class="flex flex-shrink-0 gap-8px py-15px items-center cur-pointer list-nav-item"
+          :class="{
+            active: $route.query.id && +$route.query.id === item.user.id,
+          }"
+          @click="$router.push($route.path + `?to=whisper&id=${item.user.id}`)"
+        >
+          <!-- 头像 -->
+          <global-avatar-src
+            :account="item.user.account"
+            :avatar="item.user.avatar"
+            :style="{ '--avatar-size': '50px' }"
+            :isTo="false"
+            containerClass="ml-15px flex-shrink-0"
+          ></global-avatar-src>
+          <div class="flex h-100% flex-col justify-center gap-5px">
+            <global-name
+              :account="item.user.account"
+              :nick="item.user.nickName"
+            >
+              <template #nick="{ nick }">
+                <span class="w-fit max-w-100px line-clamp-1">{{ nick }} </span>
+              </template>
+            </global-name>
+            <div class="line-clamp-1">
+              {{ decompressStringNotError(item.message?.content || "") }}
+            </div>
           </div>
         </div>
+        <!-- loading -->
+        <div
+          ref="obEl"
+          v-my-loading="() => ({ show: isLoading })"
+          :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+          class="flex-shrink-0"
+        ></div>
       </div>
-      <!-- loading -->
-      <div
-        ref="obEl"
-        v-my-loading="() => ({ show: isLoading })"
-        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
-        class="flex-shrink-0"
-      ></div>
     </div>
     <div
       class="flex-1 h-100% overflow-hidden overflow-y-auto bg-[var(--msg-bg)]"
@@ -155,14 +161,23 @@ const initSendUser = async () => {
 </script>
 
 <style lang="scss" scoped>
-.list-nav-item {
-  transition: background var(--primary-during);
-  &:hover {
-    background-color: var(--msg-bg);
+.whisper-container {
+  --whisper-border: 1px solid rgba(132, 132, 132, 0.133);
+  .users-container {
+    border-right: var(--whisper-border);
+    .list-nav-item {
+      transition: background var(--primary-during);
+      &:hover {
+        background-color: var(--msg-bg);
+      }
+      // 激活的样式
+      &.active {
+        background-color: var(--msg-bg);
+      }
+    }
   }
-  // 激活的样式
-  &.active {
-    background-color: var(--msg-bg);
+  .title {
+    border-bottom: var(--whisper-border);
   }
 }
 </style>

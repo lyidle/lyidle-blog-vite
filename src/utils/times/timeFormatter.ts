@@ -4,11 +4,15 @@
 export function formatMilliseconds(
   ms: number,
   options: {
+    year?: boolean
+    month?: boolean
     day?: boolean
     hours?: boolean
     minutes?: boolean
     seconds?: boolean
   } = {
+    year: true,
+    month: true,
     day: true,
     hours: true,
     minutes: true,
@@ -23,8 +27,25 @@ export function formatMilliseconds(
   const _minutes = Math.floor(_seconds / 60)
   const _hours = Math.floor(_minutes / 60)
   const _days = Math.floor(_hours / 24)
+  const _months = Math.floor(_days / 30) // 1个月按30天计算
+  const _years = Math.floor(_months / 12)
 
-  const { day = true, hours = true, minutes = true, seconds = true } = options
+  const {
+    year = true,
+    month = true,
+    day = true,
+    hours = true,
+    minutes = true,
+    seconds = true,
+  } = options
+
+  if (year && _years > 0) {
+    return `${_years}年`
+  }
+
+  if (month && _months > 0) {
+    return `${_months}个月`
+  }
 
   if (day && _days > 0) {
     return `${_days}天`
@@ -52,10 +73,10 @@ export function parseTimeToMilliseconds(timeStr: string): number {
   }
 
   // 正则表达式匹配数字和单位
-  const match = timeStr.match(/^(\d+)(天|小时|分钟|秒)$/)
+  const match = timeStr.match(/^(\d+)(年|个月|天|小时|分钟|秒)$/)
   if (!match) {
     throw new Error(
-      "时间字符串格式不正确，应为 '1天'、'2小时'、'30分钟' 或 '45秒'"
+      "时间字符串格式不正确，应为 '1年'、'2个月'、'3天'、'4小时'、'30分钟' 或 '45秒'"
     )
   }
 
@@ -64,6 +85,10 @@ export function parseTimeToMilliseconds(timeStr: string): number {
 
   // 根据单位计算毫秒
   switch (unit) {
+    case "年":
+      return value * 12 * 30 * 24 * 60 * 60 * 1000 // 1年=12个月
+    case "个月":
+      return value * 30 * 24 * 60 * 60 * 1000 // 1个月=30天
     case "天":
       return value * 24 * 60 * 60 * 1000
     case "小时":

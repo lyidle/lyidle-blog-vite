@@ -50,10 +50,12 @@
         class="p-0px w-125px h-35px pr-5px"
         :curId="userInfo?.id"
       ></layout-space-is-follower>
-      <my-button class="p-0px w-125px h-35px pr-5px" type="default">
-        <i class="i-mynaui:plus size-18px"></i>
-        <span>发消息</span>
-      </my-button>
+      <router-link :to="`/user/msg?to=whisper&id=${userInfo?.id}`">
+        <my-button class="p-0px w-125px h-35px pr-5px" type="default">
+          <i class="i-mynaui:plus size-18px"></i>
+          <span>发消息</span>
+        </my-button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -72,8 +74,7 @@ import throttle from "@/utils/throttle"
 // 处理错误信息
 import { handlerReqErr } from "@/utils/request/error/successError"
 // 提取需要的数据
-const { userId, userSigner, userToken, userNickName, userAccount } =
-  storeToRefs(useUserStore())
+const { userId, userSigner, userToken } = storeToRefs(useUserStore())
 
 // 切换 到编辑用户界面
 const userEditorScene = useUserEditorScene()
@@ -144,6 +145,8 @@ const updateSinger = throttle(async () => {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    display: flex;
+    gap: 15px;
   }
 }
 </style>
