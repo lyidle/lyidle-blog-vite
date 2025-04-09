@@ -17,7 +17,7 @@ const handlerTransform = async (
   isUserAccount: boolean = true
 ) => {
   // 得到临时图片 和 作者 与 生成路径
-  const { tempImg, account, path } = req.body
+  let { tempImg, account, path } = req.body
 
   // 判断 有无需要转换的 图片
   if (Array.isArray(tempImg) && !tempImg.length)
@@ -42,9 +42,9 @@ const handlerTransform = async (
     // 查找用户是否存在
     const fndAccount = await User.findOne({
       where: { account },
-      attributes: ["account"],
+      attributes: ["account", "id"],
     })
-
+    account = fndAccount.id
     // 不存在返回
     if (fndAccount === null)
       return res.result(

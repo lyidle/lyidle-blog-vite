@@ -18,8 +18,8 @@ router.delete("/:commentId", async (req, res, next) => {
         id: commentId,
         userId: userId, // 确保只能删除自己的评论
       },
+      individualHooks: true,
     })
-
     // deletedRows 表示被删除的行数（0 或 1）
     if (deletedRows === 0) {
       return res.result(void 0, "评论删除失败", false)

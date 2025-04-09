@@ -1,5 +1,7 @@
 "use strict"
 const { Model } = require("sequelize")
+const { join } = require("path")
+const { existsSync, rm } = require("fs")
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     static associate(models) {
@@ -99,6 +101,38 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Comment",
+      // 加上 钩子 处理 Comment 表的信息
+      hooks: {
+        afterDestroy: async (comment, options) => {
+          try {
+            // 评论的 图片位置
+            const commentPath = join(
+              __dirname,
+              "../../assets/images",
+              `${comment.userId}`,
+              "comments",
+              `${comment.commentId}`
+            )
+            // 存在 路径 则删除路径
+            if (existsSync(commentPath)) {
+              rm(commentPath, { recursive: true, force: true }, (err) => {
+                if (err) {
+                  console.error(
+                    `删除评论时删除图片目录出错,userId:${comment.userId},commentId:${comment.commentId}`,
+                    err
+                  )
+                  return
+                }
+              })
+            }
+          } catch (error) {
+            console.error(
+              `删除评论时删除图片目录出错,userId:${comment.userId},commentId:${comment.commentId}`,
+              error
+            )
+          }
+        },
+      },
     }
   )
   return Comment
