@@ -2,12 +2,12 @@
  * Request
  */
 export interface UpdateArticleBody {
-  carousel?: string
   category: string
   content: string
   desc: string
   id: number
-  length: string
+  imgUrls?: string[]
+  length: number
   poster?: string
   tags: string[]
   title: string

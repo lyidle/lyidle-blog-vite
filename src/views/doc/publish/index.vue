@@ -107,6 +107,7 @@ import {
   contentReg,
 } from "@/RegExp/Docs"
 import { postImgPermanent } from "@/api/img"
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 提取需要的数据
 const { title, category, tags, desc, length, docHeight, context, poster } =
@@ -249,7 +250,8 @@ const handerUpload = async () => {
     }
 
     // 处理 临时链接转换
-    await useMdReplaceImg(content, data)
+    const handlered = await useMdReplaceImg(content, data)
+    console.log(handlered)
 
     // 判断是否有上传海报
     if (poster.value.length) {
@@ -284,7 +286,8 @@ const handerUpload = async () => {
     }
     ElMessage.success("发布文章成功~")
   } catch (error) {
-    ElMessage.error("发布文章失败~")
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("发布文章失败~")
   }
 }
 </script>

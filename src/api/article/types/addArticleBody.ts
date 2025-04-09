@@ -5,7 +5,8 @@ export interface AddArticleBody {
   category: string
   content: string
   desc: string
-  length: string | number
+  imgUrls?: string[]
+  length: number
   poster?: string
   tags: string[]
   title: string

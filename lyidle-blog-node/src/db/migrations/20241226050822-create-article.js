@@ -64,6 +64,9 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      imgUrls: {
+        type: Sequelize.JSON,
+      },
       isBin: {
         type: Sequelize.DATE,
         allowNull: true,

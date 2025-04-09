@@ -56,34 +56,27 @@ router.put(
       }
 
       // 提取body 信息
-      const { title, content, length, category, tags, desc, poster } = req.body
+      const { title, content, length, category, tags, desc, poster, imgUrls } =
+        req.body
 
       // 非空判断
-      if (
-        !title &&
-        !content &&
-        !length &&
-        !category &&
-        !tags &&
-        !desc &&
-        !poster
-      )
+      if (!title || !content || !length || !category || !tags || !desc)
         return res.result(
           void 0,
-          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc、poster",
+          "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc,是必传项",
           false
         )
 
       // 检查并赋值字段
-      title && findArticle.set("title", title)
-      content && length && findArticle.set("content", content)
-      content && length && findArticle.set("length", length)
-      category && findArticle.set("category", category)
-      tags?.length && findArticle.set("tags", tags)
+      findArticle.set("title", title)
+      findArticle.set("content", content)
+      findArticle.set("length", length)
+      findArticle.set("category", category)
+      findArticle.set("tags", (Array.isArray(tags) && tags) || [])
+      findArticle.set("imgUrls", (Array.isArray(imgUrls) && imgUrls) || [])
       // 可能为 null 的字段
       findArticle.set("desc", desc || null)
       findArticle.set("poster", poster || null)
-
       // 验证 修改了的 属性字段
       await validateChangedFields(findArticle)
 

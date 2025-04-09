@@ -164,6 +164,17 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       isBin: DataTypes.DATE,
+      imgUrls: {
+        type: DataTypes.JSON,
+        validate: {
+          // 自定义验证逻辑
+          isArray(value) {
+            if (value && !Array.isArray(value)) {
+              throw new Error("文章图片项必须是一个数组")
+            }
+          },
+        },
+      },
     },
     {
       sequelize,

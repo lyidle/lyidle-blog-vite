@@ -242,7 +242,7 @@ const handerUpload = async () => {
       tags: docsFormData.tags,
       desc: docsFormData.desc || "",
       content: "",
-      length: length.value as string,
+      length: length.value,
       id: +docId,
     }
 

@@ -15,7 +15,8 @@ router.post(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { title, content, category, tags, desc, poster, length } = req.body
+    const { title, content, category, tags, desc, poster, length, imgUrls } =
+      req.body
 
     const ArticleData: any = {
       author: req.auth.account,
@@ -27,6 +28,7 @@ router.post(
       desc,
       poster,
       length,
+      imgUrls: (Array.isArray(imgUrls) && imgUrls) || [],
     }
 
     try {
