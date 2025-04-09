@@ -9,7 +9,8 @@ router.post("/", async (req, res, next) => {
   try {
     const senderId = req.auth.id
 
-    const { receiverId, content } = req.body
+    const { receiverId, content, msgId } = req.body
+    if (!msgId) return res.result(void 0, "发送消息失败,msgId是必传项", false)
     if (!receiverId || !content)
       return res.result(
         void 0,
@@ -17,11 +18,14 @@ router.post("/", async (req, res, next) => {
         false
       )
 
-    const message = await Message.create({ senderId, receiverId, content })
+    const message = await Message.create({
+      senderId,
+      receiverId,
+      content,
+      msgId,
+    })
 
     // 设置消息信息 为true
-    console.log("发送-*---------------")
-    console.log(`userMsgTip:${senderId}:${receiverId}`)
     await setKey(`userMsgTip:${senderId}:${receiverId}`, true)
     res.result(message, "发送消息成功")
   } catch (error) {

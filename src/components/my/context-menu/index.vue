@@ -27,6 +27,12 @@
       </div>
     </div>
     <my-context-menu-item
+      content="删除信息"
+      icon="i-material-symbols-light:delete-forever-outline"
+      v-if="isDelPop"
+      @click="handlerDelPopMsg"
+    ></my-context-menu-item>
+    <my-context-menu-item
       :content="`背景${bannerIsFixed ? '悬浮' : '固定'}`"
       :icon="!bannerIsFixed ? 'i-f7:snow' : 'i-mdi:snowflake-melt'"
       @click="bannerIsFixed = !bannerIsFixed"
@@ -61,6 +67,8 @@
 </template>
 
 <script setup lang="ts" name="ContextMenu">
+// 引入 接口
+import { delUserMsg } from "@/api/user/msg"
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 引入 到顶部和底部的函数
@@ -73,6 +81,8 @@ import { handleContextMenu } from "@/hooks/context-menu/copyToClipboard"
 import { mitt } from "@/utils/emitter"
 // 回到上一个路径
 import { useGoBack } from "@/hooks/useGoBack"
+import { handlerReqErr } from "@/utils/request/error/successError"
+
 const goBack = useGoBack()
 // 提取需要的变量
 const {
@@ -89,37 +99,64 @@ const {
 /**
  * @isContent 是否是内容区域的 菜单事件
  * @isUserEditor 是否是自我介绍区域的 菜单事件
- * @isUserEditorTransitioned 是否是自我介绍区域的 菜单事件 重置使用的监听 transitionend 来进行
+ * @isContextMenuTransitioned 是否是自我介绍区域的 菜单事件 重置使用的监听 transitionend 来进行
  * 因为点击时关闭菜单直接 isUserEditor变量为 false 会出现 打开面板不在 用户编辑界面
  */
-const { isContent, isUserEditor, isUserEditorTransitioned } = useContextMenu()
+const { isContent, isUserEditor, isContextMenuTransitioned, isDelPop } =
+  useContextMenu()
 // 内容区域
 const isContentMenu = () => {
   isContent.value = true
 }
-mitt.on("isContentMenu", isContentMenu)
 // 自我介绍区域
 const isUserEditorMenu = () => {
   isUserEditor.value = true
-  isUserEditorTransitioned.value = true
+  isContextMenuTransitioned.value = true
 }
+
+// 内容区域
+mitt.on("isContentMenu", isContentMenu)
+// 自我介绍区域
 mitt.on("isUserEditorMenu", isUserEditorMenu)
+
+// 删除 消息
+const handlerDelPopMsg = async () => {
+  if (typeof delPopData !== "number") return
+  try {
+    await delUserMsg(delPopData)
+    ElMessage.success("删除消息成功")
+    mitt.emit("popmsgDelComplete", delPopData)
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("删除消息失败")
+  }
+}
+
+let delPopData: null | number = null
+// 发送消息的气泡
+const isSendPopMenu = (id: number) => {
+  isDelPop.value = true
+  delPopData = null
+  delPopData = id
+}
+mitt.on("isSendPopMenu", isSendPopMenu)
+onBeforeUnmount(() => {
+  mitt.off("isContentMenu", isContentMenu)
+  mitt.off("isUserEditorMenu", isUserEditorMenu)
+  mitt.off("isSendPopMenu", isSendPopMenu)
+})
 
 // 打开 全局面板
 const openSettings = () => {
-  if (isUserEditorTransitioned.value) {
+  if (isContextMenuTransitioned.value) {
     setScene.value = 1
   }
   isShowPanel.value = true
 }
-
+// 全屏事件
 const fullScreenEmit = () => {
   mitt.emit("fullScreenChange", document.documentElement)
 }
-onBeforeUnmount(() => {
-  mitt.off("isContentMenu", isContentMenu)
-  mitt.off("isUserEditorMenu", isUserEditorMenu)
-})
 </script>
 
 <style scoped lang="scss">

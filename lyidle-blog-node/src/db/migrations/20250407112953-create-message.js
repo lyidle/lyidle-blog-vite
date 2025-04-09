@@ -9,6 +9,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      msgId: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING,
+        comment: "消息ID 自己手动生成",
+      },
       content: {
         type: Sequelize.TEXT,
         allowNull: false,

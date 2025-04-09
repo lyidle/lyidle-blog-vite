@@ -47,12 +47,14 @@ export const useContextMenu = () => {
     menu.style.top = `${y}px`
     menu.style.left = `${x}px`
   }
+  // 是否 关闭菜单
   let isClosed = true
   // 关闭菜单
   const close = () => {
     isContent.value = false
     isUserEditor.value = false
     isClosed = true
+    isDelPop.value = false
     // 高度重置
     if (!menu) return
     menu.style.height = "0"
@@ -75,9 +77,14 @@ export const useContextMenu = () => {
     onMount()
   }
 
+  // 是否是发送消息界面的 气泡
+  const isDelPop = ref(false)
+  // 是否是内容区域
   const isContent = ref(false)
+  // 是否是用户编辑按钮
   const isUserEditor = ref(false)
-  const isUserEditorTransitioned = ref(false)
+  // 是否是动画播放完毕
+  const isContextMenuTransitioned = ref(false)
   // 菜单容器
   let menu: HTMLDivElement | undefined
   // 初始化元素
@@ -87,7 +94,7 @@ export const useContextMenu = () => {
       // 监听 transitionend 事件 判断 是否关闭  关闭的话则初始化 ref变量
       eventTransitionend = useEventListener(menu, "transitionend", () => {
         if (!isClosed) return
-        isUserEditorTransitioned.value = false
+        isContextMenuTransitioned.value = false
       })
     }
   }
@@ -102,10 +109,10 @@ export const useContextMenu = () => {
     nextTick(() => {
       // 初始化高度
       geometricinfo()
-      eventContextmenu = useEventListener("contextmenu", open)
       //使用捕获 先关闭 再打开菜单 防止多个菜单出现
       eventClick = useEventListener("click", close, true)
       eventWindowContextmenu = useEventListener("contextmenu", close, true)
+      eventContextmenu = useEventListener("contextmenu", open)
     })
   }
 
@@ -125,8 +132,9 @@ export const useContextMenu = () => {
     onUnMount()
   })
   return {
+    isDelPop,
     isContent,
     isUserEditor,
-    isUserEditorTransitioned,
+    isContextMenuTransitioned,
   }
 }

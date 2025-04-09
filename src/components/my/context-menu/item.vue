@@ -1,6 +1,6 @@
 <template>
   <div class="menu-item">
-    <icon-parse :icon="icon"></icon-parse>
+    <icon-parse :icon="icon" :class="$attrs.iconClass"></icon-parse>
     <span>{{ content }}</span>
   </div>
 </template>

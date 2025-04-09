@@ -42,6 +42,7 @@
                   :style="`${
                     isSender(item.senderId) ? 'justify-content: end' : ''
                   }`"
+                  @contextmenu="mitt.emit('isSendPopMenu', item.id)"
                 >
                   <!-- 气泡 -->
                   <div
@@ -131,6 +132,9 @@ import { formatMilliseconds } from "@/utils/times/timeFormatter"
 import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 import { unionBy } from "lodash-es"
 import { useEventListener } from "@/hooks/useEventListener"
+import { handlerReqErr } from "@/utils/request/error/successError"
+import { nanoid } from "nanoid"
+import { mitt } from "@/utils/emitter"
 // 提取数据
 const { userId, userAccount, userNickName } = storeToRefs(useUserStore())
 
@@ -188,6 +192,15 @@ const handleMouseUp = () => {
   window.removeEventListener("mousemove", handleMouseMove)
 }
 
+// 监听删除消息的事件
+const popmsgDelComplete = (id: number) => {
+  const index = list.value.findIndex((item) => item.id === id)
+  list.value.splice(index, 1)
+}
+mitt.on("popmsgDelComplete", popmsgDelComplete)
+onBeforeUnmount(() => {
+  mitt.off("popmsgDelComplete", popmsgDelComplete)
+})
 // 输入框的 组件实例
 const instance = ref()
 // 得到 内容
@@ -214,20 +227,27 @@ const sendMsg = async () => {
   if (!validateContext()) return
   // 得到内容
   const text = comment()
+  const msgId = nanoid()
   const updateBody = {
     content: text,
     receiverId,
+    msgId,
   }
   // 处理图片
   await useMdReplaceImg(text, updateBody, {
-    path: "/msg",
+    path: `/msg/${msgId}`,
   })
-  // 发送内容
-  const result = await sendUserMsg(updateBody)
+  try {
+    // 发送内容
+    const result = await sendUserMsg(updateBody)
 
-  list.value.unshift(result)
-  // 重置 内容
-  reset()
+    list.value.unshift(result)
+    // 重置 内容
+    reset()
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("发送信息失败")
+  }
 }
 
 // 初始化 轮播状态的函数

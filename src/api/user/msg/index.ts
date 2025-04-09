@@ -29,6 +29,8 @@ enum API {
   details = "/user/msg/whisper/get/details",
   // 是否有新消息
   status = "/user/msg/whisper/mark",
+  // 删除 消息
+  del = "/user/msg/whisper/del",
 }
 
 // API 的 key 的类型
@@ -84,3 +86,7 @@ export const userMsgStatus = (receiverId: number) =>
   request.get<any, boolean>(
     server + prefix + API.status + `/?receiverId=${receiverId}`
   )
+
+// 删除消息的状态
+export const delUserMsg = (id: number) =>
+  request.delete<any, void>(server + prefix + API.del + `/${id}`)
