@@ -152,8 +152,7 @@ const updateImg = async (
   const result = await managerPostImgPermanent({
     tempImg,
     // 存储到 /banner/light或dark/id 下
-    account: "/banner",
-    path: `/${startWith}/${createData.id}`,
+    path: `/banner/${startWith}/${createData.id}`,
   })
   if (result) {
     const { successImg, tempImgNull } = result

@@ -61,10 +61,10 @@ const isIndeterminate = ref(false)
 // 当前用户
 const currentUser = ref<User>()
 const nickName = computed(() => {
-  return currentUser.value?.nickName
+  return currentUser.value?.nickName || ""
 })
 const account = computed(() => {
-  return currentUser.value?.account
+  return currentUser.value?.account || ""
 })
 // 全选状态
 const checkAll = ref(false)
@@ -96,10 +96,10 @@ const init = async (row: User) => {
   checkedRoles.value = _row.roles
   // 初始化中间态
   isIndeterminate.value =
-    checkedRoles.value.length > 0 &&
-    checkedRoles.value.length < Roles.value.length
+    checkedRoles.value?.length > 0 &&
+    checkedRoles.value?.length < Roles.value.length
   // 初始化 全选框
-  checkAll.value = checkedRoles.value.length === Roles.value.length
+  checkAll.value = checkedRoles.value?.length === Roles.value?.length
 }
 // 夫组件的自定义事件
 const emit = defineEmits<{

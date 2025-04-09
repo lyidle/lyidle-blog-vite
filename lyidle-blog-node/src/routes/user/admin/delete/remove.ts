@@ -12,6 +12,7 @@ const { User, Article, Role } = require("@/db/models")
 
 // 软删除用户的时间
 const delete_user_expire = ms(process.env.delete_user_expire)
+const default_owner = process.env.default_owner!
 // 不管是否删除都要移除的 定时任务 也需要
 export const publicUserRemove = async (findUser: any, articles: any[]) => {
   // 删除对应用户信息缓存
@@ -86,6 +87,14 @@ const remove = async (
 
   // 得到 对应的文章
   const articles = JSON.parse(JSON.stringify(findUser)).articles
+
+  if (
+    JSON.parse(JSON.stringify(findUser))?.Roles?.some(
+      (item) => item.name === default_owner
+    )
+  ) {
+    return res.result(void 0, "删除用户时，不能权限为owner的用户", false)
+  }
 
   // 是否 权限 判断
   if (isAuth) {
