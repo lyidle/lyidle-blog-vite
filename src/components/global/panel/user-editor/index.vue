@@ -128,8 +128,8 @@ const { isShowPanel } = storeToRefs(useSettingStore())
 import { handlerReqErr } from "@/utils/request/error/successError"
 
 // 导入 默认的图片
-const default_avatar = new URL("@/assets/images/avatar.jpg", import.meta.url)
-  .href
+const default_avatar =
+  "https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/avatar.jpg"
 
 // 提取需要的数据 和 方法
 const { userInfoByToken } = useUserStore()
@@ -308,7 +308,7 @@ const updateAvatar = async () => {
     }
 
     // 存储新的头像地址
-    let newAvatar = uploadAvatar || default_avatar || ""
+    let newAvatar: string | null = uploadAvatar || default_avatar || ""
     // 判断是否更新
     const isUpdate =
       // 不等与 默认图片
@@ -344,7 +344,8 @@ const updateAvatar = async () => {
         }
       }
     }
-
+    // 如果是重置的话则 设为null
+    if (newAvatar === default_avatar) newAvatar = null
     // 存储token
     let token = userToken.value
     // 更新 头像

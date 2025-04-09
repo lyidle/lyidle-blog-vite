@@ -64,27 +64,22 @@ html[themes="#{$theme}"] {
   }
 
   // 默认图片
-  --default-img: url("@/assets/images/base-bg-dark.png");
+  --default-img: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/base-bg-dark.png");
   // 默认头像
-  --default-avatar: url("@/assets/images/avatar.jpg");
+  --default-avatar: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/images/avatar.jpg");
   // 内容区域背景颜色 没有背景固定时
   --body-bg: #2a3943;
   // 鼠标样式
-  // --cursor-default: url("/assets/cursor/dark/pointer.png") 0 0, default;
-  // --cursor-pointer: url("/assets/cursor/dark/link.png") 0 0, pointer;
-  // --cursor-text: url("/assets/cursor/dark/text.png") 18 5, text;
-  // --cursor-move: url("/assets/cursor/dark/move.png") 18 5, move;
-  // 改用 base64的形式
-  --cursor-default: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAADwUExURQAAAP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////1tndzlHWtTX2xorQQweNRYnPaSqs2dzgfX29zZFWNnc3xcpP6ivt3N9i/j5+T5MXuPl6FZjcyQ0SUxZarS5wDRDVv7+/io6Tp+mr7a7wio5TiAxRvb3+OLl5660vHiCj0NRYx4vREFPYcvO0053WeAAAAArdFJOUwAFh+vynxPhNvhsqg7aMPdmCs4MgdfYi/sepbkxM/S+Kq716SsEo9vZlxlI8pYuAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+gLEAwVHUyjJmgAAACoSURBVDjL7dHFDsIAEEXR0hYrUtzd4SGDu7v//99A0rCinT0Jdztn9UYwiZJstgjGiXhntRkDCfVGE3bFEAAtancAh5MBRN0eXG4OUH8A1cMBGo4As5cBROMJfH4O0HSGAAtojiAPFpB5sESIByuEWbDeRKLfQMX2A3aI6ewQx/6g3Y8nJHRAMgWcL9fb/fFEWnfrTDYHrXzB4KHFpFIqq5VqTfj3270AZ7MnWfK+euoAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MjE6MjkrMDA6MDCrzygnAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjIxOjI5KzAwOjAw2pKQmwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoyMToyOSswMDowMI2HsUQAAAAASUVORK5CYII=")
+  --cursor-default: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/cursor/dark/pointer.png")
       0 0,
     default;
-  --cursor-pointer: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAFQUExURQAAAP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////5uirBorQf////////////////////////////////////////////////n6+lRhcSs7T8rO07/EygweNWdygLi9xGJtfFNgcBUmPOHk5iY2SoaPmrK4v9nc3/P09cXJz+/w8hAiOC09UXF8ifX29zdGWRssQoWOml5qef39/RMkOxEiOXB7iPHy8/Dx8iU1SrvAxw8hN4uTnhkqQP7+/mZxfz9NX/z8/WVwf4yUn5mhqhwtQi4+UvLz9Cg4TGx3hers7urnjR4AAAA8dFJOUwADgOX3tSOS4xEV+3Y6nzyl1144Eih37L9YAQqTY+nO+fPFTqjyFupG/Mxvev4z/v6nNMK+DDeNyMNgAgRemLkAAAABYktHRAH/Ai3eAAAAB3RJTUUH6AsQDBUfoq1HRAAAAQFJREFUOMtjYAACRiZmFlY2BtyA3QYIODhxynNx29rZO9jw4FTAa+Po5ORsw4dTAb+Ni5OTq40ArRW42QgKCYtglRcVAylw9wD5VVxCUgpNWpoVKA5U4OTp5e1jC2TzoamQsfH18wcpAIGAwKBgG1lUBXI2IU6hYU5wEG4jj6pAISLSySkKoSAqQhFVgZJNtBMKiLFBVaBsExuHosAGTQGDik18AooCVTQFanI2iUjySTbq6AGloZmcglCQaqOFEZTaNmnpcAUZNjKYga1jk5yZBZHPztHVwxId2tw2OfpuuQaeefk2hlgjzMjYBgpMTHHEuZm5hbiNoqWVNcMoIAsAAPrBSPRqQzoVAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTExLTE2VDEyOjIxOjMxKzAwOjAwVIpm3gAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0xMS0xNlQxMjoyMTozMSswMDowMCXX3mIAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMTEtMTZUMTI6MjE6MzErMDA6MDBywv+9AAAAAElFTkSuQmCC")
+  --cursor-pointer: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/cursor/dark/link.png")
       0 0,
     pointer;
-  --cursor-text: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAA5UExURQAAAP///////////////////////////////////////////0xZalNgcP///wweNRorQVBdbVZjc6nuTngAAAAMdFJOUwBN6OZJ7ODr3kzhRcoezP8AAAABYktHRAH/Ai3eAAAAB3RJTUUH6AsQDBUfoq1HRAAAADFJREFUOMtjYBiGgJGJmQWvAlYeXja8Cvj4BfhGFYwqIFoBu6AQB14FnFwc3AxDDwAAr/YEcnkftHAAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MjE6MzErMDA6MDBUimbeAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjIxOjMxKzAwOjAwJdfeYgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoyMTozMSswMDowMHLC/70AAAAASUVORK5CYII=")
+  --cursor-text: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/cursor/dark/text.png")
       18 5,
     text;
-  --cursor-move: url("data:image/png;base64,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")
+  --cursor-move: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/cursor/dark/move.png")
       18 5,
     move;
   // 按钮 primary

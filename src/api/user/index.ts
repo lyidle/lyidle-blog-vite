@@ -160,7 +160,7 @@ export const managerDeleteUser = removeCallbackUser("managerDeleteUser")
 export const updateUser = (data: UpdateUserBody) =>
   request.put<any, UpdateUser["data"]>(server + prefix + API.updateUser, data)
 // 修改用户头像 需要 是本用户的id
-export const updateUserAvatar = (avatar: string) =>
+export const updateUserAvatar = (avatar: string | null) =>
   request.put<any, UpdateUser["data"]>(server + prefix + API.updateAvatar, {
     avatar,
   })

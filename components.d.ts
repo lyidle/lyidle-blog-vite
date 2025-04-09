@@ -96,12 +96,9 @@ declare module 'vue' {
     LayoutHeaderTopnavMini: typeof import('./src/components/layout/header/topnav-mini/index.vue')['default']
     LayoutLinkPages: typeof import('./src/components/layout/link-pages/index.vue')['default']
     LayoutMsgAt: typeof import('./src/components/layout/msg/at/index.vue')['default']
-    LayoutMsgAtcopy: typeof import('./src/components/layout/msg/at copy/index.vue')['default']
     LayoutMsgLike: typeof import('./src/components/layout/msg/like/index.vue')['default']
     LayoutMsgLikeDetails: typeof import('./src/components/layout/msg/like/details/index.vue')['default']
     LayoutMsgReply: typeof import('./src/components/layout/msg/reply/index.vue')['default']
-    LayoutMsgReplyContent: typeof import('./src/components/layout/msg/reply/content/index.vue')['default']
-    LayoutMsgReplycopy: typeof import('./src/components/layout/msg/reply copy/index.vue')['default']
     LayoutMsgWhisper: typeof import('./src/components/layout/msg/whisper/index.vue')['default']
     LayoutMsgWhisperDialog: typeof import('./src/components/layout/msg/whisper/dialog/index.vue')['default']
     LayoutSpaceFollow: typeof import('./src/components/layout/space/follow/index.vue')['default']
@@ -143,7 +140,6 @@ declare module 'vue' {
     MyDrawer: typeof import('./src/components/my/drawer/index.vue')['default']
     MyEmpty: typeof import('./src/components/my/empty/index.vue')['default']
     MyInput: typeof import('./src/components/my/input/index.vue')['default']
-    MyInputcopy: typeof import('./src/components/my/input copy/index.vue')['default']
     MyMenu: typeof import('./src/components/my/menu/index.vue')['default']
     MyMenuAccordion: typeof import('./src/components/my/menu/accordion/index.vue')['default']
     MyMenuAccordionRecursive: typeof import('./src/components/my/menu/accordion/recursive/index.vue')['default']
@@ -170,8 +166,5 @@ declare module 'vue' {
     VditorMenu: typeof import('./src/components/vditor/menu/index.vue')['default']
     VditorMenuGenerate: typeof import('./src/components/vditor/menu/generate.vue')['default']
     VditorPreview: typeof import('./src/components/vditor/preview/index.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

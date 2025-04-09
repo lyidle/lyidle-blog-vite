@@ -13,17 +13,15 @@ li {
 @font-face {
   font-family: "LOGO";
   font-weight: 900;
-  // src: url("/assets/font/logo.woff") format("woff");
   // 改为 cdn
-  src: url("https://cdn.jsdelivr.net/gh/lyidle/static@1.0/assets/font/logo.woff")
+  src: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/font/logo.woff")
     format("woff");
   font-display: swap;
 }
 @font-face {
   font-family: "LXGWW";
-  // src: url("/assets/font/LXGWWenKai-Regular.woff");
   // 改为 cdn
-  src: url("https://cdn.jsdelivr.net/gh/lyidle/static@1.0/assets/font/LXGWWenKai-Regular.woff")
+  src: url("https://gcore.jsdelivr.net/gh/lyidle/static@1.0/assets/font/LXGWWenKai-Regular.woff")
     format("woff");
 }
 html {

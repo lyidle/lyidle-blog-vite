@@ -15,7 +15,7 @@ const web_port = process.env.web_port
 // 处理跨域
 const cors = require("cors")
 const corsOptions = {
-  origin: ["http://localhost:5173", `http://127.0.0.1:${web_port}`],
+  origin: ["http://localhost:5173", `http://localhost:${web_port}`],
 }
 app.use(cors(corsOptions))
 
