@@ -165,6 +165,7 @@ import { tagsType } from "@/components/my/tags"
 import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
 // 解压缩内容
 import { decompressStringNotError } from "@/utils/compression"
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 判断是否 是一个 对象字面量
 import { isPlainObject } from "lodash-es"
 
@@ -250,31 +251,38 @@ const handlerDelete = async (row: Setting) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}设置成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}设置失败~`)
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error(`彻底删除${name}设置失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
   if (!roleIds.value?.length) return ElMessage.warning("没有需要彻底删除的设置")
-  try {
-    await Promise.all(
-      roleIds.value.map(async (item) => {
-        try {
-          // 彻底删除
-          await managerDeleteSetting(item)
-        } catch (error) {
-          ElMessage.error(`批量彻底删除时,id:${item}删除失败~`)
-        }
-      })
-    )
-    // 重新请求
-    await handlerReq()
-    ElMessage.success(`批量彻底删除成功,已成功删除~`)
-  } catch (error) {
-    // 重新请求
-    await handlerReq()
-    ElMessage.error(`批量彻底删除失败~`)
+  const results = await Promise.allSettled(
+    roleIds.value.map((item) => managerDeleteSetting(item))
+  )
+  const sucArr: any[] = []
+  // @ts-ignore
+  const rejectArr = results
+    .map((item) => {
+      if (item.status === "fulfilled") sucArr.push(item)
+      return item.status === "rejected" && item.reason?.message
+    })
+    .filter(Boolean)
+    .flat(Infinity)
+
+  if (rejectArr.length) {
+    const err = handlerReqErr({ message: rejectArr }, "error")
+    if (!err) ElMessage.error("批量删除设置项失败")
+  } else {
+    ElMessage.success("批量删除设置项成功")
   }
+  if (sucArr.length && rejectArr.length) {
+    ElMessage.error("部分设置项删除失败")
+  }
+
+  // 重新请求
+  await handlerReq()
 }
 </script>
