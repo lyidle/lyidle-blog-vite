@@ -30,6 +30,6 @@ export const setToken = async (userInfo: typeof request.auth) => {
   // 得到 id
   const { id } = userInfo
   // 存储token到redis中
-  await setKey(`token:${id}`, token, token_expire)
+  await setKey(`user:${id}:token`, token, token_expire)
   return token
 }

@@ -26,7 +26,7 @@ export const jwtMiddleware = async (
     const { id } = decoded // 从 Token 中获取用户 ID
 
     // 检查 Redis 中是否存在该用户的 Token
-    const findUser = await getKey(`token:${id}`)
+    const findUser = await getKey(`user:${id}:token`)
 
     if (!findUser || findUser !== token) {
       return next(new myError("UnauthorizedError"))
@@ -75,7 +75,7 @@ export const isTourist = async (
       const { id } = decoded // 从 Token 中获取用户 ID
 
       // 检查 Redis 中是否存在该用户的 Token
-      const findUser = await getKey(`token:${id}`)
+      const findUser = await getKey(`user:${id}:token`)
       if (findUser) userToken = findUser
     }
   } catch (error) {}

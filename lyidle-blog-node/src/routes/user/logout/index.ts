@@ -11,7 +11,7 @@ router.get(
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await delKey(`token:${req.auth.id}`)
+      await delKey(`user:${req.auth.id}:token`)
       res.result({ token: null }, "退出登录成功~")
     } catch (error) {
       res.result(void 0, "退出登录失败~", false)

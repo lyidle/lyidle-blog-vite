@@ -4,7 +4,7 @@
 
 ### ownerId
 
-> [!value]  网站所有者的账户的id
+> [!value] 网站所有者的账户的 id
 
 ```js
 let ownerId = await getKey("ownerId")
@@ -12,113 +12,109 @@ let ownerId = await getKey("ownerId")
 
 ### `webCreatedAt`
 
-> [!value]  创站时间
+> [!value] 创站时间
 
-``` js
+```js
 getKey("webCreatedAt")
 ```
 
 ### `webUpdatedAt`
 
-> [!value]  网站最后更新时间
+> [!value] 网站最后更新时间
 
-``` js
+```js
 getKey("webUpdatedAt")
 ```
 
 ### `touristCounts`
 
-> [!value]  访客数量
+> [!value] 访客数量
 
-``` js
+```js
 getKey("touristCounts")
 ```
 
 ### `userCounts`
 
-> [!value]  用户数量
+> [!value] 用户数量
 
-``` js
+```js
 getKey("userCounts")
 ```
 
 ### `webTotalPages`
 
-> [!value]  文章数
+> [!value] 文章数
 
-``` js
+```js
 getKey("webTotalPages")
 ```
 
 ### `webTotalWords`
 
-> [!value]  网站总字数
+> [!value] 网站总字数
 
-``` js
+```js
 getKey("webTotalWords")
 ```
 
 ### `setting:公告`
 
-> [!value]  公告
+> [!value] 公告
 
-``` js
+```js
 getKey(`setting:公告`)
 ```
 
 ### `setting:版权`
 
-> [!value]  网站版权信息
+> [!value] 网站版权信息
 
-``` js
+```js
 getKey("setting:版权")
 ```
 
 ### setting:联系方式
 
-> [!value]  网站所有者的联系方式
+> [!value] 网站所有者的联系方式
 
-``` js
+```js
 getKey("setting:联系方式")
 ```
 
 ### `setting:${name}`
 
-> [!value]  获取设置信息
+> [!value] 获取设置信息
 
-``` js
+```js
 getKey(`setting:${name}`)
 ```
 
 ## 用户信息
 
-###  token 字段
+### token 字段
 
 ```json
 {
   "id",
   "account",
-  "avater",
-  "signer",
-  "email",
-  "nickName",
   "role"
 }
 ```
 
-### `token:${id}`
+### `user:${id}:token`
 
-> [!value]  token
+> [!value] token
 
-``` js
-getKey(`token:${id}`)
+```js
+getKey(`user:${id}:token`)
 ```
 
 ### `userInfo:${cacheKey}`
 
-> [!value]  用户信息
+> [!value] 用户信息
 
-``` js
+```js
 const cacheKey = id || roles || account
 getKey(`userInfo:${cacheKey}`)
 ```
@@ -127,9 +123,9 @@ getKey(`userInfo:${cacheKey}`)
 
 ### `${setData}:${email}`
 
-> [!value]  根据邮箱获取验证码
+> [!value] 根据邮箱获取验证码
 
-``` js
+```js
 setData: "regCode" | "forgetCode"
 // redis 插入的键值
 const cacheKey = `${setData}:${email}`
@@ -141,83 +137,81 @@ let result = await getKey(cacheKey)
 
 ### `ArticlefindAuthorAndId:${id}`
 
-> [!value]  根据文章id和用户id查找文章 判断是否是 文章页面 404 了
+> [!value] 根据文章 id 和用户 id 查找文章 判断是否是 文章页面 404 了
 
-``` js
+```js
 getKey(`ArticlefindAuthorAndId:${id}`)
 ```
 
 ### `ArticlefindByPk:${id}`
 
-> [!value]  根据id获取文章
+> [!value] 根据 id 获取文章
 
-``` js
+```js
 getKey(`ArticlefindByPk:${id}`)
 ```
 
 ### `recentPages:${limit}`
 
-> [!value]  获取最新的文章
+> [!value] 获取最新的文章
 
-``` js
-    const cacheValue = await getKey(`recentPages:${limit}`)
-    if (cacheValue) return res.result(cacheValue, "获取最新文章成功~")
+```js
+const cacheValue = await getKey(`recentPages:${limit}`)
+if (cacheValue) return res.result(cacheValue, "获取最新文章成功~")
 ```
 
 ### `allTags:${author}`
 
-> [!value]  获取作者的所有 tags
+> [!value] 获取作者的所有 tags
 
-``` js
-  const cacheValue = await getKey(`allTags:${author}`)
-  if (cacheValue) return res.result(cacheValue, "获取所有tags成功~")
+```js
+const cacheValue = await getKey(`allTags:${author}`)
+if (cacheValue) return res.result(cacheValue, "获取所有tags成功~")
 ```
 
 ### `allCategories:${author}`
 
-> [!value]  获取作者的所有 categories
+> [!value] 获取作者的所有 categories
 
-``` js
-  const cacheValue = await getKey(`allCategories:${author}`)
-  if (cacheValue) return res.result(cacheValue, "获取所有categories成功~")
+```js
+const cacheValue = await getKey(`allCategories:${author}`)
+if (cacheValue) return res.result(cacheValue, "获取所有categories成功~")
 ```
 
 ### `category:search:allTag:${category}`
 
-> [!value]  根据 category 查询 下面的 所有 tags 有缓存
+> [!value] 根据 category 查询 下面的 所有 tags 有缓存
 
 ```js
-  const cacheKey = `category:search:allTag:${category}`
-  const cacheValue = await getKey(cacheKey)
+const cacheKey = `category:search:allTag:${category}`
+const cacheValue = await getKey(cacheKey)
 ```
 
 ### `articlePagination:${currentPage},${pageSize}`
 
-> [!value]  按照分页器格式 获取 文章
+> [!value] 按照分页器格式 获取 文章
 
-``` js
-  const cacheValue = await getKey(
-    `articlePagination:${currentPage},${pageSize}`
-  )
-  if (cacheValue) return res.result(cacheValue, "获取所有tags成功~")
+```js
+const cacheValue = await getKey(`articlePagination:${currentPage},${pageSize}`)
+if (cacheValue) return res.result(cacheValue, "获取所有tags成功~")
 ```
 
 ### `carousel:${limit}`
 
-> [!value]  获取轮播图
+> [!value] 获取轮播图
 
-``` js
-    const cacheValue = await getKey(`carousel:${limit}`)
-    if (cacheValue) return res.result(cacheValue, "获取首页焦点图成功~")
+```js
+const cacheValue = await getKey(`carousel:${limit}`)
+if (cacheValue) return res.result(cacheValue, "获取首页焦点图成功~")
 ```
 
 ## 获取菜单
 
 ### `menu:${role}`
 
-> [!value]  获取菜单 根据权限 `*` 查询所有
+> [!value] 获取菜单 根据权限 `*` 查询所有
 
-``` js
+```js
 const cacheKey = `menu:${role}`
 const cachedData = await getKey(cacheKey)
 ```
@@ -226,9 +220,9 @@ const cachedData = await getKey(cacheKey)
 
 ### `roles:*`
 
-> [!value]  获取所有权限
+> [!value] 获取所有权限
 
-``` js
+```js
 const cacheKey = `roles:*`
 const cachedData = await getKey(cacheKey)
 ```
@@ -237,9 +231,9 @@ const cachedData = await getKey(cacheKey)
 
 ### `permissionGroup:*`
 
-> [!value]  获取所有权限组包括子权限
+> [!value] 获取所有权限组包括子权限
 
-``` js
+```js
 const cacheKey = `permissionGroup:*`
 const cachedData = await getKey(cacheKey)
 ```
@@ -248,9 +242,9 @@ const cachedData = await getKey(cacheKey)
 
 ### `permission:*`
 
-> [!value]  获取所有权限
+> [!value] 获取所有权限
 
-``` js
+```js
 const cacheKey = `permissions:*`
 const cachedData = await getKey(cacheKey)
 ```
@@ -259,9 +253,9 @@ const cachedData = await getKey(cacheKey)
 
 ### `poetry`
 
-> [!value]  获取古诗词
+> [!value] 获取古诗词
 
-``` js
+```js
 getKey("poetry")
 ```
 
@@ -269,8 +263,8 @@ getKey("poetry")
 
 ### `upload:img:temp:${account}:${url}`
 
-> [!value]  上传临时文件是否 上传过了
+> [!value] 上传临时文件是否 上传过了
 
-``` js
+```js
 getKey(`upload:img:temp:${account}:${url}`)
 ```

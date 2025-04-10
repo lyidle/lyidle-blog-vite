@@ -124,7 +124,7 @@ router.put(
       // 改变了pwd 需要重新登录
       if (password)
         //删除token
-        await delKey(`token:${id}`)
+        await delKey(`user:${id}:token`)
       // 没有 修改 密码 则不需要重新登录
       else {
         token = await setToken({ ...dataValues, roles: tokenSetRoles })
