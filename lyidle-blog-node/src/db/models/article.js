@@ -16,10 +16,122 @@ const { existsSync, rm } = require("fs")
 const { unlink } = require("fs/promises")
 const { getKey, setKey } = require("../../utils/redis/js")
 
+/**
+ * 更新文章的回调
+ * @param {string} mode 模式
+ * @param {1 | -1} sym 符号 加减 乘上 1 或 -1
+ */
+const updateTotalPages = async (mode, sym) => {
+  // 更新字数
+  try {
+    let count = await getKey("webTotalPages")
+    count = +count || 0
+    const updatedCount = parseInt(count + 1 * sym)
+    console.log({ mode, count, sym, updatedCount })
+
+    await setKey("webTotalPages", updatedCount)
+  } catch (error) {
+    console.error(`${mode}时，更新文章总数到 Redis 中失败:`, error)
+  }
+}
+
+// 创建时 更新字数的 逻辑
+const handlerCreateUpdateTotalWorlds = async (article) => {
+  // 更新字数
+  try {
+    let length = article.get("length")
+    length = +length || 0
+    let count = await getKey("webTotalWords")
+    count = +count || 0
+    const updatedCount = parseInt(count + length)
+    await setKey("webTotalWords", updatedCount)
+  } catch (error) {
+    console.error("创建文章时，更新文章的总字数到 Redis 失败:", error)
+  }
+}
+
+// 更新时 更新字数的 逻辑
+const handlerUpdateUpdateTotalWorlds = async (article) => {
+  // 更新字数
+  if (article.changed("length")) {
+    try {
+      let oldLength = article.previous("length")
+      oldLength = +oldLength || 0
+      let newLength = article.get("length")
+      newLength = +newLength || 0
+      let count = await getKey("webTotalWords")
+      count = +count || 0
+      const updatedCount = parseInt(count - oldLength + newLength)
+      setKey("webTotalWords", updatedCount)
+    } catch (error) {
+      console.error("更新文章时，更新文章的总字数到 Redis 失败:", error)
+    }
+  }
+}
+
+// 更新时 图片清理逻辑
+const handlerUpdateUpdateImgs = async (article) => {
+  // 处理 图片清理
+  try {
+    // 安全获取并扁平化新旧图片URL数组
+    const oldImgUrls = article.previous("imgUrls")?.flat(Infinity) || []
+    const newImgUrls = article.imgUrls?.flat(Infinity) || []
+    // 找出有效且被删除的图片URL
+    const deletedImgUrls = oldImgUrls.filter(
+      (url) => url?.trim() && !newImgUrls.includes(url)
+    )
+
+    if (deletedImgUrls.length === 0) {
+      return // 没有需要删除的图片
+    }
+
+    // 使用 allSettled 并行处理所有删除操作
+    const results = await Promise.allSettled(
+      deletedImgUrls.map(async (url) => {
+        const deletePath = join(__dirname, "../../assets/images", url)
+
+        if (!existsSync(deletePath)) {
+          return { url, status: "skipped", reason: "文件不存在" }
+        }
+
+        try {
+          await unlink(deletePath)
+          return { url, status: "fulfilled", path: deletePath }
+        } catch (error) {
+          throw { url, error } // 携带上下文信息重新抛出
+        }
+      })
+    )
+
+    // 分析处理结果
+    // const stats = {
+    //   total: results.length,
+    //   succeeded: results.filter((r) => r.status === "fulfilled").length,
+    //   skipped: results.filter(
+    //     (r) =>
+    //       r.status === "rejected" && r.reason?.reason === "文件不存在"
+    //   ).length,
+    //   failed: results.filter(
+    //     (r) => r.status === "rejected" && !r.reason?.reason
+    //   ).length,
+    // }
+
+    // 记录失败的详细信息（可选）
+    results.forEach((result) => {
+      if (result.status === "rejected") {
+        console.error(
+          `删除失败: ${result.reason.url}`,
+          result.reason.error?.message || result.reason.reason
+        )
+      }
+    })
+  } catch (error) {
+    console.error("图片清理流程异常:", error)
+  }
+}
+
 // 删除时 更新字数的 逻辑
-const handlerDelUpdateCount = async (article, options) => {
-  // 检查是否是第一次软删除
-  if (article.previous("isBin")) return
+const handlerDelUpdateTotalWorlds = async (article) => {
   // 删除逻辑
   try {
     let length = article.get("length")
@@ -29,7 +141,52 @@ const handlerDelUpdateCount = async (article, options) => {
     const updatedCount = parseInt(count - length)
     setKey("webTotalWords", updatedCount)
   } catch (error) {
-    console.error("删除文章的字数统计失败:", error)
+    console.error("删除文章时，更新文章的总字数到 Redis 失败:", error)
+  }
+}
+
+// 删除时 图片清理逻辑
+const handlerDelUpdateImgs = async (article, options) => {
+  // 软删除退出
+  if (!options.force) return
+  // 处理 图片清理
+  try {
+    // 文章的 图片位置
+    const articlePath = join(
+      __dirname,
+      "../../assets/images",
+      `${article.userId}`,
+      "md",
+      `${article.articleId}`
+    )
+    // 存在 路径 则删除路径
+    if (existsSync(articlePath)) {
+      rm(articlePath, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.error(
+            `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
+            err
+          )
+          return
+        }
+      })
+    }
+  } catch (error) {
+    console.error(
+      `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
+      error
+    )
+  }
+}
+
+// 恢复时 更新字数的 逻辑
+const handlerRestoreUpdateTotalWorlds = async (article) => {
+  try {
+    const length = article.get("length")
+    const count = await getKey("webTotalWords")
+    await setKey("webTotalWords", (parseInt(count) || 0) + length)
+  } catch (error) {
+    console.error("恢复文章时，更新文章的总字数到 Redis 失败:", error)
   }
 }
 
@@ -214,141 +371,41 @@ module.exports = (sequelize, DataTypes) => {
         // 创建的钩子
         afterCreate: async (article, options) => {
           // 更新字数
-          try {
-            let length = article.get("length")
-            length = +length || 0
-            let count = await getKey("webTotalWords")
-            count = +count || 0
-            const updatedCount = parseInt(count + length)
-            await setKey("webTotalWords", updatedCount)
-          } catch (error) {
-            console.error("保存文章的字数到 Redis 失败:", error)
-          }
+          handlerCreateUpdateTotalWorlds(article, options)
+          // 更新 总个数
+          updateTotalPages("创建", 1)
         },
         // 更新的钩子
         afterUpdate: async (article, options) => {
-          // 更新字数
-          if (article.changed("length")) {
-            try {
-              let oldLength = article.previous("length")
-              oldLength = +oldLength || 0
-              let newLength = article.get("length")
-              newLength = +newLength || 0
-              let count = await getKey("webTotalWords")
-              count = +count || 0
-              const updatedCount = parseInt(count - oldLength + newLength)
-              setKey("webTotalWords", updatedCount)
-            } catch (error) {
-              console.error("更新文章的字数到 Redis 失败:", error)
-            }
-          }
           // 处理 图片清理
-          try {
-            // 安全获取并扁平化新旧图片URL数组
-            const oldImgUrls = article.previous("imgUrls")?.flat(Infinity) || []
-            const newImgUrls = article.imgUrls?.flat(Infinity) || []
-            // 找出有效且被删除的图片URL
-            const deletedImgUrls = oldImgUrls.filter(
-              (url) => url?.trim() && !newImgUrls.includes(url)
-            )
-
-            if (deletedImgUrls.length === 0) {
-              return // 没有需要删除的图片
-            }
-
-            // 使用 allSettled 并行处理所有删除操作
-            const results = await Promise.allSettled(
-              deletedImgUrls.map(async (url) => {
-                const deletePath = join(__dirname, "../../assets/images", url)
-
-                if (!existsSync(deletePath)) {
-                  return { url, status: "skipped", reason: "文件不存在" }
-                }
-
-                try {
-                  await unlink(deletePath)
-                  return { url, status: "fulfilled", path: deletePath }
-                } catch (error) {
-                  throw { url, error } // 携带上下文信息重新抛出
-                }
-              })
-            )
-
-            // 分析处理结果
-            // const stats = {
-            //   total: results.length,
-            //   succeeded: results.filter((r) => r.status === "fulfilled").length,
-            //   skipped: results.filter(
-            //     (r) =>
-            //       r.status === "rejected" && r.reason?.reason === "文件不存在"
-            //   ).length,
-            //   failed: results.filter(
-            //     (r) => r.status === "rejected" && !r.reason?.reason
-            //   ).length,
-            // }
-
-            // 记录失败的详细信息（可选）
-            results.forEach((result) => {
-              if (result.status === "rejected") {
-                console.error(
-                  `删除失败: ${result.reason.url}`,
-                  result.reason.error?.message || result.reason.reason
-                )
-              }
-            })
-          } catch (error) {
-            console.error("图片清理流程异常:", error)
-          }
+          handlerUpdateUpdateImgs(article, options)
+          // 更新字数
+          handlerUpdateUpdateTotalWorlds(article, options)
         },
         // 删除的钩子
         afterDestroy: async (article, options) => {
-          // 更新字数
-          handlerDelUpdateCount(article, options)
-          // 软删除退出
-          if (!options.force) return
           // 处理 图片清理
-          try {
-            // 文章的 图片位置
-            const articlePath = join(
-              __dirname,
-              "../../assets/images",
-              `${article.userId}`,
-              "md",
-              `${article.articleId}`
-            )
-            // 存在 路径 则删除路径
-            if (existsSync(articlePath)) {
-              rm(articlePath, { recursive: true, force: true }, (err) => {
-                if (err) {
-                  console.error(
-                    `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
-                    err
-                  )
-                  return
-                }
-              })
-            }
-          } catch (error) {
-            console.error(
-              `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
-              error
-            )
-          }
+          handlerDelUpdateImgs(article, options)
+
+          // 检查是否是第一次软删除
+          if (article.previous("isBin")) return
+          // 检查是否已经删除过（防止重复删除）
+          if (!article.get("isBin")) return
+          // 更新字数
+          handlerDelUpdateTotalWorlds(article, options)
+          // 更新 总个数
+          updateTotalPages("删除", -1)
         },
         // 恢复时
         afterRestore: async (article, options) => {
-          // 更新字数
           // 检查是否是第一次恢复（即之前确实被软删除过）
           if (!article.previous("isBin")) return
           // 检查是否已经恢复过（防止重复恢复）
           if (article.get("isBin")) return
-          try {
-            const length = article.get("length")
-            const count = await getKey("webTotalWords")
-            await setKey("webTotalWords", (parseInt(count) || 0) + length)
-          } catch (error) {
-            console.error("恢复文章的字数统计失败:", error)
-          }
+          // 更新字数
+          handlerRestoreUpdateTotalWorlds(article)
+          // 更新 总个数
+          updateTotalPages("恢复", 1)
         },
       },
     }

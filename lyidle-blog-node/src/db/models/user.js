@@ -16,6 +16,30 @@ const { existsSync, rm } = require("fs")
 // 引入错误函数
 const setDbError = require("../../utils/error/setDbError/js")
 
+// 创建时 更新人数的 逻辑
+const handlerCreateUpdateCount = async () => {}
+
+// 删除时 图片清理逻辑
+const handlerDelImgs = async (article, options) => {
+  // 软删除退出
+  if (!options.force) return
+  try {
+    // 用户的 文件位置
+    const deletePath = join(__dirname, "../../assets/images", `${user.id}`)
+    // 存在 路径 则删除路径
+    if (existsSync(deletePath)) {
+      rm(deletePath, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
+          return
+        }
+      })
+    }
+  } catch (error) {
+    console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
+  }
+}
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -131,29 +155,14 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "isBin", // 指定软删除字段名称
       // 加上 钩子 处理 User 表的信息
       hooks: {
+        // 创建的钩子
+        afterCreate: async (article, options) => {
+          // handlerCreateUpdateCount(article, options)
+        },
         // 删除的钩子
         afterDestroy: async (user, options) => {
-          // 软删除退出
-          if (!options.force) return
-          try {
-            // 用户的 文件位置
-            const deletePath = join(
-              __dirname,
-              "../../assets/images",
-              `${user.id}`
-            )
-            // 存在 路径 则删除路径
-            if (existsSync(deletePath)) {
-              rm(deletePath, { recursive: true, force: true }, (err) => {
-                if (err) {
-                  console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
-                  return
-                }
-              })
-            }
-          } catch (error) {
-            console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
-          }
+          // 处理 图片清理
+          handlerDelImgs(user, options)
         },
       },
     }

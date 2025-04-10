@@ -47,9 +47,6 @@ router.post(
     try {
       // 创建文章
       const createArticle = await Article.create(ArticleData)
-      // 创建成功文章数 +1
-      const webTotalPages = await getKey("webTotalPages")
-      await setKey("webTotalPages", +webTotalPages + 1)
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
 
