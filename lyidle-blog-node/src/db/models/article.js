@@ -181,6 +181,38 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Article",
       paranoid: true, // 启用软删除
       deletedAt: "isBin", // 指定软删除字段名称
+      // 加上 钩子 处理 Article 表的信息
+      hooks: {
+        // afterDestroy: async (article, options) => {
+        //   try {
+        //     // 评论的 图片位置
+        //     const articlePath = join(
+        //       __dirname,
+        //       "../../assets/images",
+        //       `${article.userId}`,
+        //       "md/content",
+        //       `${article.articleId}`
+        //     )
+        //     // 存在 路径 则删除路径
+        //     if (existsSync(articlePath)) {
+        //       rm(articlePath, { recursive: true, force: true }, (err) => {
+        //         if (err) {
+        //           console.error(
+        //             `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
+        //             err
+        //           )
+        //           return
+        //         }
+        //       })
+        //     }
+        //   } catch (error) {
+        //     console.error(
+        //       `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
+        //       error
+        //     )
+        //   }
+        // },
+      },
     }
   )
   return Article

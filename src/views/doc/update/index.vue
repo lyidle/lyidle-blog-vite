@@ -105,7 +105,10 @@ import {
   contentReg,
 } from "@/RegExp/Docs"
 // 引入 hooks
-import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
+import {
+  extractImgUrlsWithImg,
+  useMdReplaceImg,
+} from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 import { mitt } from "@/utils/emitter"
 import { postImgPermanent, removeFileStatic } from "@/api/img"
 // 引入 处理错误的 请求函数
@@ -247,7 +250,11 @@ const handerUpload = async () => {
     }
 
     // 处理 临时链接转换
-    await useMdReplaceImg(content, data)
+    const handlered = await useMdReplaceImg(content, data)
+    if (typeof handlered === "string") {
+      const imgUrls = extractImgUrlsWithImg(handlered)
+      if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
+    }
 
     // 判断是否有更新的上传海报
     const newPoster = poster.value?.[0]?.url

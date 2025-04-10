@@ -88,7 +88,10 @@
 
 <script setup lang="ts" name="DocumentPublish">
 // 引入 utils
-import { useMdReplaceImg } from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
+import {
+  extractImgUrlsWithImg,
+  useMdReplaceImg,
+} from "@/hooks/Doc/vditorEditor/mdImgToLinkPermanent"
 // 引入 处理删除文件的函数
 import { handlerRemoveFileStatic } from "@/utils/req/removeFileStatic"
 // 引入 仓库
@@ -251,7 +254,10 @@ const handerUpload = async () => {
 
     // 处理 临时链接转换
     const handlered = await useMdReplaceImg(content, data)
-    console.log(handlered)
+    if (typeof handlered === "string") {
+      const imgUrls = extractImgUrlsWithImg(handlered)
+      if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
+    }
 
     // 判断是否有上传海报
     if (poster.value.length) {
