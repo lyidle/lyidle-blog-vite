@@ -10,8 +10,9 @@ const {
   emailReg,
 } = require("../../RegExp/loginOrReg/js")
 
-// 导入环境变量
-require("dotenv").config()
+const { join } = require("path")
+const { existsSync, rm } = require("fs")
+
 // 引入错误函数
 const setDbError = require("../../utils/error/setDbError/js")
 
@@ -128,6 +129,33 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
       paranoid: true, // 启用软删除
       deletedAt: "isBin", // 指定软删除字段名称
+      // 加上 钩子 处理 User 表的信息
+      hooks: {
+        // 删除的钩子
+        afterDestroy: async (user, options) => {
+          // 软删除退出
+          if (!options.force) return
+          try {
+            // 用户的 文件位置
+            const deletePath = join(
+              __dirname,
+              "../../assets/images",
+              `${user.id}`
+            )
+            // 存在 路径 则删除路径
+            if (existsSync(deletePath)) {
+              rm(deletePath, { recursive: true, force: true }, (err) => {
+                if (err) {
+                  console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
+                  return
+                }
+              })
+            }
+          } catch (error) {
+            console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
+          }
+        },
+      },
     }
   )
 

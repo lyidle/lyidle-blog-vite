@@ -56,8 +56,20 @@ router.put(
       }
 
       // 提取body 信息
-      const { title, content, length, category, tags, desc, poster, imgUrls } =
-        req.body
+      const {
+        title,
+        content,
+        length,
+        category,
+        tags,
+        desc,
+        poster,
+        imgUrls,
+        articleId: updateArticleId,
+      } = req.body
+
+      if (!updateArticleId)
+        return res.result(void 0, "增加文章失败,articleId是必传项", false)
 
       // 非空判断
       if (!title || !content || !length || !category || !tags || !desc)
@@ -66,7 +78,6 @@ router.put(
           "请至少传入以下信息中的一个title、content、length、category、tags、carousel、desc,是必传项",
           false
         )
-
       // 检查并赋值字段
       findArticle.set("title", title)
       findArticle.set("content", content)
@@ -74,6 +85,7 @@ router.put(
       findArticle.set("category", category)
       findArticle.set("tags", (Array.isArray(tags) && tags) || [])
       findArticle.set("imgUrls", (Array.isArray(imgUrls) && imgUrls) || [])
+      findArticle.set("articleId", updateArticleId)
       // 可能为 null 的字段
       findArticle.set("desc", desc || null)
       findArticle.set("poster", poster || null)

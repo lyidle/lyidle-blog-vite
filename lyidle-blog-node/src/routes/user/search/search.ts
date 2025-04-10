@@ -31,7 +31,8 @@ export default async (
   exact: boolean = false,
   isCounts: boolean = false,
   isPagination: boolean = true,
-  isBin: boolean = false
+  isBin: boolean = false,
+  errRes: boolean = true
 ) => {
   let { id, account, email, roles, nickName, currentPage, pageSize } = data
   if (roles) roles = JSON.parse(roles)
@@ -111,7 +112,7 @@ export default async (
 
   // 查询用户
   const { count, rows } = await User.findAndCountAll(commend)
-  if (!rows.length) {
+  if (!rows.length && errRes) {
     res.result(void 0, "查询用户信息失败~", false)
     return
   }

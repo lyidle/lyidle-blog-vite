@@ -10,5 +10,6 @@ export interface AddArticleBody {
   poster?: string
   tags: string[]
   title: string
+  articleId: string
   [property: string]: any
 }

@@ -9,6 +9,7 @@
           </div>
           <div class="flex gap-10px items-center" v-if="account">
             <global-name
+              v-if="userInfo?.id"
               :account="userInfo?.account"
               :nick="userInfo?.nickName"
             ></global-name>

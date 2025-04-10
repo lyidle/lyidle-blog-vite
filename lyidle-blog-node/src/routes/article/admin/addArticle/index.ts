@@ -15,8 +15,20 @@ router.post(
   "/",
   [jwtMiddleware],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { title, content, category, tags, desc, poster, length, imgUrls } =
-      req.body
+    const {
+      title,
+      content,
+      category,
+      tags,
+      desc,
+      poster,
+      length,
+      imgUrls,
+      articleId,
+    } = req.body
+
+    if (!articleId)
+      return res.result(void 0, "增加文章失败,articleId是必传项", false)
 
     const ArticleData: any = {
       author: req.auth.account,
@@ -29,6 +41,7 @@ router.post(
       poster,
       length,
       imgUrls: (Array.isArray(imgUrls) && imgUrls) || [],
+      articleId,
     }
 
     try {
@@ -52,7 +65,7 @@ router.post(
       return res.result({ id }, "增加文章成功~")
     } catch (err) {
       return res.validateAuth(err, next, () =>
-        res.result(err, "增加文章失败~", false)
+        res.result(void 0, "增加文章失败~", false)
       )
     }
   }

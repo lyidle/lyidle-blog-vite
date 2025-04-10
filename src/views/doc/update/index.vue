@@ -115,6 +115,7 @@ import { postImgPermanent, removeFileStatic } from "@/api/img"
 import { handlerReqErr } from "@/utils/request/error/successError"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { isPlainObject } from "lodash-es"
 // 提取需要的数据
 const { userAccount } = storeToRefs(useUserStore())
 const route = useRoute()
@@ -128,6 +129,7 @@ let originPoster: string | null = null
 // 得到 作者和id
 const docAuthor = route.query.author as string
 const docId = route.query.id as string
+const articleId = ref<null | string>(null)
 // 获取文章数据
 const reqArticle = async () => {
   try {
@@ -143,6 +145,7 @@ const reqArticle = async () => {
     docsFormData.category = Article?.category || ""
     docsFormData.tags = Article?.tags || []
     docsFormData.desc = Article?.desc || ""
+    articleId.value = Article.articleId
     if (Article.poster) {
       // 展示poster
       poster.value = [{ name: "", url: Article.poster }]
@@ -247,14 +250,30 @@ const handerUpload = async () => {
       content: "",
       length: length.value,
       id: +docId,
+      articleId: articleId.value,
     }
 
     // 处理 临时链接转换
-    const handlered = await useMdReplaceImg(content, data)
+    const { handlered } = await useMdReplaceImg(content, data, {
+      path: `/md/${articleId.value}/content`,
+    })
+    let context: string = ""
+    // 是object
+    if (
+      typeof handlered === "object" &&
+      isPlainObject(handlered) &&
+      typeof handlered.text === "string"
+    )
+      context = handlered.text
+    // 是字符串
     if (typeof handlered === "string") {
-      const imgUrls = extractImgUrlsWithImg(handlered)
-      if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
+      context = handlered
     }
+    // 没有值则是原值
+    if (!context.trim()) context = content
+    // 提取链接
+    const imgUrls = extractImgUrlsWithImg(context)
+    if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
 
     // 判断是否有更新的上传海报
     const newPoster = poster.value?.[0]?.url
@@ -265,7 +284,7 @@ const handerUpload = async () => {
       const result = await postImgPermanent({
         tempImg,
         account: docAuthor,
-        path: "/md/poster",
+        path: `/md/${articleId.value}/poster`,
       })
       if (result) {
         const { successImg, tempImgNull } = result

@@ -38,7 +38,7 @@ const deleted = async (findUser: any, articles: any[]) => {
   }
 
   // 设置用户数量
-  await setKey("userCounts", +userCounts - 1)
+  await setKey("userCounts", +userCounts - 1 < 0 ? 0 : +userCounts - 1)
 
   // 不管是否删除都要移除的
   await publicUserRemove(findUser, articles)

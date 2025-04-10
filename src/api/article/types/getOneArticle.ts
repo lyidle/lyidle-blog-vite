@@ -23,5 +23,6 @@ export interface Data {
   title: string
   updatedAt: string
   userId: number
+  articleId: string
   [property: string]: any
 }

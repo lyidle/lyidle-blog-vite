@@ -6,6 +6,9 @@ const { clear } = require("../../utils/redis/js")
 // 引入 处理好的信息
 const { users } = require("../mock/handlerUsers")
 
+// 引入 uuidV4  生成临时文件的 id
+const { v4: uuidV4 } = require("uuid")
+
 const fs = require("fs")
 const path = require("path")
 
@@ -74,6 +77,7 @@ module.exports = {
         // poster: `https://example.com/poster${i}.jpg`,
         length: lengthRender(i),
         userId: user.id,
+        articleId: uuidV4(),
         createdAt: new Date(),
         updatedAt: new Date(),
       })

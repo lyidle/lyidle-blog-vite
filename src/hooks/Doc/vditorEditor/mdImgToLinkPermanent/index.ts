@@ -6,21 +6,21 @@ import { compressString } from "@/utils/compression"
 import { useUserStore } from "@/store/user"
 import { contextReplaceUrls } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 import { SuccessImg } from "@/api/img/types/postImgPermanent"
+// let path = "/md/content"
 // 替换 md的 临时链接
 export const useMdReplaceImg = async (
   content: string,
   data: any,
-  options?: { key?: string; path?: string; isTidy?: boolean }
+  options: { key?: string; path: string; isTidy?: boolean }
 ) => {
-  let contentKey = "content"
-  let path = "/md/content"
-  if (options) {
-    let { key: optKey, path: optPath } = options
-    if (optPath) path = optPath
-    if (optKey) contentKey = optKey
-  }
   // 是否 返回 text和图片成功和失败的数据
   const isTidy = options?.isTidy || false
+
+  // 什么作为键 放到传入的 data中 处理加压缩完毕的 文本
+  const contentKey = options.key || "content"
+  // 放到什么路径
+  const path = options.path
+
   // 引入前缀
   const prefix = import.meta.env.VITE_API
 
@@ -70,7 +70,7 @@ export const useMdReplaceImg = async (
   if (!transformLink) {
     data[contentKey] = compressString(content || "") || ""
   }
-  return handlered
+  return { handlered, content }
 }
 type useMdImgToLinkPermanentReturnType =
   | undefined
@@ -161,7 +161,7 @@ export const extractImageUrls = (
  */
 export const extractImgUrlsWithImg = (text: string) =>
   extractImageUrls(text, (url) => {
-    const parts = url.split("/api/assets/images/")
+    const parts = url.split(`/${prefix}/assets/images/`)
     return parts.length > 1
       ? parts[1].startsWith("/")
         ? parts[1]

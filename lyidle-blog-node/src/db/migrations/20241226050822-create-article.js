@@ -67,6 +67,12 @@ module.exports = {
       imgUrls: {
         type: Sequelize.JSON,
       },
+      articleId: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING,
+        comment: "文章ID 自己手动生成",
+      },
       isBin: {
         type: Sequelize.DATE,
         allowNull: true,

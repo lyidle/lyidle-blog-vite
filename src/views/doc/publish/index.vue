@@ -111,6 +111,8 @@ import {
 } from "@/RegExp/Docs"
 import { postImgPermanent } from "@/api/img"
 import { handlerReqErr } from "@/utils/request/error/successError"
+import { nanoid } from "nanoid"
+import { isPlainObject } from "lodash-es"
 
 // 提取需要的数据
 const { title, category, tags, desc, length, docHeight, context, poster } =
@@ -242,6 +244,7 @@ const handerUpload = async () => {
       ElMessage.error(contentReg.msg)
       return
     }
+    const articleId = nanoid()
     // 整理 数据
     const data: AddArticleBody = {
       title: docsFormData.title as string,
@@ -250,14 +253,31 @@ const handerUpload = async () => {
       desc: docsFormData.desc || "",
       content: "",
       length: length.value,
+      articleId,
     }
 
     // 处理 临时链接转换
-    const handlered = await useMdReplaceImg(content, data)
+    const { handlered } = await useMdReplaceImg(content, data, {
+      path: `/md/${articleId}/content`,
+    })
+
+    let context: string = ""
+    // 是object
+    if (
+      typeof handlered === "object" &&
+      isPlainObject(handlered) &&
+      typeof handlered.text === "string"
+    )
+      context = handlered.text
+    // 是字符串
     if (typeof handlered === "string") {
-      const imgUrls = extractImgUrlsWithImg(handlered)
-      if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
+      context = handlered
     }
+    // 没有值则是原值
+    if (!context.trim()) context = content
+    // 提取链接
+    const imgUrls = extractImgUrlsWithImg(context)
+    if (Array.isArray(imgUrls)) data.imgUrls = imgUrls
 
     // 判断是否有上传海报
     if (poster.value.length) {
@@ -265,7 +285,7 @@ const handerUpload = async () => {
       const result = await postImgPermanent({
         tempImg,
         account: userAccount.value as string,
-        path: "/md/poster",
+        path: `/md/${articleId}/poster`,
       })
       if (result) {
         const { successImg, tempImgNull } = result
