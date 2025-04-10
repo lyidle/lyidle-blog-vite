@@ -1,17 +1,12 @@
 import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
-// 引入redis
-import { delKey } from "@/utils/redis"
 // 引入 模型
 const { BannerImg } = require("@/db/models")
 const router = express.Router()
 
 // 恢复背景
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
-  // 获取 所有的 背景的 key
-  let cacheKey = "bannerImg:*"
-  let cacheKey2 = "bannerImg:bin:*"
   const { id } = req.params
   if (!id) return res.result(void 0, "恢复背景失败,id是必传项", false)
 
@@ -24,9 +19,6 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     // 恢复 背景
     await findBanner.restore()
 
-    // 删除 缓存
-    await delKey(cacheKey)
-    await delKey(cacheKey2)
     res.result(void 0, "恢复背景成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>
