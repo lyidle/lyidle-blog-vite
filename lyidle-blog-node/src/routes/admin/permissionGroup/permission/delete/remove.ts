@@ -4,14 +4,12 @@ import { delKey } from "@/utils/redis"
 import { deduplication } from "@/utils/array/deduplication"
 // 引入 清除用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
-// 引入 清除菜单缓存的函数
-import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 
 // 引入模型
 const { PermissionGroup, Permission, Role, User } = require("@/db/models")
 
 // 不管是否删除都要移除的 定时任务 也需要
-export const publicUserRemove = async (users: any[], roles: string[]) => {
+export const publicUserRemove = async (users: any[]) => {
   // 获取全部时保存 redis 的键
   let cacheKey = `permissions:*`
   // 获取所有角色 保存的键
@@ -24,16 +22,14 @@ export const publicUserRemove = async (users: any[], roles: string[]) => {
   await delKey(cacheKeyGroup)
   // 删除找到的users的缓存
   await resetUserInfo(users)
-  // 删除找到的roles的缓存
-  await delMenuRoles(roles)
 }
 
 // 彻底删除函数
-const deleted = async (model: any, users: any[], roles: string[]) => {
+const deleted = async (model: any, users: any[]) => {
   // 删除权限子菜单
   await model.destroy({ force: true })
   // 不管是否删除都要移除的
-  await publicUserRemove(users, roles)
+  await publicUserRemove(users)
 }
 
 // 删除函数
@@ -52,27 +48,19 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
         model: PermissionGroup,
         paranoid: false,
         attributes: ["id"],
-        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+        through: { attributes: [] },
         include: [
           {
             model: Role,
             paranoid: false,
             attributes: ["id"],
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            through: { attributes: [] },
             include: [
               {
                 model: User,
                 paranoid: false,
                 attributes: ["id", "account"],
-                through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-                include: [
-                  {
-                    model: Role,
-                    paranoid: false,
-                    attributes: ["name"], // 只获取角色名称
-                    through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
-                  },
-                ],
+                through: { attributes: [] },
               },
             ],
           },
@@ -87,10 +75,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
       (item: any) => item.Roles.map((item: any) => item.Users)
     )
   )
-  // 处理找到的roles
-  const roles = deduplication(users.map((item: any) => item.Roles)).filter(
-    Boolean
-  )
 
   // 没有找到权限子菜单
   if (!findPermission)
@@ -102,12 +86,12 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
     await findPermission.destroy()
 
     // 不管是否是软删除都要移除的
-    await publicUserRemove(users, roles)
+    await publicUserRemove(users)
     return res.result(void 0, "权限子菜单成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findPermission, users, roles)
+  await deleted(findPermission, users)
   return res.result(void 0, "删除权限子菜单成功~")
 }
 export default remove

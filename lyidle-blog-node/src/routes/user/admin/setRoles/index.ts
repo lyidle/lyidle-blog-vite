@@ -28,7 +28,7 @@ router.post(
         return res.result(void 0, "设置用户权限时,id和roles是必传项", false)
       if (roles.includes(default_owner)) {
         const findRole = await User.findOne({
-          attributes: ["id"], // 只获取角色名称
+          attributes: ["id"],
           where: {
             id: { [Op.ne]: id }, // 排除当前的这条记录
           },
@@ -63,8 +63,8 @@ router.post(
           {
             model: Role,
             paranoid: false,
-            attributes: ["name"], // 只获取角色名称
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            attributes: ["name"],
+            through: { attributes: [] },
           },
         ],
       })

@@ -1,8 +1,6 @@
 import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
-// 引入验证
-import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 清除 菜单 的缓存
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 获取 roles 的函数
@@ -25,8 +23,8 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
         {
           model: Role,
           paranoid: false,
-          attributes: ["name"], // 只获取角色名称
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          attributes: ["name"],
+          through: { attributes: [] },
         },
       ],
     })

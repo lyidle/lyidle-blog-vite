@@ -10,7 +10,7 @@ export default async () => {
   let ownerId = await getKey("ownerId")
   if (!ownerId) {
     const findUser = await User.findOne({
-      attributes: ["id"], // 只获取角色名称
+      attributes: ["id"],
       include: [
         {
           model: Role,

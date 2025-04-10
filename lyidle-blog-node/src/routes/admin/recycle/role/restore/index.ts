@@ -1,10 +1,7 @@
 import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
-// 引入验证
-import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 import { deduplication } from "@/utils/array/deduplication"
-import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { delKey } from "@/utils/redis"
 // 引入 模型
@@ -26,13 +23,13 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
           model: User,
           paranoid: false,
           attributes: ["id", "account"],
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          through: { attributes: [] },
           include: [
             {
               model: Role,
               paranoid: false,
-              attributes: ["name"], // 只获取角色名称
-              through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+              attributes: ["name"],
+              through: { attributes: [] },
             },
           ],
         },
@@ -43,17 +40,11 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       return res.result(void 0, "恢复角色失败,没有找到角色数据", false)
 
     // 恢复 角色
-    const newRole = await findRole.restore()
-    const _Role = JSON.parse(JSON.stringify(newRole))
+    await findRole.restore()
+    const _Role = JSON.parse(JSON.stringify(findRole))
     // 处理找到的users
     const users = deduplication(_Role.Users).filter(Boolean)
-    // 处理找到的roles
-    const roles = deduplication(
-      _Role.Users?.map((item: any) => item.Roles?.map((item: any) => item.name))
-    ).filter(Boolean)
 
-    // 删除 找到 的Menu用到的缓存
-    await delMenuRoles(roles)
     // 删除找到的users的缓存
     await resetUserInfo(users)
 

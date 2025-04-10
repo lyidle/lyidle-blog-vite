@@ -9,6 +9,8 @@ import { saveMenuCache } from "@/utils/redis/delMenuRoles"
 const { Menu, Role } = require("@/db/models")
 const router = express.Router()
 
+const ms = require("ms")
+const default_expire = ms(process.env.default_expire)
 // 构建菜单树
 const buildMenuTree = ($menus: any[]) => {
   // 深度克隆
@@ -70,8 +72,8 @@ const getMenuList = async (
       include: [
         {
           model: Role,
-          attributes: ["name"], // 只获取角色名称
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          attributes: ["name"],
+          through: { attributes: [] },
           where: isAll ? {} : { name: { [Op.in]: roles } }, // 根据角色名称过滤菜单
           required: isAll ? false : Boolean(roles), // isAll 时不过滤 Menu 否则 当有 roles 时需要过滤
         },
@@ -84,7 +86,7 @@ const getMenuList = async (
       return res.result(void 0, "暂无权限访问任何菜单", false)
     }
     // 设置 缓存
-    if (cacheKey) await setKey(cacheKey, result)
+    if (cacheKey) await setKey(cacheKey, result, default_expire)
     return res.result(result, "获取菜单成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

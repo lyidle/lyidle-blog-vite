@@ -7,8 +7,6 @@ import { delKey } from "@/utils/redis"
 import { deduplication } from "@/utils/array/deduplication"
 // 清除 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
-// 清除菜单缓存 的函数
-import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
@@ -38,13 +36,13 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
           model: User,
           paranoid: false,
           attributes: ["id", "account"],
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          through: { attributes: [] },
           include: [
             {
               model: Role,
               paranoid: false,
-              attributes: ["name"], // 只获取角色名称
-              through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+              attributes: ["name"],
+              through: { attributes: [] },
             },
           ],
         },
@@ -78,13 +76,7 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
     const _Role = JSON.parse(JSON.stringify(findRole))
     // 处理找到的users
     const users = deduplication(_Role.Users).filter(Boolean)
-    // 处理找到的roles
-    const roles = deduplication(
-      _Role.Users?.map((item: any) => item.Roles?.map((item: any) => item.name))
-    ).filter(Boolean)
 
-    // 删除 找到 的Menu用到的缓存
-    await delMenuRoles(roles)
     // 删除找到的users的缓存
     await resetUserInfo(users)
 

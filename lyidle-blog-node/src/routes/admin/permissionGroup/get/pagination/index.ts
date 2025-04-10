@@ -20,7 +20,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
         {
           model: Permission,
           as: "children",
-          through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+          through: { attributes: [] },
         },
       ],
       limit: pageSize,

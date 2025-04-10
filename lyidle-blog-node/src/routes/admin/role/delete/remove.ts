@@ -2,7 +2,6 @@
 import { delKey } from "@/utils/redis"
 // 重置 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
-import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 import { deduplication } from "@/utils/array/deduplication"
 
 // 引入模型
@@ -21,8 +20,6 @@ export const publicUserRemove = async (roles: string[], users: any[]) => {
   await delKey(cacheKey)
   // 重置 用户的信息缓存
   await resetUserInfo(users)
-  // 清除 菜单 的缓存
-  await delMenuRoles(roles)
 }
 
 // 彻底删除函数
@@ -48,13 +45,13 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
         model: User,
         paranoid: false,
         attributes: ["id", "account"],
-        through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+        through: { attributes: [] },
         include: [
           {
             model: Role,
             paranoid: false,
             attributes: ["name"],
-            through: { attributes: [] }, // 不返回中间表 MenuRole 的字段
+            through: { attributes: [] },
           },
         ],
       },
@@ -67,9 +64,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   // 限制指定的name 不能修改
   if (name === default_owner || name === default_admin || name === default_user)
     return res.result(void 0, `不可删除名字为${name}的角色`, false)
-
-  // 找到提取需要的信息
-  const { id } = findRole.dataValues
 
   const _Role = JSON.parse(JSON.stringify(findRole))
 
