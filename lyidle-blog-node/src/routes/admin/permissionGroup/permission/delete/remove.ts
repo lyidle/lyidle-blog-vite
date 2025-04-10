@@ -6,11 +6,7 @@ import { deduplication } from "@/utils/array/deduplication"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除菜单缓存的函数
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
-// 引入时间转换
-const ms = require("ms")
 
-// 软删除权限子菜单的时间
-const delete_menu_expire = ms(process.env.delete_menu_expire)
 // 引入模型
 const { PermissionGroup, Permission, Role, User } = require("@/db/models")
 
@@ -33,12 +29,7 @@ export const publicUserRemove = async (users: any[], roles: string[]) => {
 }
 
 // 彻底删除函数
-const deleted = async (
-  model: any,
-  id: number,
-  users: any[],
-  roles: string[]
-) => {
+const deleted = async (model: any, users: any[], roles: string[]) => {
   // 删除权限子菜单
   await model.destroy({ force: true })
   // 不管是否删除都要移除的
@@ -105,9 +96,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   if (!findPermission)
     return res.result(void 0, "删除权限子菜单时，没有找到权限子菜单", false)
 
-  // 找到提取需要的信息
-  const { id } = findPermission.dataValues
-
   // 回收到垃圾桶
   if (bin) {
     // 软删除
@@ -115,12 +103,11 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
 
     // 不管是否是软删除都要移除的
     await publicUserRemove(users, roles)
-    // 到时间自动删除 使用定时任务 每天判断
-    return res.result(delete_menu_expire, "权限子菜单成功移到回收站~")
+    return res.result(void 0, "权限子菜单成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findPermission, id, users, roles)
+  await deleted(findPermission, users, roles)
   return res.result(void 0, "删除权限子菜单成功~")
 }
 export default remove

@@ -4,11 +4,7 @@ import { delKey } from "@/utils/redis"
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 import { deduplication } from "@/utils/array/deduplication"
-// 引入时间转换
-const ms = require("ms")
 
-// 软删除角色的时间
-const delete_menu_expire = ms(process.env.delete_menu_expire)
 // 引入模型
 const { Role, User } = require("@/db/models")
 
@@ -30,12 +26,7 @@ export const publicUserRemove = async (roles: string[], users: any[]) => {
 }
 
 // 彻底删除函数
-const deleted = async (
-  model: any,
-  id: number,
-  roles: string[],
-  users: any[]
-) => {
+const deleted = async (model: any, roles: string[], users: any[]) => {
   // 删除角色
   await model.destroy({ force: true })
   // 不管是否删除都要移除的
@@ -96,12 +87,11 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
 
     // 不管是否是软删除都要移除的
     await publicUserRemove(roles, users)
-    // 到时间自动删除 使用定时任务 每天判断
-    return res.result(delete_menu_expire, "角色成功移到回收站~")
+    return res.result(void 0, "角色成功移到回收站~")
   }
 
   // 彻底删除
-  await deleted(findRole, id, roles, users)
+  await deleted(findRole, roles, users)
   return res.result(void 0, "删除角色成功~")
 }
 export default remove
