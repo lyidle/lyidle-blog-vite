@@ -36,7 +36,7 @@ export const resetArticle = async (
 
     const results = await Promise.allSettled([
       // 删除 总字数统计缓存
-      delKey("webTotalWords"),
+      // delKey("webTotalWords"),
       // 最新文章的 缓存 使用的
       delKeys("recentPages:"),
       // 用户的 所有 tags 按照作者

@@ -62,7 +62,7 @@ router.post(
       await resetArticle([createArticle])
 
       // 返回处理后的结果
-      return res.result({ id }, "增加文章成功~")
+      return res.result({ id, articleId }, "增加文章成功~")
     } catch (err) {
       return res.validateAuth(err, next, () =>
         res.result(void 0, "增加文章失败~", false)

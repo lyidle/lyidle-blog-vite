@@ -14,6 +14,25 @@ const { deduplication } = require("../../utils/array/deduplication/js")
 const { join } = require("path")
 const { existsSync, rm } = require("fs")
 const { unlink } = require("fs/promises")
+const { getKey, setKey } = require("../../utils/redis/js")
+
+// 删除时 更新字数的 逻辑
+const handlerDelUpdateCount = async (article, options) => {
+  // 检查是否是第一次软删除
+  if (article.previous("isBin")) return
+  // 删除逻辑
+  try {
+    let length = article.get("length")
+    length = +length || 0
+    let count = await getKey("webTotalWords")
+    count = +count || 0
+    const updatedCount = parseInt(count - length)
+    setKey("webTotalWords", updatedCount)
+  } catch (error) {
+    console.error("删除文章的字数统计失败:", error)
+  }
+}
+
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     static associate(models) {
@@ -192,8 +211,38 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "isBin", // 指定软删除字段名称
       // 加上 钩子 处理 Article 表的信息
       hooks: {
+        // 创建的钩子
+        afterCreate: async (article, options) => {
+          // 更新字数
+          try {
+            let length = article.get("length")
+            length = +length || 0
+            let count = await getKey("webTotalWords")
+            count = +count || 0
+            const updatedCount = parseInt(count + length)
+            await setKey("webTotalWords", updatedCount)
+          } catch (error) {
+            console.error("保存文章的字数到 Redis 失败:", error)
+          }
+        },
         // 更新的钩子
         afterUpdate: async (article, options) => {
+          // 更新字数
+          if (article.changed("length")) {
+            try {
+              let oldLength = article.previous("length")
+              oldLength = +oldLength || 0
+              let newLength = article.get("length")
+              newLength = +newLength || 0
+              let count = await getKey("webTotalWords")
+              count = +count || 0
+              const updatedCount = parseInt(count - oldLength + newLength)
+              setKey("webTotalWords", updatedCount)
+            } catch (error) {
+              console.error("更新文章的字数到 Redis 失败:", error)
+            }
+          }
+          // 处理 图片清理
           try {
             // 安全获取并扁平化新旧图片URL数组
             const oldImgUrls = article.previous("imgUrls")?.flat(Infinity) || []
@@ -253,8 +302,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         // 删除的钩子
         afterDestroy: async (article, options) => {
+          // 更新字数
+          handlerDelUpdateCount(article, options)
           // 软删除退出
           if (!options.force) return
+          // 处理 图片清理
           try {
             // 文章的 图片位置
             const articlePath = join(
@@ -281,6 +333,21 @@ module.exports = (sequelize, DataTypes) => {
               `删除文章时删除图片目录出错,userId:${article.userId},articleId:${article.articleId}`,
               error
             )
+          }
+        },
+        // 恢复时
+        afterRestore: async (article, options) => {
+          // 更新字数
+          // 检查是否是第一次恢复（即之前确实被软删除过）
+          if (!article.previous("isBin")) return
+          // 检查是否已经恢复过（防止重复恢复）
+          if (article.get("isBin")) return
+          try {
+            const length = article.get("length")
+            const count = await getKey("webTotalWords")
+            await setKey("webTotalWords", (parseInt(count) || 0) + length)
+          } catch (error) {
+            console.error("恢复文章的字数统计失败:", error)
           }
         },
       },

@@ -53,87 +53,6 @@ const api_prefix = process.env.api_prefix || "/api"
 // 挂载路由
 app.use(api_prefix, api)
 
-// 全局错误中间件
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  // 数据库插入校验
-  if (err.name === "SequelizeValidationError") {
-    return res.result(
-      void 0,
-      // err.errors.length === 1
-      //   ? err.errors[0].message
-      //   :
-      err.errors.map((item: any) => item.message),
-      false
-    )
-  }
-  // 数据库 unique 错误
-  if (err.name === "SequelizeUniqueConstraintError") {
-    const uniqueError = err
-    // 获取模型名称
-    const modelName = uniqueError.errors[0].instance.constructor.name
-    // 获取违反唯一性约束的字段
-    const uniqueFields = uniqueError.errors.map((err: any) => err.path)
-    // 处理 各个模型的 错误
-    switch (modelName) {
-      case "BannerImg":
-        res.result(void 0, "背景的路径名字不能重复", false)
-        break
-      case "Menu":
-        res.result(void 0, "菜单的名字不能重复", false)
-        break
-      case "Permission":
-        res.result(void 0, "权限的名字不能重复", false)
-        break
-      case "PermissionGroup":
-        res.result(void 0, "权限组的名字不能重复", false)
-        break
-      case "Role":
-        res.result(void 0, "角色的名字不能重复", false)
-        break
-      case "Setting":
-        res.result(void 0, "设置的名字不能重复", false)
-        break
-      case "LikeDislike":
-        // 获取违反唯一性约束的字段
-        const LikeDislikeErrors: string[] = []
-        if (uniqueFields.includes("userId"))
-          LikeDislikeErrors.push("用户ID不能重复")
-        if (uniqueFields.includes("targetType"))
-          LikeDislikeErrors.push("目标类型不能重复")
-        if (uniqueFields.includes("commentId"))
-          LikeDislikeErrors.push("评论ID不能重复")
-
-        // 根据联合唯一索引的逻辑，返回更具体的错误信息
-        if (LikeDislikeErrors.length > 0) {
-          res.result(
-            void 0,
-            `用户对同一目标只能有一条记录：${LikeDislikeErrors.join(", ")}`,
-            false
-          )
-        } else {
-          res.result(void 0, "用户对同一目标只能有一条记录", false)
-        }
-        break
-      case "User":
-        // 用户的 拥有 unique 字段的属性 有两个
-        const result: string[] = []
-        if (uniqueFields.includes("account")) result.push("用户的名字不能重复")
-        if (uniqueFields.includes("email")) result.push("用户的邮箱不能重复")
-        res.result(void 0, result, false)
-        break
-    }
-    return
-  }
-
-  //token解析失败导致的错误
-  if (err.name === "UnauthorizedError")
-    return res.result(void 0, "TOKEN过期~", false, 401)
-  // 其他 错误
-  if ((err.name = "otherError")) return res.result(void 0, err.message, false)
-  // 打印其他错误
-  console.log(err)
-})
-
 // 定时任务
 const schedule = require("node-schedule")
 
@@ -221,6 +140,67 @@ schedule.scheduleJob("0 4 * * *", async function () {
   console.log(
     `每天凌晨 4:00 执行，清除数据完成时间：${new Date().toLocaleString()}`
   )
+})
+
+// 全局错误中间件
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  // 数据库插入校验
+  if (err.name === "SequelizeValidationError") {
+    return res.result(
+      void 0,
+      // err.errors.length === 1
+      //   ? err.errors[0].message
+      //   :
+      err.errors.map((item: any) => item.message),
+      false
+    )
+  }
+  // 数据库 unique 错误
+  if (err.name === "SequelizeUniqueConstraintError") {
+    const uniqueError = err
+
+    // 获取模型名称
+    const modelName =
+      uniqueError.errors[0].instance?.constructor?.name || "未知模型"
+
+    // 模型英文名到中文名的映射
+    const modelNameMap: Record<string, string> = {
+      Article: "文章",
+      ArticleBookmark: "文章收藏",
+      ArticleCount: "文章计数",
+      ArticleTime: "文章时间",
+      BannerImg: "横幅图片",
+      Comment: "评论",
+      Follow: "关注",
+      LikeDislike: "点赞/点踩",
+      Mention: "@提及",
+      Menu: "菜单",
+      Message: "消息",
+      Permission: "权限",
+      PermissionGroup: "权限组",
+      Role: "角色",
+      Setting: "设置",
+      Share: "分享",
+      User: "用户",
+      Visitor: "访客",
+    }
+
+    // 获取模型中文名，如果不存在则返回英文名
+    const modelNameCN = modelNameMap[modelName] || modelName
+    // 获取违反唯一性约束的字段
+    const uniqueFields = uniqueError.errors.map(
+      (err: any) => `模型${modelNameCN}的字段 ${err.path} 是唯一的`
+    )
+    return res.result(void 0, uniqueFields, false)
+  }
+
+  //token解析失败导致的错误
+  if (err.name === "UnauthorizedError")
+    return res.result(void 0, "TOKEN过期~", false, 401)
+  // 其他 错误
+  if ((err.name = "otherError")) return res.result(void 0, err.message, false)
+  // 打印其他错误
+  console.log(err)
 })
 
 app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))
