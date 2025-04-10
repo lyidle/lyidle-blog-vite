@@ -2,7 +2,7 @@ import { Router } from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
 // 引入验证
-import { isTourist, jwtMiddleware } from "@/middleware/auth"
+import { isTourist } from "@/middleware/auth"
 // 引入redis
 import { getKey, setKey } from "@/utils/redis"
 // 引入 uuidV4  生成临时文件的 id
