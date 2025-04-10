@@ -122,6 +122,18 @@ if (isBin) cacheKey = `userInfo:bin:${id || roles || account}`
 getKey(cacheKey)
 ```
 
+### `userMsgTip:${receiverId}:${senderId}`
+
+> [!value] 用户信息
+
+```js
+// 判断是否有新消息
+const result = await getKey(`userMsgTip:${receiverId}:${senderId}`)
+res.result(result || false, "得到对应的用户消息的状态成功")
+```
+
+
+
 ## 验证码
 
 ### `${setData}:${email}`
@@ -192,7 +204,19 @@ const cacheValue = await getKey(`carousel:${limit}`)
 if (cacheValue) return res.result(cacheValue, "获取首页焦点图成功~")
 ```
 
-## 获取菜单
+## Admin
+
+### `bannerImg:*`
+
+> [!value] 获取背景图信息
+
+```js
+let cacheKey = "bannerImg:*"
+if (_bool) cacheKey = "bannerImg:bin:*"
+const cacheValue = await getKey(cacheKey)
+// 判断有无 缓存
+if (cacheValue) return res.result(cacheValue, "获取背景成功~")
+```
 
 ### `menu:${role}`
 
@@ -203,8 +227,6 @@ const cacheKey = `menu:${role}`
 const cachedData = await getKey(cacheKey)
 ```
 
-## 获取所有角色
-
 ### `roles:*`
 
 > [!value] 获取所有权限
@@ -214,8 +236,6 @@ const cacheKey = `roles:*`
 const cachedData = await getKey(cacheKey)
 ```
 
-## 获取权限组
-
 ### `permissionGroup:*`
 
 > [!value] 获取所有权限组包括子权限
@@ -224,8 +244,6 @@ const cachedData = await getKey(cacheKey)
 const cacheKey = `permissionGroup:*`
 const cachedData = await getKey(cacheKey)
 ```
-
-## 获取所有权限
 
 ### `permission:*`
 

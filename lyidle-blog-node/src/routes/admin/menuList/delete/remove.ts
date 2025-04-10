@@ -1,5 +1,3 @@
-// 引入redis
-import { delKey, setKey, getKey } from "@/utils/redis"
 // 清除 菜单 的缓存
 import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 // 引入 获取 roles 的函数

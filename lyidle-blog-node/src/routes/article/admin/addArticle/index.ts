@@ -7,7 +7,7 @@ const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
 // 引入 redis 设置缓存
-import { setKey, getKey, delKey } from "@/utils/redis"
+import { setKey, getKey } from "@/utils/redis"
 // 引入 重置user的缓存的函数
 import { resetUserInfoByArticlePk } from "@/utils/redis/resetUserInfo"
 import { resetArticle } from "@/utils/redis/resetArticle"

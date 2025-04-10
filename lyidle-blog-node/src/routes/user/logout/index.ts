@@ -1,6 +1,6 @@
 import express from "express"
 // 引入验证
-import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+import { jwtMiddleware } from "@/middleware/auth"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
 const router = express.Router()

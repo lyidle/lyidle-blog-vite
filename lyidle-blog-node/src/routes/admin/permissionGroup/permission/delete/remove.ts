@@ -1,5 +1,5 @@
 // 引入redis
-import { delKey, setKey, getKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 引入 去重函数
 import { deduplication } from "@/utils/array/deduplication"
 // 引入 清除用户缓存的函数
