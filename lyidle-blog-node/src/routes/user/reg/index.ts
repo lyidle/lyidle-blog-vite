@@ -3,7 +3,7 @@ import express from "express"
 // 发送注册邮箱
 import email from "@/routes/email/reg"
 // 引入 redis 设置缓存
-import { setKey, getKey, delKey } from "@/utils/redis"
+import { getKey, delKey } from "@/utils/redis"
 // 正则判断
 import { codeReg } from "@/RegExp/loginOrReg"
 // 引入 创建用户和权限 权限没有时才创建
@@ -59,9 +59,6 @@ router.post("/", async (req, res, next) => {
 
     // 注册成功后删除缓存
     await delKey(`regCode:${email}`)
-    // 注册成功用户数+1
-    const userCounts = await getKey("userCounts")
-    await setKey("userCounts", +userCounts + 1)
     return res.result(result, "注册成功~")
   } catch (err: any) {
     return res.validateAuth(err, next, () =>

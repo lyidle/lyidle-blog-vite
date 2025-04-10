@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 // 引入 redis 设置缓存
-import { setKey, getKey, delKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 引入 jwt
 import { isAdmin, jwtMiddleware } from "@/middleware/auth"
 // 引入 创建用户和权限 权限没有时才创建
@@ -41,9 +41,6 @@ router.post(
 
       // 注册成功后删除缓存
       await delKey(`regCode:${email}`)
-      // 注册成功用户数+1
-      const userCounts = await getKey("userCounts")
-      await setKey("userCounts", +userCounts + 1)
       return res.result(result, "创建用户成功~")
     } catch (err: any) {
       return res.validateAuth(err, next, () =>

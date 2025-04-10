@@ -1,7 +1,7 @@
 // 引入类型
 import type { Request, Response } from "express"
 // 引入redis
-import { delKey, setKey, getKey } from "@/utils/redis"
+import { delKey } from "@/utils/redis"
 // 引入 清除 用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 文章缓存的函数
@@ -27,19 +27,6 @@ export const publicUserRemove = async (findUser: any, articles: any[]) => {
 const deleted = async (findUser: any, articles: any[]) => {
   // 删除用户
   await findUser.destroy({ force: true })
-  // 删除文章 和 权限等信息 会 自动删除
-  // 删除时用户数量-1
-  const userCounts = await getKey("userCounts")
-  let num = +userCounts - 1
-  // 越界判断
-  if (num < 0) {
-    num = 0
-    console.warn("删除用户时,redis的缓存出现负数的情况")
-  }
-
-  // 设置用户数量
-  await setKey("userCounts", +userCounts - 1 < 0 ? 0 : +userCounts - 1)
-
   // 不管是否删除都要移除的
   await publicUserRemove(findUser, articles)
 }
