@@ -19,7 +19,7 @@ export const publicMenusRemove = async (roles: string[]) => {
 }
 
 // 彻底删除函数
-const deleted = async (delMenu: any, id: number, roles: string[]) => {
+const deleted = async (delMenu: any, roles: string[]) => {
   // 删除菜单
   await delMenu.destroy({ force: true })
   // 不管是否删除都要移除的
@@ -45,9 +45,6 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   })
   // 没有找到菜单
   if (!findMenu) return res.result(void 0, "删除菜单时，没有找到菜单", false)
-
-  // 找到提取需要的信息
-  const { id } = findMenu.dataValues
 
   // 得到 roles
   let roles = deduplication(ReturnRoles([findMenu]))
@@ -135,7 +132,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
   }
 
   // 彻底删除
-  await deleted(findMenu, id, roles)
+  await deleted(findMenu, roles)
   return res.result(void 0, "删除菜单成功~")
 }
 export default remove
