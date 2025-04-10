@@ -21,7 +21,6 @@ module.exports = {
       author: {
         type: Sequelize.STRING(32),
         allowNull: false,
-        primaryKey: true,
         references: {
           model: "Users",
           key: "account",
@@ -56,7 +55,6 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true,
         references: {
           model: "Users",
           key: "id",
