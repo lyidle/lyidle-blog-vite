@@ -51,7 +51,7 @@ router.get("/", async (req, res, next) => {
       JSON.parse(JSON.stringify(Articles)).forEach((item: any) => {
         length += item.length
       })
-      webTotalWords = await setKey("totalWords", length)
+      webTotalWords = await setKey("webTotalWords", length)
     }
 
     return res.result(

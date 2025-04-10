@@ -33,6 +33,22 @@ export default async () => {
       if (webCreatedAt === null) await setKey("webCreatedAt", new Date())
     })(),
 
+    // 初始化 网站文章最后更新时间
+    (async () => {
+      const webUpdatedAt = await getKey("webUpdatedAt")
+      if (webUpdatedAt === null) {
+        const { dataValues } = await Article.findOne({
+          attributes: ["updatedAt"],
+          order: [
+            ["updatedAt", "desc"],
+            ["id", "desc"],
+          ],
+          limit: 1,
+        })
+        await setKey("webUpdatedAt", dataValues.updatedAt)
+      }
+    })(),
+
     // 初始化 访客数
     (async () => {
       let touristCounts = await getKey("touristCounts")
@@ -51,22 +67,6 @@ export default async () => {
       }
     })(),
 
-    // 初始化 网站文章最后更新时间
-    (async () => {
-      const webUpdatedAt = await getKey("webUpdatedAt")
-      if (webUpdatedAt === null) {
-        const { dataValues } = await Article.findOne({
-          attributes: ["updatedAt"],
-          order: [
-            ["updatedAt", "desc"],
-            ["id", "desc"],
-          ],
-          limit: 1,
-        })
-        await setKey("webUpdatedAt", dataValues.updatedAt)
-      }
-    })(),
-
     // 初始化 文章总数
     (async () => {
       const webTotalPages = await getKey("webTotalPages")
@@ -78,14 +78,14 @@ export default async () => {
 
     // 初始化 网站文章总字数
     (async () => {
-      const totalWords = await getKey("totalWords")
-      if (totalWords === null) {
+      const webTotalWords = await getKey("webTotalWords")
+      if (webTotalWords === null) {
         const Articles = await Article.findAll({ attributes: ["length"] })
         let length = 0
         JSON.parse(JSON.stringify(Articles)).forEach((item: any) => {
           length += item.length
         })
-        await setKey("totalWords", length)
+        await setKey("webTotalWords", length)
       }
     })(),
 

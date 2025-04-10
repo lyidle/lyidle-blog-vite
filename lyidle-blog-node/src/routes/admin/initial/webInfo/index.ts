@@ -58,7 +58,7 @@ router.post(
           JSON.parse(JSON.stringify(Articles)).forEach((item: any) => {
             length += item.length
           })
-          await setKey("totalWords", length)
+          await setKey("webTotalWords", length)
         })(),
       ])
 

@@ -2,12 +2,28 @@
 
 ## 网站信息
 
+### ownerId
+
+> [!value]  网站所有者的账户的id
+
+```js
+let ownerId = await getKey("ownerId")
+```
+
 ### `webCreatedAt`
 
 > [!value]  创站时间
 
 ``` js
 getKey("webCreatedAt")
+```
+
+### `webUpdatedAt`
+
+> [!value]  网站最后更新时间
+
+``` js
+getKey("webUpdatedAt")
 ```
 
 ### `touristCounts`
@@ -34,14 +50,6 @@ getKey("userCounts")
 getKey("webTotalPages")
 ```
 
-### `webUpdatedAt`
-
-> [!value]  网站最后更新时间
-
-``` js
-getKey("webUpdatedAt")
-```
-
 ### `webTotalWords`
 
 > [!value]  网站总字数
@@ -57,8 +65,6 @@ getKey("webTotalWords")
 ``` js
 getKey(`setting:公告`)
 ```
-
-## 网站所有者的信息
 
 ### `setting:版权`
 
@@ -82,16 +88,6 @@ getKey("setting:联系方式")
 
 ``` js
 getKey(`setting:${name}`)
-```
-
-## 网站状态
-
-### `initialWebInfo`
-
-> [!value]  初始化小站中
-
-``` js
-getKey("initialWebInfo")
 ```
 
 ## 用户信息
