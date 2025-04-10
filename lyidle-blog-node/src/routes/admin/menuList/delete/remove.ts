@@ -10,7 +10,7 @@ import { deduplication } from "@/utils/array/deduplication"
 const ms = require("ms")
 
 // 软删除菜单的时间
-const delete_menu = ms(process.env.delete_menu)
+const delete_menu_expire = ms(process.env.delete_menu_expire)
 // 引入模型
 const { Menu, Role, sequelize } = require("@/db/models")
 
@@ -127,7 +127,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
       await transaction.commit()
 
       // 返回成功响应
-      return res.result(delete_menu, "菜单成功移到回收站~", true)
+      return res.result(delete_menu_expire, "菜单成功移到回收站~", true)
     } catch (error) {
       // 发生错误时回滚
       await transaction.rollback()

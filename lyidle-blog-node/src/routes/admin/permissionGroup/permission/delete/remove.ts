@@ -10,7 +10,7 @@ import { delMenuRoles } from "@/utils/redis/delMenuRoles"
 const ms = require("ms")
 
 // 软删除权限子菜单的时间
-const delete_menu = ms(process.env.delete_menu)
+const delete_menu_expire = ms(process.env.delete_menu_expire)
 // 引入模型
 const { PermissionGroup, Permission, Role, User } = require("@/db/models")
 
@@ -116,7 +116,7 @@ const remove = async (req: any, res: any, bin: boolean = false) => {
     // 不管是否是软删除都要移除的
     await publicUserRemove(users, roles)
     // 到时间自动删除 使用定时任务 每天判断
-    return res.result(delete_menu, "权限子菜单成功移到回收站~")
+    return res.result(delete_menu_expire, "权限子菜单成功移到回收站~")
   }
 
   // 彻底删除

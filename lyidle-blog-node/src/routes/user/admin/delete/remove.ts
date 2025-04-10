@@ -107,7 +107,6 @@ const remove = async (
   if (bin) {
     // 软删除
     await findUser.destroy()
-
     // 不管是否是软删除都要移除的
     await publicUserRemove(findUser, articles)
 

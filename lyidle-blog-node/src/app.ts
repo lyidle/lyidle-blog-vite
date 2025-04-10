@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express"
 // 引入初始化
 import initialEnvironment from "@/utils/initial"
 import { resolve } from "path"
+import { Op } from "sequelize"
 // 导入环境变量
 require("dotenv").config()
 
@@ -131,6 +132,95 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if ((err.name = "otherError")) return res.result(void 0, err.message, false)
   // 打印其他错误
   console.log(err)
+})
+
+// 定时任务
+const schedule = require("node-schedule")
+
+const { User, Article, Menu } = require("@/db/models")
+
+// 引入时间转换
+const ms = require("ms")
+//  软删除用户的时间
+const delete_user_expire = ms(process.env.delete_user_expire)
+//  软删除文章的时间
+const delete_article_expire = ms(process.env.delete_article_expire)
+//  软删除菜单的时间
+const delete_menu_expire = ms(process.env.delete_menu_expire)
+
+// 删除 用户 的回调
+const handlerUserDel = async (num) => {
+  if (num && typeof +num === "number" && !Number.isNaN(+num)) {
+    const counts = await User.destroy({
+      force: true,
+      paranoid: false,
+      where: {
+        isBin: {
+          // 查询软删除且超过 过期的用户
+          [Op.not]: null, // 确保只查询已软删除的记录
+          [Op.lt]: new Date(Date.now() - +num),
+        },
+      },
+    })
+    console.log(`定时清除过期用户成功个数:${counts}`)
+  } else {
+    console.error("delete_user_expire 的环境变量需要是符合ms库的字符")
+  }
+}
+
+// 删除 文章 的回调
+const handlerArticleDel = async (num) => {
+  if (num && typeof +num === "number" && !Number.isNaN(+num)) {
+    const counts = await Article.destroy({
+      force: true,
+      paranoid: false,
+      where: {
+        isBin: {
+          // 查询软删除且超过 过期的用户
+          [Op.not]: null, // 确保只查询已软删除的记录
+          [Op.lt]: new Date(Date.now() - +num),
+        },
+      },
+    })
+    console.log(`定时清除过期文章成功个数:${counts}`)
+  } else {
+    console.error("delete_article_expire 的环境变量需要是符合ms库的字符")
+  }
+}
+
+// 删除 文章 的回调
+const handlerMenuDel = async (num) => {
+  if (num && typeof +num === "number" && !Number.isNaN(+num)) {
+    const counts = await Menu.destroy({
+      force: true,
+      paranoid: false,
+      where: {
+        isBin: {
+          // 查询软删除且超过 过期的用户
+          [Op.not]: null, // 确保只查询已软删除的记录
+          [Op.lt]: new Date(Date.now() - +num),
+        },
+      },
+    })
+    console.log(`定时清除过期菜单成功个数:${counts}`)
+  } else {
+    console.error("delete_menu_expire 的环境变量需要是符合ms库的字符")
+  }
+}
+
+// 每天凌晨 4:00 执行
+schedule.scheduleJob("0 4 * * *", async function () {
+  await Promise.allSettled([
+    // 删除过期的用户
+    handlerUserDel(delete_user_expire),
+    // 删除过期的文章
+    handlerArticleDel(delete_article_expire),
+    // 删除过期的菜单
+    handlerMenuDel(delete_menu_expire),
+  ])
+  console.log(
+    `每天凌晨 4:00 执行，清除数据完成时间：${new Date().toLocaleString()}`
+  )
 })
 
 app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))
