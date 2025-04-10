@@ -3,16 +3,11 @@ import express from "express"
 import remove from "@/routes/admin/permissionGroup/permission/delete/remove"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
-// 引入 jwt
-import { isAdmin, jwtMiddleware } from "@/middleware/auth"
-// 引入redis
-import { getKey } from "@/utils/redis"
 const router = express.Router()
 
 // 需要验证 登录用户拥有权限 admin
 router.delete(
   "/manager",
-  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await remove(req, res, true)

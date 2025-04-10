@@ -1,4 +1,6 @@
 import express from "express"
+// 引入验证
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入 api/admin/menuList
 import menuList from "@/routes/admin/menuList"
 // 引入 api/admin/bannerImg
@@ -20,12 +22,12 @@ import recycle from "@/routes/admin/recycle"
 const router = express.Router()
 // 挂载路由
 router.use("/announce", announce)
-router.use("/role", role)
+router.use("/role", [jwtMiddleware, isAdmin], role)
 router.use("/menuList", menuList)
 router.use("/bannerImg", bannerImg)
-router.use("/permissionGroup", permissionGroup)
+router.use("/permissionGroup", [jwtMiddleware, isAdmin], permissionGroup)
 router.use("/settings", settings)
-router.use("/initial", initials)
+router.use("/initial", [jwtMiddleware, isAdmin], initials)
 router.use("/", sentence)
-router.use("/recycle", recycle)
+router.use("/recycle", [jwtMiddleware, isAdmin], recycle)
 export default router

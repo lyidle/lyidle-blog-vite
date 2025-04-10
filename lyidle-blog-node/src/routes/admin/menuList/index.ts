@@ -1,4 +1,6 @@
 import express from "express"
+// 引入验证
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入 /admin/menuList
 // 获取
 import getMenuList from "./get"
@@ -10,7 +12,7 @@ import putMenuList from "./put"
 import deleteMenuList from "./delete"
 const router = express.Router()
 router.use("/", getMenuList)
-router.use("/", createMenuList)
-router.use("/", putMenuList)
-router.use("/", deleteMenuList)
+router.use("/", [jwtMiddleware, isAdmin], createMenuList)
+router.use("/", [jwtMiddleware, isAdmin], putMenuList)
+router.use("/", [jwtMiddleware, isAdmin], deleteMenuList)
 export default router

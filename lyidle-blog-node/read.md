@@ -110,13 +110,16 @@ getKey(`setting:${name}`)
 getKey(`user:${id}:token`)
 ```
 
-### `userInfo:${cacheKey}`
+### `userInfo:${cacheKey}`  role限定只有owner
 
 > [!value] 用户信息
 
 ```js
-const cacheKey = id || roles || account
-getKey(`userInfo:${cacheKey}`)
+// 缓存 的键
+let cacheKey = `userInfo:${id || roles || account}`
+//  查询回收站 缓存 的键
+if (isBin) cacheKey = `userInfo:bin:${id || roles || account}`
+getKey(cacheKey)
 ```
 
 ## 验证码
@@ -134,22 +137,6 @@ let result = await getKey(cacheKey)
 ```
 
 ## 获取文章
-
-### `ArticlefindAuthorAndId:${id}`
-
-> [!value] 根据文章 id 和用户 id 查找文章 判断是否是 文章页面 404 了
-
-```js
-getKey(`ArticlefindAuthorAndId:${id}`)
-```
-
-### `ArticlefindByPk:${id}`
-
-> [!value] 根据 id 获取文章
-
-```js
-getKey(`ArticlefindByPk:${id}`)
-```
 
 ### `recentPages:${limit}`
 

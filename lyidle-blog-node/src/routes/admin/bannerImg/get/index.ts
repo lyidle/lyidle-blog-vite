@@ -1,6 +1,8 @@
 import { getKey, setKey } from "@/utils/redis"
 import express, { NextFunction, Request, Response } from "express"
 import { Op } from "sequelize"
+// 引入验证
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入 模型
 const { BannerImg } = require("@/db/models")
 
@@ -38,6 +40,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 // 获取背景列表 pagination
 router.get(
   "/manager",
+  [jwtMiddleware, isAdmin],
   async (req: Request, res: Response, next: NextFunction) => {
     // 判断是否 读取 垃圾桶的 信息
     const { name, notName } = req.query

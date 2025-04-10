@@ -1,4 +1,6 @@
 import express from "express"
+// 引入验证
+import { jwtMiddleware, isAdmin } from "@/middleware/auth"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
 // 引入redis 设置缓存
@@ -39,7 +41,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 })
 
-router.use("/manager", pagination)
+router.use("/manager", [jwtMiddleware, isAdmin], pagination)
 
 // 根据id 获取 设置表的信息
 router.get(
