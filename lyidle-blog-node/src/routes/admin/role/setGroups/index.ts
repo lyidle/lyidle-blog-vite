@@ -2,12 +2,8 @@ import express from "express"
 // 引入类型
 import type { NextFunction, Request, Response } from "express"
 import { delKey } from "@/utils/redis"
-// 去重函数
-import { deduplication } from "@/utils/array/deduplication"
-// 清除 用户缓存的函数
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
-const { PermissionGroup, Role, User } = require("@/db/models")
+const { PermissionGroup, Role } = require("@/db/models")
 
 const router = express.Router()
 
@@ -25,14 +21,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     // 查询对应id的信息
     const findRole = await Role.findByPk(id, {
       paranoid: false,
-      include: [
-        {
-          model: User,
-          paranoid: false,
-          attributes: ["id", "account"],
-          through: { attributes: [] },
-        },
-      ],
     })
 
     // 不存在
@@ -48,13 +36,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     }
     // 设置角色的权限组信息
     await findRole.setPermissionGroups(findGroups)
-
-    const _Role = JSON.parse(JSON.stringify(findRole))
-    // 处理找到的users
-    const users = deduplication(_Role.Users).filter(Boolean)
-
-    // 删除找到的users的缓存
-    await resetUserInfo(users)
 
     // 返回并 删除缓存
     await delKey(cacheKey)

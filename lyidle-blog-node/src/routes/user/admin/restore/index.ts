@@ -2,7 +2,7 @@ import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
 // 引入验证
-import { jwtMiddleware, isAdmin } from "@/middleware/auth"
+import { jwtMiddleware } from "@/middleware/auth"
 // 引入 清除用户缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
@@ -32,9 +32,9 @@ router.put(
         return res.result(void 0, "恢复用户失败,没有找到用户数据", false)
 
       // 恢复 用户
-      const newUser = await findUser.restore()
+      await findUser.restore()
       // 删除缓存
-      await resetUserInfo([newUser])
+      await resetUserInfo([findUser])
 
       res.result(void 0, "恢复用户成功~")
     } catch (error) {

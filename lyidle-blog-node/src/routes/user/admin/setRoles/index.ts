@@ -8,7 +8,6 @@ import { setRoles } from "@/utils/db/user/setRoles"
 // 清除 对应 User 的缓存
 import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { Op } from "sequelize"
-import { setKey } from "@/utils/redis"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 const router = express.Router()
@@ -42,19 +41,13 @@ router.post(
             },
           ],
         })
-        // 找到有 owner 的去除掉
+        // 找到有 owner 的
         if (findRole)
           return res.result(
             void 0,
             `设置用户权限时,${default_owner}只能拥有一个~`,
             false
           )
-
-        // 没有找到说明是 自身
-        if (!findRole) {
-          // 设置role 为owner 的 ownerId 缓存
-          await setKey("ownerId", id)
-        }
       }
       // 查询对应id的信息
       const findUser = await User.findByPk(id, {
@@ -68,6 +61,17 @@ router.post(
           },
         ],
       })
+      if (
+        isOwner(
+          JSON.parse(JSON.stringify(findUser.Roles)).map((item) => item.name)
+        ) &&
+        !isOwner(roles)
+      )
+        return res.result(
+          void 0,
+          "设置用户权限时,不能修改权限为owner的值~",
+          false
+        )
 
       // 不存在
       if (!findUser)

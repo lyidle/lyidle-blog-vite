@@ -3,12 +3,8 @@ import express from "express"
 import { Request, Response, NextFunction } from "express"
 // redis
 import { delKey } from "@/utils/redis"
-// 引入 去重函数
-import { deduplication } from "@/utils/array/deduplication"
-// 引入 清除用户缓存的函数
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 模型
-const { PermissionGroup, Permission, Role, User } = require("@/db/models")
+const { Permission } = require("@/db/models")
 const router = express.Router()
 
 // 恢复权限
@@ -21,47 +17,12 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const findPermission = await Permission.findByPk(id, {
       paranoid: false,
-      include: [
-        {
-          model: PermissionGroup,
-          paranoid: false,
-          attributes: ["id"],
-          through: { attributes: [] },
-          include: [
-            {
-              model: Role,
-              paranoid: false,
-              attributes: ["id"],
-              through: { attributes: [] },
-              include: [
-                {
-                  model: User,
-                  paranoid: false,
-                  attributes: ["id", "account"],
-                  through: { attributes: [] },
-                },
-              ],
-            },
-          ],
-        },
-      ],
     })
 
     if (!findPermission)
       return res.result(void 0, "恢复权限失败,没有找到权限数据", false)
 
-    // 恢复 权限
-    const newPermission = await findPermission.restore()
-
-    // 处理找到的users
-    const users = deduplication(
-      JSON.parse(JSON.stringify(newPermission)).PermissionGroups?.map(
-        (item: any) => item.Roles.map((item: any) => item.Users)
-      )
-    )
-
-    // 删除找到的users的缓存
-    await resetUserInfo(users)
+    await findPermission.restore()
 
     // 删除 缓存
     await delKey(cacheKey)

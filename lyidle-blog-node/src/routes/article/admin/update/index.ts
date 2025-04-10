@@ -4,14 +4,12 @@ import type { NextFunction, Request, Response } from "express"
 import { jwtMiddleware } from "@/middleware/auth"
 // 引入 redis 设置缓存
 import { setKey } from "@/utils/redis"
-// 引入 清除 user 的缓存的函数
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 清除 article 的缓存的函数
 import { resetArticle } from "@/utils/redis/resetArticle"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
-const { Article, User, Role } = require("@/db/models")
+const { Article } = require("@/db/models")
 
 const router = express.Router()
 router.put(
@@ -27,20 +25,6 @@ router.put(
       // 查找是否有文章
       const findArticle = await Article.findByPk(articleId, {
         paranoid: false,
-        include: [
-          {
-            model: User,
-            paranoid: false,
-            attributes: ["id", "account"],
-            include: [
-              {
-                model: Role,
-                paranoid: false,
-                attributes: ["name"],
-              },
-            ],
-          },
-        ],
       })
 
       // 没有找到文章
@@ -98,11 +82,6 @@ router.put(
       // 网站文章最新更新时间 刷新
       await setKey("webUpdatedAt", new Date())
 
-      // 得到 user
-      const user = JSON.parse(JSON.stringify(findArticle)).User
-
-      // 删除对应用户信息缓存
-      await resetUserInfo([user])
       // 删除 对应的用户的文章缓存
       await resetArticle([findArticle])
 

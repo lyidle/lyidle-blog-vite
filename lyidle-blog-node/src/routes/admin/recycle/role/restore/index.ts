@@ -1,11 +1,9 @@
 import express from "express"
 // 引入类型
 import { Request, Response, NextFunction } from "express"
-import { deduplication } from "@/utils/array/deduplication"
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 import { delKey } from "@/utils/redis"
 // 引入 模型
-const { Role, User } = require("@/db/models")
+const { Role } = require("@/db/models")
 const router = express.Router()
 
 // 恢复角色
@@ -18,22 +16,6 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const findRole = await Role.findByPk(id, {
       paranoid: false,
-      include: [
-        {
-          model: User,
-          paranoid: false,
-          attributes: ["id", "account"],
-          through: { attributes: [] },
-          include: [
-            {
-              model: Role,
-              paranoid: false,
-              attributes: ["name"],
-              through: { attributes: [] },
-            },
-          ],
-        },
-      ],
     })
 
     if (!findRole)
@@ -41,12 +23,6 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 
     // 恢复 角色
     await findRole.restore()
-    const _Role = JSON.parse(JSON.stringify(findRole))
-    // 处理找到的users
-    const users = deduplication(_Role.Users).filter(Boolean)
-
-    // 删除找到的users的缓存
-    await resetUserInfo(users)
 
     // 删除缓存
     await delKey(cacheKey)

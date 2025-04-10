@@ -35,11 +35,11 @@ export const publicArticleRemove = async (articles: any[]) => {
 }
 
 // 彻底删除函数
-const deleted = async (model: any, articles: any[]) => {
+const deleted = async (model: any) => {
   const results = await Promise.allSettled([
     // 删除文章
     model.destroy({ force: true }), // 不管是否删除都要移除的
-    publicArticleRemove(articles),
+    publicArticleRemove([model]),
   ])
   // 检查是否有任务失败
   results.forEach((result) => {
@@ -105,7 +105,7 @@ const remove = async (
   }
 
   // 彻底删除
-  await deleted(findArticle, [findArticle])
+  await deleted(findArticle)
   return res.result(void 0, "删除文章成功~")
 }
 export default remove

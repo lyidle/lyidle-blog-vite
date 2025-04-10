@@ -12,7 +12,8 @@ const default_owner = process.env.default_owner!
  * @param roles string[]
  * @returns boolean
  */
-export const isOwner = (roles: string[]) => roles.includes(default_owner)
+export const isOwner = (roles: string[]) =>
+  Array.isArray(roles) && roles.flat(Infinity).includes(default_owner)
 
 /**
  * 清除 Users 的信息 缓存
@@ -28,7 +29,7 @@ export const resetUserInfo = async (findUsers: any[], isOwner?: boolean) => {
     users.map((item: any) => {
       // 找到 user中有owner的 改变 isOwnerRole true
       !isOwnerRole &&
-        item.Roles.find((item: any) => {
+        item?.Roles?.find((item: any) => {
           if (item.name === default_owner) {
             isOwnerRole = true
           }

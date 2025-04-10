@@ -3,14 +3,10 @@ import express from "express"
 import { Request, Response, NextFunction } from "express"
 // redis
 import { delKey } from "@/utils/redis"
-// 引入 去重函数
-import { deduplication } from "@/utils/array/deduplication"
-// 清除 用户缓存的函数
-import { resetUserInfo } from "@/utils/redis/resetUserInfo"
 // 引入 验证 模型中 修改了的 属性字段 的函数
 import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
-const { Role, User } = require("@/db/models")
+const { Role } = require("@/db/models")
 
 // 引入 环境变量
 const default_owner = process.env.default_owner!
@@ -31,37 +27,22 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
     // 通过id 查找
     let findRole = await Role.findByPk(id, {
       paranoid: false,
-      include: [
-        {
-          model: User,
-          paranoid: false,
-          attributes: ["id", "account"],
-          through: { attributes: [] },
-          include: [
-            {
-              model: Role,
-              paranoid: false,
-              attributes: ["name"],
-              through: { attributes: [] },
-            },
-          ],
-        },
-      ],
     })
 
     if (!findRole) return res.result(void 0, "没有找到需要更新的角色", false)
 
     // 得到 name
     const _name = findRole.name
-    const isName =
-      (_name === default_owner && name !== default_owner && default_owner) ||
-      (_name === default_admin && name !== default_admin && default_admin) ||
-      (_name === default_user && name !== default_user && default_user)
     // 限制指定的name 不能修改
-    if (isName)
+    if (
+      _name !== name &&
+      (_name === default_owner ||
+        _name === default_admin ||
+        _name === default_user)
+    )
       return res.result(
-        void 0,
-        `更新角色失败,不能修改角色为${isName}的名字`,
+        _name,
+        `更新角色失败,不能修改角色为${_name}的名字`,
         false
       )
 
@@ -73,19 +54,8 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
 
     await findRole.save()
 
-    const _Role = JSON.parse(JSON.stringify(findRole))
-    // 处理找到的users
-    const users = deduplication(_Role.Users).filter(Boolean)
-
-    // 删除找到的users的缓存
-    await resetUserInfo(users)
-
     // 删除缓存
     await delKey(cacheKey)
-
-    // 限制指定的name 不能修改
-    if (_name === default_owner || _name === default_admin)
-      return res.result(_name, `不可修改名字为${_name}的角色`)
 
     res.result(void 0, "更新角色成功~")
   } catch (error) {

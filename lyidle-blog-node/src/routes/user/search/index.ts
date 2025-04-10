@@ -8,6 +8,10 @@ const { User } = require("@/db/models")
 const router = express.Router()
 // 环境变量
 const default_owner = process.env.default_owner!
+
+const ms = require("ms")
+const default_expire = ms(process.env.default_expire)
+
 // 模糊搜索
 router.get("/", async (req, res, next) => {
   try {
@@ -116,12 +120,13 @@ router.get("/user", async (req, res, next) => {
       true,
       true,
       false,
-      JSON.parse(isBin as string)
+      JSON.parse((isBin as string) || "false")
     )
+
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis
-    if (cacheKey) await setKey(cacheKey, findUser)
+    if (cacheKey) await setKey(cacheKey, findUser, default_expire)
     return res.result(findUser, "查询用户信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

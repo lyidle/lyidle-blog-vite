@@ -205,6 +205,7 @@ import { useMangerGroupsBase } from "@/hooks/manager/access/groups/useMangerGrou
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置
@@ -284,7 +285,8 @@ const handlerRemove = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`移动${name}权限组到垃圾桶成功~`)
   } catch (error) {
-    ElMessage.error(`移动${name}权限组到垃圾桶失败~`)
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error(`移动${name}权限组到垃圾桶失败~`)
   }
 }
 
@@ -298,7 +300,8 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}权限组成功~`)
   } catch (error) {
-    ElMessage.error(`彻底删除${name}权限组失败~`)
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error(`彻底删除${name}权限组失败~`)
   }
 }
 
