@@ -1,5 +1,7 @@
 <template>
-  <a class="custom-popover-trigger custom-setting item-a">
+  <a
+    class="header-setting-container custom-popover-trigger custom-setting item-a"
+  >
     <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
     {{ label }}
     <my-popover :width :height :label v-bind="$attrs">
@@ -85,6 +87,7 @@
             />
           </el-form-item>
         </template>
+        <slot></slot>
       </el-form>
     </my-popover>
   </a>
@@ -140,27 +143,32 @@ a {
     margin-right: 3px;
   }
 }
-// popover中的下边距
-.el-form-item {
-  margin-bottom: 0;
-}
-// 设置的容器
-.header-setting {
-  .item {
-    --el-text-color-regular: var(--header-setting-label-color);
-    // 改变label鼠标样式
-    ::v-deep(.el-form-item__label) {
-      cursor: pointer;
-      justify-content: flex-start;
-    }
-    .settingSwitch {
-      --el-switch-on-color: var(--primary-switch-on);
-      --el-switch-off-color: var(--primary-switch-off);
-    }
+.header-setting-container {
+  // popover中的下边距
+  ::v-deep(.el-form-item) {
+    margin-bottom: 0;
   }
-  .aside-switch {
-    @include media(mi) {
-      display: none;
+  // 设置的容器
+  ::v-deep(.header-setting) {
+    .item {
+      --el-text-color-regular: var(--header-setting-label-color);
+      // 改变label鼠标样式
+      .el-form-item__label {
+        cursor: var(--cursor-pointer);
+        justify-content: flex-start;
+      }
+      .settingSwitch {
+        --el-switch-on-color: var(--primary-switch-on);
+        --el-switch-off-color: var(--primary-switch-off);
+        .el-switch__core {
+          cursor: var(--cursor-pointer);
+        }
+      }
+    }
+    .aside-switch {
+      @include media(mi) {
+        display: none;
+      }
     }
   }
 }

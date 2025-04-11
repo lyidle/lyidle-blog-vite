@@ -19,13 +19,29 @@
       >
         <global-avatar :isCenter="false"></global-avatar>
       </global-header-item>
+      <!-- 设置 -->
       <li class="manager-header-item">
         <global-setting
           right="10px"
-          top="65px"
+          top="60px"
           :triangle="{ right: '0', left: 'unset' }"
-        ></global-setting>
+        >
+          <el-form-item
+            :label="`${autoFold ? '自动' : '手动'}折叠侧边栏`"
+            class="item aside-switch"
+          >
+            <el-switch
+              v-model="autoFold"
+              inline-prompt
+              :active-icon="aside"
+              :inactive-icon="unaside"
+              size="small"
+              class="settingSwitch"
+            />
+          </el-form-item>
+        </global-setting>
       </li>
+      <!-- 返回 -->
       <li class="manager-header-item">
         <icon-parse
           icon="i-f7:gobackward"
@@ -39,6 +55,9 @@
 </template>
 
 <script setup lang="ts" name="ManagerHeader">
+// 引入 图标
+import aside from "@/components/icon/switch/aside.vue"
+import unaside from "@/components/icon/switch/unaside.vue"
 // 使用 hoooks 处理 个人选项卡的显示
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 引入 图标
@@ -49,7 +68,7 @@ import { useManagerStore } from "@/store/manager"
 import { useGoBack } from "@/hooks/useGoBack"
 const goBack = useGoBack()
 // 提取变量
-const { isFold } = storeToRefs(useManagerStore())
+const { isFold, autoFold } = storeToRefs(useManagerStore())
 // 个人页面
 const PersonData = useShowPersonHeaderMenu()
 </script>

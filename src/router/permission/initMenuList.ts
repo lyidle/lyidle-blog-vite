@@ -40,24 +40,27 @@ const reloadRoute = async (
   })
   // 重新 获取 和添加 路由
   await addRoute(routes, showInfo)
-  // 重新进行 权限判断
-  mitt.emit("authRoles")
   // 有回调执行
   callback && callback()
+  // 重新进行 权限判断
+  mitt.emit("authRoles")
 }
 
 export const initMenuList = async () => {
   // 只初始化一次
   if (!isInitRoute) {
     // 提取数据
-    const { routes } = storeToRefs(useUserStore())
+    const { routes, touristToken } = storeToRefs(useUserStore())
     // 获取 用户相关的信息
-    const { reqUserMenuList, reqUserInfo, reqAdminMenuList } = useUserStore()
+    const { reqUserMenuList, reqUserInfo, reqAdminMenuList, addTourist } =
+      useUserStore()
     // 获取admin的信息 用于展示 网页拥有者的一些信息
     const { getAdminUserInfo, getOwnerInfo } = useOwnerStore()
 
     // 合并 user 和 admin 的请求
     const showInfo = async () => {
+      // 没有 游客id 则需要得到 游客id
+      if (!touristToken.value) await addTourist()
       // 得到 用户的 信息 菜单信息依赖token
       await reqUserInfo()
       // 处理 其他请求

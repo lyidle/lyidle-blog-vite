@@ -1,70 +1,82 @@
 <template>
-  <my-card class="msg-container card_style flex">
-    <!-- 侧边栏 -->
-    <aside
-      class="nav-container msg-box flex flex-col items-center gap-[var(--gap-y)] flex-shrink-0"
-    >
-      <div class="text-1.1875rem cur-text flex items-center gap-5px mt-1.25rem">
-        <i class="i-uil:message w-1.125rem h-1.125rem"></i>消息中心
+  <my-card class="msg-container card_style flex relative !overflow-y-auto">
+    <div class="flex min-h-400px">
+      <div class="flex-shrink-0 flex items-center">
+        <!-- 侧边栏 -->
+        <aside
+          class="nav-container msg-box flex flex-col h-100% items-center gap-[var(--gap-y)] flex-shrink-0"
+          ref="navContainer"
+        >
+          <div
+            class="text-1.1875rem cur-text flex items-center gap-5px mt-1.25rem title"
+          >
+            <i class="i-uil:message"></i>消息中心
+          </div>
+          <ul class="nav">
+            <li
+              class="nav-item-container"
+              @click="$router.push(`${curPath}?to=whisper`)"
+              :class="{ active: $route.query.to === 'whisper' }"
+            >
+              <i class="i-lucide:dot"></i>我的消息
+            </li>
+            <li
+              class="nav-item-container"
+              @click="$router.push(`${curPath}?to=reply`)"
+              :class="{ active: $route.query.to === 'reply' }"
+            >
+              <i class="i-lucide:dot"></i>回复我的
+            </li>
+            <li
+              class="nav-item-container"
+              @click="$router.push(`${curPath}?to=at`)"
+              :class="{ active: $route.query.to === 'at' }"
+            >
+              <i class="i-lucide:dot"></i>@我的
+            </li>
+            <li
+              class="nav-item-container"
+              @click="$router.push(`${curPath}?to=like`)"
+              :class="{ active: $route.query.to === 'like' }"
+            >
+              <i class="i-lucide:dot"></i>收到的赞
+            </li>
+            <li
+              class="nav-item-container"
+              @click="$router.push(`${curPath}?to=system`)"
+              :class="{ active: $route.query.to === 'system' }"
+            >
+              <i class="i-lucide:dot"></i>系统通知
+            </li>
+          </ul>
+        </aside>
+        <!-- toggle -->
+        <div class="toggle" @click="handlerFold"></div>
       </div>
-      <ul class="nav">
-        <li
-          class="nav-item-container"
-          @click="$router.push(`${curPath}?to=whisper`)"
-          :class="{ active: $route.query.to === 'whisper' }"
+      <div class="msg-content p-0.625rem flex-1 overflow-hidden">
+        <!-- title -->
+        <div
+          class="msg-box text-0.9688rem cur-text py-0.625rem pl-[var(--p)] flex items-center"
         >
-          <i class="i-lucide:dot"></i>我的消息
-        </li>
-        <li
-          class="nav-item-container"
-          @click="$router.push(`${curPath}?to=reply`)"
-          :class="{ active: $route.query.to === 'reply' }"
-        >
-          <i class="i-lucide:dot"></i>回复我的
-        </li>
-        <li
-          class="nav-item-container"
-          @click="$router.push(`${curPath}?to=at`)"
-          :class="{ active: $route.query.to === 'at' }"
-        >
-          <i class="i-lucide:dot"></i>@我的
-        </li>
-        <li
-          class="nav-item-container"
-          @click="$router.push(`${curPath}?to=like`)"
-          :class="{ active: $route.query.to === 'like' }"
-        >
-          <i class="i-lucide:dot"></i>收到的赞
-        </li>
-        <li
-          class="nav-item-container"
-          @click="$router.push(`${curPath}?to=system`)"
-          :class="{ active: $route.query.to === 'system' }"
-        >
-          <i class="i-lucide:dot"></i>系统通知
-        </li>
-      </ul>
-    </aside>
-    <div class="msg-content p-10px flex-1 overflow-hidden">
-      <!-- title -->
-      <div
-        class="msg-box text-0.9688rem cur-text py-10px pl-[var(--p)] flex items-center"
-      >
-        {{ sceneZh[$route.query.to as sceneMsgType] }}
-        <!-- 收到的赞二级 -->
-        <span v-if="$route.query.to === 'like' && $route.query.type">
-          <i class="i-ep:arrow-right w-15px h-15px translate-y-1px"></i>点赞详情
-        </span>
-      </div>
-      <!-- 内容 -->
-      <div class="msg-scene overflow-y-auto">
-        <!-- 回复我的 -->
-        <layout-msg-reply v-if="$route.query.to === 'reply'"></layout-msg-reply>
-        <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
-        <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
-        <layout-msg-whisper
-          v-if="$route.query.to === 'whisper'"
-        ></layout-msg-whisper>
+          {{ sceneZh[$route.query.to as sceneMsgType] }}
+          <!-- 收到的赞二级 -->
+          <span v-if="$route.query.to === 'like' && $route.query.type">
+            <i class="i-ep:arrow-right w-15px h-15px translate-y-1px"></i
+            >点赞详情
+          </span>
+        </div>
+        <!-- 内容 -->
+        <div class="msg-scene overflow-y-auto">
+          <!-- 回复我的 -->
+          <layout-msg-reply
+            v-if="$route.query.to === 'reply'"
+          ></layout-msg-reply>
+          <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
+          <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
+          <layout-msg-whisper
+            v-if="$route.query.to === 'whisper'"
+          ></layout-msg-whisper>
+        </div>
       </div>
     </div>
   </my-card>
@@ -72,6 +84,7 @@
 
 <script setup lang="ts" name="UserMessage">
 // 引入类型
+import { mitt } from "@/utils/emitter"
 import type { sceneMsgType } from "./types"
 
 const route = useRoute()
@@ -122,6 +135,29 @@ watch(
     immediate: true,
   }
 )
+// 侧边栏容器
+const navContainer = ref<HTMLDivElement>()
+// 处理侧边栏的 收起与展开
+const handlerFold = () => {
+  const tar = navContainer.value
+  if (!tar) return
+  const is = tar.classList.contains("fold")
+  if (is) tar.classList.remove("fold")
+  else tar.classList.add("fold")
+}
+
+// 小屏尺寸 自动折叠
+const mini = 768
+const autoFold = () => {
+  if (window.innerWidth <= mini) {
+    const tar = navContainer.value
+    if (!tar) return
+    tar.classList.add("fold")
+  }
+}
+onMounted(autoFold)
+mitt.on("window:resize", autoFold)
+onBeforeUnmount(() => mitt.off("window:resize", autoFold))
 </script>
 
 <style lang="scss">
@@ -153,13 +189,6 @@ watch(
   z-index: $global-content-index;
   transition: width var(--primary-during);
   color: var(--primary-color);
-  @include media(sm) {
-    width: 95%;
-  }
-  @include media(xs) {
-    width: 100%;
-  }
-
   // 左侧 导航
   .nav-container {
     width: 9.375rem;
@@ -188,13 +217,74 @@ watch(
         // 使用 link 的样式
         @include pages-links-hover;
       }
+      @include media(xs) {
+        --i-size: 0.9375rem;
+        .nav-item-container {
+          $py: 0.625rem;
+          padding-top: $py;
+          padding-bottom: $py;
+        }
+      }
     }
   }
 
+  // 右侧信息
   .msg-content {
     display: grid;
     grid-template-rows: 40px 1fr;
     gap: var(--gap-y);
+  }
+
+  @include media(sm) {
+    width: 95%;
+  }
+  // 切换按钮 平时隐藏 小屏时显示
+  .toggle {
+    display: none;
+  }
+  @include media(xs) {
+    width: 100%;
+    min-height: calc(100% - var(--header-height) - 20px);
+    // 切换按钮
+    .toggle {
+      display: none;
+      display: block;
+      $w: 10px;
+      width: $w;
+      height: 50px;
+      background-color: rgba(146, 187, 209, 0.507);
+      border-radius: 10px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      cursor: var(--cursor-pointer);
+    }
+    // 右侧信息
+    .msg-content {
+      padding-left: 5px;
+    }
+    // 左侧 导航
+    .nav-container {
+      width: 100px;
+      height: 100%;
+      transition: width var(--primary-during);
+      &.fold {
+        width: 0;
+        overflow: hidden;
+      }
+      .nav {
+        text-wrap: nowrap;
+      }
+      .title {
+        font-size: 1rem;
+        gap: 0.125rem;
+        text-wrap: nowrap;
+        i {
+          $i-size: 0.9375rem;
+          width: $i-size;
+          height: $i-size;
+        }
+      }
+    }
   }
 }
 </style>

@@ -23,7 +23,9 @@
             :isTo="false"
             containerClass="ml-0.9375rem flex-shrink-0"
           ></global-avatar-src>
-          <div class="flex h-100% flex-col justify-center gap-0.3125rem">
+          <div
+            class="flex h-100% flex-col justify-center gap-0.3125rem nav-content"
+          >
             <global-name
               :account="item.user.account"
               :nick="item.user.nickName"
@@ -178,6 +180,12 @@ const initSendUser = async () => {
       // 激活的样式
       &.active {
         background-color: var(--msg-bg);
+      }
+    }
+    @include media(xs) {
+      width: 70px;
+      .nav-content {
+        display: none;
       }
     }
   }

@@ -2,9 +2,11 @@
   <div class="flex flex-col">
     <div v-for="reply in replies" class="reply-msg-item">
       <div
-        class="flex gap-0.625rem justify-between overflow-hidden p-[var(--p)]"
+        class="reply-container flex gap-0.625rem justify-between overflow-hidden p-[var(--p)]"
       >
-        <div class="flex-shrink-0 flex justify-center items-center">
+        <div
+          class="flex-shrink-0 flex justify-center items-center reply-avatar"
+        >
           <!-- 头像 -->
           <global-avatar-src
             :account="reply.user.account"
@@ -12,143 +14,149 @@
             :style="{ '--avatar-size': '3.75rem' }"
           ></global-avatar-src>
         </div>
-        <!-- 中间的信息 -->
-        <div class="flex flex-col gap-0.9375rem flex-1 overflow-hidden">
-          <!-- 谁回复谁 -->
-          <div class="cur-text w-fit flex gap-0.625rem">
-            <global-name
-              class="box-item"
-              :account="reply.user.account"
-              :nick="reply.user.nickName"
-            >
-              <template #nick="{ nick, account }">
-                <router-link
-                  :to="`/user/space/${account}`"
-                  class="!hover:color-[var(--primary-links-hover)] font-bold"
-                  ><span class="max-w-6.25rem line-clamp-1">{{ nick }} </span>
-                </router-link>
-              </template>
-            </global-name>
-            <my-anchor
-              :to="
-                reply.type === 'article'
-                  ? reply.link || `/doc/${reply.articleId}`
-                  : reply.link || ''
-              "
-              class="!hover:color-[var(--primary-links-hover)] msg-tools"
-            >
-              {{
-                reply.type === "comment"
-                  ? "回复了我的评论"
-                  : "对我的文章发布了评论"
-              }}
-            </my-anchor>
-          </div>
-          <!-- 回复信息 -->
-          <div class="flex cur-text">
-            <span>回复</span>
-            <!-- 是自身本地的用户 -->
-            <span class="mx-0.3125rem">
-              <my-tooltip
-                class="box-item"
-                effect="dark"
-                :content="`作者:${userAccount}`"
-                placement="right"
-              >
-                <router-link
-                  :to="`/user/space/${userAccount}`"
-                  class="color-[var(--at-person-color)] hover:color-[var(--at-person-color-hover)] flex"
-                >
-                  @<span class="max-w-6.25rem line-clamp-1"
-                    >{{ userNickName }} </span
-                  >:
-                </router-link>
-              </my-tooltip>
-            </span>
-            <span class="flex-1 truncate">
-              {{ decompressStringNotError(reply.content) }}
-            </span>
-          </div>
-          <!-- 来源的 信息 -->
-          <div v-if="reply.fromComment?.id" class="origin">
-            <div class="cur-text flex">
+        <div class="flex-1 flex context">
+          <!-- 中间的信息 -->
+          <div
+            class="flex flex-col gap-0.9375rem flex-1 overflow-hidden content-desc"
+          >
+            <!-- 谁回复谁 -->
+            <div class="cur-text w-fit flex gap-0.625rem">
               <global-name
                 class="box-item"
-                :account="reply.fromComment.user.account"
-                :nick="reply.fromComment.user.nickName"
-              ></global-name>
-              :
-              <span class="line-clamp-1">
-                {{ decompressStringNotError(reply.fromComment?.content) }}
-              </span>
-            </div>
-          </div>
-          <!-- 时间、回复、点赞、查看 -->
-          <div class="flex gap-1.25rem h-1.5625rem items-center">
-            <div class="cur-text h-inherit flex items-center text-0.9375rem">
-              {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
-            </div>
-            <div class="flex gap-0.625rem items-center h-inherit">
-              <!-- 点赞 -->
-              <layout-article-comments-likes
-                :settingId="reply.settingId"
-                :articleId="reply.articleId"
-                :commentId="reply.id"
-                :targetUserId="reply.userId"
-                class="msg-tools"
-              ></layout-article-comments-likes>
-              <!-- 点踩 -->
-              <layout-article-comments-dislikes
-                :settingId="reply.settingId"
-                :articleId="reply.articleId"
-                :commentId="reply.id"
-                :targetUserId="reply.userId"
-                class="msg-tools"
-              ></layout-article-comments-dislikes>
-              <!-- 回复 -->
-              <div
-                class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
-                @click="emitReply(reply)"
+                :account="reply.user.account"
+                :nick="reply.user.nickName"
               >
-                <i class="i-mynaui:chat w-0.875rem h-0.875rem"></i>
-                <span>回复</span>
-              </div>
-              <!-- 查看 -->
+                <template #nick="{ nick, account }">
+                  <router-link
+                    :to="`/user/space/${account}`"
+                    class="!hover:color-[var(--primary-links-hover)] font-bold"
+                    ><span class="max-w-6.25rem line-clamp-1">{{ nick }} </span>
+                  </router-link>
+                </template>
+              </global-name>
               <my-anchor
                 :to="
                   reply.type === 'article'
-                    ? `/doc/${reply.articleId}`
+                    ? reply.link || `/doc/${reply.articleId}`
                     : reply.link || ''
                 "
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
-                <i
-                  class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
-                ></i>
-                <span>查看</span>
+                {{
+                  reply.type === "comment"
+                    ? "回复了我的评论"
+                    : "对我的文章发布了评论"
+                }}
               </my-anchor>
             </div>
+            <!-- 回复信息 -->
+            <div class="flex cur-text">
+              <span class="flex-shrink-0">回复</span>
+              <!-- 是自身本地的用户 -->
+              <span class="mx-0.3125rem flex-shrink-0">
+                <my-tooltip
+                  class="box-item"
+                  effect="dark"
+                  :content="`作者:${userAccount}`"
+                  placement="right"
+                >
+                  <router-link
+                    :to="`/user/space/${userAccount}`"
+                    class="color-[var(--at-person-color)] hover:color-[var(--at-person-color-hover)] flex"
+                  >
+                    @<span class="max-w-6.25rem line-clamp-1"
+                      >{{ userNickName }} </span
+                    >:
+                  </router-link>
+                </my-tooltip>
+              </span>
+              <span class="line-clamp-1">
+                {{ decompressStringNotError(reply.content) }}
+              </span>
+            </div>
+            <!-- 来源的 信息 -->
+            <div v-if="reply.fromComment?.id" class="origin">
+              <div class="cur-text flex">
+                <global-name
+                  class="box-item"
+                  :account="reply.fromComment.user.account"
+                  :nick="reply.fromComment.user.nickName"
+                ></global-name>
+                :
+                <span class="line-clamp-1">
+                  {{ decompressStringNotError(reply.fromComment?.content) }}
+                </span>
+              </div>
+            </div>
+            <!-- 时间、回复、点赞、查看 -->
+            <div class="flex gap-1.25rem h-1.5625rem items-center">
+              <div class="cur-text h-inherit flex items-center text-0.9375rem">
+                {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
+              </div>
+              <div class="flex gap-0.625rem items-center h-inherit">
+                <!-- 点赞 -->
+                <layout-article-comments-likes
+                  :settingId="reply.settingId"
+                  :articleId="reply.articleId"
+                  :commentId="reply.id"
+                  :targetUserId="reply.userId"
+                  class="msg-tools"
+                ></layout-article-comments-likes>
+                <!-- 点踩 -->
+                <layout-article-comments-dislikes
+                  :settingId="reply.settingId"
+                  :articleId="reply.articleId"
+                  :commentId="reply.id"
+                  :targetUserId="reply.userId"
+                  class="msg-tools"
+                ></layout-article-comments-dislikes>
+                <!-- 回复 -->
+                <div
+                  class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
+                  @click="emitReply(reply)"
+                >
+                  <i class="i-mynaui:chat w-0.875rem h-0.875rem"></i>
+                  <span>回复</span>
+                </div>
+                <!-- 查看 -->
+                <my-anchor
+                  :to="
+                    reply.type === 'article'
+                      ? `/doc/${reply.articleId}`
+                      : reply.link || ''
+                  "
+                  class="!hover:color-[var(--primary-links-hover)] msg-tools"
+                >
+                  <i
+                    class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
+                  ></i>
+                  <span>查看</span>
+                </my-anchor>
+              </div>
+            </div>
+            <!-- 回复框 -->
+            <layout-article-comments-add
+              v-if="reply.isShow"
+              :addComments="handlerReply"
+              :placeholder="`回复 @${reply.user.nickName}:`"
+              btnName="回复"
+              :settingId="reply.settingId"
+              :articleId="reply.articleId"
+              :commentId="reply.id"
+              ref="addInstance"
+              v-bind="$attrs"
+            ></layout-article-comments-add>
           </div>
-          <!-- 回复框 -->
-          <layout-article-comments-add
-            v-if="reply.isShow"
-            :addComments="handlerReply"
-            :placeholder="`回复 @${reply.user.nickName}:`"
-            btnName="回复"
-            :settingId="reply.settingId"
-            :articleId="reply.articleId"
-            :commentId="reply.id"
-            ref="addInstance"
-            v-bind="$attrs"
-          ></layout-article-comments-add>
-        </div>
-        <!-- 顶层的信息 -->
-        <div class="h-5.625rem w-6.25rem cur-text line-clamp-5 flex-shrink-0">
-          {{
-            decompressStringNotError(reply.parentComment?.content || "") ||
-            reply.article?.title ||
-            reply.setting?.name
-          }}
+          <!-- 顶层的信息 -->
+          <div
+            class="h-5.625rem w-100px cur-text line-clamp-5 flex-shrink-0 topContent"
+          >
+            {{
+              decompressStringNotError(reply.parentComment?.content || "") ||
+              reply.article?.title ||
+              reply.setting?.name
+            }}
+          </div>
         </div>
       </div>
     </div>
@@ -298,6 +306,29 @@ const handlerReply = (data: AddCommentBody) => {
   .origin {
     border-left: 0.125rem solid rgba(128, 128, 128, 0.703);
     padding-left: 0.625rem;
+  }
+  .reply-container {
+    @include media(xs) {
+      flex-direction: column;
+      $gap: 0.5rem;
+      gap: $gap;
+      .reply-avatar {
+        width: fit-content;
+      }
+      .context {
+        flex-direction: column;
+        gap: $gap;
+        .content-desc {
+          gap: $gap;
+        }
+        .topContent {
+          height: fit-content;
+          width: 100%;
+          -webkit-line-clamp: 3;
+          line-clamp: 3;
+        }
+      }
+    }
   }
 }
 </style>

@@ -16,6 +16,7 @@ import { mitt } from "@/utils/emitter"
 // 引入 常量 路由
 import { constantRoute, anyRoute } from "@/router/routes"
 import { getPersistedData } from "@/utils/crypto/crypto-aes"
+import { handlerReqErr } from "@/utils/request/error/successError"
 
 type bannerImgType = { [key in string]: GetBannerImg["data"][0] }
 // 处理 常量路由 和异步路由
@@ -90,7 +91,9 @@ export const useUserStore = defineStore(
           return pre
         }, {} as bannerImgType)
       } catch (error) {
-        ElMessage.error("获取菜单失败~")
+        // const err = handlerReqErr(error, "error")
+        // if (!err) ElMessage.error("获取菜单失败~")
+        console.warn("获取菜单失败,当前权限可能无菜单~", error)
       }
     }
 

@@ -79,12 +79,12 @@ const getMenuList = async (
         },
       ],
     })
-    // 处理菜单中的 递归 菜单 从而形成 树状结构
-    const result = buildMenuTree(menus)
-
     if (!menus.length) {
       return res.result(void 0, "暂无权限访问任何菜单", false)
     }
+    // 处理菜单中的 递归 菜单 从而形成 树状结构
+    const result = buildMenuTree(menus)
+
     // 设置 缓存
     if (cacheKey) await setKey(cacheKey, result, default_expire)
     return res.result(result, "获取菜单成功~")

@@ -6,6 +6,7 @@
         isFold ? 'fold' : 'expand'
       }-width)`,
     }"
+    :class="isFold ? 'fold-container' : ''"
   >
     <manager-aside></manager-aside>
     <manager-context>
@@ -19,10 +20,39 @@
 <script setup lang="ts" name="ManagerLayout">
 // 引入 仓库
 import { useManagerStore } from "@/store/manager"
+import { mitt } from "@/utils/emitter"
 // 提取变量
-const { isFold } = storeToRefs(useManagerStore())
+const { isFold, autoFold } = storeToRefs(useManagerStore())
 // 无banner固定 banner
 document.body.setAttribute("banner-fixed", "")
+
+// 小屏尺寸 自动折叠
+const mini = 768
+const autoFoldCallback = () => {
+  if (!autoFold.value) return
+  if (window.innerWidth <= mini) {
+    isFold.value = true
+  } else {
+    isFold.value = false
+  }
+}
+
+onMounted(autoFoldCallback)
+watch(
+  () => autoFold.value,
+  (is) => {
+    // 清除上一次的
+    mitt.off("window:resize", autoFoldCallback)
+    if (!is) return
+    autoFoldCallback()
+    // 绑定这一次的
+    mitt.on("window:resize", autoFoldCallback)
+  },
+  {
+    immediate: true,
+  }
+)
+onBeforeUnmount(() => mitt.off("window:resize", autoFoldCallback))
 </script>
 <style lang="scss">
 // 设置 卡片 样式
@@ -59,6 +89,31 @@ document.body.setAttribute("banner-fixed", "")
     transition: width var(--primary-during);
     position: relative;
     z-index: $manager-aside-index;
+  }
+  &.fold-container {
+    .menu-item {
+      .start-icon {
+        text-wrap: nowrap;
+        a {
+          margin: unset;
+          width: 100%;
+          height: 100%;
+          justify-content: center;
+          align-items: center;
+          span {
+            transition: width var(--primary-during);
+            width: 0;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .toggle {
+        transition: width var(--primary-during);
+        width: 0;
+        overflow: hidden;
+      }
+    }
   }
   // 右侧
   .manager-context {

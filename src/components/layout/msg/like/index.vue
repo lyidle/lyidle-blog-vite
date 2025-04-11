@@ -24,97 +24,102 @@
                 ></global-avatar-src>
               </template>
             </div>
-            <!-- 中间信息 -->
-            <div
-              class="flex-1 flex flex-col justify-center gap-0.625rem ml-0.3125rem"
-            >
-              <!-- 名字 -->
-              <div class="flex h-fit">
-                <template v-for="(user, i) in item.recentLikers" :key="user.id">
-                  <!-- 名字 只要 前两个  -->
-
-                  <global-name
-                    class="box-item"
-                    :account="user.account"
-                    :nick="user.nickName"
-                    placement="top"
-                    v-if="i < 2"
+            <div class="flex-1 flex like-content">
+              <!-- 中间信息 -->
+              <div
+                class="flex-1 flex flex-col justify-center gap-0.625rem ml-0.3125rem"
+              >
+                <!-- 名字 -->
+                <div class="flex h-fit">
+                  <template
+                    v-for="(user, i) in item.recentLikers"
+                    :key="user.id"
                   >
-                    <template #nick="{ nick, account }">
-                      <router-link
-                        :to="`/user/space/${account}`"
-                        class="!hover:color-[var(--primary-links-hover)] font-bold"
-                        ><span class="max-w-6.25rem line-clamp-1"
-                          >{{ nick }}
-                        </span>
-                      </router-link>
-                    </template>
-                  </global-name>
-                  <span v-if="i < 1 && item.likeCount > 1">、</span>
-                </template>
-                <my-anchor
-                  :to="
-                    item.type === 'article'
-                      ? `/doc/${item.articleId}`
-                      : item.link || ''
-                  "
-                  class="ml-0.625rem !hover:color-[var(--primary-links-hover)] cur-pointer"
-                >
-                  等总计<span>{{ item.likeCount }}</span
-                  >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
-                </my-anchor>
-              </div>
-              <div class="flex gap-0.625rem text-0.9375rem">
-                <!-- 时间等信息 -->
-                <div class="cur-text">
-                  {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
-                </div>
-                <div class="flex gap-0.4375rem">
-                  <!-- 查看 -->
+                    <!-- 名字 只要 前两个  -->
+
+                    <global-name
+                      class="box-item"
+                      :account="user.account"
+                      :nick="user.nickName"
+                      placement="top"
+                      v-if="i < 2"
+                    >
+                      <template #nick="{ nick, account }">
+                        <router-link
+                          :to="`/user/space/${account}`"
+                          class="!hover:color-[var(--primary-links-hover)] font-bold"
+                          ><span class="max-w-6.25rem line-clamp-1"
+                            >{{ nick }}
+                          </span>
+                        </router-link>
+                      </template>
+                    </global-name>
+                    <span v-if="i < 1 && item.likeCount > 1">、</span>
+                  </template>
                   <my-anchor
                     :to="
                       item.type === 'article'
                         ? `/doc/${item.articleId}`
                         : item.link || ''
                     "
-                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center"
+                    class="ml-0.625rem !hover:color-[var(--primary-links-hover)] cur-pointer"
                   >
-                    <i
-                      class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
-                    ></i>
-                    <span>查看</span>
-                  </my-anchor>
-                  <my-anchor
-                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center cur-pointer"
-                    :to="
-                      $route.fullPath +
-                      `&id=${
-                        item.type === 'article'
-                          ? item.articleId
-                          : item.type == 'setting'
-                          ? item.settingId
-                          : item.type === 'comment'
-                          ? item.commentId
-                          : ''
-                      }&type=${item.type}`
-                    "
-                  >
-                    <i
-                      class="i-material-symbols-light:list-alt-outline w-0.9375rem h-0.9375rem"
-                    ></i>
-                    <span>详情</span>
+                    等总计<span>{{ item.likeCount }}</span
+                    >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
                   </my-anchor>
                 </div>
+                <div class="flex gap-0.625rem text-0.9375rem">
+                  <!-- 时间等信息 -->
+                  <div class="cur-text">
+                    {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
+                  </div>
+                  <div class="flex gap-0.4375rem">
+                    <!-- 查看 -->
+                    <my-anchor
+                      :to="
+                        item.type === 'article'
+                          ? `/doc/${item.articleId}`
+                          : item.link || ''
+                      "
+                      class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center"
+                    >
+                      <i
+                        class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
+                      ></i>
+                      <span>查看</span>
+                    </my-anchor>
+                    <my-anchor
+                      class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center cur-pointer"
+                      :to="
+                        $route.fullPath +
+                        `&id=${
+                          item.type === 'article'
+                            ? item.articleId
+                            : item.type == 'setting'
+                            ? item.settingId
+                            : item.type === 'comment'
+                            ? item.commentId
+                            : ''
+                        }&type=${item.type}`
+                      "
+                    >
+                      <i
+                        class="i-material-symbols-light:list-alt-outline w-0.9375rem h-0.9375rem"
+                      ></i>
+                      <span>详情</span>
+                    </my-anchor>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div
-              class="m-0.3125rem w-6.25rem h-2.1875rem cur-text line-clamp-2"
-            >
-              {{
-                item.title ||
-                item.name ||
-                decompressStringNotError(item.content || "")
-              }}
+              <div
+                class="m-0.3125rem w-6.25rem h-2.1875rem cur-text line-clamp-2"
+              >
+                {{
+                  item.title ||
+                  item.name ||
+                  decompressStringNotError(item.content || "")
+                }}
+              </div>
             </div>
           </div>
         </div>
@@ -228,10 +233,18 @@ const reqLikesCallback = async (cb?: () => void) => {
         }
       }
     }
+    // 单个头像
     .avatar-single {
       width: $avatar-size * 1.8;
       > .avatar {
         --size: 3.125rem;
+      }
+    }
+    .like-content {
+      @include media(mi) {
+        justify-content: center;
+        flex-direction: column;
+        gap: 0.3125rem;
       }
     }
   }

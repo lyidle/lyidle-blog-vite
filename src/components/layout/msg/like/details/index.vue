@@ -4,7 +4,7 @@
       <!-- 返回按钮 -->
       <my-anchor
         to="/user/msg?to=like"
-        class="float-right w-50px h-35px ml-5px"
+        class="float-right w-3.125rem h-2.1875rem ml-0.3125rem"
       >
         <my-button size="small">返回</my-button>
       </my-anchor>
@@ -29,19 +29,19 @@
         <div
           v-for="item in likes"
           :key="item.id"
-          class="user-items p-15px flex gap-10px justify-between"
+          class="user-items p-0.9375rem flex gap-0.625rem justify-between"
         >
           <!-- 头像 -->
           <global-avatar-src
             :account="item.user.account"
             :avatar="item.user.avatar"
-            :style="{ '--avatar-size': '50px' }"
+            :style="{ '--avatar-size': '3.125rem' }"
             class="avatar flex-shrink-0"
           ></global-avatar-src>
           <!-- 中间部分信息 -->
-          <div class="flex flex-col justify-center gap-10px flex-1">
+          <div class="flex flex-col justify-center gap-0.625rem flex-1">
             <!-- 名字 -->
-            <div class="flex gap-10px">
+            <div class="flex gap-0.625rem">
               <global-name
                 class="box-item"
                 :account="item.user.account"
@@ -52,7 +52,7 @@
                     :to="`/user/space/${account}`"
                     class="!hover:color-[var(--primary-links-hover)] font-bold w-fit"
                   >
-                    <span class="max-w-100px line-clamp-1">
+                    <span class="max-w-6.25rem line-clamp-1">
                       {{ nick }}
                     </span>
                   </router-link>
@@ -79,7 +79,7 @@
         ref="obEl"
         v-my-loading="() => ({ show: isLoading })"
         class="w-100% flex-shrink-0"
-        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '20px' }"
+        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '1.25rem' }"
       ></div>
     </div>
   </div>
@@ -210,10 +210,10 @@ watchEffect(async () => {
   position: relative;
   height: 100%;
   display: grid;
-  grid-template-rows: 80px 1fr;
+  grid-template-rows: 5rem 1fr;
   gap: var(--gap-y);
   .user-items {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.703);
+    border-bottom: 0.0625rem solid rgba(128, 128, 128, 0.703);
   }
 }
 </style>
