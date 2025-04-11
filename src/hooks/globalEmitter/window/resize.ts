@@ -6,7 +6,6 @@ import { useEventListener } from "@/hooks/useEventListener"
 export const useResize = () => {
   // 回调
   const callback = debounce(() => {
-    console.log("resize")
     mitt.emit("window:resize")
   }, 500)
 
