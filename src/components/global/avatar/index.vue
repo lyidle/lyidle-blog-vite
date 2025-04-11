@@ -9,8 +9,8 @@
     >
       <div
         :style="{
-          background: 'no-repeat center',
-          backgroundSize: 'contain',
+          background: 'no-repeat',
+          backgroundSize: 'cover',
           backgroundImage: imgSrc || showAvatar,
         }"
         alt=""

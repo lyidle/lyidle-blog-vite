@@ -2,7 +2,7 @@
   <div class="whisper-msg-container w-100% h-100% flex flex-col">
     <!-- title部位 -->
     <div
-      class="w-100% h-30px flex-shrink-0 line-height-30px text-center text-18px flex justify-center"
+      class="w-100% h-1.875rem flex-shrink-0 line-height-1.875rem text-center text-1.125rem flex justify-center"
     >
       <global-name
         :nick="receiver?.nickName"
@@ -16,7 +16,7 @@
     </div>
     <!-- 消息显示 -->
     <div
-      class="w-100% p-15px flex-1 flex-shrink-0 overflow-hidden overflow-y-auto flex flex-col-reverse msg-context"
+      class="w-100% p-0.9375rem flex-1 flex-shrink-0 overflow-hidden overflow-y-auto flex flex-col-reverse msg-context"
       ref="msgContext"
     >
       <template v-if="receiver?.account">
@@ -46,7 +46,7 @@
                 >
                   <!-- 气泡 -->
                   <div
-                    class="popmsg max-w-100% w-fit rounded-10px rounded-tr-5px"
+                    class="popmsg max-w-100% w-fit rounded-0.625rem rounded-tr-0.3125rem"
                     :class="isSender(item.senderId) && 'owner'"
                   >
                     <!-- 渲染 消息 -->
@@ -71,7 +71,7 @@
                 v-if="!isSender(item.senderId)"
                 :account="receiver.account"
                 :avatar="receiver.avatar"
-                :style="{ '--avatar-size': '40px' }"
+                :style="{ '--avatar-size': '2.5rem' }"
                 containerClass="flex-shrink-0"
               ></global-avatar-src>
               <!-- 发送者的 头像 -->
@@ -79,7 +79,7 @@
                 v-else
                 :account="userAccount"
                 :avatar="userNickName"
-                :style="{ '--avatar-size': '40px' }"
+                :style="{ '--avatar-size': '2.5rem' }"
                 containerClass="flex-shrink-0"
               ></global-avatar-src>
             </div>
@@ -90,28 +90,32 @@
       <div
         ref="obEl"
         v-my-loading="() => ({ show: isLoading })"
-        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+        :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0.625rem' }"
         class="flex-shrink-0"
       ></div>
       <!-- 提示信息在消息个数大于3时提示 -->
       <div v-if="!isLoading && list.length >= 3" class="text-center">
-        <span class="cur-text text-15px">没有更多消息了～</span>
+        <span class="cur-text text-0.9375rem">没有更多消息了～</span>
       </div>
     </div>
     <!-- 回复框 -->
     <div
-      class="inputContainer flex-shrink-0 h-125px overflow-hidden overflow-y-auto p-10px relative"
+      class="inputContainer flex-shrink-0 h-7.8125rem overflow-hidden overflow-y-auto p-0.625rem relative"
       ref="inputContainer"
     >
       <layout-article-comments-base ref="instance" mt="0" pb="0" prefix="消息">
         <template #btns>
-          <my-button class="h-30px rounded-5px" size="small" @click="sendMsg">
+          <my-button
+            class="h-1.875rem rounded-0.3125rem"
+            size="small"
+            @click="sendMsg"
+          >
             发送</my-button
           >
         </template>
       </layout-article-comments-base>
       <div
-        class="resize-input w-20px h-2px absolute top-0 left-50% translate-x-[-50%] cursor-row-resize"
+        class="resize-input w-1.25rem h-0.125rem absolute top-0 left-50% translate-x-[-50%] cursor-row-resize"
         ref="inputResize"
       ></div>
     </div>
@@ -135,7 +139,6 @@ import { useEventListener } from "@/hooks/useEventListener"
 import { handlerReqErr } from "@/utils/request/error/successError"
 import { nanoid } from "nanoid"
 import { mitt } from "@/utils/emitter"
-import { PollingController } from "@/utils/PollingController"
 import { usePollingController } from "@/hooks/usePollingController"
 
 const route = useRoute()
@@ -198,7 +201,7 @@ const handleMouseMove = (e: MouseEvent) => {
   // 计算鼠标移动的垂直距离
   const deltaY = initialY.value - e.clientY
 
-  // 计算新的高度（不能小于某个最小值，比如50px）
+  // 计算新的高度（不能小于某个最小值，比如3.125rem）
   const newHeight = Math.max(125, initialHeight.value + deltaY)
 
   // 设置新高度
@@ -497,12 +500,12 @@ watchEffect(async () => {
 .whisper-msg-container {
   ::v-deep(.vditor-style) {
     padding: 0;
-    min-height: 30px;
-    min-width: 100px;
-    padding: 10px;
+    min-height: 1.875rem;
+    min-width: 6.25rem;
+    padding: 0.625rem;
     img {
       display: block;
-      max-width: 250px;
+      max-width: 15.625rem;
     }
     @for $i from 1 through 6 {
       h#{$i} {
@@ -523,11 +526,11 @@ watchEffect(async () => {
   }
   .msg-context {
     // 每一项消息的 上下间隔
-    --msg-item-gap: 15px;
+    --msg-item-gap: 0.9375rem;
     // 时间和消息之间的间隔
-    --msg-time-gap: 8px;
+    --msg-time-gap: 0.5rem;
     // 消息和头像的间距
-    --msg-avatar-gap: 5px;
+    --msg-avatar-gap: 0.3125rem;
     // 消息气泡
     .popmsg {
       // 接收者

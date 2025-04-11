@@ -1,15 +1,15 @@
 <template>
   <div class="whisper-container w-100% h-100% flex justify-between">
     <!-- 消息选择 -->
-    <div class="users-container flex-shrink-0 w-200px h-100% flex flex-col">
-      <div class="p-5px text-center bg-[var(--msg-bg)] title h-31px">
+    <div class="users-container flex-shrink-0 w-12.5rem h-100% flex flex-col">
+      <div class="p-0.3125rem text-center bg-[var(--msg-bg)] title h-1.9375rem">
         <span class="cur-text">近期消息</span>
       </div>
       <div class="flex-shrink-0 flex-1 overflow-hidden overflow-y-auto">
         <div
           v-for="item in list"
           :key="item.id"
-          class="flex flex-shrink-0 gap-8px py-15px items-center cur-pointer list-nav-item"
+          class="flex flex-shrink-0 gap-0.5rem py-0.9375rem items-center cur-pointer list-nav-item"
           :class="{
             active: $route.query.id && +$route.query.id === item.user.id,
           }"
@@ -19,20 +19,22 @@
           <global-avatar-src
             :account="item.user.account"
             :avatar="item.user.avatar"
-            :style="{ '--avatar-size': '50px' }"
+            :style="{ '--avatar-size': '3.125rem' }"
             :isTo="false"
-            containerClass="ml-15px flex-shrink-0"
+            containerClass="ml-0.9375rem flex-shrink-0"
           ></global-avatar-src>
-          <div class="flex h-100% flex-col justify-center gap-5px">
+          <div class="flex h-100% flex-col justify-center gap-0.3125rem">
             <global-name
               :account="item.user.account"
               :nick="item.user.nickName"
             >
               <template #nick="{ nick }">
-                <span class="w-fit max-w-100px line-clamp-1">{{ nick }} </span>
+                <span class="w-fit max-w-6.25rem line-clamp-1"
+                  >{{ nick }}
+                </span>
               </template>
             </global-name>
-            <div class="w-fit max-w-100px truncate">
+            <div class="w-fit max-w-6.25rem truncate">
               {{ decompressStringNotError(item.message?.content || "") }}
             </div>
           </div>
@@ -41,7 +43,10 @@
         <div
           ref="obEl"
           v-my-loading="() => ({ show: isLoading })"
-          :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+          :style="{
+            '--mask': '#0000',
+            height: isLoading ? '100%' : '0.625rem',
+          }"
           class="flex-shrink-0"
         ></div>
       </div>
@@ -162,7 +167,7 @@ const initSendUser = async () => {
 
 <style lang="scss" scoped>
 .whisper-container {
-  --whisper-border: 1px solid rgba(132, 132, 132, 0.133);
+  --whisper-border: 0.0625rem solid rgba(132, 132, 132, 0.133);
   .users-container {
     border-right: var(--whisper-border);
     .list-nav-item {

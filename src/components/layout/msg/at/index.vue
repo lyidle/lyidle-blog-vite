@@ -1,21 +1,21 @@
 <template>
-  <div class="flex flex-col gap-15px">
+  <div class="flex flex-col gap-0.9375rem">
     <div
       v-for="item in list"
       :key="item.id"
-      class="flex gap-10px px-20px py-15px item-at"
+      class="flex gap-0.625rem p-x-1.25rem py-0.9375rem item-at"
     >
       <!-- 头像 -->
-      <div class="flex-shrink-0">
+      <div class="flex-shrink-0 flex items-center">
         <global-avatar-src
           :account="item.mentionedBy.account"
           :avatar="item.mentionedBy.avatar"
-          :style="{ '--avatar-size': '60px' }"
+          :style="{ '--avatar-size': '3.75rem' }"
         ></global-avatar-src>
       </div>
-      <div class="flex flex-col justify-center gap-5px">
+      <div class="flex flex-col justify-center gap-0.3125rem">
         <!-- 提示信息 -->
-        <div class="flex gap-10px">
+        <div class="flex gap-0.625rem">
           <global-name
             class="box-item"
             :account="item.mentionedBy.account"
@@ -25,28 +25,30 @@
               <router-link
                 :to="`/user/space/${account}`"
                 class="!hover:color-[var(--primary-links-hover)] font-bold"
-                ><span class="max-w-100px line-clamp-1">{{ nick }} </span>
+                ><span class="max-w-6.25rem line-clamp-1">{{ nick }} </span>
               </router-link>
             </template>
           </global-name>
           <span class="cur-text">at了我</span>
         </div>
         <!-- at的信息 -->
-        <div class="cur-text at-data">
+        <div class="cur-text at-data line-clamp-3">
           {{ decompressStringNotError(item.comment.content) }}
         </div>
-        <div class="flex gap-15px h-15px items-center">
+        <div class="flex gap-0.9375rem h-0.9375rem items-center">
           <!-- 时间 -->
-          <div class="cur-text text-15px">
+          <div class="cur-text text-0.9375rem">
             {{ moment(item.createdAt, "YYYY年MM月DD日 hh:mm") }}
           </div>
           <!-- 查看 -->
           <my-anchor
             :to="item.link"
-            class="!hover:color-[var(--primary-links-hover)] flex gap-3px"
+            class="!hover:color-[var(--primary-links-hover)] flex gap-0.1875rem"
           >
-            <i class="i-lsicon:view-outline w-15px h-15px translate-y-1px"></i>
-            <span class="text-15px">查看</span>
+            <i
+              class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
+            ></i>
+            <span class="text-0.9375rem">查看</span>
           </my-anchor>
         </div>
       </div>
@@ -56,7 +58,7 @@
   <div
     ref="obEl"
     v-my-loading="() => ({ show: isLoading })"
-    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0.625rem' }"
   ></div>
 </template>
 
@@ -131,10 +133,10 @@ const reqAtCallback = async (cb?: () => void) => {
 
 <style lang="scss" scoped>
 .at-data {
-  border-left: 2px solid rgba(128, 128, 128, 0.703);
-  padding-left: 5px;
+  border-left: 0.125rem solid rgba(128, 128, 128, 0.703);
+  padding-left: 0.3125rem;
 }
 .item-at {
-  border-bottom: 1px solid rgba(159, 159, 159, 0.305);
+  border-bottom: 0.0625rem solid rgba(159, 159, 159, 0.305);
 }
 </style>

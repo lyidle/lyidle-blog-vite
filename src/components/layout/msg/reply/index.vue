@@ -1,18 +1,21 @@
 <template>
   <div class="flex flex-col">
     <div v-for="reply in replies" class="reply-msg-item">
-      <div class="flex gap-10px justify-between overflow-hidden p-[var(--p)]">
-        <!-- 头像 -->
-        <global-avatar-src
-          :account="reply.user.account"
-          :avatar="reply.user.avatar"
-          :style="{ '--avatar-size': '60px' }"
-          class="flex-shrink-0"
-        ></global-avatar-src>
+      <div
+        class="flex gap-0.625rem justify-between overflow-hidden p-[var(--p)]"
+      >
+        <div class="flex-shrink-0 flex justify-center items-center">
+          <!-- 头像 -->
+          <global-avatar-src
+            :account="reply.user.account"
+            :avatar="reply.user.avatar"
+            :style="{ '--avatar-size': '3.75rem' }"
+          ></global-avatar-src>
+        </div>
         <!-- 中间的信息 -->
-        <div class="flex flex-col gap-15px flex-1 overflow-hidden">
+        <div class="flex flex-col gap-0.9375rem flex-1 overflow-hidden">
           <!-- 谁回复谁 -->
-          <div class="cur-text w-fit flex gap-10px">
+          <div class="cur-text w-fit flex gap-0.625rem">
             <global-name
               class="box-item"
               :account="reply.user.account"
@@ -22,7 +25,7 @@
                 <router-link
                   :to="`/user/space/${account}`"
                   class="!hover:color-[var(--primary-links-hover)] font-bold"
-                  ><span class="max-w-100px line-clamp-1">{{ nick }} </span>
+                  ><span class="max-w-6.25rem line-clamp-1">{{ nick }} </span>
                 </router-link>
               </template>
             </global-name>
@@ -45,7 +48,7 @@
           <div class="flex cur-text">
             <span>回复</span>
             <!-- 是自身本地的用户 -->
-            <span class="mx-5px">
+            <span class="mx-0.3125rem">
               <my-tooltip
                 class="box-item"
                 effect="dark"
@@ -56,7 +59,7 @@
                   :to="`/user/space/${userAccount}`"
                   class="color-[var(--at-person-color)] hover:color-[var(--at-person-color-hover)] flex"
                 >
-                  @<span class="max-w-100px line-clamp-1"
+                  @<span class="max-w-6.25rem line-clamp-1"
                     >{{ userNickName }} </span
                   >:
                 </router-link>
@@ -81,11 +84,11 @@
             </div>
           </div>
           <!-- 时间、回复、点赞、查看 -->
-          <div class="flex gap-20px h-25px items-center">
-            <div class="cur-text h-inherit flex items-center text-15px">
+          <div class="flex gap-1.25rem h-1.5625rem items-center">
+            <div class="cur-text h-inherit flex items-center text-0.9375rem">
               {{ moment(reply.updatedAt, "YYYY年MM月DD日 hh:mm") }}
             </div>
-            <div class="flex gap-10px items-center h-inherit">
+            <div class="flex gap-0.625rem items-center h-inherit">
               <!-- 点赞 -->
               <layout-article-comments-likes
                 :settingId="reply.settingId"
@@ -107,7 +110,7 @@
                 class="cur-pointer !hover:color-[var(--primary-links-hover)] msg-tools"
                 @click="emitReply(reply)"
               >
-                <i class="i-mynaui:chat w-14px h-14px"></i>
+                <i class="i-mynaui:chat w-0.875rem h-0.875rem"></i>
                 <span>回复</span>
               </div>
               <!-- 查看 -->
@@ -120,7 +123,7 @@
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
               >
                 <i
-                  class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
+                  class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
                 ></i>
                 <span>查看</span>
               </my-anchor>
@@ -140,7 +143,7 @@
           ></layout-article-comments-add>
         </div>
         <!-- 顶层的信息 -->
-        <div class="h-5.625rem w-100px cur-text line-clamp-5 flex-shrink-0">
+        <div class="h-5.625rem w-6.25rem cur-text line-clamp-5 flex-shrink-0">
           {{
             decompressStringNotError(reply.parentComment?.content || "") ||
             reply.article?.title ||
@@ -154,7 +157,7 @@
   <div
     ref="obEl"
     v-my-loading="() => ({ show: isLoading })"
-    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+    :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0.625rem' }"
   ></div>
 </template>
 
@@ -268,33 +271,33 @@ const handlerReply = (data: AddCommentBody) => {
 <!-- vditor 预览 -->
 <style lang="scss">
 .reply-msg-item {
-  --primary-gap: 10px;
-  --primary-pd: 10px;
+  --primary-gap: 0.625rem;
+  --primary-pd: 0.625rem;
   @extend %vditor-style;
 }
 </style>
 
 <style scoped lang="scss">
 .reply-msg-item {
-  border-bottom: 1px solid rgba(128, 128, 128, 0.703);
+  border-bottom: 0.0625rem solid rgba(128, 128, 128, 0.703);
   // 点赞回复等 按钮
   ::v-deep(.msg-tools) {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 0.1875rem;
     i {
-      $size: 13px;
+      $size: 0.8125rem;
       width: $size;
       height: $size;
     }
     span {
-      font-size: 15px;
+      font-size: 0.9375rem;
     }
   }
   // 来源的 信息
   .origin {
-    border-left: 2px solid rgba(128, 128, 128, 0.703);
-    padding-left: 10px;
+    border-left: 0.125rem solid rgba(128, 128, 128, 0.703);
+    padding-left: 0.625rem;
   }
 }
 </style>

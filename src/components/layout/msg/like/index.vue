@@ -1,7 +1,7 @@
 <template>
   <!-- 没有 id时显示 信息 -->
   <div class="msg-like-container" v-show="!$route.query.id">
-    <div class="like-container flex flex-col gap-10px">
+    <div class="like-container flex flex-col gap-0.625rem">
       <template
         v-for="item in likesData"
         :id="`${item.type}:${
@@ -25,7 +25,9 @@
               </template>
             </div>
             <!-- 中间信息 -->
-            <div class="flex-1 flex flex-col justify-center gap-10px ml-5px">
+            <div
+              class="flex-1 flex flex-col justify-center gap-0.625rem ml-0.3125rem"
+            >
               <!-- 名字 -->
               <div class="flex h-fit">
                 <template v-for="(user, i) in item.recentLikers" :key="user.id">
@@ -42,7 +44,7 @@
                       <router-link
                         :to="`/user/space/${account}`"
                         class="!hover:color-[var(--primary-links-hover)] font-bold"
-                        ><span class="max-w-100px line-clamp-1"
+                        ><span class="max-w-6.25rem line-clamp-1"
                           >{{ nick }}
                         </span>
                       </router-link>
@@ -56,18 +58,18 @@
                       ? `/doc/${item.articleId}`
                       : item.link || ''
                   "
-                  class="ml-10px !hover:color-[var(--primary-links-hover)] cur-pointer"
+                  class="ml-0.625rem !hover:color-[var(--primary-links-hover)] cur-pointer"
                 >
                   等总计<span>{{ item.likeCount }}</span
                   >人赞了我的{{ item.type === "comment" ? "评论" : "文章" }}
                 </my-anchor>
               </div>
-              <div class="flex gap-10px text-15px">
+              <div class="flex gap-0.625rem text-0.9375rem">
                 <!-- 时间等信息 -->
                 <div class="cur-text">
                   {{ moment(item.lastLikeAt, "YYYY年MM月DD日 hh:mm") }}
                 </div>
-                <div class="flex gap-7px">
+                <div class="flex gap-0.4375rem">
                   <!-- 查看 -->
                   <my-anchor
                     :to="
@@ -75,15 +77,15 @@
                         ? `/doc/${item.articleId}`
                         : item.link || ''
                     "
-                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center"
+                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center"
                   >
                     <i
-                      class="i-lsicon:view-outline w-15px h-15px translate-y-1px"
+                      class="i-lsicon:view-outline w-0.9375rem h-0.9375rem translate-y-0.0625rem"
                     ></i>
                     <span>查看</span>
                   </my-anchor>
                   <my-anchor
-                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-3px items-center cur-pointer"
+                    class="!hover:color-[var(--primary-links-hover)] msg-tools flex gap-0.1875rem items-center cur-pointer"
                     :to="
                       $route.fullPath +
                       `&id=${
@@ -98,14 +100,16 @@
                     "
                   >
                     <i
-                      class="i-material-symbols-light:list-alt-outline w-15px h-15px"
+                      class="i-material-symbols-light:list-alt-outline w-0.9375rem h-0.9375rem"
                     ></i>
                     <span>详情</span>
                   </my-anchor>
                 </div>
               </div>
             </div>
-            <div class="m-5px w-100px h-2.1875rem cur-text line-clamp-2">
+            <div
+              class="m-0.3125rem w-6.25rem h-2.1875rem cur-text line-clamp-2"
+            >
               {{
                 item.title ||
                 item.name ||
@@ -121,7 +125,7 @@
       ref="obEl"
       v-my-loading="() => ({ show: isLoading })"
       class="w-100%"
-      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '10px' }"
+      :style="{ '--mask': '#0000', height: isLoading ? '100%' : '0.625rem' }"
     ></div>
   </div>
   <layout-msg-like-details v-if="$route.query.id"></layout-msg-like-details>
@@ -206,28 +210,28 @@ const reqLikesCallback = async (cb?: () => void) => {
 
 <style scoped lang="scss">
 .like-container {
-  $avatar-size: 40px;
+  $avatar-size: 2.5rem;
   > .like-item {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.703);
+    border-bottom: 0.0625rem solid rgba(128, 128, 128, 0.703);
     // 两个的 头像
     .avatars {
       position: relative;
       width: $avatar-size * 1.8;
-      height: $avatar-size + 10px;
+      height: $avatar-size + 0.625rem;
       > .avatar {
         --size: #{$avatar-size};
         &:nth-of-type(2) {
           position: absolute;
-          right: 5px;
+          right: 0.3125rem;
           bottom: 0;
-          border: 1px solid rgba(128, 128, 128, 0.292);
+          border: 0.0625rem solid rgba(128, 128, 128, 0.292);
         }
       }
     }
     .avatar-single {
       width: $avatar-size * 1.8;
       > .avatar {
-        --size: 50px;
+        --size: 3.125rem;
       }
     }
   }
