@@ -1,16 +1,23 @@
 <template>
   <div class="my-vditor-container relative">
-    <div ref="docPreview" class="cur-text vditor-style"></div>
-    <div class="absolute top-10px right-10px flex flex-col gap-15px">
-      <slot name="btns"></slot>
-      <my-button
-        class="w-initial"
-        size="small"
-        @click="exportHtml"
-        v-if="isExportHtml"
-        >导出HTML文件</my-button
+    <div class="flex justify-end relative">
+      <h1 class="absolute top-0 left-50% translate-x-[-50%] cur-text">
+        {{ article?.title }}
+      </h1>
+      <div
+        class="flex-shrink-0 float-right mt-10px mr-10px flex flex-col gap-15px"
       >
+        <slot name="btns"></slot>
+        <my-button
+          class="w-initial"
+          size="small"
+          @click="exportHtml"
+          v-if="isExportHtml"
+          >导出HTML文件</my-button
+        >
+      </div>
     </div>
+    <div ref="docPreview" class="cur-text vditor-style"></div>
   </div>
 </template>
 
@@ -68,6 +75,7 @@ const exportHtml = () => {
   ::v-deep(.vditor-style) {
     overflow: hidden;
     padding: 40px;
+    padding-top: 20px;
     box-shadow: none;
   }
 }

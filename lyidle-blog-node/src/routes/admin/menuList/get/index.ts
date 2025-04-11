@@ -47,9 +47,6 @@ const buildMenuTree = ($menus: any[]) => {
   return menuTree
 }
 
-// 用户角色用户组
-const default_user = process.env.default_user!
-
 // 查询 菜单的回调
 const getMenuList = async (
   req: Request,
@@ -58,16 +55,22 @@ const getMenuList = async (
   isAll: boolean = false
 ) => {
   try {
-    let roles = (req.query?.roles && JSON.parse(req.query.roles as string)) || [
-      default_user,
-    ] // 从请求中获取角色名称
+    let roles = req.query?.roles && JSON.parse(req.query.roles as string) // 从请求中获取角色名称
+    if (!Array.isArray(roles) || !roles.length)
+      return res.result(void 0, "暂无权限访问任何菜单", false)
+
     // 判断 是否查询所有菜单
     if (isAll) roles = "*"
     // 保存 redis 的键 确保 缓存时的顺序一致 避免重复缓存
     let cacheKey = saveMenuCache(roles) || ""
     const cacheValue = await getKey(cacheKey)
     // 判断有无 缓存
-    if (cacheValue) return res.result(cacheValue, "获取菜单成功~")
+    if (cacheValue) {
+      if (cacheValue === "notFind")
+        return res.result(void 0, "暂无权限访问任何菜单", false)
+
+      return res.result(cacheValue, "获取菜单成功~")
+    }
     const menus = await Menu.findAll({
       include: [
         {
@@ -80,8 +83,11 @@ const getMenuList = async (
       ],
     })
     if (!menus.length) {
+      // 设置 缓存
+      if (cacheKey) await setKey(cacheKey, "notFind", default_expire)
       return res.result(void 0, "暂无权限访问任何菜单", false)
     }
+
     // 处理菜单中的 递归 菜单 从而形成 树状结构
     const result = buildMenuTree(menus)
 

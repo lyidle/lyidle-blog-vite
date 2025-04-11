@@ -231,7 +231,11 @@ export const useUserStore = defineStore(
       // 加载游客id
       await addTourist()
       // 重新加载路由 然后到达首页
-      mitt.emit("route:reload", () => mitt.emit("replaceToHome"))
+      mitt.emit("route:reload", () =>
+        setTimeout(() => {
+          mitt.emit("replaceToHome")
+        }, 500)
+      )
     }
 
     return {

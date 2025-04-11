@@ -14,15 +14,15 @@ const { userIds, adminIds, ownerIds } = require("./handlerRoleIds")
 const users = []
 // 插入用户 关联的角色信息
 const userRoles = []
-const userCounts = 103
+const userCounts = 3
 for (let i = 1; i <= userCounts; i++) {
   const userId = i
   // 默认 是 user
   let roleIds = deduplication(userIds)
   // 第一个是 owner
-  if (i === 1) roleIds = deduplication([ownerIds, adminIds])
+  if (i === 1) roleIds = deduplication([ownerIds, adminIds, userIds])
   // 偶数是 admin
-  if (i === 2) roleIds = deduplication(adminIds)
+  if (i === 2) roleIds = deduplication([adminIds, userIds])
   users.push({
     id: userId,
     account: `test${i}`,

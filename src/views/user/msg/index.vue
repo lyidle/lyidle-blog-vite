@@ -1,6 +1,6 @@
 <template>
   <my-card class="msg-container card_style flex relative !overflow-y-auto">
-    <div class="flex min-h-400px">
+    <div class="flex min-h-400px flex-1">
       <div class="flex-shrink-0 flex items-center">
         <!-- 侧边栏 -->
         <aside
@@ -53,7 +53,7 @@
         <!-- toggle -->
         <div class="toggle" @click="handlerFold"></div>
       </div>
-      <div class="msg-content p-0.625rem flex-1 overflow-hidden">
+      <div class="msg-content p-0.625rem flex-1 flex-shrink-0 overflow-hidden">
         <!-- title -->
         <div
           class="msg-box text-0.9688rem cur-text py-0.625rem pl-[var(--p)] flex items-center"
