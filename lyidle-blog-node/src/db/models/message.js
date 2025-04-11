@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       receiverId: DataTypes.INTEGER,
       // 生成id 标志评论的id，唯一，用于保存消息的的图片
       msgId: DataTypes.STRING,
+      // 是否观看了
+      isRead: DataTypes.BOOLEAN,
     },
     {
       sequelize,

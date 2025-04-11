@@ -232,8 +232,7 @@ const unScroll = () => {
 }
 
 // 鼠标滚轮事件的回调函数
-const scrollCb = ($e: Event) => {
-  const e = $e as WheelEvent
+const scrollCb = (e: WheelEvent) => {
   e.preventDefault()
   if (!e.deltaY) return
   // 往下滚动

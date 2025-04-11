@@ -17,7 +17,7 @@ export const handlerConstRoutes = (
   if (to.meta.isLogin) {
     if (!userToken.value) {
       ElMessage.warning(`访问当前页面需要登录哦~`)
-      router.push({ path: "/login", replace: true })
+      router.replace("/login")
       return
     }
   }
@@ -35,7 +35,7 @@ export const handlerConstRoutes = (
   )
   // 没有 通过 角色、权限 判断
   if (!isAccess && !isAccessPermissions) {
-    router.push({ path: "/", replace: true })
+    router.replace("/")
     ElMessage.warning(
       `访问当前页面需要 ${to.meta.roles} ${
         (isAccess && "角色") || (isAccessPermissions && "权限")

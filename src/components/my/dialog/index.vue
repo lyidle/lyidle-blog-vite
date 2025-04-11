@@ -152,8 +152,7 @@ let wrapTop = 0
 let wrapLeft = 0
 
 // 鼠标 按下
-const handlerMousedown = ($e: Event) => {
-  const e = $e as MouseEvent
+const handlerMousedown = (e: MouseEvent) => {
   // 判断是否是鼠标左键 与 只有 头部时才能移动 关闭等功能按下时不移动
   if (
     e.button !== 0 ||
@@ -178,8 +177,7 @@ const handlerMousedown = ($e: Event) => {
 }
 
 // 鼠标 抬起
-const handlerMouseup = ($e: Event) => {
-  const e = $e as MouseEvent
+const handlerMouseup = (e: MouseEvent) => {
   // 判断是否是鼠标左键
   if (e.button !== 0) return
   // 移除移动的事件监听
@@ -187,8 +185,7 @@ const handlerMouseup = ($e: Event) => {
   eventMouseup?.()
 }
 // 移动的回调
-const move = ($e: Event) => {
-  const e = $e as MouseEvent
+const move = (e: MouseEvent) => {
   const tar = containter.value as HTMLDivElement
   // 当前位置 减去 鼠标按下的初始位置 加上 元素的初始位置 即是元素的移动距离
   let changeX = e.pageX - curX + wrapLeft

@@ -13,12 +13,11 @@ export const useContextMenu = () => {
   const menuHeigh = ref()
   const menuWidth = ref()
   // 打开菜单
-  const open = async ($e: Event) => {
+  const open = async (e: MouseEvent) => {
     isClosed = false
     if (!menu) return
     // 初始化高度
     geometricinfo()
-    const e = $e as MouseEvent
     // 阻止默认事件 和  冒泡
     e.preventDefault()
     e.stopPropagation()

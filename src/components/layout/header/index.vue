@@ -9,7 +9,19 @@
 </template>
 
 <script setup lang="ts" name="LayoutHeader">
+// 引入 api
+import { isNewUserMsg, userMsCounts } from "@/api/user/msg"
+import { mitt } from "@/utils/emitter"
+// 引入 utils
 import { createIntersectionObserver, ObserverCallback } from "@/utils/observer"
+// 轮询控制器
+import { usePollingController } from "@/hooks/usePollingController"
+
+// 引入 仓库
+import { useUserStore } from "@/store/user"
+
+// 提取数据
+const { userId } = storeToRefs(useUserStore())
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 
@@ -29,9 +41,8 @@ const options: ObserverCallback = {
     headerColor.value = "var(--header-color-sticky)"
   },
 }
-
 let stopObserver: (() => void) | void
-onBeforeUnmount(() => stopObserver?.())
+// 挂载
 onMounted(() => {
   // 有 banner 则代理动态吸附
   const el = document.querySelector(".banner-createIntersectionObserver")
@@ -43,8 +54,46 @@ onMounted(() => {
     headerColor.value = "var(--header-color-sticky)"
   }
 })
-onUnmounted(() => {
+// 卸载
+onBeforeUnmount(() => {
+  stopObserver?.()
   options.stop?.()
+})
+
+// 消息轮询控制器（可全局管理） 判断是否有新的消息
+const pollingController = usePollingController({
+  onPoll: async () => {
+    const result = await isNewUserMsg()
+    if (!result) {
+      mitt.emit("msgCounts", 0)
+      return false
+    }
+    // 有新的消息则获取个数
+    const newMsgCounts = await userMsCounts()
+    mitt.emit("msgCounts", newMsgCounts)
+    return true
+  },
+})
+
+let init = false
+// 根据是否登录来判断是否请求 获取是否有消息
+watchEffect(() => {
+  const hasUser = userId.value
+  // 有用户
+  if (hasUser) {
+    // 没有初始化
+    if (!init) {
+      // 初始化
+      pollingController.start()
+      init = true
+      return
+    }
+    // 恢复
+    pollingController.resume()
+    return
+  }
+  // 暂停
+  pollingController.pause()
 })
 </script>
 

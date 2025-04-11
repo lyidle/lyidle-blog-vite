@@ -31,7 +31,10 @@
             ></i>
             <template #menu-default>
               <my-menu-item>
-                <my-anchor :to="'/test'" class="w-100px text-center">
+                <my-anchor
+                  :to="`/user/msg?to=whisper&id=${user.id}`"
+                  class="w-100px text-center"
+                >
                   <span>发私信</span>
                 </my-anchor>
               </my-menu-item>

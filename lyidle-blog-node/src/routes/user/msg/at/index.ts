@@ -27,6 +27,7 @@ router.get("/", async (req, res, next) => {
           model: User,
           as: "user",
           attributes: ["id", "account", "nickName", "avatar"],
+          paranoid: false,
         },
         {
           model: Comment,

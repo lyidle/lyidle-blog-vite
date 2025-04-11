@@ -168,8 +168,7 @@ export class clickEffectFn {
       }
     }
     // 鼠标事件
-    const onMousedown = ($e: Event) => {
-      const e = $e as MouseEvent
+    const onMousedown = (e: MouseEvent) => {
       pushBalls(clickEffectFn.randBetween(10, 20), e.clientX, e.clientY)
       document.body.classList.add("is-pressed")
       longPress = setTimeout(function () {
@@ -177,8 +176,7 @@ export class clickEffectFn {
         longPressed = true
       }, 500)
     }
-    const onMouseup = ($e: Event) => {
-      const e = $e as MouseEvent
+    const onMouseup = (e: MouseEvent) => {
       clearTimeout(longPress)
       if (longPressed == true) {
         document.body.classList.remove("is-longpress")
@@ -194,8 +192,7 @@ export class clickEffectFn {
       }
       document.body.classList.remove("is-pressed")
     }
-    const onMousemove = ($e: Event) => {
-      const e = $e as MouseEvent
+    const onMousemove = (e: MouseEvent) => {
       let x = e.clientX
       let y = e.clientY
       pointer.style.top = y + "px"
@@ -348,8 +345,7 @@ export class moveEffectFn {
         color: colours[Math.floor(Math.random() * colours.length)],
       })
     }
-    function onMousemove($e: Event) {
-      const e = $e as MouseEvent
+    function onMousemove(e: MouseEvent) {
       // 添加星星数据
       addStarts(e)
       //设置100毫秒内效果

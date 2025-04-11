@@ -32,8 +32,7 @@ export const useFullScreen = () => {
   }
 
   // 劫持 F10 实现 元素的全屏
-  const proxyF10Down = ($e: Event) => {
-    const e = $e as KeyboardEvent
+  const proxyF10Down = (e: KeyboardEvent) => {
     if (e.key === "F11") e.preventDefault()
     if (e.key === "F10") {
       e.preventDefault() // 禁用默认的 F10 行为

@@ -29,6 +29,12 @@ enum API {
   details = "/user/msg/whisper/get/details",
   // 是否有新消息
   status = "/user/msg/whisper/mark",
+  // 得到消息的个数
+  counts = "/user/msg/whisper/get/counts",
+  // 是否有新消息
+  isNewUserMsg = "/user/msg/whisper/mark/isNewUserMsg",
+  // 更新 该用户的 消息标记全为已读
+  delNewUserMsg = "/user/msg/whisper/mark/delNewUserMsg",
   // 删除 消息
   del = "/user/msg/whisper/del",
 }
@@ -86,6 +92,17 @@ export const userMsgStatus = (receiverId: number) =>
   request.get<any, boolean>(
     server + prefix + API.status + `/?receiverId=${receiverId}`
   )
+// 得到 消息个数
+export const userMsCounts = () =>
+  request.get<any, number | null>(server + prefix + API.counts)
+
+// 是否有 新消息
+export const isNewUserMsg = () =>
+  request.get<any, boolean>(server + prefix + API.isNewUserMsg)
+
+// 更新 该用户的 消息标记全为已读
+export const delNewUserMsg = () =>
+  request.delete<any, void>(server + prefix + API.delNewUserMsg)
 
 // 删除消息的状态
 export const delUserMsg = (id: number) =>

@@ -2,6 +2,7 @@ import express from "express"
 import { Op, literal } from "sequelize"
 // 引入 api
 import details from "./details"
+import counts from "./counts"
 const router = express.Router()
 // 引入模型
 const { Message, User } = require("@/db/models")
@@ -61,6 +62,7 @@ router.get("/", async (req, res, next) => {
         },
       },
       attributes: ["id", "account", "nickName", "signer", "avatar"], // 只查询需要的字段
+      paranoid: false,
       raw: true,
     })
 
@@ -137,4 +139,5 @@ router.get("/", async (req, res, next) => {
   }
 })
 router.use("/details", details)
+router.use("/counts", counts)
 export default router

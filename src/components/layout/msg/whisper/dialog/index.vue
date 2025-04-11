@@ -135,6 +135,29 @@ import { useEventListener } from "@/hooks/useEventListener"
 import { handlerReqErr } from "@/utils/request/error/successError"
 import { nanoid } from "nanoid"
 import { mitt } from "@/utils/emitter"
+import { PollingController } from "@/utils/PollingController"
+import { usePollingController } from "@/hooks/usePollingController"
+
+const route = useRoute()
+const router = useRouter()
+
+let receiverId: number | string = route.query.id as string
+onMounted(() => {
+  if (!receiverId || !Number.isInteger(+receiverId)) {
+    ElMessage.warning("查询的消息id不合法")
+    isLoading.value = false
+    router.replace("/user/msg?to=whisper")
+    return
+  }
+  if (+receiverId === userId.value) {
+    router.replace("/user/msg?to=whisper")
+    ElMessage.warning("不能和自己发送消息")
+    return
+  }
+  // 初始化 交叉传感器
+  initCallback()
+})
+
 // 提取数据
 const { userId, userAccount, userNickName } = storeToRefs(useUserStore())
 
@@ -145,9 +168,6 @@ const handlerTime = (time: string) => {
   return now + "前"
 }
 
-const route = useRoute()
-const router = useRouter()
-
 // 拖动 改变 输入框的 元素
 const inputResize = ref()
 // 需要改变高度 的 元素
@@ -155,9 +175,9 @@ const inputContainer = ref()
 // 存储初始位置和高度
 const initialY = ref(0)
 const initialHeight = ref(0)
+
 // 监听 鼠标按下与松开
-useEventListener(inputResize, "mousedown", ($e) => {
-  const e = $e as MouseEvent
+useEventListener(inputResize, "mousedown", (e) => {
   // 不是鼠标左键 则退出
   if (e.button !== 0) return
   // 阻止默认行为，防止选中文本等
@@ -172,8 +192,7 @@ useEventListener(inputResize, "mousedown", ($e) => {
   useEventListener("mouseup", handleMouseUp, { once: true })
 })
 // 鼠标移动处理函数
-const handleMouseMove = ($e: Event) => {
-  const e = $e as MouseEvent
+const handleMouseMove = (e: MouseEvent) => {
   if (!inputContainer.value) return
 
   // 计算鼠标移动的垂直距离
@@ -201,6 +220,7 @@ mitt.on("popmsgDelComplete", popmsgDelComplete)
 onBeforeUnmount(() => {
   mitt.off("popmsgDelComplete", popmsgDelComplete)
 })
+
 // 输入框的 组件实例
 const instance = ref()
 // 得到 内容
@@ -217,7 +237,6 @@ const validateContext = () => {
 // 发送消息
 const sendMsg = async () => {
   // 非法判断
-  let receiverId: number | string = route.query.id as string
   if (!receiverId) return
   receiverId = +receiverId
   // 不是整数
@@ -278,13 +297,13 @@ const validate = () => {
 
 let init = false
 let stopObserver: (() => void) | void
-const stopIntersection = () => {
+const stopIntersection = () => {}
+onBeforeUnmount(() => {
   // 停止交叉传感器
   stopObserver?.()
-  // 停止轮询
+  // 停止 轮询
   pollingController.stop()
-}
-onBeforeUnmount(stopIntersection)
+})
 const obEl = ref<HTMLElement>()
 // 初始化 交叉传感器
 const initCallback = () => {
@@ -294,10 +313,9 @@ const initCallback = () => {
       enter: async () => {
         // 初始化 后 自增当前页
         if (init) ++pagination.value.currentPage
-        let temp = init
         await reqWhisper()
-        // 没有初始化
-        if (!temp) {
+        // 初始化后
+        if (init) {
           // 初始化消息轮询
           pollingController.start()
         }
@@ -310,19 +328,8 @@ const reloadInitCallback = () => {
   stopObserver = undefined
   init = false
   initCallback()
+  pollingController.stop()
 }
-
-onMounted(async () => {
-  const userId = route.query.id
-  if (!userId || !Number.isInteger(+userId)) {
-    ElMessage.warning("查询的消息id不合法")
-    isLoading.value = false
-    router.replace("/user/msg?to=whisper")
-    return
-  }
-  // 初始化 交叉传感器
-  initCallback()
-})
 
 // 请求 得到用户 回复的信息数据
 const reqWhisper = async () => {
@@ -347,107 +354,108 @@ const reqWhisper = async () => {
   }
 }
 
-type pollingControllerType = {
-  isRunning: boolean
-  retryCount: number
-  maxDelay: number
-  timer: null | setTimout
-  start: () => void
-  stop: () => void
-  _poll: () => void
-}
+// 存储初始标题
+const tempTitle = document.title
 
 // 消息轮询控制器（可全局管理）
-const pollingController: pollingControllerType = {
-  isRunning: false,
-  retryCount: 0,
-  maxDelay: 5000, // 最大延迟5秒
-  timer: null,
-  // 启动轮询
-  start: async function () {
-    if (this.isRunning) return
-    this.isRunning = true
-    console.log(`开始轮询:${route.query.id}`)
-    this._poll()
-  },
-
-  // 停止轮询
-  stop: function () {
-    this.timer && clearTimeout(this.timer)
-    this.isRunning = false
-    this.retryCount = 0
-  },
-
-  // 实际轮询逻辑
-  _poll: async function () {
-    try {
+const pollingController = usePollingController(
+  {
+    onPoll: async () => {
       const userId = route.query.id
-      if (!userId || !Number.isInteger(+userId))
-        throw new Error("查询的消息id不合法")
+      if (!userId || !Number.isInteger(+userId)) {
+        console.error("查询的消息id不合法")
+        pollingController.stop()
+        return false
+      }
 
-      // 1. 检查新消息状态
       const statusRes = await userMsgStatus(+userId)
-      console.log(statusRes, "轮询状态")
-      if (statusRes) {
-        const tempCurrentpage = pagination.value.currentPage
-        pagination.value.currentPage = 1
-        // 重新请求数据
-        await reqWhisperCallback({
-          orderByCreated: true,
-        })
-        pagination.value.currentPage = tempCurrentpage
-        this.retryCount = 0 // 重置重试计数
-      }
-    } catch (error) {
-      console.error("轮询异常:", error)
-    } finally {
-      // 3. 计算下次轮询时间（指数退避）
-      const delay = Math.min(5000 * Math.pow(2, this.retryCount), this.maxDelay)
-      this.retryCount++
-      // 4. 继续轮询
-      if (this.isRunning) {
-        this.timer = setTimeout(() => this._poll(), delay)
-      }
-    }
+
+      // 没有新消息
+      if (!statusRes) return false
+
+      const tempPage = pagination.value.currentPage
+      pagination.value.currentPage = 1
+      await reqWhisperCallback({ orderByCreated: true, isBottom: true })
+      pagination.value.currentPage = tempPage
+
+      document.title = tempTitle + "  有新的消息"
+      return true // 表示需要继续轮询
+    },
+    onError: (error) => {
+      console.error("请求获取消息失败:", error)
+      ElMessage.error("请求获取消息失败")
+      // 可在此处添加重试上限逻辑
+    },
   },
-}
+  {
+    unauto: true,
+  }
+)
+
+// 消息的容器
 const msgContext = ref()
 // 请求
 const reqWhisperCallback = async (options?: {
   cb?: () => void
   orderByCreated?: boolean
+  isBottom?: boolean
 }) => {
   if (!validate()) return
-  const cb = options?.cb
-  const orderByCreated = options?.orderByCreated
-  isLoading.value = true
-  const result = await getUserMsgDetails({
-    currentPage: pagination.value.currentPage,
-    pageSize: pagination.value.pageSize,
-    receiverId: +(route.query.id as string) as number,
-  })
+  try {
+    const cb = options?.cb
+    // 是否排序
+    const orderByCreated = options?.orderByCreated
+    // 是否到底部 收到新消息时
+    const isBottom = options?.isBottom
+    // 开启 加载
+    isLoading.value = true
+    const result = await getUserMsgDetails({
+      currentPage: pagination.value.currentPage,
+      pageSize: pagination.value.pageSize,
+      receiverId: +(route.query.id as string) as number,
+    })
 
-  // 获取滚动位置
-  let scrollTopBeforeUpdate = msgContext.value?.scrollTop || 0
-  let scrollHeightBeforeUpdate = msgContext.value?.scrollHeight || 0
+    // 获取滚动位置
+    let scrollTopBeforeUpdate = 0
+    let scrollHeightBeforeUpdate = 0
 
-  const newData = unionBy(list.value, result.list, "id")
-  // 是否自动赋值
-  list.value = orderByCreated ? orderList(newData) : newData
-  pagination.value = result.pagination
-  receiver.value = result.receiver
-  isLoading.value = false
-  cb?.()
+    if (!isBottom) {
+      // 获取滚动位置
+      scrollTopBeforeUpdate = msgContext.value?.scrollTop || 0
+      scrollHeightBeforeUpdate = msgContext.value?.scrollHeight || 0
+    }
 
-  await nextTick()
+    const newData = unionBy(list.value, result.list, "id")
 
-  // 更新滚动位置
-  if (msgContext.value) {
-    const scrollHeightAfterUpdate = msgContext.value.scrollHeight
-    const heightDiff = scrollHeightAfterUpdate - scrollHeightBeforeUpdate
-    msgContext.value.scrollTop = scrollTopBeforeUpdate + heightDiff
+    // 是否自动赋值
+    list.value = orderByCreated ? orderList(newData) : newData
+    pagination.value = result.pagination
+    receiver.value = result.receiver
+    isLoading.value = false
+    cb?.()
+    if (isBottom) {
+      msgContext.value.scrollTo({
+        top: "100%",
+        behavior: "smooth",
+      })
+      ElMessage.info("有新消息")
+      document.title = tempTitle
+    }
+    await nextTick()
+
+    // 更新滚动位置
+    if (!isBottom && msgContext.value) {
+      const scrollHeightAfterUpdate = msgContext.value.scrollHeight
+      const heightDiff = scrollHeightAfterUpdate - scrollHeightBeforeUpdate
+      msgContext.value.scrollTop = scrollTopBeforeUpdate + heightDiff
+    }
+
+    return result
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("获取消息失败")
+    isLoading.value = false
   }
-  return result
 }
 
 // 对数据进行排序 当数据更新时需要排序，获得 回复时需要
@@ -558,6 +566,12 @@ html[themes$="dark"] {
     background-color: rgba(51, 51, 51, 0.233);
   }
 
+  // 输入框的 vditor
+  .inputContainer {
+    ::v-deep(.vditor-style) {
+      @extend %owner-popmsg-dark;
+    }
+  }
   // 输入框拖拽 元素
   .resize-input {
     background-color: #638aac;

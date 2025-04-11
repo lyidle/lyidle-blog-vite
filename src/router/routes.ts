@@ -193,6 +193,7 @@ export const constantRoute: RouteRecordRaw[] = [
           bannerContextHidden: true,
           bannerWaves: false,
           isLogin: true,
+          title: "消息中心",
         },
         component: () => import("@/views/user/msg/index.vue"),
       },

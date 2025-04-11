@@ -32,7 +32,7 @@
                 <span class="w-fit max-w-100px line-clamp-1">{{ nick }} </span>
               </template>
             </global-name>
-            <div class="line-clamp-1">
+            <div class="w-fit max-w-100px truncate">
               {{ decompressStringNotError(item.message?.content || "") }}
             </div>
           </div>

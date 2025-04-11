@@ -94,6 +94,7 @@ router.get("/", async (req, res, next) => {
             "userProvince",
             "userAgent",
           ],
+          required: true,
         },
         {
           model: LikeDislike,

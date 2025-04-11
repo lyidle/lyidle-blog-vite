@@ -130,18 +130,18 @@
       <div class="cur-text flex gap-[var(--primary-gap)]">
         <div class="h-25px flex items-center gap-5px">
           <i class="i-jam:gps w-1em h-1em"></i>
-          {{ cloneComment.user.userProvince }}
+          {{ cloneComment.user?.userProvince }}
         </div>
         <div class="h-25px flex items-center gap-5px">
           <i class="i-icon-park-outline:system w-1em h-1em"></i
           >{{
-            cloneComment.user.userAgent?.split("|")[0].trim() || "未知系统版本"
+            cloneComment.user?.userAgent?.split("|")[0].trim() || "未知系统版本"
           }}
         </div>
         <div class="h-25px flex items-center gap-5px">
           <i class="i-arcticons:styxbrowser w-1em h-1em"></i>
           {{
-            cloneComment.user.userAgent?.split("|")[1].trim() ||
+            cloneComment.user?.userAgent?.split("|")[1].trim() ||
             "未知浏览器版本"
           }}
         </div>

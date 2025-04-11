@@ -35,6 +35,8 @@ router.get("/", async (req, res, next) => {
           model: User,
           as: "user", // 评论作者信息
           attributes: ["id", "account", "nickName", "avatar"],
+          required: true,
+          paranoid: false,
         },
         {
           model: Article,
@@ -66,6 +68,7 @@ router.get("/", async (req, res, next) => {
           ],
           attributes: ["id", "content", "link"],
           required: false,
+          paranoid: false,
         },
       ],
       order: [

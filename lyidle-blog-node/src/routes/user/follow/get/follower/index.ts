@@ -30,13 +30,14 @@ router.get("/", async (req, res, next) => {
     total = parseInt(total)
     if (typeof total !== "number")
       // 获取关注总数
-      total = await user.countFollowing()
+      total = await user.countFollowing({ paranoid: false })
 
     // 获取分页后的关注列表
     const followings = await user.getFollowing({
       attributes: ["id", "nickName", "avatar", "account", "signer"],
       limit: pageSize,
       offset: offset,
+      paranoid: false,
       joinTableAttributes: [], // 不返回中间表字段
     })
 

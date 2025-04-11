@@ -26,7 +26,7 @@ export const routerEventHandlered = (router: any) => {
       onlyTokenmsg = ""
       clearTimeout(tim)
     }, 1000)
-    router.push({ path: "/", replace: true })
+    router.replace("/")
   })
 
   mitt.on("account inconsistent", (msg: string, to?: string) => {
@@ -54,7 +54,7 @@ export const routerEventHandlered = (router: any) => {
         }
       }
       if (!isAccess) {
-        router.push({ path: "/", replace: true })
+        router.replace("/")
         ElMessage.warning("权限丢失了")
       }
     }
@@ -67,11 +67,16 @@ export const routerEventHandlered = (router: any) => {
     switch (msg) {
       case "not article":
         isTip && ElMessage.error("获取文章失败")
-        router.push({ path: "/404", replace: true })
+        router.replace("/404")
         break
       default:
-        router.push({ path: "/404", replace: true })
+        router.replace("/404")
         break
     }
+  })
+
+  // 到达首页
+  mitt.on("replaceToHome", () => {
+    router.replace("/")
   })
 }

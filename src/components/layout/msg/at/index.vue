@@ -132,6 +132,7 @@ const reqAtCallback = async (cb?: () => void) => {
 <style lang="scss" scoped>
 .at-data {
   border-left: 2px solid rgba(128, 128, 128, 0.703);
+  padding-left: 5px;
 }
 .item-at {
   border-bottom: 1px solid rgba(159, 159, 159, 0.305);

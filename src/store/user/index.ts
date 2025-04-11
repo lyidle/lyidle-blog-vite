@@ -225,11 +225,10 @@ export const useUserStore = defineStore(
       resetStore()
       // 额外 重置 token
       userToken.value = ""
+      // 加载游客id
       await addTourist()
-      // 重新加载路由
-      mitt.emit("route:reload")
-      // 重新 获取小站咨询
-      mitt.emit("reloadWebInfo")
+      // 重新加载路由 然后到达首页
+      mitt.emit("route:reload", () => mitt.emit("replaceToHome"))
     }
 
     return {
