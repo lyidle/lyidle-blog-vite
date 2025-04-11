@@ -16,7 +16,7 @@ const { existsSync, rm } = require("fs")
 // 引入错误函数
 const setDbError = require("../../utils/error/setDbError/js")
 
-const { getKey, setKey } = require("../../utils/redis/js")
+const { getKey, setKey, delKey } = require("../../utils/redis/js")
 /**
  * 更新文章的回调
  * @param {string} mode 模式
@@ -28,8 +28,6 @@ const updateTotalUsers = async (mode, sym) => {
     let count = await getKey("userCounts")
     count = +count || 0
     const updatedCount = parseInt(count + 1 * sym)
-    console.log({ mode, count, sym, updatedCount })
-
     await setKey("userCounts", updatedCount)
   } catch (error) {
     console.error(`${mode}时，更新用户总数到 Redis 中失败:`, error)
@@ -37,7 +35,7 @@ const updateTotalUsers = async (mode, sym) => {
 }
 
 // 删除时 图片清理逻辑
-const handlerDelImgs = async (article, options) => {
+const handlerDelImgs = async (user, options) => {
   // 软删除退出
   if (!options.force) return
   try {
@@ -173,28 +171,28 @@ module.exports = (sequelize, DataTypes) => {
       // 加上 钩子 处理 User 表的信息
       hooks: {
         // 创建的钩子
-        afterCreate: async (article, options) => {
+        beforeCreate: async (user, options) => {
           // 更新 总个数
           updateTotalUsers("创建", 1)
         },
         // 删除的钩子
-        afterDestroy: async (user, options) => {
+        beforeDestroy: async (user, options) => {
+          // 硬删除
+          if (options.force) {
+            // 清除token 缓存
+            delKey(`user:${user.id}:token`)
+          }
           // 处理 图片清理
           handlerDelImgs(user, options)
-
           // 检查是否是第一次软删除
-          if (article.previous("isBin")) return
-          // 检查是否已经删除过（防止重复删除）
-          if (!article.get("isBin")) return
+          if (user.previous("isBin")) return
           // 更新 总个数
           updateTotalUsers("删除", -1)
         },
         // 恢复时
-        afterRestore: async (article, options) => {
+        beforeRestore: async (user, options) => {
           // 检查是否是第一次恢复（即之前确实被软删除过）
-          if (!article.previous("isBin")) return
-          // 检查是否已经恢复过（防止重复恢复）
-          if (article.get("isBin")) return
+          if (!user.previous("isBin")) return
           // 更新 总个数
           updateTotalUsers("恢复", 1)
         },

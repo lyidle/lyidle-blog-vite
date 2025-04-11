@@ -91,6 +91,19 @@ router.get("/user", async (req, res, next) => {
       "查询用户，至少要传入id、roles、account中的一个参数~",
       false
     )
+
+  // 计数
+  let num = 0
+  id && ++num
+  roles && ++num
+  account && ++num
+  if (num !== 1)
+    return res.result(
+      void 0,
+      "查询用户，只能传入id、roles、account其中的一个参数~",
+      false
+    )
+
   if (roles && roles !== default_owner) {
     return res.result(
       void 0,

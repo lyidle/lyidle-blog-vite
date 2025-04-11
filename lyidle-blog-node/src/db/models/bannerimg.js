@@ -43,11 +43,11 @@ module.exports = (sequelize, DataTypes) => {
       // 加上 钩子 处理 BannerImg 表的信息
       hooks: {
         // 监听更新操作
-        afterUpdate: handlerRedisDel,
+        beforeUpdate: handlerRedisDel,
         // 监听删除操作
-        afterDestroy: handlerRedisDel,
+        beforeDestroy: handlerRedisDel,
         // 恢复时
-        afterRestore: handlerRedisDel,
+        beforeRestore: handlerRedisDel,
       },
     }
   )

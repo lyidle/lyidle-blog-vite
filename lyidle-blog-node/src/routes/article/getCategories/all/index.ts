@@ -4,6 +4,9 @@ import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
+
+const ms = require("ms")
+const default_expire = ms(process.env.default_expire)
 router.get("/", async (req, res) => {
   // 提取信息
   const { author } = req.query
@@ -34,7 +37,7 @@ router.get("/", async (req, res) => {
     categoriesMap.clear()
 
     // 设置 缓存
-    await setKey(`allCategories:${author}`, categories)
+    await setKey(`allCategories:${author}`, categories, default_expire)
     // 返回
     res.result(categories, "获取所有categories成功~")
   } catch (error) {

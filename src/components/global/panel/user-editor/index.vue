@@ -79,11 +79,12 @@
           <my-upload v-model="avatar" :auto-remove="false"></my-upload>
           <my-button @click="updateAvatar" class="mt-5px"> 更新头像 </my-button>
         </div>
-        <div class="w-100%">
-          <div class="text-20px text-center mb-15px">账号状态</div>
-          <my-button @click="toggleUserBin(userIsBin)">{{
+        <div class="w-100% flex flex-col gap-15px">
+          <div class="text-20px text-center">账号状态</div>
+          <my-button class="!m-0" @click="toggleUserBin(userIsBin)">{{
             userIsBin ? "恢复账号" : "注销账号"
           }}</my-button>
+          <my-button class="!m-0" v-if="userIsBin">彻底销毁</my-button>
         </div>
       </div>
     </div>
@@ -384,7 +385,8 @@ const toggleUserBin = async (isBin: string | null) => {
       )
       userIsBin.value = `${new Date()}`
     } catch (error) {
-      ElMessage.error(`注销账号失败~`)
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error(`注销账号失败~`)
     }
     return
   }

@@ -3,6 +3,9 @@ import express from "express"
 const { Article, ArticleCount } = require("@/db/models")
 const router = express.Router()
 
+const ms = require("ms")
+const look_gap_expire = ms(process.env.look_gap_expire)
+
 /**
  * 创建或更新浏览量
  */
@@ -38,7 +41,7 @@ router.post("/", async (req, res, next) => {
       await articleCount.save()
     }
     // 设置缓存
-    await setKey(cacheKey, true)
+    await setKey(cacheKey, true, look_gap_expire)
     return res.result(void 0, "更新文章浏览量成功")
   } catch (error) {
     return res.result(void 0, "更新文章浏览量失败", false)

@@ -369,39 +369,37 @@ module.exports = (sequelize, DataTypes) => {
       // 加上 钩子 处理 Article 表的信息
       hooks: {
         // 创建的钩子
-        afterCreate: async (article, options) => {
+        beforeCreate: async (article, options) => {
           // 更新字数
           handlerCreateUpdateTotalWorlds(article, options)
           // 更新 总个数
           updateTotalPages("创建", 1)
         },
         // 更新的钩子
-        afterUpdate: async (article, options) => {
+        beforeUpdate: async (article, options) => {
           // 处理 图片清理
           handlerUpdateUpdateImgs(article, options)
+          // 需要不是删除的情况
+          if (article.get("isBin")) return
           // 更新字数
           handlerUpdateUpdateTotalWorlds(article, options)
         },
         // 删除的钩子
-        afterDestroy: async (article, options) => {
+        beforeDestroy: async (article, options) => {
           // 处理 图片清理
           handlerDelUpdateImgs(article, options)
 
-          // 检查是否是第一次软删除
+          // 检查是否是第一次删除
           if (article.previous("isBin")) return
-          // 检查是否已经删除过（防止重复删除）
-          if (!article.get("isBin")) return
           // 更新字数
           handlerDelUpdateTotalWorlds(article, options)
           // 更新 总个数
           updateTotalPages("删除", -1)
         },
         // 恢复时
-        afterRestore: async (article, options) => {
+        beforeRestore: async (article, options) => {
           // 检查是否是第一次恢复（即之前确实被软删除过）
           if (!article.previous("isBin")) return
-          // 检查是否已经恢复过（防止重复恢复）
-          if (article.get("isBin")) return
           // 更新字数
           handlerRestoreUpdateTotalWorlds(article)
           // 更新 总个数

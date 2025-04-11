@@ -4,6 +4,8 @@ import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
+const ms = require("ms")
+const default_expire = ms(process.env.default_expire)
 // 分页获取文章
 router.get("/", async (req, res, next) => {
   const { query } = req
@@ -40,7 +42,11 @@ router.get("/", async (req, res, next) => {
 
     if (count)
       // 设置 缓存
-      await setKey(`articlePagination:${currentPage},${pageSize}`, result)
+      await setKey(
+        `articlePagination:${currentPage},${pageSize}`,
+        result,
+        default_expire
+      )
 
     return res.result(result, "获取文章成功~")
   } catch (error) {

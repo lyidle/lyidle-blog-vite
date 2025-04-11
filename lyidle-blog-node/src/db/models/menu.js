@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       // 加上 钩子 处理 BannerImg 表的信息
       hooks: {
         // 监听创建操作
-        afterCreate: async (menu, options) => {
+        beforeCreate: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
           let cacheKey2 = "bannerImg:bin:*"
@@ -80,11 +80,11 @@ module.exports = (sequelize, DataTypes) => {
               await delKey(cacheKey2)
             }
           } catch (error) {
-            console.error("在 Menu 的 afterCreate 钩子中发生错误:", error)
+            console.error("在 Menu 的 beforeCreate 钩子中发生错误:", error)
           }
         },
         // 监听更新操作
-        afterUpdate: async (menu, options) => {
+        beforeUpdate: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
           let cacheKey2 = "bannerImg:bin:*"
@@ -195,12 +195,12 @@ module.exports = (sequelize, DataTypes) => {
                 }
               }
             } catch (error) {
-              console.error("在 Menu 的 afterUpdate 钩子中发生错误:", error)
+              console.error("在 Menu 的 beforeUpdate 钩子中发生错误:", error)
             }
           }
         },
         // 监听删除操作
-        afterDestroy: async (menu, options) => {
+        beforeDestroy: async (menu, options) => {
           // 删除查询所有 `bannerImg:*` 的缓存
           let cacheKey = "bannerImg:*"
           let cacheKey2 = "bannerImg:bin:*"
@@ -248,7 +248,7 @@ module.exports = (sequelize, DataTypes) => {
               await delKey(cacheKey2)
             }
           } catch (error) {
-            console.error("在 Menu 的 afterDestroy 钩子中发生错误:", error)
+            console.error("在 Menu 的 beforeDestroy 钩子中发生错误:", error)
           }
         },
       },

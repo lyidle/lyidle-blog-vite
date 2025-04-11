@@ -4,6 +4,9 @@ import { getKey, setKey } from "@/utils/redis"
 const router = express.Router()
 // 引入模型
 const { Article } = require("@/db/models")
+
+const ms = require("ms")
+const default_expire = ms(process.env.default_expire)
 router.get("/", async (req, res) => {
   // 提取信息
   const { author } = req.query
@@ -39,7 +42,7 @@ router.get("/", async (req, res) => {
     tagsMap.clear()
 
     // 设置 缓存
-    await setKey(`allTags:${author}`, tags)
+    await setKey(`allTags:${author}`, tags, default_expire)
     // 返回
     res.result(tags, "获取所有tags成功~")
   } catch (error) {
