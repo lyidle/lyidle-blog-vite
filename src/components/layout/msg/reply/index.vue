@@ -140,7 +140,7 @@
           ></layout-article-comments-add>
         </div>
         <!-- 顶层的信息 -->
-        <div class="h-90px w-100px cur-text line-clamp-5 flex-shrink-0">
+        <div class="h-5.625rem w-100px cur-text line-clamp-5 flex-shrink-0">
           {{
             decompressStringNotError(reply.parentComment?.content || "") ||
             reply.article?.title ||

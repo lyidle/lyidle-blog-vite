@@ -154,7 +154,10 @@ watch(
   transition: width var(--primary-during);
   color: var(--primary-color);
   @include media(sm) {
-    width: 90%;
+    width: 95%;
+  }
+  @include media(xs) {
+    width: 100%;
   }
 
   // 左侧 导航

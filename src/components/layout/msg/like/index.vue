@@ -105,7 +105,7 @@
                 </div>
               </div>
             </div>
-            <div class="m-5px w-100px h-35px cur-text line-clamp-2">
+            <div class="m-5px w-100px h-2.1875rem cur-text line-clamp-2">
               {{
                 item.title ||
                 item.name ||
@@ -139,7 +139,7 @@ import moment from "@/utils/moment"
 // 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 
-const normalSize = 3
+const normalSize = 4
 const pagination = ref<GetUserLikes["data"]["pagination"]>({
   currentPage: 1,
   pageSize: normalSize,

@@ -100,6 +100,7 @@ const delMsgCountsMark = throttle(async () => {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
 .item-msg {
   position: relative;
   > .tip-dot {
@@ -110,7 +111,7 @@ const delMsgCountsMark = throttle(async () => {
     width: $size;
     height: $size;
     position: absolute;
-    top: ($size / 3);
+    top: math.div($size, 3);
     right: -$size + 2px;
     border-radius: 50%;
     overflow: hidden;
