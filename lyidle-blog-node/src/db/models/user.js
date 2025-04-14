@@ -125,7 +125,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: accountReg.msg,
           },
           isFilter(value) {
-            if (!filterWords.verify(value)) throw new Error("账号包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`账号包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
@@ -140,8 +142,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: nickNameReg.msg,
           },
           isFilter(value) {
-            if (!filterWords.verify(value))
-              throw new Error("用户名包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`用户名包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
@@ -176,7 +179,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: {
           isFilter(value) {
-            if (!filterWords.verify(value)) throw new Error("签名包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`签名包含敏感词汇:${filters.join("、")}`)
           },
         },
       },

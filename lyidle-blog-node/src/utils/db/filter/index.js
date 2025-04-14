@@ -43,6 +43,17 @@ class FilterWords {
     return this.#mint.verify(word)
   }
 
+  // 验证 并返回未通过的字段
+  verifyPlus(word) {
+    if (!this.#isInit || !this.#mint) throw new Error("敏感词库未初始化")
+    // 不需要替换
+    const filters = this.#mint.filter(word, { replace: false }).words
+    // 没有 敏感词的 则通过
+    if (!filters.length) return false
+    // 没有通过的则 返回没有通过的词组
+    return filters
+  }
+
   hasInit() {
     return this.#isInit
   }

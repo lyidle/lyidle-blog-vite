@@ -67,8 +67,9 @@ module.exports = (sequelize, DataTypes) => {
             // 判断有无文本
             if (!content) return
             // 有则判断
-            if (!filterWords.verify(content))
-              throw new Error("评论包含敏感词汇")
+            const filters = filterWords.verifyPlus(content)
+            if (!filters) return
+            throw new Error(`评论包含敏感词汇:${filters.join("、")}`)
           },
         },
       },

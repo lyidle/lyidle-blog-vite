@@ -234,7 +234,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: titleReg.msg,
           },
           isFilter(value) {
-            if (!filterWords.verify(value)) throw new Error("标题包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`标题包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
@@ -249,9 +251,9 @@ module.exports = (sequelize, DataTypes) => {
             let content = decompressStringNotError(value || "")
             // 判断有无文本
             if (!content) return
-            // 有则判断
-            if (!filterWords.verify(content))
-              throw new Error("内容包含敏感词汇")
+            const filters = filterWords.verifyPlus(content)
+            if (!filters) return
+            throw new Error(`内容包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
@@ -280,7 +282,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: categoryReg.msg,
           },
           isFilter(value) {
-            if (!filterWords.verify(value)) throw new Error("分类包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`分类包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
@@ -312,15 +316,24 @@ module.exports = (sequelize, DataTypes) => {
           },
           // 每一项
           isEachItemValid(value) {
+            // 保存 敏感词
+            let filters = new Set()
             for (const tag of value) {
               // 判断正则
               if (!tagsReg.itemReg.test(tag)) {
                 throw new Error(tagsReg.itemMsg)
               }
               // 判断是否合法
-              if (!filterWords.verify(tag))
-                throw new Error(`标签包含敏感词汇,标签为:${tag}`)
+              if (filterWords.verifyPlus(tag)) filters.add(tag)
             }
+            // 判断有无敏感词
+            if (!filters.size) {
+              filters.clear()
+              return
+            }
+            // 有则处理一下返回的消息
+            filters = Array.from(filters)
+            throw new Error(`标签包含敏感词汇,标签为:${filters.join("、")}`)
           },
         },
         set(value) {
@@ -347,7 +360,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: descReg.msg,
           },
           isFilter(value) {
-            if (!filterWords.verify(value)) throw new Error("描述包含敏感词汇")
+            const filters = filterWords.verifyPlus(value)
+            if (!filters) return
+            throw new Error(`描述包含敏感词汇:${filters.join("、")}`)
           },
         },
       },
