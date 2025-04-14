@@ -1,3 +1,4 @@
+import { getKey, setKey } from "@/utils/redis"
 import express from "express"
 const { Article, ArticleTime } = require("@/db/models")
 const router = express.Router()
@@ -7,6 +8,7 @@ const router = express.Router()
  */
 router.post("/", async (req, res, next) => {
   const { articleId, time } = req.body
+  const cacheKey = `article-times:${articleId}`
   // 校验参数
   if (!articleId || !time)
     return res.result(void 0, "articleId 和 time 是必填项", false)
@@ -28,7 +30,8 @@ router.post("/", async (req, res, next) => {
       articleTime.time = time
       await articleTime.save()
     }
-
+    // 更新缓存
+    setKey(cacheKey, time)
     return res.result(void 0, "更新文章时间成功")
   } catch (error) {
     return res.result(void 0, "更新文章时间失败", false)
@@ -40,6 +43,11 @@ router.post("/", async (req, res, next) => {
  */
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params
+  const cacheKey = `article-times:${id}`
+  const cacheValue = await getKey(cacheKey)
+  if (cacheValue)
+    // 返回时间
+    return res.result(cacheValue, "查询文章时间成功")
 
   try {
     const article = await Article.findByPk(id, {
@@ -50,9 +58,11 @@ router.get("/:id", async (req, res, next) => {
     if (!article) {
       return res.result(void 0, "查询文章失败", false)
     }
-
+    const time = article?.dataValues?.time?.time || 0
+    // 更新缓存
+    setKey(cacheKey, time)
     // 返回时间
-    return res.result(article?.dataValues?.time?.time || 0, "查询文章时间成功")
+    return res.result(time, "查询文章时间成功")
   } catch (error) {
     res.validateAuth(error, next, () =>
       res.result(void 0, "查询文章时间失败", false)

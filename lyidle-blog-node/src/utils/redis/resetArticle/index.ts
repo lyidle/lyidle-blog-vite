@@ -1,7 +1,7 @@
 // 引入 去重的函数
 import { deduplication } from "@/utils/array/deduplication"
 // 批量删除 redis 缓存
-import { delKey, delKeys } from ".."
+import { delKeys } from ".."
 
 /**
  * 重置文章的缓存
@@ -35,8 +35,6 @@ export const resetArticle = async (
     // 删除 缓存
 
     const results = await Promise.allSettled([
-      // 删除 总字数统计缓存
-      // delKey("webTotalWords"),
       // 最新文章的 缓存 使用的
       delKeys("recentPages:"),
       // 用户的 所有 tags 按照作者

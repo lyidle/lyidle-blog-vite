@@ -1,7 +1,8 @@
 import { setKey, getKey } from "@/utils/redis"
 import { readFileSync } from "fs"
 import { join } from "path"
-
+// 引入 big.js
+import Big from "big.js"
 // 引入模型
 const { User, Article, Setting, Visitor, Role } = require("@/db/models")
 const is_production = JSON.parse(process.env.is_production!)
@@ -45,7 +46,7 @@ export default async () => {
           ],
           limit: 1,
         })
-        await setKey("webUpdatedAt", dataValues.updatedAt)
+        await setKey("webUpdatedAt", dataValues.updatedAt || new Date())
       }
     })(),
 
@@ -54,7 +55,7 @@ export default async () => {
       let touristCounts = await getKey("touristCounts")
       if (touristCounts === null) {
         touristCounts = await Visitor.count()
-        await setKey("touristCounts", touristCounts)
+        await setKey("touristCounts", `${touristCounts}`)
       }
     })(),
 
@@ -63,7 +64,7 @@ export default async () => {
       const userCounts = await getKey("userCounts")
       if (userCounts === null) {
         const userCount = await User.count()
-        await setKey("userCounts", userCount)
+        await setKey("userCounts", `${userCount}`)
       }
     })(),
 
@@ -72,7 +73,7 @@ export default async () => {
       const webTotalPages = await getKey("webTotalPages")
       if (webTotalPages === null) {
         const articleCount = await Article.count()
-        await setKey("webTotalPages", articleCount)
+        await setKey("webTotalPages", `${articleCount}`)
       }
     })(),
 
@@ -80,12 +81,19 @@ export default async () => {
     (async () => {
       const webTotalWords = await getKey("webTotalWords")
       if (webTotalWords === null) {
+        // 查询所有文章的字数
         const Articles = await Article.findAll({ attributes: ["length"] })
-        let length = 0
-        JSON.parse(JSON.stringify(Articles)).forEach((item: any) => {
-          length += item.length
+
+        // 使用Big.js初始化总字数
+        let totalLength = new Big(0)
+
+        // 遍历所有文章累加字数
+        JSON.parse(JSON.stringify(Articles)).forEach((item) => {
+          totalLength = totalLength.plus(new Big(item.length || 0))
         })
-        await setKey("webTotalWords", length)
+
+        // 将计算结果存入Redis
+        await setKey("webTotalWords", totalLength.toString())
       }
     })(),
 

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   ArticleCount.init(
     {
       articleId: DataTypes.INTEGER,
-      count: DataTypes.INTEGER,
+      count: DataTypes.STRING,
     },
     {
       sequelize,

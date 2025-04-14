@@ -86,7 +86,7 @@
                       ><i class="i-oui:token-date"></i>字数总计:</span
                     >
                     <span class="content cur-text"
-                      >{{ numberTransform(article?.length) }}</span
+                      >{{ bigNumberTransform(article?.length) }}</span
                     >
                   </div>
                   <span class="item-hr">|</span>
@@ -102,7 +102,7 @@
                       ><i class="i-mingcute:refresh-3-line"></i>浏览量:</span
                     >
                     <span class="content cur-text"
-                      >{{ numberTransform(23208) }}</span
+                      >{{ bigNumberTransform(23208) }}</span
                     >
                   </div>
                 </div>
@@ -142,7 +142,7 @@
   import Vditor from "vditor"
   import "vditor/dist/index.css"
   // 引入 自定义工具 大数字转中文
-  import numberTransform from "@/utils/numberTransform"
+  import bigNumberTransform from "@/utils/bigNumberTransform"
   // 引入 仓库
   import { useSettingStore } from "@/store/setting"
 

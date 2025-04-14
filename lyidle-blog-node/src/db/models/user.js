@@ -15,10 +15,12 @@ const { existsSync, rm } = require("fs")
 
 // 引入错误函数
 const setDbError = require("../../utils/error/setDbError/js")
+// 引入 big.js
+const Big = require("big.js")
 
 const { getKey, setKey, delKey } = require("../../utils/redis/js")
 /**
- * 更新文章的回调
+ * 更新用户数量的回调
  * @param {string} mode 模式
  * @param {1 | -1} sym 符号 加减 乘上 1 或 -1
  */
@@ -26,8 +28,11 @@ const updateTotalUsers = async (mode, sym) => {
   // 更新字数
   try {
     let count = await getKey("userCounts")
-    count = +count || 0
-    const updatedCount = parseInt(count + 1 * sym)
+    // 使用Big.js处理数字，避免精度问题
+    const currentCount = new Big(count || 0)
+    const operation = new Big(sym) // sym应该是1或-1
+    const updatedCount = currentCount.plus(operation).toString()
+
     await setKey("userCounts", updatedCount)
   } catch (error) {
     console.error(`${mode}时，更新用户总数到 Redis 中失败:`, error)

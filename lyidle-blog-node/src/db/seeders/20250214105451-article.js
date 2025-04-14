@@ -54,7 +54,7 @@ module.exports = {
     }
     const userIdRender = (i) => {
       // 只随机出 前 5 个 的用户生成数据
-      let randomUser = users[Math.floor(Math.random() * 5)]
+      let randomUser = users[Math.floor(Math.random() * 5)] || users[0]
       if (i === 1) randomUser = users[0]
       if (i === 2) randomUser = users[0]
       return randomUser

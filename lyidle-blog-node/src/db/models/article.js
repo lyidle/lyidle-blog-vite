@@ -14,36 +14,34 @@ const { deduplication } = require("../../utils/array/deduplication/js")
 const { join } = require("path")
 const { existsSync, rm } = require("fs")
 const { unlink } = require("fs/promises")
-const { getKey, setKey } = require("../../utils/redis/js")
+const Big = require("big.js")
+const { getKey, setKey, delKey } = require("../../utils/redis/js")
 
 /**
- * 更新文章的回调
+ * 更新文章总数量的回调
  * @param {string} mode 模式
  * @param {1 | -1} sym 符号 加减 乘上 1 或 -1
  */
 const updateTotalPages = async (mode, sym) => {
-  // 更新字数
   try {
     let count = await getKey("webTotalPages")
-    count = +count || 0
-    const updatedCount = parseInt(count + 1 * sym)
-    console.log({ mode, count, sym, updatedCount })
-
+    const currentCount = new Big(count || 0)
+    const operation = new Big(sym)
+    const updatedCount = currentCount.plus(operation).toString()
     await setKey("webTotalPages", updatedCount)
   } catch (error) {
-    console.error(`${mode}时，更新文章总数到 Redis 中失败:`, error)
+    console.error(`${mode}时，更新文章总总数到 Redis 中失败:`, error)
   }
 }
 
 // 创建时 更新字数的 逻辑
 const handlerCreateUpdateTotalWorlds = async (article) => {
-  // 更新字数
   try {
     let length = article.get("length")
-    length = +length || 0
+    length = new Big(length || 0)
     let count = await getKey("webTotalWords")
-    count = +count || 0
-    const updatedCount = parseInt(count + length)
+    count = new Big(count || 0)
+    const updatedCount = count.plus(length).toString()
     await setKey("webTotalWords", updatedCount)
   } catch (error) {
     console.error("创建文章时，更新文章的总字数到 Redis 失败:", error)
@@ -52,17 +50,16 @@ const handlerCreateUpdateTotalWorlds = async (article) => {
 
 // 更新时 更新字数的 逻辑
 const handlerUpdateUpdateTotalWorlds = async (article) => {
-  // 更新字数
   if (article.changed("length")) {
     try {
       let oldLength = article.previous("length")
-      oldLength = +oldLength || 0
+      oldLength = new Big(oldLength || 0)
       let newLength = article.get("length")
-      newLength = +newLength || 0
+      newLength = new Big(newLength || 0)
       let count = await getKey("webTotalWords")
-      count = +count || 0
-      const updatedCount = parseInt(count - oldLength + newLength)
-      setKey("webTotalWords", updatedCount)
+      count = new Big(count || 0)
+      const updatedCount = count.minus(oldLength).plus(newLength).toString()
+      await setKey("webTotalWords", updatedCount)
     } catch (error) {
       console.error("更新文章时，更新文章的总字数到 Redis 失败:", error)
     }
@@ -132,14 +129,13 @@ const handlerUpdateUpdateImgs = async (article) => {
 
 // 删除时 更新字数的 逻辑
 const handlerDelUpdateTotalWorlds = async (article) => {
-  // 删除逻辑
   try {
     let length = article.get("length")
-    length = +length || 0
+    length = new Big(length || 0)
     let count = await getKey("webTotalWords")
-    count = +count || 0
-    const updatedCount = parseInt(count - length)
-    setKey("webTotalWords", updatedCount)
+    count = new Big(count || 0)
+    const updatedCount = count.minus(length).toString()
+    await setKey("webTotalWords", updatedCount)
   } catch (error) {
     console.error("删除文章时，更新文章的总字数到 Redis 失败:", error)
   }
@@ -183,8 +179,11 @@ const handlerDelUpdateImgs = async (article, options) => {
 const handlerRestoreUpdateTotalWorlds = async (article) => {
   try {
     const length = article.get("length")
+    length = new Big(length || 0)
     const count = await getKey("webTotalWords")
-    await setKey("webTotalWords", (parseInt(count) || 0) + length)
+    count = new Big(count || 0)
+    const updatedCount = count.plus(length).toString()
+    await setKey("webTotalWords", updatedCount)
   } catch (error) {
     console.error("恢复文章时，更新文章的总字数到 Redis 失败:", error)
   }
@@ -388,7 +387,16 @@ module.exports = (sequelize, DataTypes) => {
         beforeDestroy: async (article, options) => {
           // 处理 图片清理
           handlerDelUpdateImgs(article, options)
-
+          // 硬删除
+          if (article.force) {
+            const id = article.id
+            // 获取 文章总浏览时间
+            const cacheKey = `article-times:${id}`
+            // 获取 文章总浏览量
+            const cacheKey2 = `article-look:${id}`
+            delKey(cacheKey)
+            delKey(cacheKey2)
+          }
           // 检查是否是第一次删除
           if (article.previous("isBin")) return
           // 更新字数

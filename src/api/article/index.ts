@@ -13,6 +13,8 @@ import { AddArticleBody } from "@/api/article/types/addArticleBody"
 import { AddArticle } from "@/api/article/types/addArticle"
 import { UpdateArticleBody } from "./types/updateArticleBody"
 import { GetArticleByAuthorAndIdQuery } from "./types/getArticleByAuthorAndIdQuery"
+// 引入 用户仓库
+import { useUserStore } from "@/store/user"
 // 统一管理 api
 enum API {
   getCarousel = "/article/carousel",
@@ -45,9 +47,9 @@ enum API {
   // 获取 所有categories
   getCategoriesAll = "/article/getCategories/all",
   // 文章阅读时间
-  getTime = "/article/time",
+  articleTimes = "/article/time",
   // 文章浏览量
-  getLook = "/article/look",
+  articleLooks = "/article/look",
 }
 
 // API 的 key 的类型
@@ -166,14 +168,34 @@ export const getCategoryToTags = (name: string) =>
 
 // 获取 浏览量
 export const getArticleLook = (id: number | string) =>
-  request.get<any, number>(server + prefix + API.getLook + `/${id}`)
+  request.get<any, string>(server + prefix + API.articleLooks + `/${id}`)
 // 更新 浏览量
 export const putArticleLook = (data: { articleId: number }) =>
-  request.post<any, number>(server + prefix + API.getLook, data)
+  request.post<any, string>(server + prefix + API.articleLooks, data)
 
 // 获取 时间
 export const getArticleTime = (id: number | string) =>
-  request.get<any, string>(server + prefix + API.getTime + `/${id}`)
+  request.get<any, string>(server + prefix + API.articleTimes + `/${id}`)
 // 更新 时间
+// 浏览器在页面卸载时可能会中止未完成的异步请求
 export const putArticleTime = (data: { articleId: number; time: string }) =>
-  request.post<any, number>(server + prefix + API.getTime, data)
+  request.post<any, string>(server + prefix + API.articleTimes, data)
+// 更新 时间 使用 keepalive
+export const putArticleTimeRaw = (data: {
+  articleId: number
+  time: string
+}) => {
+  const { userToken, touristToken } = useUserStore()
+  const token = userToken
+  const tourist = touristToken
+  fetch(server + prefix + API.articleTimes, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "Authorization-Tourist": `Bearer ${tourist}`,
+    },
+    body: JSON.stringify(data),
+    keepalive: true, // 确保页面关闭后请求仍能完成
+  })
+}

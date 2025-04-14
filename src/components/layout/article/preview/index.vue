@@ -89,7 +89,7 @@
                         ><i class="i-oui:token-date"></i>字数总计:</span
                       >
                       <span class="content cur-text"
-                        >{{ numberTransform(article?.length) }}字</span
+                        >{{ bigNumberTransform(article?.length) }}字</span
                       >
                     </div>
                     <span class="item-hr">|</span>
@@ -220,7 +220,7 @@ import type { TocNode } from "./types"
 // 引入 moment
 import moment from "@/utils/moment"
 // 引入计数 转换函数
-import { numberTransform } from "@/utils/Math"
+import { bigNumberTransform } from "@/utils/Math"
 // 引入 仓库
 import { useSettingStore } from "@/store/setting"
 import { useUserStore } from "@/store/user"

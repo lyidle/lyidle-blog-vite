@@ -1,4 +1,9 @@
-<template>{{ looks }}次</template>
+<template>
+  <span v-if="!errLooks"> {{ looks }}次 </span>
+  <span v-else>
+    {{ errLooks }}
+  </span>
+</template>
 
 <script setup lang="ts" name="ArticleCounts">
 // 引入 api
@@ -7,15 +12,21 @@ import { getArticleLook, putArticleLook } from "@/api/article"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 
 const props = defineProps<{ article: GetOneArticle["data"] }>()
-const looks = ref(0)
+const looks = ref<string>("0")
+const errLooks = ref<string>()
 
 // 得到 阅读量
 const articleLooks = async () => {
   const id = props.article?.id
-  if (!id) return
-  const result = await getArticleLook(id)
-  // 赋值
-  if (result) looks.value = result
+  try {
+    if (!id) return
+    const result = await getArticleLook(id)
+    // 赋值
+    if (result) looks.value = result
+  } catch (error) {
+    errLooks.value = "获取失败"
+    console.warn("获取阅读量失败")
+  }
 }
 
 onMounted(async () => {
