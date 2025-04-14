@@ -2,6 +2,10 @@
 const { Model } = require("sequelize")
 const { join } = require("path")
 const { existsSync, rm } = require("fs")
+// 过滤函数
+const filterWords = require("../../utils/db/filter")
+// 解压的函数
+const { decompressStringNotError } = require("../../utils/compression/js")
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     static associate(models) {
@@ -56,6 +60,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
         comment: "评论内容",
+        validate: {
+          isFilter(value) {
+            // 解压
+            let content = decompressStringNotError(value || "")
+            // 判断有无文本
+            if (!content) return
+            // 有则判断
+            if (!filterWords.verify(content))
+              throw new Error("评论包含敏感词汇")
+          },
+        },
       },
       userId: {
         type: DataTypes.INTEGER,

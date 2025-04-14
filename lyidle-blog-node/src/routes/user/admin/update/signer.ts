@@ -5,6 +5,7 @@ import { setToken } from "@/utils/token"
 import { _handlerRoles, ReturnRoles } from "@/utils/db/handlerRoles"
 // 重置user的缓存
 import { isOwner, resetUserInfo } from "@/utils/redis/resetUserInfo"
+import { validateChangedFields } from "@/utils/db/validateChangedFields"
 // 引入 模型
 const { User, Role } = require("@/db/models")
 
@@ -43,6 +44,10 @@ router.put("/", async (req, res, next) => {
       return res.result(void 0, "更新签名信息失败，没有找到用户", false)
 
     findUser.set("signer", signer?.trim() || "")
+
+    // 验证 修改了的 属性字段
+    await validateChangedFields(findUser)
+
     // 执行更新操作
     const { dataValues } = await findUser.save()
     // 处理 token 字段 的roles

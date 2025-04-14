@@ -3,8 +3,12 @@ import { readFileSync } from "fs"
 import { join } from "path"
 // 引入 big.js
 import Big from "big.js"
+// 敏感词构造器
+const filterWords = require("@/utils/db/filter")
+
 // 引入模型
-const { User, Article, Setting, Visitor, Role } = require("@/db/models")
+const { User, Article, Setting, Visitor, Role, Filter } = require("@/db/models")
+
 const is_production = JSON.parse(process.env.is_production!)
 const default_owner = process.env.default_owner
 export default async () => {
@@ -28,6 +32,22 @@ export default async () => {
   }
   // 并行执行所有初始化任务
   const results = await Promise.allSettled([
+    // 初始化敏感词
+    (async () => {
+      // 判断 是否有缓存
+      const cacheKey = "filters"
+      const cacheValue = await getKey(cacheKey)
+      if (cacheValue) {
+        filterWords.init(cacheValue)
+        return
+      }
+
+      // 得到 敏感词库
+      const filters = await Filter.findAll({ raw: true })
+      const words = filters?.map((item) => item?.word)
+      filterWords.init(words)
+      await setKey(cacheKey, words)
+    })(),
     // 初始化 创站时间
     (async () => {
       const webCreatedAt = await getKey("webCreatedAt")
@@ -199,9 +219,9 @@ export default async () => {
   ])
 
   // 检查是否有任务失败
-  results.forEach((result) => {
-    if (result.status === "rejected") {
-      console.error("初始化网站任务失败:", result.reason)
-    }
-  })
+  const errList = results
+    .map((result) => result.status === "rejected" && result.reason)
+    .filter(Boolean)
+    .join("\n")
+  if (errList) throw new Error("初始化网站任务失败:\n" + errList)
 }

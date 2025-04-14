@@ -2,6 +2,10 @@
 const { Model } = require("sequelize")
 const { join } = require("path")
 const { existsSync, rm } = require("fs")
+// 过滤函数
+const filterWords = require("../../utils/db/filter")
+// 解压的函数
+const { decompressStringNotError } = require("../../utils/compression/js")
 module.exports = (sequelize, DataTypes) => {
   class Message extends Model {
     static associate(models) {
@@ -20,7 +24,20 @@ module.exports = (sequelize, DataTypes) => {
   }
   Message.init(
     {
-      content: DataTypes.TEXT,
+      content: {
+        type: DataTypes.TEXT,
+        validate: {
+          isFilter(value) {
+            // 解压
+            let content = decompressStringNotError(value || "")
+            // 判断有无文本
+            if (!content) return
+            // 有则判断
+            if (!filterWords.verify(content))
+              throw new Error("消息包含敏感词汇")
+          },
+        },
+      },
       senderId: DataTypes.INTEGER,
       receiverId: DataTypes.INTEGER,
       // 生成id 标志评论的id，唯一，用于保存消息的的图片

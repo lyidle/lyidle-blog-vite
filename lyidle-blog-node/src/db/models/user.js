@@ -12,7 +12,6 @@ const {
 
 const { join } = require("path")
 const { existsSync, rm } = require("fs")
-
 // 引入错误函数
 const setDbError = require("../../utils/error/setDbError/js")
 // 引入 big.js
@@ -59,6 +58,9 @@ const handlerDelImgs = async (user, options) => {
     console.error(`删除用户时删除目录出错,userId:${user.id}`, err)
   }
 }
+
+// 过滤函数
+const filterWords = require("../../utils/db/filter")
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -122,6 +124,9 @@ module.exports = (sequelize, DataTypes) => {
             args: accountReg.reg,
             msg: accountReg.msg,
           },
+          isFilter(value) {
+            if (!filterWords.verify(value)) throw new Error("账号包含敏感词汇")
+          },
         },
       },
       nickName: {
@@ -133,6 +138,10 @@ module.exports = (sequelize, DataTypes) => {
           is: {
             args: nickNameReg.reg,
             msg: nickNameReg.msg,
+          },
+          isFilter(value) {
+            if (!filterWords.verify(value))
+              throw new Error("用户名包含敏感词汇")
           },
         },
       },
@@ -163,7 +172,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       avatar: DataTypes.TEXT,
-      signer: DataTypes.STRING,
+      signer: {
+        type: DataTypes.STRING,
+        validate: {
+          isFilter(value) {
+            if (!filterWords.verify(value)) throw new Error("签名包含敏感词汇")
+          },
+        },
+      },
       isBin: DataTypes.DATE,
       userProvince: DataTypes.STRING,
       userAgent: DataTypes.STRING,

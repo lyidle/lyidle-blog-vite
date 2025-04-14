@@ -1,8 +1,5 @@
 "use strict"
 
-// 引入 清除 redids 缓存的 函数
-const { clear } = require("../../utils/redis/js")
-
 // 引入 处理好的信息
 const { users } = require("../mock/handlerUsers")
 
@@ -83,8 +80,6 @@ module.exports = {
       })
     }
 
-    // 清空 缓存
-    await clear()
     await queryInterface.bulkInsert("Articles", articles, {})
   },
 
