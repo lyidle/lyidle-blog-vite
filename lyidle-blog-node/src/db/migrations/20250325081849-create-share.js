@@ -43,6 +43,10 @@ module.exports = {
         type: Sequelize.DATE,
       },
     })
+
+    // 复合索引 - 根据实际查询需求选择添加
+    await queryInterface.addIndex("Shares", ["shareType", "articleId"])
+    await queryInterface.addIndex("Shares", ["shareType", "settingId"])
   },
 
   async down(queryInterface, Sequelize) {

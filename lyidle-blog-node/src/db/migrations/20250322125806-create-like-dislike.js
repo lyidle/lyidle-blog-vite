@@ -36,7 +36,7 @@ module.exports = {
       },
       articleId: {
         type: Sequelize.INTEGER,
-        allowNull: true, //可能是文章 也可能是 设置表
+        allowNull: true,
         references: {
           model: "Articles", // 关联文章表
           key: "id",
@@ -56,7 +56,7 @@ module.exports = {
       },
       commentId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // 如果 targetType 是 article，则可以为空
+        allowNull: true,
         references: {
           model: "Comments", // 关联评论表
           key: "id",
@@ -89,6 +89,26 @@ module.exports = {
       fields: ["userId", "targetType", "commentId"],
       unique: true,
     })
+    await queryInterface.addIndex("LikeDislikes", {
+      fields: ["userId", "targetType", "articleId"],
+      unique: true,
+    })
+    await queryInterface.addIndex("LikeDislikes", {
+      fields: ["userId", "targetType", "settingId"],
+      unique: true,
+    })
+
+    await queryInterface.addIndex("LikeDislikes", ["userId"]) // 单独索引，常用于查询用户的所有点赞
+    await queryInterface.addIndex("LikeDislikes", ["targetUserId"]) // 查询用户收到的点赞
+
+    // 按目标类型+ID的复合索引
+    await queryInterface.addIndex("LikeDislikes", ["targetType", "articleId"])
+    await queryInterface.addIndex("LikeDislikes", ["targetType", "commentId"])
+    await queryInterface.addIndex("LikeDislikes", ["targetType", "settingId"])
+
+    // 对于点赞/点踩类型的查询索引
+    await queryInterface.addIndex("LikeDislikes", ["likeType"])
+    await queryInterface.addIndex("LikeDislikes", ["dislikeType"])
   },
 
   down: async (queryInterface, Sequelize) => {

@@ -17,6 +17,8 @@ import admin from "@/routes/user/admin"
 import follow from "@/routes/user/follow"
 // 引入 api/user/msg
 import msg from "./msg"
+// 引入 api/user/report
+import report from "./report"
 
 const router = express.Router()
 // 挂载路由
@@ -28,4 +30,5 @@ router.use("/search", search)
 router.use("/admin", admin)
 router.use("/follow", follow)
 router.use("/msg", jwtMiddleware, msg)
+router.use("/report", jwtMiddleware, report)
 export default router

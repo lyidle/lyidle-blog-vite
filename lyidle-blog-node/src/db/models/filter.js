@@ -3,7 +3,7 @@ const { Model } = require("sequelize")
 
 // 过滤函数
 const filterWords = require("../../utils/db/filter")
-const { getKey, setKey } = require("../../utils/redis/js")
+const { getKey, setKey, delKey } = require("../../utils/redis/js")
 
 // 判断 是否有缓存
 const cacheKey = "filters"
@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       word: {
         type: DataTypes.STRING,
-        primaryKey: true, // 必须与迁移文件一致
         allowNull: false,
       },
       // 分类
@@ -37,11 +36,11 @@ module.exports = (sequelize, DataTypes) => {
             where: { name: filter.type },
             defaults: {
               name: filter.type,
-              desc: `自动创建的分类: ${filter.type}`,
             },
             transaction: options.transaction, // 传递事务保证一致性
           })
-          // return 种子文件需要 return 一下
+          // 种子文件需要 return 一下
+          // return
           // 获取当前缓存
           let filters = await getKey(cacheKey)
           if (!filters) filters = []
@@ -66,16 +65,18 @@ module.exports = (sequelize, DataTypes) => {
           const oldWord = filter.previous("word")
           const newWord = filter.word
 
-          // 获取当前缓存
-          let filters = await getKey(cacheKey)
-          if (!filters) filters = []
+          // // 获取当前缓存
+          // let filters = await getKey(cacheKey)
+          // if (!filters) filters = []
 
-          // 更新缓存（替换旧词）
-          const index = filters.indexOf(oldWord)
-          if (index !== -1) {
-            filters[index] = newWord
-            await setKey(cacheKey, filters)
-          }
+          // // 更新缓存（替换旧词）
+          // const index = filters.indexOf(oldWord)
+          // if (index !== -1) {
+          //   filters[index] = newWord
+          //   await setKey(cacheKey, filters)
+          // }
+          // 直接删除缓存
+          await delKey(cacheKey)
 
           // 更新 FilterWords 单例
           filterWords.delete(oldWord) // 移除旧词
@@ -88,16 +89,18 @@ module.exports = (sequelize, DataTypes) => {
 
           const word = filter.word
 
-          // 获取当前缓存
-          let filters = await getKey(cacheKey)
-          if (!filters) filters = []
+          // // 获取当前缓存
+          // let filters = await getKey(cacheKey)
+          // if (!filters) filters = []
 
-          // 从缓存中移除
-          const index = filters.indexOf(word)
-          if (index !== -1) {
-            filters.splice(index, 1)
-            await setKey(cacheKey, filters)
-          }
+          // // 从缓存中移除
+          // const index = filters.indexOf(word)
+          // if (index !== -1) {
+          //   filters.splice(index, 1)
+          //   await setKey(cacheKey, filters)
+          // }
+          // 直接删除缓存
+          await delKey(cacheKey)
 
           // 从 FilterWords 单例中移除
           filterWords.delete(word)

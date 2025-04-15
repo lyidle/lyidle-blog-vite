@@ -19,6 +19,13 @@ import settings from "@/routes/admin/setting"
 import initials from "@/routes/admin/initial"
 // 引入 api/admin/recycle
 import recycle from "@/routes/admin/recycle"
+// 引入 api/admin/report
+import report from "@/routes/admin/report"
+// 引入 api/admin/sysMsg
+import sysMsg from "@/routes/admin/sysMsg"
+// 引入 api/admin/filter
+import filter from "@/routes/admin/filter"
+
 const router = express.Router()
 // 挂载路由
 router.use("/announce", announce)
@@ -30,4 +37,7 @@ router.use("/settings", settings)
 router.use("/initial", [jwtMiddleware, isAdmin], initials)
 router.use("/", sentence)
 router.use("/recycle", [jwtMiddleware, isAdmin], recycle)
+router.use("/report", [jwtMiddleware, isAdmin], report)
+router.use("/sysMsg", [jwtMiddleware, isAdmin], sysMsg)
+router.use("/filter", [jwtMiddleware, isAdmin], filter)
 export default router

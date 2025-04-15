@@ -3,9 +3,14 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Filters", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
       word: {
         type: Sequelize.STRING,
-        primaryKey: true,
         allowNull: false,
         unique: true,
       },
@@ -16,8 +21,8 @@ module.exports = {
           model: "FilterTypes",
           key: "name",
         },
-        onUpdate: "CASCADE", // 分类名更新时自动同步
-        onDelete: "RESTRICT", // 防止删除正在使用的分类
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
     })
 
