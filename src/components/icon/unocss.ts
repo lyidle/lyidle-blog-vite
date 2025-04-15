@@ -11,3 +11,21 @@ const menuIcons = {
 }
 
 const panelIcon = ["i-basil:edit-outline", "i-mynaui:panel-top"]
+
+const adminIcon = [
+  "i-material-symbols:home-rounded",
+  "i-mdi:paper",
+  "i-arcticons:hihonor-systemmanager",
+  "i-fa6-solid:user-group",
+  "i-fluent:contact-card-group-48-filled",
+  "i-mdi:key-variant",
+  "i-ep:menu",
+  "i-fluent:bin-recycle-20-filled",
+  "i-basil:other-1-solid",
+  "i-mage:color-swatch-fill",
+  "i-ic:round-color-lens",
+  "i-lsicon:setting-filled",
+  "i-fluent:collections-20-filled",
+  "i-fluent:collections-add-24-filled",
+  "i-mynaui:message-solid",
+]

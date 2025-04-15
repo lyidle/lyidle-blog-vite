@@ -56,7 +56,7 @@ const getMenuList = async (
 ) => {
   try {
     let roles = req.query?.roles && JSON.parse(req.query.roles as string) // 从请求中获取角色名称
-    if (!Array.isArray(roles) || !roles.length)
+    if (!isAll && (!Array.isArray(roles) || !roles.length))
       return res.result(void 0, "暂无权限访问任何菜单", false)
 
     // 判断 是否查询所有菜单

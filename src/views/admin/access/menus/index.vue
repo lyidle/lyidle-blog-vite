@@ -156,6 +156,7 @@ import type { Datum } from "@/api/admin/types/getMenuList"
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
+import { handlerReqErr } from "@/utils/request/error/successError"
 // 表格数据
 const tableData = ref<GetMenuList["data"]>([])
 // 大小
@@ -188,13 +189,18 @@ const create = ref()
 let only = false
 // 发起请求
 const handlerReq = async () => {
-  const result = await getAllMenuList()
-  // 只允许 修改时触发重载和权限判断
-  if (only)
-    // 重新加载路由
-    mitt.emit("route:reload")
-  only = true
-  if (result) tableData.value = result
+  try {
+    const result = await getAllMenuList()
+    // 只允许 修改时触发重载和权限判断
+    if (only)
+      // 重新加载路由
+      mitt.emit("route:reload")
+    only = true
+    if (result) tableData.value = result
+  } catch (error) {
+    const err = handlerReqErr(error, "error")
+    if (!err) ElMessage.error("加载菜单失败")
+  }
 }
 
 // 软删除

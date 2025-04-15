@@ -364,6 +364,38 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
           ],
         },
         {
+          name: "SystemMessage",
+          path: "/admin/system-msg",
+          meta: { title: "系统消息管理" },
+          component: () => import("@/views/admin/articles/manager/index.vue"),
+        },
+        {
+          name: "Report",
+          path: "/admin/report",
+          meta: { title: "举报管理" },
+          redirect: "/admin/report/manager",
+          children: [
+            {
+              name: "ReportManager",
+              path: "/admin/report/manager",
+              meta: { title: "举报管理" },
+              component: () => import("@/views/admin/access/users/index.vue"),
+            },
+            {
+              name: "FilterWords",
+              path: "/admin/report/filter-words",
+              meta: { title: "敏感词管理" },
+              component: () => import("@/views/admin/access/users/index.vue"),
+            },
+            {
+              name: "FilterWordTypes",
+              path: "/admin/report/filter-groups",
+              meta: { title: "敏感词分组管理" },
+              component: () => import("@/views/admin/access/users/index.vue"),
+            },
+          ],
+        },
+        {
           name: "Other",
           path: "/admin/other",
           meta: { title: "其他" },

@@ -56,6 +56,7 @@ const isIcon = (to: string) => {
 .manager-aside {
   background-color: var(--aside-bg);
   box-shadow: var(--aside-shadow);
+  overflow-y: auto;
   ::v-deep(.menu-item) {
     height: var(--aside-item-height);
   }
