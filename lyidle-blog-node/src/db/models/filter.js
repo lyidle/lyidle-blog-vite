@@ -32,6 +32,16 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         // 创建敏感词时的钩子
         beforeCreate: async (filter, options) => {
+          // 确保分类存在
+          await sequelize.models.FilterType.findOrCreate({
+            where: { name: filter.type },
+            defaults: {
+              name: filter.type,
+              desc: `自动创建的分类: ${filter.type}`,
+            },
+            transaction: options.transaction, // 传递事务保证一致性
+          })
+          // return 种子文件需要 return 一下
           // 获取当前缓存
           let filters = await getKey(cacheKey)
           if (!filters) filters = []

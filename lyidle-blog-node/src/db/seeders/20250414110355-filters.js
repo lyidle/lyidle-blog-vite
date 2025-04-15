@@ -5,6 +5,8 @@ const { clear } = require("../../utils/redis/js")
 
 const fs = require("fs")
 const path = require("path")
+// 引入模型
+const { Filter } = require("../models")
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -27,7 +29,11 @@ module.exports = {
       .filter(Boolean)
     DataSet.clear()
 
-    await queryInterface.bulkInsert("Filters", sexual, {})
+    // 使用模型插入并触发钩子 需要手动return一下  因为钩子里还有其他的 处理
+    await Filter.bulkCreate(sexual, {
+      individualHooks: true,
+    })
+
     // 清空 缓存
     await clear()
   },
