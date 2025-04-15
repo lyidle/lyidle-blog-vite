@@ -204,13 +204,16 @@ const clear = async (): Promise<void> => {
  * @param prefix 前缀字符串（如 "menu:"）
  * @returns 去掉 redis_prefix 的 key 数组
  */
-const getKeys = async (prefix: string): Promise<string[]> => {
+const getKeys = async (
+  prefix: string,
+  options?: { raw: boolean }
+): Promise<string[]> => {
   if (!client) await redisClient() // 确保客户端已初始化
 
   const pattern = `${redis_prefix}:${prefix}*` // 匹配前缀的 pattern
   const keys: string[] = []
   let cursor = 0 // 游标，用于分批次扫描
-
+  const raw = options?.raw || false
   do {
     // 使用 SCAN 命令遍历匹配的 key
     const reply = await client!.scan(cursor, {
@@ -225,7 +228,7 @@ const getKeys = async (prefix: string): Promise<string[]> => {
   // 去掉 redis_prefix 部分
   const prefixToRemove = `${redis_prefix}:${prefix}`
 
-  return keys.map((key) => key.slice(prefixToRemove.length))
+  return raw ? keys : keys.map((key) => key.slice(prefixToRemove.length))
 }
 
 export {

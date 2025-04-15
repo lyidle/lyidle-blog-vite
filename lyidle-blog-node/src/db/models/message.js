@@ -6,6 +6,7 @@ const { existsSync, rm } = require("fs")
 const filterWords = require("../../utils/db/filter")
 // 解压的函数
 const { decompressStringNotError } = require("../../utils/compression/js")
+const { setKey, delKey } = require("../../utils/redis/js")
 module.exports = (sequelize, DataTypes) => {
   class Message extends Model {
     static associate(models) {
@@ -27,7 +28,17 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.TEXT,
         validate: {
-          isFilter(value) {
+          isFilter: async function (value) {
+            // 消息 id
+            const msgId = this.msgId
+            // 是创建  则删除上一次的缓存 目录地址
+            const validate = () => !this.id && msgId
+            let cacheKey
+            if (validate()) {
+              cacheKey = `message:imgs:${msgId}`
+              // 删除上一次的缓存
+              await delKey(cacheKey)
+            }
             // 解压
             let content = decompressStringNotError(value || "")
             // 判断有无文本
@@ -35,6 +46,17 @@ module.exports = (sequelize, DataTypes) => {
             // 有则判断
             const filters = filterWords.verifyPlus(content)
             if (!filters) return
+            // 是创建  则缓存一下 目录地址
+            if (validate()) {
+              // 需要删除的路径
+              const deletePath = join(
+                __dirname,
+                `../../assets/images/${this.senderId}/msg/${msgId}`
+              )
+              if (existsSync(deletePath))
+                // 缓存未通过的 urls
+                setKey(cacheKey, deletePath)
+            }
             throw new Error(`消息包含敏感词汇:${filters.join("、")}`)
           },
         },

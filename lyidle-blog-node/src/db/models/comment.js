@@ -6,6 +6,7 @@ const { existsSync, rm } = require("fs")
 const filterWords = require("../../utils/db/filter")
 // 解压的函数
 const { decompressStringNotError } = require("../../utils/compression/js")
+const { setKey, delKey } = require("../../utils/redis/js")
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     static associate(models) {
@@ -61,7 +62,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         comment: "评论内容",
         validate: {
-          isFilter(value) {
+          isFilter: async function (value) {
+            // 评论 id
+            const commentId = this.commentId
+            // 是创建  则删除上一次的缓存 目录地址
+            const validate = () => !this.id && commentId
+            let cacheKey
+            if (validate()) {
+              cacheKey = `comment:imgs:${commentId}`
+              // 删除上一次的缓存
+              await delKey(cacheKey)
+            }
             // 解压
             let content = decompressStringNotError(value || "")
             // 判断有无文本
@@ -69,6 +80,18 @@ module.exports = (sequelize, DataTypes) => {
             // 有则判断
             const filters = filterWords.verifyPlus(content)
             if (!filters) return
+
+            // 是创建  则缓存一下 目录地址
+            if (validate()) {
+              // 需要删除的路径
+              const deletePath = join(
+                __dirname,
+                `../../assets/images/${this.userId}/comments/${commentId}`
+              )
+              if (existsSync(deletePath))
+                // 缓存未通过的 目录地址
+                setKey(cacheKey, deletePath)
+            }
             throw new Error(`评论包含敏感词汇:${filters.join("、")}`)
           },
         },

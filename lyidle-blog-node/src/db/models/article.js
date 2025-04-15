@@ -246,13 +246,33 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: { msg: "文章内容不能为空" },
           notEmpty: { msg: "文章内容不能为空" },
-          isFilter(value) {
+          isFilter: async function (value) {
+            // 文章 id
+            const articleId = this.articleId
+            // 是创建 且有图片 则删除上一次的缓存 目录地址
+            const validate = () => !this.id && articleId && this.imgUrls?.length
+            let cacheKey
+            if (validate()) {
+              cacheKey = `article:imgs:${articleId}`
+              await delKey(cacheKey)
+            }
             // 解压
             let content = decompressStringNotError(value || "")
             // 判断有无文本
             if (!content) return
             const filters = filterWords.verifyPlus(content)
             if (!filters) return
+            // 是创建 且有图片 则缓存一下 目录地址
+            if (validate()) {
+              // 需要删除的路径
+              const deletePath = join(
+                __dirname,
+                `../../assets/images/${this.userId}/md/${articleId}`
+              )
+              if (existsSync(deletePath))
+                // 缓存未通过的 目录地址
+                setKey(cacheKey, deletePath)
+            }
             throw new Error(`内容包含敏感词汇:${filters.join("、")}`)
           },
         },
