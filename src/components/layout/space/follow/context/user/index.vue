@@ -15,7 +15,7 @@
         nickClass="w-fit"
       ></global-name>
       <div class="text-13px cur-text">
-        {{ user.signer || "这个人没有简介哦~~" }}
+        {{ user.signer || "这个人没有签名哦~~" }}
       </div>
       <div class="flex items-center gap-5px">
         <layout-space-is-follower

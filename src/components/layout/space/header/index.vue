@@ -30,14 +30,14 @@
       <div class="flex">
         <div class="flex-shrink-0 text-15px cur-text h-20px">
           签名:<span v-if="userInfo?.id !== userId">{{
-            userInfo?.signer || "这个人没有简介哦~~"
+            userInfo?.signer || "这个人没有签名哦~~"
           }}</span>
         </div>
         <my-input
           v-if="userInfo?.id === userId"
           class="h-20px text-10px"
           v-model.trim="signer"
-          placeholder="这个人没有简介哦~~"
+          placeholder="这个人没有签名哦~~"
           @blur="updateSinger"
         ></my-input>
       </div>

@@ -2,7 +2,7 @@ import express from "express"
 // 引入 api
 const router = express.Router()
 // 引入 模型
-const { Report } = require("@/db/models")
+const { Report, Article, Comment, Message, User } = require("@/db/models")
 
 router.post("/", async (req, res, next) => {
   // 从请求体和认证信息中获取参数
@@ -25,7 +25,8 @@ router.post("/", async (req, res, next) => {
     }
 
     // 验证举报类型有效性
-    const validTypes = ["article", "comment", "msg", "user"]
+    const validTypes = ["article", "comment", "msg", "user"] as const
+    type ValidTypes = (typeof validTypes)[number]
     if (!validTypes.includes(type)) {
       return res.result(
         null,
@@ -39,14 +40,18 @@ router.post("/", async (req, res, next) => {
 
     // 根据不同类型验证对应ID字段
     const typeIdValidations = {
-      article: () => articleId && !Number.isInteger(+articleId),
-      comment: () => commentId && !Number.isInteger(+commentId),
-      msg: () => msgId && !Number.isInteger(+msgId),
+      article: () => articleId && Number.isInteger(+articleId),
+      comment: () => commentId && Number.isInteger(+commentId),
+      msg: () => msgId && Number.isInteger(+msgId),
       user: () => true, // 用户类型不需要额外验证
     }
 
     if (!typeIdValidations[type]())
-      return res.result(null, `类型为${type}时，必须提供对应的ID字段`, false)
+      return res.result(
+        null,
+        `类型为${type}时，必须提供对应的ID字段,或id字段不合法`,
+        false
+      )
 
     // 判断 id个数是否 冲突
     let num = 0
@@ -75,6 +80,47 @@ router.post("/", async (req, res, next) => {
       ...(type === "comment" && { commentId }),
       ...(type === "msg" && { msgId }),
     }
+
+    // 判断对应的 是否存在
+    let isFind = false
+
+    if ((type as ValidTypes) === "article") {
+      const is = await Article.findOne({
+        where: {
+          userId: targetUserId,
+          id: articleId,
+        },
+      })
+      isFind = is ? true : false
+    }
+
+    if ((type as ValidTypes) === "comment") {
+      const is = await Comment.findOne({
+        where: {
+          userId: targetUserId,
+          id: commentId,
+        },
+      })
+      isFind = is ? true : false
+    }
+
+    if ((type as ValidTypes) === "msg") {
+      const is = await Message.findOne({
+        where: {
+          userId: targetUserId,
+          id: msgId,
+        },
+      })
+      isFind = is ? true : false
+    }
+
+    if ((type as ValidTypes) === "user") {
+      const is = await User.findByPk(targetUserId)
+      isFind = is ? true : false
+    }
+
+    if (!isFind)
+      return res.result(null, msg + `失败,没有在用户中找到${type}的信息`, false)
 
     // 创建举报记录
     const newReport = await Report.create(reportData)

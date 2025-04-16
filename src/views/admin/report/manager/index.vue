@@ -76,7 +76,15 @@
             <div class="flex gap-10px flex-wrap justify-center">
               <my-button
                 size="small"
-                class="w-80px !m-0"
+                class="!m-0"
+                :style="{ width: isSmall ? '80px' : '70px' }"
+                @click="viewData(row)"
+                >来源</my-button
+              >
+              <my-button
+                size="small"
+                class="!m-0"
+                :style="{ width: isSmall ? '80px' : '70px' }"
                 @click="send?.init(row)"
                 >系统通知</my-button
               >
@@ -146,6 +154,28 @@
         @send="sendMsg"
         @sucSend="sucSend"
       />
+
+      <teleport to="body">
+        <el-dialog
+          class="primary-dialog sentMsg"
+          v-model="viewDialog"
+          width="500"
+          align-center
+          draggable
+          @close="initView"
+        >
+          <h2 class="m-0 text-center color-[var(--primary-color)] cur-text">
+            预览信息{{ showTitle }}
+          </h2>
+          <!-- 预览用户 -->
+          <div
+            v-if="showUser && userId"
+            class="mt-20px flex justify-center mb-5px"
+          >
+            <global-userinfo :userId="userId" class="w-400px"></global-userinfo>
+          </div>
+        </el-dialog>
+      </teleport>
     </my-card>
   </div>
 </template>
@@ -198,6 +228,70 @@ const handlerCurrentPage = (num: number) => {
 
 // 子组件
 const send = ref()
+
+const viewDialog = ref(false)
+// 预览用户
+const showUser = ref<boolean>()
+const userId = ref<number>()
+// 预览文章
+const showArticle = ref<boolean>()
+const articleId = ref<number>()
+// 评论
+const showComment = ref<boolean>()
+const commentId = ref<number>()
+// 消息
+const showMsg = ref<boolean>()
+const msgId = ref<number>()
+
+// 初始化 数据
+const initView = () => {
+  // 用户
+  showUser.value = false
+  userId.value = undefined
+  // 文章
+  showArticle.value = false
+  articleId.value = undefined
+  // 评论
+  showComment.value = false
+  commentId.value = undefined
+  // 消息
+  showMsg.value = false
+  msgId.value = undefined
+}
+const showTitle = computed(() => {
+  if (showUser.value) return "用户"
+  if (showArticle.value) return "文章"
+  if (showComment.value) return "评论"
+  if (showMsg.value) return "消息"
+  return "未知"
+})
+
+const viewData = (row: GetReports["data"]["list"][0]) => {
+  const type = row.targetType
+  // 初始化 数据
+  initView()
+  if (type === "user") {
+    showUser.value = true
+    userId.value = row.targetUserId
+  }
+
+  if (type === "article") {
+    showArticle.value = true
+    articleId.value = row.articleId as number
+  }
+  if (type === "comment") {
+    showComment.value = true
+    commentId.value = row.commentId as number
+  }
+
+  if (type === "msg") {
+    showMsg.value = true
+    msgId.value = row.msgId as number
+  }
+
+  // 显示对话框
+  viewDialog.value = true
+}
 
 // 处理发送消息的格式
 const sendMsg = ({

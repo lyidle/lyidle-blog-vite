@@ -55,7 +55,6 @@
             @blur="inputBlur"
             :autosize="{ minRows: 2, maxRows: 10 }"
           ></my-input>
-
           <!-- array 类型 -->
           <my-tags
             v-if="contentType === 'array'"

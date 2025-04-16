@@ -23,7 +23,10 @@ export interface List {
   id: number
   isSend: boolean
   msgId?: number | null
-  targetType: string
+  /**
+   * "article"|"comment"| "msg"|"user"
+   */
+  targetType: "article" | "comment" | "msg" | "user"
   targetUserId: number
   updatedAt?: string
   userId: number

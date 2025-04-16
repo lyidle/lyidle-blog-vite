@@ -4,22 +4,11 @@
     :type="isFollow ? 'default' : 'primary'"
     v-bind="$attrs"
     @click="toggleFollow"
-    v-if="isFollow !== null"
+    v-if="!isOwner"
   >
-    <!-- 是否是互关 -->
-    <template v-if="!isFollower && userInfo?.id === userId">
-      {{ isFollow ? "已互关" : "回关" }}
-    </template>
-    <template v-else> {{ isFollow ? "已" : "" }}关注 </template>
-    <!-- 是否是互粉 -->
+    {{ isFollow ? "已" : "" }}关注
   </my-button>
-  <!-- 是自身 -->
-  <my-button
-    type="primary"
-    v-bind="$attrs"
-    v-else-if="isOwner"
-    @click="handlerOwner"
-  >
+  <my-button type="primary" v-bind="$attrs" v-else @click="handlerOwner">
     关注
   </my-button>
 </template>
@@ -30,35 +19,20 @@ import { addFollow, delFollow, isFollowed } from "@/api/user/follow"
 // 处理错误信息
 import { handlerReqErr } from "@/utils/request/error/successError"
 // 引入 仓库
-import { useUserSpaceStore } from "@/store/userSpace"
 import { useUserStore } from "@/store/user"
-import { mitt } from "@/utils/emitter"
-const {
-  // 关注数
-  followerCounts,
-  // 用户信息
-  userInfo,
-} = storeToRefs(useUserSpaceStore())
 // 得到本地 userId
 const { userId } = storeToRefs(useUserStore())
 
 const props = withDefaults(
   defineProps<{
     curId: number | undefined
-    isFollower?: boolean
-    isFollow?: boolean
     toggleCb?: (is: boolean) => void
   }>(),
-  {
-    isFollower: undefined,
-    isFollow: undefined,
-  }
+  {}
 )
 
 // 是否 关注了
-const isFollow = ref<boolean | null>(
-  typeof props.isFollow === "boolean" ? props.isFollow : null
-)
+const isFollow = ref<boolean | null>()
 // 是否是自身
 const isOwner = ref(false)
 // 是否 关注了
@@ -67,12 +41,10 @@ const isFollowCallback = async () => {
   const id = props.curId
   if (typeof id !== "number") return
   if (!props.curId || !userId.value) return
-  // 有 默认值了
-  if (typeof props.isFollow === "boolean") return
+  if (+props.curId === +userId.value) return (isOwner.value = true)
   try {
     const result = await isFollowed(userId.value, props.curId)
     isFollow.value = result
-    mitt.emit("isFollowUser", { userId: props.curId, is: isFollow.value })
   } catch (error: any) {
     // 查看是否是查询的自身
     if (error?.message?.some((item: string) => item.includes("不能查询自身"))) {
@@ -92,12 +64,8 @@ const toFollow = async () => {
   try {
     await addFollow(id)
     isFollow.value = true
-    // 是否是本地的 是的话增减 关注
-    if (userInfo.value?.id === userId.value) {
-      const counts = (followerCounts.value || 0) + 1
-      followerCounts.value = counts
-    }
     ElMessage.success("关注成功")
+    return true
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("关注失败")
@@ -112,13 +80,8 @@ const toDelFollow = async () => {
   try {
     await delFollow(id)
     isFollow.value = false
-    // 是否是本地的 是的话增减 关注
-    if (userInfo.value?.id === userId.value) {
-      const counts = (followerCounts.value || 0) - 1
-
-      followerCounts.value = counts >= 0 ? counts : 0
-    }
     ElMessage.success("取消关注成功")
+    return true
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("取消关注失败")
@@ -127,9 +90,8 @@ const toDelFollow = async () => {
 
 // 聚合 关注和取消关注
 const toggleFollow = async () => {
-  isFollow.value ? await toDelFollow() : await toFollow()
-  mitt.emit("isFollowUser", { userId: props.curId, is: isFollow.value })
-  props.toggleCb?.(isFollow.value || false)
+  const result = isFollow.value ? await toDelFollow() : await toFollow()
+  if (result) props.toggleCb?.(isFollow.value || false)
 }
 
 // 处理自身
