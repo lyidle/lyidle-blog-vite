@@ -37,7 +37,7 @@ router.get("/", async (req, res, next) => {
       where: { targetType: type, isSend }, // 按类型过滤
       limit: size, // 每页数量
       offset: offset, // 偏移量
-      order: [["createdAt", "DESC"]], // 按创建时间降序排列
+      order: [["createdAt", "desc"]], // 按创建时间降序排列
     })
 
     // 构造返回数据格式

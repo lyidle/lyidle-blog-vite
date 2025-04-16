@@ -35,18 +35,18 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
 
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
-  // 账号和用户名的 宽度
+  // 主要的列宽
   const tablePrimaryColumWidth = ref<number>()
 
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      // 账号和用户名的 宽度
+      // 主要的列宽
       tablePrimaryColumWidth.value = 130
       headerBtnsSize.value = "default"
       return
     }
-    // 账号和用户名的 宽度
+    // 主要的列宽
     tablePrimaryColumWidth.value = 70
     headerBtnsSize.value = "small"
   }

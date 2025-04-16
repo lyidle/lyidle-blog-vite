@@ -29,6 +29,8 @@ router.use(async (req, res, next) => {
     if (err.name === "SequelizeValidationError") return next(err)
     // 数据库 unique 报错
     if (err.name === "SequelizeUniqueConstraintError") return next(err)
+    // 数据库约束错误
+    if (err.name === "SequelizeForeignKeyConstraintError") return next(err)
     // 其他自定义错误信息
     if (err.name === "otherError") return next(err)
     // 打印其他不是验证错误的信息

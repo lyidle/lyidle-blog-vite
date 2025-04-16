@@ -385,13 +385,15 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
               name: "FilterWords",
               path: "/admin/report/filter-words",
               meta: { title: "敏感词管理" },
-              component: () => import("@/views/admin/access/users/index.vue"),
+              component: () =>
+                import("@/views/admin/report/filterWords/index.vue"),
             },
             {
               name: "FilterWordTypes",
               path: "/admin/report/filter-groups",
               meta: { title: "敏感词分组管理" },
-              component: () => import("@/views/admin/access/users/index.vue"),
+              component: () =>
+                import("@/views/admin/report/filterGroups/index.vue"),
             },
           ],
         },

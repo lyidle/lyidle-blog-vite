@@ -19,16 +19,15 @@
         ref="formInstance"
         @submit.prevent="handlerConfirm"
       >
-        <el-form-item label="标题" prop="title">
-          <my-input
-            placeholder="标题"
-            v-model="createData.title"
-            type="textarea"
-            class="mx-10px"
-          ></my-input>
+        <el-form-item label="分类" prop="type" required>
+          <my-select
+            v-model="createData.type"
+            :options="typeOptions"
+            class="ml-10px w-100px"
+          ></my-select>
         </el-form-item>
-        <el-form-item label="消息" prop="name">
-          <my-input placeholder="消息" v-model="createData.name"></my-input>
+        <el-form-item label="敏感词" prop="word">
+          <my-input placeholder="敏感词" v-model="createData.word"></my-input>
         </el-form-item>
         <div class="flex justify-end mt-20px">
           <my-button
@@ -46,50 +45,39 @@
   </teleport>
 </template>
 
-<script setup lang="ts" name="SystemMessageSend">
+<script setup lang="ts" name="FilterWordCreate">
 // 引入api
-import { sendSystemMsg } from "@/api/admin/sysMsg"
-import { SentSystemMsg } from "@/api/admin/sysMsg/types/sentSystemMsg"
 // 引入 类型
 // 引入 处理错误的 请求函数
+import { addFilterWord } from "@/api/admin/filter"
 import { handlerReqErr } from "@/utils/request/error/successError"
 const centerDialogVisible = ref(false)
 
 const createData = reactive({
-  name: "",
-  title: "",
-  userId: -1,
+  word: "",
+  type: "",
 })
+type optionsType = { value: string; label: string }[]
+const typeOptions = ref<optionsType>()
 // 创建规则
 const createRules = reactive({
-  name: [
-    { required: true, trigger: "change", message: "消息是必填项" },
-    {
-      required: true,
-      trigger: "change",
-      min: 10,
-      max: 255,
-      message: "消息字长度必须在10-32之间哦",
-    },
-  ],
-  title: [
-    { required: true, trigger: "change", message: "消息标题是必填项" },
+  word: [
+    { required: true, trigger: "change", message: "敏感词是必填项" },
     {
       required: true,
       trigger: "change",
       min: 1,
-      max: 50,
-      message: "消息标题字长度必须在1-50之间哦",
+      max: 255,
+      message: "敏感词字长度必须在1-255之间哦",
     },
   ],
 })
 
-const row = ref<any>()
-
 // 初始化
-const init = (_row: any) => {
+const init = (_type: string, _typeOptions: optionsType) => {
   centerDialogVisible.value = true
-  row.value = _row
+  createData.type = _type
+  typeOptions.value = _typeOptions
 }
 
 // 表单组件实例
@@ -98,14 +86,12 @@ const formInstance = ref()
 // 关闭
 const handlerClose = () => {
   formInstance.value.resetFields()
-  row.value = {}
+  typeOptions.value = undefined
 }
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
   (e: "req", stay?: boolean): []
-  (e: "send", data: { msg: SentSystemMsg; row: any }): void
-  (e: "sucSend", data: any): void
 }>()
 
 // 确认
@@ -113,29 +99,17 @@ const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
-    const systemMsg: SentSystemMsg = {
-      content: createData.name,
-      isAll: true,
-      title: createData.title,
-    }
-    emit("send", { msg: systemMsg, row: row.value })
-    await sendSystemMsg(systemMsg)
-    ElMessage.success(`发送消息成功~`)
-    const options = {
-      isStay: true,
-    }
 
-    await new Promise((resolve, reject) => {
-      emit("sucSend", { row: row.value, options, resolve, reject })
-    })
+    await addFilterWord(toRaw(createData))
+    ElMessage.success(`创建敏感词成功~`)
 
     centerDialogVisible.value = false
 
     // 重新请求
-    emit("req", options.isStay)
+    emit("req", true)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error("发送消息失败~")
+    if (!err) ElMessage.error("创建敏感词失败~")
   }
 }
 

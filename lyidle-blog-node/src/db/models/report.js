@@ -50,21 +50,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Report",
-      // 加上 钩子 处理 Filter 表的缓存信息
-      hooks: {
-        // 创建敏感词时的钩子
-        beforeCreate: async (filter, options) => {
-          // 确保分类存在
-          await sequelize.models.FilterType.findOrCreate({
-            where: { name: filter.filterType },
-            defaults: {
-              name: filter.filterType,
-              desc: `自动创建的分类: ${filter.filterType}`,
-            },
-            transaction: options.transaction, // 传递事务保证一致性
-          })
-        },
-      },
     }
   )
   return Report

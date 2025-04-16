@@ -334,6 +334,35 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       false
     )
   }
+
+  // 模型英文名到中文名的映射
+  const modelNameMap: Record<string, string> = {
+    Article: "文章",
+    ArticleBookmark: "文章收藏",
+    ArticleCount: "文章计数",
+    ArticleTime: "文章时间",
+    BannerImg: "横幅图片",
+    Comment: "评论",
+    Filter: "敏感词",
+    FilterType: "敏感词分类",
+    Follow: "关注",
+    LikeDislike: "点赞/点踩",
+    Mention: "@提及",
+    Menu: "菜单",
+    Message: "消息",
+    Permission: "权限",
+    PermissionGroup: "权限组",
+    Report: "举报",
+    Role: "角色",
+    Setting: "设置",
+    Share: "分享",
+    SystemMessage: "系统消息",
+    User: "用户",
+    Visitor: "访客",
+
+    // 外键约束的 table
+    FilterTypes: "敏感词的分类",
+  }
   // 数据库 unique 错误
   if (err.name === "SequelizeUniqueConstraintError") {
     const uniqueError = err
@@ -341,32 +370,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     // 获取模型名称
     const modelName =
       uniqueError.errors[0].instance?.constructor?.name || "未知模型"
-
-    // 模型英文名到中文名的映射
-    const modelNameMap: Record<string, string> = {
-      Article: "文章",
-      ArticleBookmark: "文章收藏",
-      ArticleCount: "文章计数",
-      ArticleTime: "文章时间",
-      BannerImg: "横幅图片",
-      Comment: "评论",
-      Filter: "敏感词",
-      FilterType: "敏感词分类",
-      Follow: "关注",
-      LikeDislike: "点赞/点踩",
-      Mention: "@提及",
-      Menu: "菜单",
-      Message: "消息",
-      Permission: "权限",
-      PermissionGroup: "权限组",
-      Report: "举报",
-      Role: "角色",
-      Setting: "设置",
-      Share: "分享",
-      SystemMessage: "系统消息",
-      User: "用户",
-      Visitor: "访客",
-    }
 
     // 获取模型中文名，如果不存在则返回英文名
     const modelNameCN = modelNameMap[modelName] || modelName
@@ -376,7 +379,18 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     )
     return res.result(void 0, uniqueFields, false)
   }
-
+  // 数据库约束错误
+  if (err.name === "SequelizeForeignKeyConstraintError") {
+    return res.result(
+      void 0,
+      `操作失败：外键约束错误 ${
+        modelNameMap[err.table] || err.table || "未知"
+      }表的字段: ${err.fields?.map((item) => item)} 出错，待插入的值为： ${
+        err.value
+      }`,
+      false
+    )
+  }
   //token解析失败导致的错误
   if (err.name === "UnauthorizedError")
     return res.result(void 0, "TOKEN过期~", false, 401)

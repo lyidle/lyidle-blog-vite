@@ -7,7 +7,7 @@ router.get("/", async (req, res, next) => {
   try {
     const types = await FilterType.findAll({
       attributes: ["name", "desc"], // 只返回名称和描述
-      order: [["name", "ASC"]], // 按名称排序
+      order: [["name", "asc"]], // 按名称排序
     })
     res.result(types, msg + `成功~`)
   } catch (error) {

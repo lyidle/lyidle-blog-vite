@@ -1,12 +1,5 @@
 <template>
   <div class="admin-container">
-    <my-search-admin
-      :submit="handlerSearch"
-      label="用户id"
-      :reset="handlerReset"
-      placeholder="请输入用户id"
-    >
-    </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
@@ -20,20 +13,24 @@
       <my-table
         :data="tableData"
         style="width: 100%"
-        height="46vh"
+        height="calc(70vh - 100px)"
         show-overflow-tooltip
         @selection-change="handleSelectionChange"
       >
         <my-table-column type="selection" width="30" />
         <my-table-column width="40" prop="id" label="id" align="center" />
-        <my-table-column prop="title" label="标题" align="center" />
-        <my-table-column prop="content" label="内容" align="center" />
-        <my-table-column prop="userId" label="类型" align="center">
-          <template #="{ row }">
-            <div v-if="row.userId">用户消息userId:{{ row.userId }}</div>
-            <div v-else>全局消息</div>
-          </template>
-        </my-table-column>
+        <my-table-column
+          :width="tablePrimaryColumWidth"
+          prop="name"
+          label="名字"
+          align="center"
+        />
+        <my-table-column
+          :width="tablePrimaryColumWidth"
+          prop="desc"
+          label="描述"
+          align="center"
+        />
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -67,7 +64,7 @@
               <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要删除标题为:《${row.title}》的系统消息么?`"
+                :title="`确认要删除敏感词分类：《${row.name}》么?`"
                 placement="top"
                 @confirm="handlerDelete(row)"
               >
@@ -118,25 +115,18 @@
         :dark="true"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
-
-      <!-- <manager-com-msg-send
-        ref="send"
-        @req="handlerReq"
-        @send="sendMsg"
-        @sucSend="sucSend"
-      /> -->
     </my-card>
   </div>
 </template>
 
-<script setup lang="ts" name="AdminSystemMessage">
+<script setup lang="ts" name="AdminReportFilterGroup">
 import moment from "@/utils/moment"
 // 引入 hooks
-import { useManagerSystemMessage } from "@/hooks/manager/sysMsg/useManagerSystemMessage"
+import { useFilterGroupsBase } from "@/hooks/manager/filter/useFilterGroupsBase"
 // 引入 接口api
-import { delSystemMsg } from "@/api/admin/sysMsg"
+import { delFilterWordGroup } from "@/api/admin/filter/group/types"
 // 引入 类型
-import { GetReports } from "@/api/admin/report/types/getReports"
+import { GetFilterWordGroups } from "@/api/admin/filter/group/types/getFilterWordGroups"
 import { mitt } from "@/utils/emitter"
 // 表格的信息 和 搜索
 const {
@@ -149,10 +139,8 @@ const {
   currentPage,
   pageSize,
 
-  // 搜索
-  handlerSearch,
-  handlerReset,
-} = useManagerSystemMessage()
+  tablePrimaryColumWidth,
+} = useFilterGroupsBase()
 
 // 个数变化
 const handlerSizeChange = (num: number) => {
@@ -202,30 +190,40 @@ const handlerReq = async (stay?: boolean) => {
 }
 
 // 删除
-const handlerDelete = async (row: GetReports["data"]["list"][0]) => {
-  const { id, title } = row
+const handlerDelete = async (row: GetFilterWordGroups["data"]["list"][0]) => {
+  const { id, name } = row
   try {
     // 删除
-    await delSystemMsg(id)
+    await delFilterWordGroup(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`删除标题为:${title}的系统消息成功~`)
-  } catch (error) {
-    ElMessage.error(`删除标题为:${title}的系统消息失败~`)
+    ElMessage.success(`删除敏感词分类：《${name}》成功~`)
+  } catch (error: any) {
+    const errMsg = error?.message?.[0] as string | undefined
+    if (errMsg?.includes("相关的敏感词删除完")) {
+      ElMessage.error(`${errMsg},敏感词分类名：《${name}》`)
+      return
+    }
+    ElMessage.error(`删除敏感词分类：《${name}》失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
   if (!reportsId.value?.length)
-    return ElMessage.warning("没有需要删除的系统消息")
+    return ElMessage.warning("没有需要删除的敏感词分类")
   try {
     await Promise.all(
       reportsId.value.map(async (item) => {
         try {
           // 删除
-          await delSystemMsg(item)
-        } catch (error) {
+          await delFilterWordGroup(item)
+        } catch (error: any) {
+          const errMsg = error?.message?.[0] as string | undefined
+          if (errMsg?.includes("相关的敏感词删除完")) {
+            ElMessage.error(`${errMsg},敏感词id:${item}`)
+            return
+          }
           ElMessage.error(`批量删除时,id:${item}删除失败~`)
         }
       })

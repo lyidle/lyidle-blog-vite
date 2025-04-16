@@ -1,14 +1,27 @@
 <template>
   <div class="admin-container">
-    <my-search-admin
-      :submit="handlerSearch"
-      label="用户id"
-      :reset="handlerReset"
-      placeholder="请输入用户id"
+    <my-card
+      class="admin-content card_style !overflow-unset flex gap-15px"
+      bg="var(--manager-card-bg) "
     >
-    </my-search-admin>
+      <div class="flex gap-10px items-center">
+        <span class="cur-text">举报的类型:</span>
+        <my-select
+          v-model="types"
+          :options="typeOptions"
+          @change="reloadReq"
+          class="w-100px"
+        ></my-select>
+      </div>
+    </my-card>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
+        <my-button
+          :size="headerBtnsSize"
+          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="create.init(types, typeOptions)"
+          >添加敏感词</my-button
+        >
         <my-button
           :size="headerBtnsSize"
           type="danger"
@@ -26,14 +39,8 @@
       >
         <my-table-column type="selection" width="30" />
         <my-table-column width="40" prop="id" label="id" align="center" />
-        <my-table-column prop="title" label="标题" align="center" />
-        <my-table-column prop="content" label="内容" align="center" />
-        <my-table-column prop="userId" label="类型" align="center">
-          <template #="{ row }">
-            <div v-if="row.userId">用户消息userId:{{ row.userId }}</div>
-            <div v-else>全局消息</div>
-          </template>
-        </my-table-column>
+        <my-table-column prop="word" label="敏感词" align="center" />
+        <my-table-column prop="type" label="分类" align="center" />
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -67,7 +74,7 @@
               <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要删除标题为:《${row.title}》的系统消息么?`"
+                :title="`确认要删除敏感词:《${row.word}》么?`"
                 placement="top"
                 @confirm="handlerDelete(row)"
               >
@@ -118,25 +125,22 @@
         :dark="true"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
-
-      <!-- <manager-com-msg-send
-        ref="send"
+      <manager-com-filter-create
+        ref="create"
         @req="handlerReq"
-        @send="sendMsg"
-        @sucSend="sucSend"
-      /> -->
+      ></manager-com-filter-create>
     </my-card>
   </div>
 </template>
 
-<script setup lang="ts" name="AdminSystemMessage">
+<script setup lang="ts" name="AdminReportFilterWords">
 import moment from "@/utils/moment"
 // 引入 hooks
-import { useManagerSystemMessage } from "@/hooks/manager/sysMsg/useManagerSystemMessage"
+import { useFilterWordsBase } from "@/hooks/manager/filter/useFilterWordsBase"
 // 引入 接口api
-import { delSystemMsg } from "@/api/admin/sysMsg"
+import { delFilterWord } from "@/api/admin/filter"
 // 引入 类型
-import { GetReports } from "@/api/admin/report/types/getReports"
+import { GetFilterWords } from "@/api/admin/filter/types/getFilterWords"
 import { mitt } from "@/utils/emitter"
 // 表格的信息 和 搜索
 const {
@@ -149,10 +153,19 @@ const {
   currentPage,
   pageSize,
 
-  // 搜索
-  handlerSearch,
-  handlerReset,
-} = useManagerSystemMessage()
+  // 多选框
+  types,
+  typeOptions,
+} = useFilterWordsBase()
+
+// 子组件
+const create = ref()
+
+// 多选框变化时
+const reloadReq = async () => {
+  currentPage.value = 0
+  await reqReports()
+}
 
 // 个数变化
 const handlerSizeChange = (num: number) => {
@@ -202,29 +215,28 @@ const handlerReq = async (stay?: boolean) => {
 }
 
 // 删除
-const handlerDelete = async (row: GetReports["data"]["list"][0]) => {
-  const { id, title } = row
+const handlerDelete = async (row: GetFilterWords["data"]["list"][0]) => {
+  const { id, word } = row
   try {
     // 删除
-    await delSystemMsg(id)
+    await delFilterWord(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`删除标题为:${title}的系统消息成功~`)
+    ElMessage.success(`删除敏感词：《${word}》成功~`)
   } catch (error) {
-    ElMessage.error(`删除标题为:${title}的系统消息失败~`)
+    ElMessage.error(`删除敏感词：《${word}》失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
-  if (!reportsId.value?.length)
-    return ElMessage.warning("没有需要删除的系统消息")
+  if (!reportsId.value?.length) return ElMessage.warning("没有需要删除的敏感词")
   try {
     await Promise.all(
       reportsId.value.map(async (item) => {
         try {
           // 删除
-          await delSystemMsg(item)
+          await delFilterWord(item)
         } catch (error) {
           ElMessage.error(`批量删除时,id:${item}删除失败~`)
         }

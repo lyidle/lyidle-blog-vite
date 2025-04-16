@@ -30,7 +30,7 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
 
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
-  // 账号和用户名的 宽度
+  // 主要的列宽
   const tablePrimaryColumWidth = ref<number>()
   // 右侧 工具栏
   const toolBtnsWidth = ref<number>()

@@ -1,26 +1,22 @@
 import express from "express"
 const router = express.Router()
 // 引入模型
-const { Filter } = require("@/db/models")
-
+const { FilterType } = require("@/db/models")
 router.get("/", async (req, res, next) => {
-  const msg = "获取所有敏感词"
-  let { currentPage, pageSize, type } = req.query
-  if (!type) return res.result(void 0, msg + `失败,type必须要有`, false)
-
+  const msg = "获取所有敏感词分类"
+  let { currentPage, pageSize } = req.query
   try {
     // 处理分页参数，确保为正数
     const page = Math.abs(Number(currentPage)) || 1
     const size = Math.abs(Number(pageSize)) || 10
     const offset = (page - 1) * size
-    const { count, rows } = await Filter.findAndCountAll({
-      where: {
-        type,
-      },
+
+    const { count, rows } = await FilterType.findAndCountAll({
+      order: [["createdAt", "desc"]],
       limit: size, // 每页数量
       offset: offset, // 偏移量
-      order: [["createdAt", "desc"]],
     })
+
     // 构造返回数据格式
     const result = {
       pagination: {

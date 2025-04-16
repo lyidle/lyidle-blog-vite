@@ -26,21 +26,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Filter",
-      timestamps: false,
       // 加上 钩子 处理 Filter 表的缓存信息
       hooks: {
         // 创建敏感词时的钩子
         beforeCreate: async (filter, options) => {
-          // 确保分类存在
-          await sequelize.models.FilterType.findOrCreate({
-            where: { name: filter.type },
-            defaults: {
-              name: filter.type,
-            },
-            transaction: options.transaction, // 传递事务保证一致性
-          })
-          // 种子文件需要 return 一下
-          // return
           // 获取当前缓存
           let filters = await getKey(cacheKey)
           if (!filters) filters = []
@@ -64,17 +53,6 @@ module.exports = (sequelize, DataTypes) => {
           // 获取旧值和新值
           const oldWord = filter.previous("word")
           const newWord = filter.word
-
-          // // 获取当前缓存
-          // let filters = await getKey(cacheKey)
-          // if (!filters) filters = []
-
-          // // 更新缓存（替换旧词）
-          // const index = filters.indexOf(oldWord)
-          // if (index !== -1) {
-          //   filters[index] = newWord
-          //   await setKey(cacheKey, filters)
-          // }
           // 直接删除缓存
           await delKey(cacheKey)
 
@@ -88,17 +66,6 @@ module.exports = (sequelize, DataTypes) => {
           if (!options.force) return // 软删除不处理
 
           const word = filter.word
-
-          // // 获取当前缓存
-          // let filters = await getKey(cacheKey)
-          // if (!filters) filters = []
-
-          // // 从缓存中移除
-          // const index = filters.indexOf(word)
-          // if (index !== -1) {
-          //   filters.splice(index, 1)
-          //   await setKey(cacheKey, filters)
-          // }
           // 直接删除缓存
           await delKey(cacheKey)
 
