@@ -17,11 +17,16 @@ router.get("/", async (req, res, next) => {
     const pageSize = Math.abs(Number(query.pageSize)) || 10
     const offset = (currentPage - 1) * pageSize
 
-    const { count, rows } = await SystemMessage.findAndCountAll({
+    const { userId } = req.query
+
+    const commend: any = {
       order: [["createdAt", "DESC"]],
       limit: pageSize,
       offset,
-    })
+    }
+    if (userId) commend.where = { userId }
+
+    const { count, rows } = await SystemMessage.findAndCountAll(commend)
 
     // 返回 结果
     const result = {

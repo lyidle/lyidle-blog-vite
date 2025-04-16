@@ -367,7 +367,7 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
           name: "SystemMessage",
           path: "/admin/system-msg",
           meta: { title: "系统消息管理" },
-          component: () => import("@/views/admin/articles/manager/index.vue"),
+          component: () => import("@/views/admin/systemMsg/index.vue"),
         },
         {
           name: "Report",
