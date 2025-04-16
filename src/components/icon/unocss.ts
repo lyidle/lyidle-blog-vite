@@ -15,6 +15,7 @@ const panelIcon = ["i-basil:edit-outline", "i-mynaui:panel-top"]
 const adminIcon = [
   "i-material-symbols:home-rounded",
   "i-mdi:paper",
+  "i-mage:user-fill",
   "i-arcticons:hihonor-systemmanager",
   "i-fa6-solid:user-group",
   "i-fluent:contact-card-group-48-filled",

@@ -26,13 +26,13 @@
         <my-table-column type="selection" width="30" />
         <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
-          :width="accountsWidth"
+          :width="tablePrimaryColumWidth"
           prop="name"
           label="角色名"
           align="center"
         />
         <my-table-column
-          :width="accountsWidth"
+          :width="tablePrimaryColumWidth"
           prop="desc"
           label="描述"
           align="center"
@@ -143,7 +143,7 @@ const {
   handlerSearch,
 
   headerBtnsSize,
-  accountsWidth,
+  tablePrimaryColumWidth,
 } = useMangerRolesBase(searchKey)
 
 // 个数变化
@@ -167,7 +167,7 @@ const handlerReq = async () => {
   // 当前页
   const cur = currentPage.value
   // 上一页
-  const pre = cur - 1 || 1
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页

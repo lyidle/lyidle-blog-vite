@@ -116,6 +116,7 @@ declare module 'vue' {
     ManagerComGroupEditor: typeof import('./src/components/manager/com/group/editor/index.vue')['default']
     ManagerComMenuCreate: typeof import('./src/components/manager/com/menu/create/index.vue')['default']
     ManagerComMenuEditor: typeof import('./src/components/manager/com/menu/editor/index.vue')['default']
+    ManagerComMsgSend: typeof import('./src/components/manager/com/msg/send/index.vue')['default']
     ManagerComPermissionCreate: typeof import('./src/components/manager/com/permission/create/index.vue')['default']
     ManagerComPermissionEditor: typeof import('./src/components/manager/com/permission/editor/index.vue')['default']
     ManagerComRoleAssignGroups: typeof import('./src/components/manager/com/role/assign-groups/index.vue')['default']

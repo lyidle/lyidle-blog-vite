@@ -35,16 +35,16 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
   // 账号和权限名的 宽度
-  const accountsWidth = ref<number>()
+  const tablePrimaryColumWidth = ref<number>()
 
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
-      accountsWidth.value = 150
+      tablePrimaryColumWidth.value = 150
       headerBtnsSize.value = "default"
       return
     }
-    accountsWidth.value = 100
+    tablePrimaryColumWidth.value = 100
     headerBtnsSize.value = "small"
   }
 
@@ -101,6 +101,6 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     pageSize,
 
     headerBtnsSize,
-    accountsWidth,
+    tablePrimaryColumWidth,
   }
 }

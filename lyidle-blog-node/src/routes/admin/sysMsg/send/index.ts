@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
   if (!isAll && (!userId || !Number.isInteger(+userId)))
     return res.result(
       void 0,
-      msg + "失败,单独发送消息必须要有userId或userId不合法参数",
+      msg + "失败,单独发送消息必须要有参数:userId或userId不合法",
       false
     )
   try {

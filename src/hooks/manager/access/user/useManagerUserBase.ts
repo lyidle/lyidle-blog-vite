@@ -33,7 +33,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
   // 账号和用户名的 宽度
-  const accountsWidth = ref<number>()
+  const tablePrimaryColumWidth = ref<number>()
   // 右侧 工具栏
   const toolBtnsWidth = ref<number>()
   // 是否是小屏
@@ -43,14 +43,14 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   const handlerResize = () => {
     if (window.innerWidth > 870) {
       // 账号和用户名的 宽度
-      accountsWidth.value = 130
+      tablePrimaryColumWidth.value = 130
       headerBtnsSize.value = "default"
       toolBtnsWidth.value = 290
       isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
-    accountsWidth.value = 70
+    tablePrimaryColumWidth.value = 70
     headerBtnsSize.value = "small"
     toolBtnsWidth.value = 100
     isSmall.value = true
@@ -107,7 +107,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     pageSize,
 
     headerBtnsSize,
-    accountsWidth,
+    tablePrimaryColumWidth,
     toolBtnsWidth,
     isSmall,
   }

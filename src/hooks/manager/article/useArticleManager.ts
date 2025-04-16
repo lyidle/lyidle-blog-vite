@@ -39,20 +39,20 @@ export const useArticleManager = (searchKey: Ref<string>) => {
   // 头部 搜索 按钮大小
   const headerBtnsSize = ref<string>()
   // 账号和用户名的 宽度
-  const accountsWidth = ref<number>()
+  const tablePrimaryColumWidth = ref<number>()
   // 是否是小屏
   const isSmall = ref<boolean>()
   // 处理 窗口变化 的事件
   const handlerResize = () => {
     if (window.innerWidth > 870) {
       // 账号和用户名的 宽度
-      accountsWidth.value = 150
+      tablePrimaryColumWidth.value = 150
       headerBtnsSize.value = "default"
       isSmall.value = false
       return
     }
     // 账号和用户名的 宽度
-    accountsWidth.value = 100
+    tablePrimaryColumWidth.value = 100
     headerBtnsSize.value = "small"
     isSmall.value = true
   }
@@ -104,7 +104,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
     pageSize,
 
     headerBtnsSize,
-    accountsWidth,
+    tablePrimaryColumWidth,
     isSmall,
   }
 }

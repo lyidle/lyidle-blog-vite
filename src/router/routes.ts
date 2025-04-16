@@ -379,7 +379,7 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
               name: "ReportManager",
               path: "/admin/report/manager",
               meta: { title: "举报管理" },
-              component: () => import("@/views/admin/access/users/index.vue"),
+              component: () => import("@/views/admin/report/manager/index.vue"),
             },
             {
               name: "FilterWords",
