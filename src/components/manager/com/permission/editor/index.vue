@@ -88,7 +88,8 @@ const createRules = reactive({
 // 初始化
 const init = (row: UpdateRoleBody) => {
   centerDialogVisible.value = true
-  Object.assign(createData, JSON.parse(JSON.stringify(row)))
+  const _row = JSON.parse(JSON.stringify(row))
+  Object.assign(createData, _row.desc ? _row : { ..._row, desc: "" })
 }
 
 // 表单实例
@@ -101,7 +102,7 @@ const handlerClose = () => {
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
-  req: []
+  (e: "req", stay?: boolean): []
 }>()
 
 // 确认
@@ -113,7 +114,7 @@ const handlerConfirm = async () => {
     ElMessage.success(`修改权限成功~`)
     centerDialogVisible.value = false
     // 重新请求
-    await emit("req")
+    emit("req", true)
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("修改权限失败~")

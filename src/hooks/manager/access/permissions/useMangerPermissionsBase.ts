@@ -18,14 +18,14 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqAllRoles()
+    await reqAllPermissions()
   }
 
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqAllRoles()
+    await reqAllPermissions()
   }
 
   // 头部 搜索 按钮大小
@@ -52,9 +52,8 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   const tableData = ref<Permission[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取用户
-  const reqAllRoles = async (
+  // 获取数据
+  const reqAllPermissions = async (
     currentPage: number = 1,
     pageSize: number = 10
   ) => {
@@ -74,8 +73,8 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
-    // 得到 用户
-    await reqAllRoles()
+    // 得到 数据
+    await reqAllPermissions()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -89,7 +88,7 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     handlerSearch,
     tableData,
     pagination,
-    reqAllRoles,
+    reqAllPermissions,
     handlerReset,
     currentPage,
     pageSize,

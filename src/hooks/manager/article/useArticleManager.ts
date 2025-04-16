@@ -22,10 +22,10 @@ export const useArticleManager = (searchKey: Ref<string>) => {
       tableData.value = result.article
       pagination.value = result.pagination
       currentPage.value = 1
-      ElMessage.success("搜索权限组成功~")
+      ElMessage.success("搜索文章成功~")
     } catch (error) {
       const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("搜索权限组失败~")
+      if (!err) ElMessage.error("搜索文章失败~")
     }
   }
 
@@ -33,7 +33,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqAllGroups()
+    await reqAllArticles()
   }
 
   // 头部 搜索 按钮大小
@@ -61,9 +61,8 @@ export const useArticleManager = (searchKey: Ref<string>) => {
   const tableData = ref<Article[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取权限组
-  const reqAllGroups = async (
+  // 获取数据
+  const reqAllArticles = async (
     currentPage: number = 1,
     pageSize: number = 10
   ) => {
@@ -76,15 +75,15 @@ export const useArticleManager = (searchKey: Ref<string>) => {
       pagination.value = result.pagination
     } catch (error) {
       const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("查询权限组失败~")
+      if (!err) ElMessage.error("查询文章失败~")
     }
   }
 
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
-    // 得到 用户
-    await reqAllGroups()
+    // 得到 数据
+    await reqAllArticles()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -98,7 +97,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
     handlerSearch,
     tableData,
     pagination,
-    reqAllGroups,
+    reqAllArticles,
     handlerReset,
     currentPage,
     pageSize,

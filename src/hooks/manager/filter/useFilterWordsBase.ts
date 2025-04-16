@@ -34,11 +34,11 @@ export const useFilterWordsBase = () => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
 
-  // 选中的 userId
+  // 选中的id
   const reportsId = ref<number[]>([])
   // 处理 多选框 变化问题
   const handleSelectionChange = (user: GetFilterWords["data"]["list"]) => {
-    // 得到 选择的user的id
+    // 得到 选择的的id
     reportsId.value = user.map((item) => item.id)
   }
 
@@ -61,8 +61,11 @@ export const useFilterWordsBase = () => {
     }
   })
 
-  // 获取用户
-  const reqReports = async (currentPage: number = 1, pageSize: number = 10) => {
+  // 获取数据
+  const reqFilterWOrds = async (
+    currentPage: number = 1,
+    pageSize: number = 10
+  ) => {
     try {
       const search = {
         currentPage,
@@ -76,13 +79,13 @@ export const useFilterWordsBase = () => {
       pagination.value = result?.pagination
     } catch (error) {
       const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("查询用户失败~")
+      if (!err) ElMessage.error("查询敏感词失败~")
     }
   }
 
   onMounted(async () => {
-    // 得到 用户
-    await reqReports()
+    // 得到 数据
+    await reqFilterWOrds()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -98,7 +101,7 @@ export const useFilterWordsBase = () => {
     handlerResize,
     reportsId,
     handleSelectionChange,
-    reqReports,
+    reqFilterWOrds,
     currentPage,
     pageSize,
 

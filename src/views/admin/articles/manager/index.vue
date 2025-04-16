@@ -110,7 +110,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqAllGroups"
+        @change="reqAllArticles"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -141,7 +141,7 @@ const {
   handlerSearch,
   tableData,
   pagination,
-  reqAllGroups,
+  reqAllArticles,
   handlerReset,
   currentPage,
   pageSize,
@@ -166,21 +166,29 @@ const handleSelectionChange = (role: Role[]) => {
 }
 
 // 请求的逻辑
-const handlerReq = async () => {
+const handlerReq = async (stay?: boolean) => {
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
+  if (stay) {
+    // 默认是 当前页 和分页器的个数
+    await reqAllArticles(cur, pageSize.value)
+    return
+  }
+
   // 只有一条数据时
   if (pagination.value?.total === 1) {
     // 清除 table数据
     tableData.value = []
     return
   }
-  // 当前页
-  const cur = currentPage.value
-  // 上一页
-  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqAllGroups(pre, pageSize.value)
+    await reqAllArticles(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -188,11 +196,11 @@ const handlerReq = async () => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqAllGroups(cur - 1, pageSize.value)
+    await reqAllArticles(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqAllGroups(cur, pageSize.value)
+  await reqAllArticles(cur, pageSize.value)
   // 重新加载路由
   mitt.emit("route:reload")
 }
@@ -203,14 +211,15 @@ const toggleBanner = async (row: Article) => {
   try {
     // 对 carousel 取反进行设置
     await managerUpdateArticle({ id, carousel: !carousel })
+
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.success(
       `${!carousel ? "设置轮播和置顶" : "取消轮播和置顶"}${title}背景成功~`
     )
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.error(
       `${!carousel ? "设置轮播和置顶" : "取消轮播和置顶"}${title}背景失败~`
     )
@@ -233,11 +242,11 @@ const setSelectBanner = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.success(`批量设置轮播图和置顶成功~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.error(`批量设置轮播图和置顶失败~`)
   }
 }
@@ -258,11 +267,11 @@ const unsetSelectBanner = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.success(`批量取消轮播图和置顶成功~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.error(`批量取消轮播图和置顶失败~`)
   }
 }

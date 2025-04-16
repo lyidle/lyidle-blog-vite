@@ -179,11 +179,14 @@ const init = (row: Datum) => {
   centerDialogVisible.value = true
   // 克隆一下
   const _row = JSON.parse(JSON.stringify(row))
+  if (!_row.icon) _row.icon = ""
+  if (!_row.name) _row.name = ""
+  if (!_row.to) _row.to = ""
   // 基础的赋值
   Object.assign(createData, _row)
   // Layout
-  createData.topnavWidth = _row.layout?.topnavWidth
-  createData.topnavDirection = _row.layout?.topnavDirection
+  createData.topnavWidth = _row.layout?.topnavWidth || ""
+  createData.topnavDirection = _row.layout?.topnavDirection || ""
 }
 
 // 表单组件实例
@@ -198,7 +201,7 @@ const handlerClose = () => {
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
-  req: []
+  (e: "req", stay?: boolean): []
 }>()
 
 // 确认
@@ -232,7 +235,7 @@ const handlerConfirm = async () => {
     ElMessage.success(`修改菜单成功~`)
     centerDialogVisible.value = false
     // 重新请求
-    await emit("req")
+    emit("req", true)
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("修改菜单失败~")

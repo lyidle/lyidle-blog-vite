@@ -57,8 +57,7 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   const tableData = ref<Group[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取权限组
+  // 获取数据
   const reqAllGroups = async (
     currentPage: number = 1,
     pageSize: number = 10
@@ -79,7 +78,7 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
-    // 得到 用户
+    // 得到 数据
     await reqAllGroups()
     // 处理 窗口变化 的事件
     handlerResize()

@@ -172,17 +172,25 @@ const handlerCurrentPage = (num: number) => {
 // 子组件实例
 const editor = ref()
 // 请求的逻辑
-const handlerReq = async () => {
+const handlerReq = async (stay?: boolean) => {
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
+  if (stay) {
+    // 默认是 当前页 和分页器的个数
+    await reqAllBanners(cur, pageSize.value)
+    return
+  }
+
   // 只有一条数据时
   if (pagination.value?.total === 1) {
     // 清除 table数据
     tableData.value = []
     return
   }
-  // 当前页
-  const cur = currentPage.value
-  // 上一页
-  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
@@ -205,11 +213,11 @@ const toggleBanner = async (row: Banner) => {
       await managerRecycleBannerImg(id)
     }
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.success(`${isBin ? "恢复" : "禁用"}${name}背景成功~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    await handlerReq(true)
     ElMessage.error(`${isBin ? "恢复" : "禁用"}${name}背景失败~`)
   }
 }

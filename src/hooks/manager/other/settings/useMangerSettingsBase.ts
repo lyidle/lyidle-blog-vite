@@ -59,8 +59,7 @@ export const useMangerSettingsBase = (searchKey: Ref<string>) => {
   const tableData = ref<Setting[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取用户
+  // 获取数据
   const reqAllSettings = async (
     currentPage: number = 1,
     pageSize: number = 10

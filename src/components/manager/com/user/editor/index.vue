@@ -126,7 +126,7 @@ const handlerClose = () => {
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
-  req: []
+  (e: "req", stay?: boolean): []
 }>()
 
 // 确认
@@ -144,7 +144,7 @@ const handlerConfirm = async () => {
     ElMessage.success("修改用户信息成功~")
     centerDialogVisible.value = false
     // 重新请求
-    await emit("req")
+    emit("req", true)
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("修改用户信息失败~")

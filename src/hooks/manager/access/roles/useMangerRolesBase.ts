@@ -56,8 +56,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   const tableData = ref<Role[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取用户
+  // 获取数据
   const reqAllRoles = async (
     currentPage: number = 1,
     pageSize: number = 10
@@ -78,7 +77,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
-    // 得到 用户
+    // 得到 数据
     await reqAllRoles()
     // 处理 窗口变化 的事件
     handlerResize()

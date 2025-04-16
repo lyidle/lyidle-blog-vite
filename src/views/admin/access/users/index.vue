@@ -250,17 +250,25 @@ const handlerCurrentPage = (num: number) => {
 }
 
 // 请求的逻辑
-const handlerReq = async () => {
+const handlerReq = async (stay?: boolean) => {
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
+  if (stay) {
+    // 默认是 当前页 和分页器的个数
+    await reqUsers(cur, pageSize.value)
+    return
+  }
+
   // 只有一条数据时
   if (pagination.value?.total === 1) {
     // 清除 table数据
     tableData.value = []
     return
   }
-  // 当前页
-  const cur = currentPage.value
-  // 上一页
-  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
@@ -324,11 +332,13 @@ const handlerAllRemove = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.error(`批量软删除失败~`)
   }
 }
@@ -348,11 +358,13 @@ const handlerAllDelete = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.success(`批量彻底删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.error(`批量彻底删除失败~`)
   }
 }

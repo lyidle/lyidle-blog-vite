@@ -205,7 +205,6 @@ import { useMangerRolesBase } from "@/hooks/manager/access/roles/useMangerRolesB
 import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
-import { handlerReqErr } from "@/utils/request/error/successError"
 // 搜索 的key
 const searchKey = ref("")
 // 使用 基础配置
@@ -244,17 +243,25 @@ const create = ref()
 const editor = ref()
 const assignGroup = ref()
 // 请求的逻辑
-const handlerReq = async () => {
+const handlerReq = async (stay?: boolean) => {
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
+  if (stay) {
+    // 默认是 当前页 和分页器的个数
+    await reqAllRoles(cur, pageSize.value)
+    return
+  }
+
   // 只有一条数据时
   if (pagination.value?.total === 1) {
     // 清除 table数据
     tableData.value = []
     return
   }
-  // 当前页
-  const cur = currentPage.value
-  // 上一页
-  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
@@ -285,7 +292,6 @@ const handlerRemove = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`移动${name}角色到垃圾桶成功~`)
   } catch (error) {
-    handlerReqErr(error, "error")
     ElMessage.error(`移动${name}角色到垃圾桶失败~`)
   }
 }
@@ -300,7 +306,6 @@ const handlerDelete = async (row: Role) => {
     await handlerReq()
     ElMessage.success(`彻底删除${name}角色成功~`)
   } catch (error) {
-    handlerReqErr(error, "error")
     ElMessage.error(`彻底删除${name}角色失败~`)
   }
 }
@@ -315,16 +320,18 @@ const handlerAllRemove = async () => {
           // 软删除
           await managerRemoveRole(item)
         } catch (error) {
-          handlerReqErr(error, "error")
           ElMessage.error(`批量软删除时,id:${item}删除失败~`)
         }
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllRoles()
+    else await handlerReq()
     ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
   } catch (error) {
-    handlerReqErr(error, "error")
+    // 重新请求
+    if (pagination.value?.total === 1) await reqAllRoles()
+    else await handlerReq()
     ElMessage.error(`批量软删除失败~`)
   }
 }
@@ -339,16 +346,18 @@ const handlerAllDelete = async () => {
           // 彻底删除
           await managerDeleteRole(item)
         } catch (error) {
-          handlerReqErr(error, "error")
           ElMessage.error(`批量彻底删除时,id:${item}删除失败~`)
         }
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllRoles()
+    else await handlerReq()
     ElMessage.success(`批量彻底删除成功,已成功删除~`)
   } catch (error) {
-    handlerReqErr(error, "error")
+    // 重新请求
+    if (pagination.value?.total === 1) await reqAllRoles()
+    else await handlerReq()
     ElMessage.error(`批量彻底删除失败~`)
   }
 }

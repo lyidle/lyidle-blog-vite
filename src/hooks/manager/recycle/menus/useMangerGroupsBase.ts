@@ -23,13 +23,13 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqUsers()
+    await reqMenus()
   }
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqUsers()
+    await reqMenus()
   }
 
   // 头部 搜索 按钮大小
@@ -47,16 +47,16 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
 
-  // 选中的 userId
+  // 选中的id
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
   const handleSelectionChange = (user: GetRecycleMenu["data"]["menus"]) => {
-    // 得到 选择的user的id
+    // 得到 选择的的id
     userIds.value = user.map((item) => item.id)
   }
 
   // 获取菜单
-  const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
+  const reqMenus = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
       const search = { currentPage, pageSize } as OrdinarySearchQuery
       // 如果搜索了 则按照搜索的来
@@ -72,7 +72,7 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
 
   onMounted(async () => {
     // 得到 菜单
-    await reqUsers()
+    await reqMenus()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -89,7 +89,7 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
     handlerResize,
     userIds,
     handleSelectionChange,
-    reqUsers,
+    reqMenus,
     handlerReset,
     currentPage,
     pageSize,

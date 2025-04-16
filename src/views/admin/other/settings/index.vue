@@ -283,6 +283,7 @@ const handlerAllDelete = async () => {
   }
 
   // 重新请求
-  await handlerReq()
+  if (pagination.value?.total === 1) await reqAllSettings()
+  else await handlerReq()
 }
 </script>

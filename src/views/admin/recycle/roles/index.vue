@@ -107,7 +107,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqUsers"
+        @change="reqRoles"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -135,7 +135,7 @@ const {
   tableData,
   pagination,
   handleSelectionChange,
-  reqUsers,
+  reqRoles,
   userIds,
   handlerReset,
   currentPage,
@@ -171,7 +171,7 @@ const handlerReq = async () => {
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqUsers(pre, pageSize.value)
+    await reqRoles(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -179,11 +179,11 @@ const handlerReq = async () => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqUsers(cur - 1, pageSize.value)
+    await reqRoles(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqUsers(cur, pageSize.value)
+  await reqRoles(cur, pageSize.value)
   // 重新加载路由
   mitt.emit("route:reload")
 }
@@ -215,11 +215,13 @@ const handlerAllRemove = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqRoles()
+    else await handlerReq()
     ElMessage.success(`批量恢复成功~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqRoles()
+    else await handlerReq()
     ElMessage.error(`批量恢复失败~`)
   }
 }

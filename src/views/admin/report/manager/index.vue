@@ -299,11 +299,13 @@ const handlerAllDelete = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqReports()
+    else await handlerReq()
     ElMessage.success(`批量删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqReports()
+    else await handlerReq()
     ElMessage.error(`批量删除失败~`)
   }
 }

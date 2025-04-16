@@ -30,7 +30,7 @@ export const useManagerSystemMessage = () => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqReports()
+    await reqSysMsgs()
     ElMessage.success("搜索成功")
   }
   // 重置 搜索
@@ -38,7 +38,7 @@ export const useManagerSystemMessage = () => {
     // 重置 key
     searchKey.value = null
     currentPage.value = 1
-    await reqReports()
+    await reqSysMsgs()
     ElMessage.success("重置搜索成功")
   }
 
@@ -57,16 +57,16 @@ export const useManagerSystemMessage = () => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
 
-  // 选中的 userId
+  // 选中的id
   const reportsId = ref<number[]>([])
   // 处理 多选框 变化问题
   const handleSelectionChange = (user: GetMsg["data"]["list"]) => {
-    // 得到 选择的user的id
+    // 得到 选择的的id
     reportsId.value = user.map((item) => item.id)
   }
 
-  // 获取用户
-  const reqReports = async (currentPage: number = 1, pageSize: number = 10) => {
+  // 获取数据
+  const reqSysMsgs = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
       const search = {
         currentPage,
@@ -81,13 +81,13 @@ export const useManagerSystemMessage = () => {
       pagination.value = result?.pagination
     } catch (error) {
       const err = handlerReqErr(error, "error")
-      if (!err) ElMessage.error("查询用户失败~")
+      if (!err) ElMessage.error("查询系统消息失败~")
     }
   }
 
   onMounted(async () => {
-    // 得到 用户
-    await reqReports()
+    // 得到 数据
+    await reqSysMsgs()
     // 处理 窗口变化 的事件
     handlerResize()
   })
@@ -103,7 +103,7 @@ export const useManagerSystemMessage = () => {
     handlerResize,
     reportsId,
     handleSelectionChange,
-    reqReports,
+    reqSysMsgs,
     currentPage,
     pageSize,
 

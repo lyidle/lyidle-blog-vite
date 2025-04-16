@@ -60,10 +60,10 @@ const isIndeterminate = ref(false)
 // 当前用户
 const currentRole = ref<Group>()
 const name = computed(() => {
-  return currentRole.value?.name
+  return currentRole.value?.name || ""
 })
 const desc = computed(() => {
-  return currentRole.value?.desc
+  return currentRole.value?.desc || ""
 })
 
 // 全选状态
@@ -105,7 +105,7 @@ const init = async (row: Group) => {
 
 // 夫组件的自定义事件
 const emit = defineEmits<{
-  req: []
+  (e: "req", stay?: boolean): []
 }>()
 
 // 提交
@@ -117,7 +117,7 @@ const handlerConfirm = async () => {
       permissions: checkedPermissions.value,
     })
     // 重新请求
-    await emit("req")
+    emit("req", true)
     drawer.value = false
     ElMessage.success("分配权限组的权限成功~")
   } catch (error) {

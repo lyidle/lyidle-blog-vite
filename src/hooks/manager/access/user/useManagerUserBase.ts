@@ -59,15 +59,15 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
 
-  // 选中的 userId
+  // 选中的id
   const userIds = ref<number[]>([])
   // 处理 多选框 变化问题
   const handleSelectionChange = (user: searchData["users"]) => {
-    // 得到 选择的user的id
+    // 得到 选择的的id
     userIds.value = user.map((item) => item.id)
   }
 
-  // 获取用户
+  // 获取数据
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
       const search = { currentPage, pageSize } as SearchUserQuery
@@ -83,7 +83,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
   }
 
   onMounted(async () => {
-    // 得到 用户
+    // 得到 数据
     await reqUsers()
     // 处理 窗口变化 的事件
     handlerResize()

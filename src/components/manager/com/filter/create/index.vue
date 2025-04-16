@@ -9,7 +9,7 @@
       @close="handlerClose"
     >
       <template #header>
-        <div class="color-[var(--primary-color)]">发送系统消息</div>
+        <div class="color-[var(--primary-color)]">创建敏感词</div>
       </template>
       <el-form
         :model="createData"
@@ -68,7 +68,7 @@ const createRules = reactive({
       trigger: "change",
       min: 1,
       max: 255,
-      message: "敏感词字长度必须在1-255之间哦",
+      message: "敏感词长度必须在1-255之间哦",
     },
   ],
 })

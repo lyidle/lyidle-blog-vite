@@ -44,8 +44,7 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
   const tableData = ref<Banner[]>([])
   const pagination = ref<Pagination>()
 
-  // pagination  的回调
-  // 获取权限组
+  // 获取数据
   const reqAllBanners = async (
     currentPage: number = 1,
     pageSize: number = 10
@@ -72,7 +71,7 @@ export const useMangerBannerBase = (searchKey: Ref<string>) => {
   // 监听窗口变化
   mitt.on("window:resize", handlerResize)
   onMounted(async () => {
-    // 得到 用户
+    // 得到 数据
     await reqAllBanners()
     // 处理 窗口变化 的事件
     handlerResize()

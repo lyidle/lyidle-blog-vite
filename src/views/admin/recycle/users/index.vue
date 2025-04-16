@@ -216,11 +216,13 @@ const handlerAllRemove = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.success(`批量恢复成功~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqUsers()
+    else await handlerReq()
     ElMessage.error(`批量恢复失败~`)
   }
 }

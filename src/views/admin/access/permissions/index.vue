@@ -160,7 +160,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqAllRoles"
+        @change="reqAllPermissions"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -193,7 +193,7 @@ const {
   handlerSearch,
   tableData,
   pagination,
-  reqAllRoles,
+  reqAllPermissions,
   handlerReset,
   currentPage,
   pageSize,
@@ -222,21 +222,29 @@ const handleSelectionChange = (role: Role[]) => {
 const create = ref()
 const editor = ref()
 // 请求的逻辑
-const handlerReq = async () => {
+const handlerReq = async (stay?: boolean) => {
+  // 当前页
+  const cur = currentPage.value
+  // 上一页
+  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
+  if (stay) {
+    // 默认是 当前页 和分页器的个数
+    await reqAllPermissions(cur, pageSize.value)
+    return
+  }
+
   // 只有一条数据时
   if (pagination.value?.total === 1) {
     // 清除 table数据
     tableData.value = []
     return
   }
-  // 当前页
-  const cur = currentPage.value
-  // 上一页
-  const pre = cur - 1 <= 0 ? 1 : cur - 1
+
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqAllRoles(pre, pageSize.value)
+    await reqAllPermissions(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -244,11 +252,11 @@ const handlerReq = async () => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqAllRoles(cur - 1, pageSize.value)
+    await reqAllPermissions(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqAllRoles(cur, pageSize.value)
+  await reqAllPermissions(cur, pageSize.value)
   // 重新加载路由
   mitt.emit("route:reload")
 }
@@ -297,11 +305,13 @@ const handlerAllRemove = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllPermissions()
+    else await handlerReq()
     ElMessage.success(`批量软删除成功,已成功移动到垃圾桶~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllPermissions()
+    else await handlerReq()
     ElMessage.error(`批量软删除失败~`)
   }
 }
@@ -322,11 +332,13 @@ const handlerAllDelete = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllPermissions()
+    else await handlerReq()
     ElMessage.success(`批量彻底删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqAllPermissions()
+    else await handlerReq()
     ElMessage.error(`批量彻底删除失败~`)
   }
 }

@@ -112,6 +112,7 @@ declare module 'vue' {
     ManagerAside: typeof import('./src/components/manager/aside/index.vue')['default']
     ManagerComBannerEditor: typeof import('./src/components/manager/com/banner/editor/index.vue')['default']
     ManagerComFilterCreate: typeof import('./src/components/manager/com/filter/create/index.vue')['default']
+    ManagerComFilterGroupCreate: typeof import('./src/components/manager/com/filter/group/create/index.vue')['default']
     ManagerComGroupAssignPermissions: typeof import('./src/components/manager/com/group/assign-permissions/index.vue')['default']
     ManagerComGroupCreate: typeof import('./src/components/manager/com/group/create/index.vue')['default']
     ManagerComGroupEditor: typeof import('./src/components/manager/com/group/editor/index.vue')['default']

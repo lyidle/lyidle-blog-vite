@@ -4,6 +4,12 @@
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
+          :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
+          @click="create?.init()"
+          >创建分类</my-button
+        >
+        <my-button
+          :size="headerBtnsSize"
           type="danger"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="handlerAllDelete"
@@ -106,7 +112,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqReports"
+        @change="reqFilterGroups"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -115,6 +121,11 @@
         :dark="true"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
+
+      <manager-com-filter-group-create
+        ref="create"
+        @req="handlerReq"
+      ></manager-com-filter-group-create>
     </my-card>
   </div>
 </template>
@@ -133,7 +144,7 @@ const {
   tableData,
   pagination,
   handleSelectionChange,
-  reqReports,
+  reqFilterGroups,
   reportsId,
   headerBtnsSize,
   currentPage,
@@ -152,6 +163,9 @@ const handlerCurrentPage = (num: number) => {
   currentPage.value = num
 }
 
+// 子组件
+const create = ref()
+
 // 请求的逻辑
 const handlerReq = async (stay?: boolean) => {
   // 当前页
@@ -160,7 +174,7 @@ const handlerReq = async (stay?: boolean) => {
   const pre = cur - 1 <= 0 ? 1 : cur - 1
   if (stay) {
     // 默认是 当前页 和分页器的个数
-    await reqReports(cur, pageSize.value)
+    await reqFilterGroups(cur, pageSize.value)
     return
   }
   // 只有一条数据时
@@ -172,7 +186,7 @@ const handlerReq = async (stay?: boolean) => {
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqReports(pre, pageSize.value)
+    await reqFilterGroups(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -180,11 +194,11 @@ const handlerReq = async (stay?: boolean) => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqReports(cur - 1, pageSize.value)
+    await reqFilterGroups(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqReports(cur, pageSize.value)
+  await reqFilterGroups(cur, pageSize.value)
   // 重新加载路由
   mitt.emit("route:reload")
 }
@@ -229,11 +243,13 @@ const handlerAllDelete = async () => {
       })
     )
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqFilterGroups()
+    else await handlerReq()
     ElMessage.success(`批量删除成功,已成功删除~`)
   } catch (error) {
     // 重新请求
-    await handlerReq()
+    if (pagination.value?.total === 1) await reqFilterGroups()
+    else await handlerReq()
     ElMessage.error(`批量删除失败~`)
   }
 }

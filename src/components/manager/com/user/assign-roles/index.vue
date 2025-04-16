@@ -103,7 +103,7 @@ const init = async (row: User) => {
 }
 // 夫组件的自定义事件
 const emit = defineEmits<{
-  req: []
+  (e: "req", stay?: boolean): []
 }>()
 
 // 提交
@@ -114,7 +114,7 @@ const handlerConfirm = async () => {
       roles: checkedRoles.value,
     })
     // 重新请求
-    await emit("req")
+    emit("req", true)
     drawer.value = false
     ElMessage.success("分配用户的角色成功~")
   } catch (error) {
