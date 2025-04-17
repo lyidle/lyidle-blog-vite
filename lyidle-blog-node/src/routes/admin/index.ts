@@ -25,6 +25,10 @@ import report from "@/routes/admin/report"
 import sysMsg from "@/routes/admin/sysMsg"
 // 引入 api/admin/filter
 import filter from "@/routes/admin/filter"
+// 引入 api/admin/msg
+import msg from "@/routes/admin/msg"
+// 引入 api/admin/comment
+import comment from "@/routes/admin/comment"
 
 const router = express.Router()
 // 挂载路由
@@ -40,4 +44,6 @@ router.use("/recycle", [jwtMiddleware, isAdmin], recycle)
 router.use("/report", [jwtMiddleware, isAdmin], report)
 router.use("/sysMsg", [jwtMiddleware, isAdmin], sysMsg)
 router.use("/filter", [jwtMiddleware, isAdmin], filter)
+router.use("/msg", [jwtMiddleware, isAdmin], msg)
+router.use("/comment", [jwtMiddleware, isAdmin], comment)
 export default router

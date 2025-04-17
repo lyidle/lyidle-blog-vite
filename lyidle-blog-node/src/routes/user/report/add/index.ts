@@ -107,7 +107,7 @@ router.post("/", async (req, res, next) => {
     if ((type as ValidTypes) === "msg") {
       const is = await Message.findOne({
         where: {
-          userId: targetUserId,
+          senderId: targetUserId,
           id: msgId,
         },
       })

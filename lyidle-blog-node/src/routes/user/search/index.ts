@@ -9,8 +9,9 @@ const router = express.Router()
 // 环境变量
 const default_owner = process.env.default_owner!
 
+// 引入时间转换
 const ms = require("ms")
-const default_expire = ms(process.env.default_expire)
+const token_expire = ms(process.env.token_expire!)
 
 // 模糊搜索
 router.get("/", async (req, res, next) => {
@@ -139,7 +140,7 @@ router.get("/user", async (req, res, next) => {
     // 不存在
     if (!findUser) return
     // 存储用户信息 到 redis
-    if (cacheKey) await setKey(cacheKey, findUser, default_expire)
+    if (cacheKey) await setKey(cacheKey, findUser, token_expire)
     return res.result(findUser, "查询用户信息成功~")
   } catch (error) {
     res.validateAuth(error, next, () =>

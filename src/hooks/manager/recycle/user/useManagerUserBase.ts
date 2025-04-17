@@ -24,13 +24,15 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqUsers()
+    const result = await reqUsers()
+    if (result) ElMessage.success("搜索成功")
   }
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqUsers()
+    const result = await reqUsers()
+    if (result) ElMessage.success("重置成功")
   }
 
   // 头部 搜索 按钮大小
@@ -71,6 +73,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       const result = await recycleAllUsers(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
+      return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
       if (!err) ElMessage.error("查询用户失败~")

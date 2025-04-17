@@ -13,6 +13,24 @@ export const useManagerReportBase = () => {
   // 分页器
   const pagination = ref<GetReports["data"]["pagination"]>()
 
+  const searchKey = ref<string>()
+  // 搜索回调
+  const handlerSearch = async (key: string) => {
+    // 设置搜索需要的
+    searchKey.value = key
+    currentPage.value = 1
+    const result = await reqReports()
+    if (result) ElMessage.success("搜索成功")
+  }
+
+  const handlerReset = async () => {
+    // 重置 key
+    searchKey.value = ""
+    currentPage.value = 1
+    const result = await reqReports()
+    if (result) ElMessage.success("重置成功")
+  }
+
   // 当前是第几页
   const currentPage = ref(1)
   // 存储每页显示的个数
@@ -33,7 +51,7 @@ export const useManagerReportBase = () => {
       // 主要的列宽
       tablePrimaryColumWidth.value = 130
       headerBtnsSize.value = "default"
-      toolBtnsWidth.value = 290
+      toolBtnsWidth.value = 200
       isSmall.value = false
       return
     }
@@ -74,9 +92,13 @@ export const useManagerReportBase = () => {
         isSend: false,
       } as GetReportQuery
 
+      if (searchKey.value && Number.isInteger(+searchKey.value))
+        search.targetId = searchKey.value
+
       const result = await getReports(search)
       tableData.value = result?.list || []
       pagination.value = result?.pagination
+      return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
       if (!err) ElMessage.error("查询举报信息失败~")
@@ -113,5 +135,10 @@ export const useManagerReportBase = () => {
     // 多选框
     types,
     typeOptions,
+
+    // 搜索
+    handlerSearch,
+    handlerReset,
+    searchKey,
   }
 }

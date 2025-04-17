@@ -30,16 +30,16 @@ export const useManagerSystemMessage = () => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqSysMsgs()
-    ElMessage.success("搜索成功")
+    const result = await reqSysMsgs()
+    if (result) ElMessage.success("搜索成功")
   }
   // 重置 搜索
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = null
     currentPage.value = 1
-    await reqSysMsgs()
-    ElMessage.success("重置搜索成功")
+    const result = await reqSysMsgs()
+    if (result) ElMessage.success("重置成功")
   }
 
   // 头部 搜索 按钮大小
@@ -79,6 +79,7 @@ export const useManagerSystemMessage = () => {
       const result = await getSystemMsg(search)
       tableData.value = result?.list || []
       pagination.value = result?.pagination
+      return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
       if (!err) ElMessage.error("查询系统消息失败~")

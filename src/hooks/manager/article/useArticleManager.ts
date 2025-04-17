@@ -33,7 +33,8 @@ export const useArticleManager = (searchKey: Ref<string>) => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqAllArticles()
+    const result = await reqAllArticles()
+    if (result) ElMessage.success("重置成功")
   }
 
   // 头部 搜索 按钮大小
@@ -73,6 +74,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
       const result = await searchArticleMerge(search)
       tableData.value = result.article
       pagination.value = result.pagination
+      return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
       if (!err) ElMessage.error("查询文章失败~")

@@ -21,7 +21,7 @@ export const isOwner = (roles: string[]) =>
  * @param roles string[] 各式的 角色
  */
 export const resetUserInfo = async (findUsers: any[], isOwner?: boolean) => {
-  const users = JSON.parse(JSON.stringify(findUsers))
+  const users = JSON.parse(JSON.stringify(findUsers.flat(Infinity)))
   // 是否包含owner
   let isOwnerRole: boolean = isOwner || false
   // 需要删除 的数组 去重加 过滤

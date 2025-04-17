@@ -6,7 +6,7 @@ const ms = require("ms")
 // 软删除文章的时间
 const delete_article_expire = ms(process.env.delete_article_expire)
 // 引入模型
-const { Article, User, Role } = require("@/db/models")
+const { Article, User, Role, Report, sequelize } = require("@/db/models")
 
 // 引入 重置user的缓存的函数
 import { resetUserInfo } from "@/utils/redis/resetUserInfo"
@@ -36,18 +36,24 @@ export const publicArticleRemove = async (articles: any[]) => {
 
 // 彻底删除函数
 const deleted = async (model: any) => {
-  const results = await Promise.allSettled([
+  // 开启事务确保数据一致性
+  const transaction = await sequelize.transaction()
+  try {
+    // 1. 先删除关联的举报记录（如果有）
+    await Report.destroy({
+      where: { articleId: model.id },
+      transaction,
+    })
     // 删除文章
-    model.destroy({ force: true }), // 不管是否删除都要移除的
-    publicArticleRemove([model]),
-  ])
-  // 检查是否有任务失败
-  results.forEach((result) => {
-    if (result.status === "rejected") {
-      console.error("彻底删除文章失败:", result.reason)
-      throw new Error("彻底删除文章失败")
-    }
-  })
+    await model.destroy({ force: true, transaction })
+    // 提交事务
+    await transaction.commit()
+    await publicArticleRemove([model])
+  } catch (error) {
+    // 回滚事务
+    await transaction.rollback()
+    throw new Error("彻底删除文章失败")
+  }
 }
 // 删除函数
 const remove = async (

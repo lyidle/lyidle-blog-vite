@@ -13,7 +13,7 @@ export const resetArticle = async (
 ) => {
   const categoriesSet = new Set()
   const deleteArr = deduplication(
-    JSON.parse(JSON.stringify(findArticles)).map((item: any) => {
+    JSON.parse(JSON.stringify(findArticles.flat(Infinity))).map((item: any) => {
       categoriesSet.add(item.category)
       return [item.id, item.author]
     })

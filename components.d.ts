@@ -124,6 +124,7 @@ declare module 'vue' {
     ManagerComMsgSend: typeof import('./src/components/manager/com/msg/send/index.vue')['default']
     ManagerComPermissionCreate: typeof import('./src/components/manager/com/permission/create/index.vue')['default']
     ManagerComPermissionEditor: typeof import('./src/components/manager/com/permission/editor/index.vue')['default']
+    ManagerComReportUserEditor: typeof import('./src/components/manager/com/report/user/editor/index.vue')['default']
     ManagerComRoleAssignGroups: typeof import('./src/components/manager/com/role/assign-groups/index.vue')['default']
     ManagerComRoleCreate: typeof import('./src/components/manager/com/role/create/index.vue')['default']
     ManagerComRoleEditor: typeof import('./src/components/manager/com/role/editor/index.vue')['default']

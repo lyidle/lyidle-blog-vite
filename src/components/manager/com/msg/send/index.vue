@@ -20,15 +20,15 @@
         @submit.prevent="handlerConfirm"
       >
         <el-form-item label="标题" prop="title">
+          <my-input placeholder="标题" v-model="createData.title"></my-input>
+        </el-form-item>
+        <el-form-item label="消息" prop="content" class="mt-20px">
           <my-input
-            placeholder="标题"
-            v-model="createData.title"
+            placeholder="消息"
+            v-model="createData.content"
             type="textarea"
             class="mx-10px"
           ></my-input>
-        </el-form-item>
-        <el-form-item label="消息" prop="name">
-          <my-input placeholder="消息" v-model="createData.name"></my-input>
         </el-form-item>
         <div class="flex justify-end mt-20px">
           <my-button
@@ -56,13 +56,13 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 const centerDialogVisible = ref(false)
 
 const createData = reactive({
-  name: "",
+  content: "",
   title: "",
   userId: -1,
 })
 // 创建规则
 const createRules = reactive({
-  name: [
+  content: [
     { required: true, trigger: "change", message: "消息是必填项" },
     {
       required: true,
@@ -87,9 +87,11 @@ const createRules = reactive({
 const row = ref<any>()
 
 // 初始化
-const init = (_row: any) => {
+const init = (_row: any, opt?: { title?: string; content?: string }) => {
   centerDialogVisible.value = true
   row.value = _row
+  createData.title = opt?.title || ""
+  createData.content = opt?.content || ""
 }
 
 // 表单组件实例
@@ -108,13 +110,15 @@ const emit = defineEmits<{
   (e: "sucSend", data: any): void
 }>()
 
+const props = defineProps<{ isSucSend?: boolean }>()
+
 // 确认
 const handlerConfirm = async () => {
   try {
     // 表单校验
     await formInstance.value.validate()
     const systemMsg: SentSystemMsg = {
-      content: createData.name,
+      content: createData.content,
       isAll: true,
       title: createData.title,
     }
@@ -125,9 +129,10 @@ const handlerConfirm = async () => {
       isStay: true,
     }
 
-    await new Promise((resolve, reject) => {
-      emit("sucSend", { row: row.value, options, resolve, reject })
-    })
+    if (props.isSucSend)
+      await new Promise((resolve, reject) => {
+        emit("sucSend", { row: row.value, options, resolve, reject })
+      })
 
     centerDialogVisible.value = false
 

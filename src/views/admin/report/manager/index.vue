@@ -1,19 +1,25 @@
 <template>
   <div class="admin-container">
-    <my-card
-      class="admin-content card_style !overflow-unset flex gap-15px"
-      bg="var(--manager-card-bg) "
+    <my-search-admin
+      :submit="handlerSearch"
+      label="目标id"
+      :reset="handlerReset"
+      placeholder="请输入目标id"
+      class="!overflow-unset"
     >
       <div class="flex gap-10px items-center">
-        <span class="cur-text">举报的类型:</span>
+        <span class="cur-text" :style="{ fontSize: isSmall ? '13px' : '16px' }"
+          >举报的类型:</span
+        >
         <my-select
           v-model="types"
           :options="typeOptions"
           @change="reloadReq"
           class="w-100px"
+          :size="isSmall ? 'small' : 'default'"
         ></my-select>
       </div>
-    </my-card>
+    </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
@@ -45,6 +51,11 @@
           label="分类"
           align="center"
         />
+        <my-table-column label="目标id" align="center">
+          <template #="{ row }">
+            {{ showTargetId(row) }}
+          </template>
+        </my-table-column>
         <my-table-column
           min-width="100"
           prop="createdAt"
@@ -85,7 +96,7 @@
                 size="small"
                 class="!m-0"
                 :style="{ width: isSmall ? '80px' : '70px' }"
-                @click="send?.init(row)"
+                @click="sendInit(row)"
                 >系统通知</my-button
               >
               <!-- 删除 -->
@@ -99,7 +110,7 @@
                 <template #reference>
                   <my-button
                     class="!m-0"
-                    :style="{ width: isSmall ? '80px' : '50px' }"
+                    :style="{ width: isSmall ? '80px' : '70px' }"
                     size="small"
                     type="danger"
                     >删除</my-button
@@ -123,6 +134,54 @@
                   </my-button>
                 </template>
               </my-popconfirm>
+              <!-- 删除目标文件信息 -->
+              <my-popconfirm
+                width="220"
+                icon-color="#F56C6C"
+                :title="`确认要删除id为:${showTargetId(row)}的${handlerType(
+                  row
+                )}么?`"
+                placement="top"
+                @confirm="handlerDeleteTarget(row)"
+                v-if="handlerType(row) !== '用户'"
+              >
+                <template #reference>
+                  <my-button
+                    size="small"
+                    class="!m-0"
+                    :style="{ width: isSmall ? '80px' : '70px' }"
+                    type="danger"
+                    >删除{{ handlerType(row) }}</my-button
+                  >
+                </template>
+                <template #actions="{ confirm, cancel }">
+                  <my-button
+                    type="default"
+                    class="w-unset"
+                    size="small"
+                    @click="cancel"
+                    >否</my-button
+                  >
+                  <my-button
+                    class="w-unset"
+                    type="danger"
+                    size="small"
+                    @click="confirm"
+                  >
+                    是
+                  </my-button>
+                </template>
+              </my-popconfirm>
+              <!-- 修改目标用户 -->
+              <my-button
+                v-else
+                size="small"
+                class="!m-0"
+                :style="{ width: isSmall ? '80px' : '70px' }"
+                type="warning"
+                @click="userEditor.init(row.targetUserId)"
+                >修改{{ handlerType(row) }}</my-button
+              >
             </div>
           </template>
         </my-table-column>
@@ -148,18 +207,12 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
 
-      <manager-com-msg-send
-        ref="send"
-        @req="handlerReq"
-        @send="sendMsg"
-        @sucSend="sucSend"
-      />
+      <manager-com-msg-send ref="send" @req="handlerReq" @send="sendMsg" />
 
       <teleport to="body">
         <el-dialog
-          class="primary-dialog sentMsg"
+          class="primary-dialog admin-dialog-preview"
           v-model="viewDialog"
-          width="500"
           align-center
           draggable
           @close="initView"
@@ -170,12 +223,42 @@
           <!-- 预览用户 -->
           <div
             v-if="showUser && userId"
-            class="mt-20px flex justify-center mb-5px"
+            class="w-500px mt-20px flex justify-center mb-5px"
           >
             <global-userinfo :userId="userId" class="w-400px"></global-userinfo>
           </div>
+          <!-- 预览文章 -->
+          <div
+            v-if="content"
+            class="content mt-20px flex justify-center mb-5px"
+          >
+            <!-- 预览文章 -->
+            <vditor-preview
+              v-model:article="content"
+              :isExportHtml="false"
+              :autoPreview="false"
+              v-if="articleId"
+            ></vditor-preview>
+            <!-- 预览评论 -->
+            <vditor-preview
+              v-model:article="content"
+              :isExportHtml="false"
+              :autoPreview="false"
+              v-if="commentId"
+            ></vditor-preview>
+            <!-- 预览消息 -->
+            <vditor-preview
+              v-model:article="content"
+              :isExportHtml="false"
+              :autoPreview="false"
+              v-if="msgId"
+            ></vditor-preview>
+          </div>
         </el-dialog>
       </teleport>
+      <manager-com-report-user-editor
+        ref="userEditor"
+      ></manager-com-report-user-editor>
     </my-card>
   </div>
 </template>
@@ -190,6 +273,11 @@ import { delReports } from "@/api/admin/report"
 import { GetReports } from "@/api/admin/report/types/getReports"
 import { SentSystemMsg } from "@/api/admin/sysMsg/types/sentSystemMsg"
 import { mitt } from "@/utils/emitter"
+import { getOneArticle, managerDeleteArticle } from "@/api/article"
+import { getCommentByPk, managerDelComment } from "@/api/comments"
+import { decompressStringNotError } from "@/utils/compression"
+import { handlerReqErr } from "@/utils/request/error/successError"
+import { getMsgByPk, managerDelMsg } from "@/api/user/msg"
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -208,10 +296,16 @@ const {
   // 多选框
   types,
   typeOptions,
+
+  // 搜索
+  handlerSearch,
+  handlerReset,
+  searchKey,
 } = useManagerReportBase()
 
 // 多选框变化时
 const reloadReq = async () => {
+  searchKey.value = ""
   currentPage.value = 0
   await reqReports()
 }
@@ -225,48 +319,139 @@ const handlerSizeChange = (num: number) => {
 const handlerCurrentPage = (num: number) => {
   currentPage.value = num
 }
-
+type listType = GetReports["data"]["list"][0]
 // 子组件
 const send = ref()
+const userEditor = ref()
+
+// 处理类型
+const handlerType = (row: listType) => {
+  let type = "未知"
+  if (row.targetType === "article") type = "文章"
+  if (row.targetType === "comment") type = "评论"
+  if (row.targetType === "msg") type = "消息"
+  if (row.targetType === "user") type = "用户"
+  return type
+}
+
+// 初始化系统消息的提示信息
+const sendInit = (row: listType) => {
+  let type = handlerType(row)
+  // 中间的 提示信息
+  let tip = `现已删除此${type}`
+  if (row.targetType === "user") {
+    type = "用户"
+    tip = "现以修改违规的地方"
+  }
+
+  send.value?.init(row, {
+    title: `${type}违规处理通知`,
+    content: `你好，你的${type}存在违规情况，涉及:${row.filterType}，详情：${row.desc}，${tip}，感谢您的理解~~`,
+  })
+}
+
+// 删除目标文件来源
+const handlerDeleteTarget = async (row: listType) => {
+  const type = row.targetType
+  let access = false
+  // 删除文章
+  if (type === "article") {
+    if (!row.articleId) return ElMessage.warning("没有articleId")
+    try {
+      await managerDeleteArticle(row.articleId)
+      ElMessage.success("删除文章成功")
+      access = true
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("删除文章失败")
+    }
+  }
+  // 删除评论
+  if (type === "comment") {
+    if (!row.commentId) return ElMessage.warning("没有commentId")
+    try {
+      await managerDelComment(row.commentId)
+      ElMessage.success("删除评论成功")
+      access = true
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("删除评论失败")
+    }
+  }
+  // 删除消息
+  if (type === "msg") {
+    if (!row.msgId) return ElMessage.warning("没有msgId")
+    try {
+      await managerDelMsg(row.msgId)
+      ElMessage.success("删除消息成功")
+      access = true
+    } catch (error) {
+      const err = handlerReqErr(error, "error")
+      if (!err) ElMessage.error("删除消息失败")
+    }
+  }
+  if (access) await handlerReq()
+}
 
 const viewDialog = ref(false)
 // 预览用户
 const showUser = ref<boolean>()
 const userId = ref<number>()
 // 预览文章
-const showArticle = ref<boolean>()
 const articleId = ref<number>()
+// 文章的内容
+const content = ref()
 // 评论
-const showComment = ref<boolean>()
 const commentId = ref<number>()
 // 消息
-const showMsg = ref<boolean>()
 const msgId = ref<number>()
-
+// 得到 内容
+watchEffect(async () => {
+  // 文章
+  const artId = articleId.value
+  // 评论
+  const commenId = commentId.value
+  // 消息
+  const _msgId = msgId.value
+  // 文章
+  if (artId) {
+    const result = await getOneArticle(artId)
+    content.value = { content: decompressStringNotError(result?.content || "") }
+  }
+  // 评论
+  if (commenId) {
+    const result = await getCommentByPk(commenId)
+    content.value = { content: decompressStringNotError(result.content || "") }
+  }
+  // 消息
+  if (_msgId) {
+    const result = await getMsgByPk(_msgId)
+    content.value = { content: decompressStringNotError(result.content || "") }
+  }
+})
 // 初始化 数据
 const initView = () => {
+  // 内容显示
+  content.value = undefined
   // 用户
   showUser.value = false
   userId.value = undefined
   // 文章
-  showArticle.value = false
   articleId.value = undefined
   // 评论
-  showComment.value = false
   commentId.value = undefined
   // 消息
-  showMsg.value = false
   msgId.value = undefined
 }
 const showTitle = computed(() => {
   if (showUser.value) return "用户"
-  if (showArticle.value) return "文章"
-  if (showComment.value) return "评论"
-  if (showMsg.value) return "消息"
+  if (articleId.value) return "文章"
+  if (commentId.value) return "评论"
+  if (msgId.value) return "消息"
   return "未知"
 })
 
-const viewData = (row: GetReports["data"]["list"][0]) => {
+const viewData = (row: listType) => {
   const type = row.targetType
   // 初始化 数据
   initView()
@@ -276,56 +461,35 @@ const viewData = (row: GetReports["data"]["list"][0]) => {
   }
 
   if (type === "article") {
-    showArticle.value = true
-    articleId.value = row.articleId as number
+    articleId.value = row.articleId || undefined
   }
   if (type === "comment") {
-    showComment.value = true
-    commentId.value = row.commentId as number
+    commentId.value = row.commentId || undefined
   }
 
   if (type === "msg") {
-    showMsg.value = true
-    msgId.value = row.msgId as number
+    msgId.value = row.msgId || undefined
   }
 
   // 显示对话框
   viewDialog.value = true
 }
 
-// 处理发送消息的格式
-const sendMsg = ({
-  msg,
-  row,
-}: {
-  msg: SentSystemMsg
-  row: GetReports["data"]["list"][0]
-}) => {
-  msg.isAll = false
-  msg.userId = row.userId
+// 显示 目标id的函数
+const showTargetId = (row: listType) => {
+  if (row.targetType === "user") return row.targetUserId
+  if (row.targetType === "article") return row.articleId
+  if (row.targetType === "comment") return row.commentId
+  if (row.targetType === "msg") return row.msgId
+  return "未知分类的id"
 }
 
-// 发送消息成功的 回调
-const sucSend = async (_options: {
-  row: GetReports["data"]["list"][0]
-  options: { isStay: boolean }
-  resolve: (value?: unknown) => void
-  reject: (reason?: any) => void
-}) => {
-  const reportId = _options.row.id
-  // 不停留 删除正常的逻辑
-  _options.options.isStay = false
-  const resolve = _options.resolve
-  // 删除当前发送了系统消息的哪一列
-  try {
-    // 删除
-    await delReports(reportId)
-    resolve()
-  } catch (error) {
-    resolve()
-    ElMessage.error(`自动删除id为:${reportId}的举报信息失败~`)
-  }
+// 处理发送消息的格式
+const sendMsg = ({ msg, row }: { msg: SentSystemMsg; row: listType }) => {
+  msg.isAll = false
+  msg.userId = row.targetUserId
 }
+
 // 请求的逻辑
 const handlerReq = async (stay?: boolean) => {
   // 当前页
@@ -364,7 +528,7 @@ const handlerReq = async (stay?: boolean) => {
 }
 
 // 删除
-const handlerDelete = async (row: GetReports["data"]["list"][0]) => {
+const handlerDelete = async (row: listType) => {
   const { id } = row
   try {
     // 删除
@@ -404,3 +568,16 @@ const handlerAllDelete = async () => {
   }
 }
 </script>
+
+<style lang="scss">
+.admin-dialog-preview {
+  width: fit-content;
+  max-height: 90vh;
+  overflow: hidden;
+  .content {
+    width: 80vw;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+</style>

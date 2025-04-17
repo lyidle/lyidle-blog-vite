@@ -167,7 +167,7 @@ router.put(
     // 开启事务
     const transaction = await db.sequelize.transaction()
     try {
-      const { account, email, nickName } = req.body
+      const { account, email, nickName, avatar, signer } = req.body
 
       // 都没有时返回没有找到
       if (!account && !email && !nickName) {
@@ -188,6 +188,8 @@ router.put(
       account && findUser.set("account", account)
       email && findUser.set("email", email)
       nickName && findUser.set("nickName", nickName)
+      findUser.set("avatar", avatar || null)
+      findUser.set("signer", signer || null)
 
       // 验证 修改了的 属性字段
       const changedFields = await validateChangedFields(findUser)

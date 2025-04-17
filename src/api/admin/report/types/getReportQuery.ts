@@ -12,6 +12,10 @@ export interface GetReportQuery {
    */
   pageSize?: number
   /**
+   * 目标id 对应的type的id
+   */
+  targetId?: string
+  /**
    * article|comment|msg|user
    */
   type?: string

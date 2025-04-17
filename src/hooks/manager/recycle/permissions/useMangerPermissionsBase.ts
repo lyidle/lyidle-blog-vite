@@ -23,13 +23,15 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     // 设置搜索需要的
     searchKey.value = key
     currentPage.value = 1
-    await reqPermissions()
+    const result = await reqPermissions()
+    if (result) ElMessage.success("搜索成功")
   }
   const handlerReset = async () => {
     // 重置 key
     searchKey.value = ""
     currentPage.value = 1
-    await reqPermissions()
+    const result = await reqPermissions()
+    if (result) ElMessage.success("重置成功")
   }
 
   // 头部 搜索 按钮大小
@@ -73,6 +75,7 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
       const result = await recycleAllPermissions(search)
       tableData.value = result?.permissions || []
       pagination.value = result?.pagination
+      return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
       if (!err) ElMessage.error("查询权限失败~")

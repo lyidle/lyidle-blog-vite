@@ -1,8 +1,13 @@
 <template>
   <my-card class="admin-search card_style" bg="var(--manager-card-bg)">
     <el-form inline @submit.prevent="submit && submit(searchKey)">
-      <el-form-item :label="label">
-        <div class="searchContainer">
+      <div class="flex gap-20px flex-wrap">
+        <div class="searchContainer flex items-center">
+          <span
+            class="cur-text"
+            :style="{ fontSize: isSmall ? '13px' : '16px' }"
+            >{{ label }}</span
+          >
           <el-input
             :placeholder
             :size
@@ -27,8 +32,8 @@
             <slot name="item"></slot>
           </div>
         </div>
-      </el-form-item>
-      <slot></slot>
+        <slot></slot>
+      </div>
     </el-form>
   </my-card>
 </template>
@@ -55,7 +60,7 @@ const searchKey = ref()
 const size = ref()
 // input 的宽度
 const inputSize = ref()
-
+const isSmall = ref(false)
 // 重置
 const handlerRest = () => {
   searchKey.value = ""
@@ -67,11 +72,13 @@ const handlerResize = () => {
     // input和button的大小
     size.value = "default"
     inputSize.value = "200px"
+    isSmall.value = false
     return
   }
   // input和button的大小
   size.value = "small"
   inputSize.value = "100px"
+  isSmall.value = true
 }
 
 // 监听窗口变化

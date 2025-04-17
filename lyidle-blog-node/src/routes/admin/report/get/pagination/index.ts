@@ -3,7 +3,7 @@ const router = express.Router()
 // 引入模型
 const { Report } = require("@/db/models")
 router.get("/", async (req, res, next) => {
-  let { currentPage, pageSize, type, isSend } = req.query // 从查询参数获取分页信息
+  let { currentPage, pageSize, type, isSend, targetId } = req.query // 从查询参数获取分页信息
   const msg = `获取${type}的举报数据` // 基础消息模板
 
   try {
@@ -32,13 +32,19 @@ router.get("/", async (req, res, next) => {
     const size = Math.abs(Number(pageSize)) || 10
     const offset = (page - 1) * size
 
-    // 查询数据库，获取分页数据和总数
-    const { count, rows } = await Report.findAndCountAll({
+    const commend: any = {
       where: { targetType: type, isSend }, // 按类型过滤
       limit: size, // 每页数量
       offset: offset, // 偏移量
       order: [["createdAt", "desc"]], // 按创建时间降序排列
-    })
+    }
+
+    // 搜索 目标的 id 过滤
+    if (targetId && type === "user") commend.where.targetUserId = targetId
+    else if (targetId) commend.where[`${type + "Id"}`] = targetId
+
+    // 查询数据库，获取分页数据和总数
+    const { count, rows } = await Report.findAndCountAll(commend)
 
     // 构造返回数据格式
     const result = {
