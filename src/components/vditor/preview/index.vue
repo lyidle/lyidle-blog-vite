@@ -15,6 +15,7 @@
           v-if="isExportHtml"
           >导出HTML文件</my-button
         >
+        <slot name="btns-end"></slot>
       </div>
     </div>
     <div ref="docPreview" class="cur-text vditor-style"></div>
@@ -28,7 +29,7 @@ import { useVditorPreview } from "@/hooks/Doc/vditorPreview"
 import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
-import { TocNode } from "@/hooks/Doc/vditorPreview/types"
+import type { TocNode } from "@/hooks/Doc/vditorPreview/types"
 import { exportHtmlFile } from "@/hooks/Doc/export/exportHtml"
 // markdown 渲染的容器
 const docPreview = ref<HTMLDivElement | undefined>()

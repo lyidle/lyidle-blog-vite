@@ -56,14 +56,21 @@
         </my-button>
       </router-link>
     </div>
+    <global-more-report
+      v-model="isShowReport"
+      class="absolute right-0"
+      v-if="userInfo.id !== userId"
+    ></global-more-report>
   </div>
 </template>
 
 <script setup lang="ts" name="UserSpaceHeader">
 // 引入 api
 import { updateUserSigner } from "@/api/user"
+import { addReport } from "@/api/user/report"
 // 引入 类型
 import type { Datum as userInfoType } from "@/api/user/types/searchCountsById"
+import type { AddReportBody } from "@/api/user/report/types/addReportBody"
 // 引入 hooks
 import { useUserEditorScene } from "@/hooks/useUserEditorScene"
 // 引入 仓库
@@ -99,6 +106,18 @@ const updateSinger = throttle(async () => {
     if (!err) ElMessage.error("更新用户签名失败")
   }
 }, 1000)
+
+// 举报
+const isShowReport = ref(false)
+
+const reportConfirm = async (data: AddReportBody) => {
+  const userId = userInfo.value?.id
+  if (!userId) return ElMessage.error("举报失败，没有userId")
+  data.type = "user"
+  data.targetUserId = userId
+  return await addReport(data)
+}
+provide("reportConfirm", reportConfirm)
 </script>
 
 <style scoped lang="scss">
@@ -145,6 +164,7 @@ const updateSinger = throttle(async () => {
     top: 50%;
     transform: translateY(-50%);
     display: flex;
+    align-items: center;
     gap: 15px;
   }
 }

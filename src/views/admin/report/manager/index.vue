@@ -85,12 +85,14 @@
         >
           <template #="{ row }">
             <div class="flex gap-10px flex-wrap justify-center">
-              <my-button
+              <el-button
                 size="small"
                 class="!m-0"
                 :style="{ width: isSmall ? '80px' : '70px' }"
+                type="primary"
+                plain
                 @click="viewData(row)"
-                >来源</my-button
+                >来源</el-button
               >
               <my-button
                 size="small"
@@ -98,6 +100,14 @@
                 :style="{ width: isSmall ? '80px' : '70px' }"
                 @click="sendInit(row)"
                 >系统通知</my-button
+              >
+              <my-button
+                size="small"
+                class="!m-0"
+                :style="{ width: isSmall ? '80px' : '70px' }"
+                type="warning"
+                @click="sendBackInit(row)"
+                >反馈通知</my-button
               >
               <!-- 删除 -->
               <my-popconfirm
@@ -151,6 +161,7 @@
                     class="!m-0"
                     :style="{ width: isSmall ? '80px' : '70px' }"
                     type="danger"
+                    plain
                     >删除{{ handlerType(row) }}</my-button
                   >
                 </template>
@@ -208,6 +219,11 @@
       />
 
       <manager-com-msg-send ref="send" @req="handlerReq" @send="sendMsg" />
+      <manager-com-msg-send
+        ref="feedback"
+        @req="handlerReq"
+        @send="sendMsgBack"
+      />
 
       <teleport to="body">
         <el-dialog
@@ -321,7 +337,10 @@ const handlerCurrentPage = (num: number) => {
 }
 type listType = GetReports["data"]["list"][0]
 // 子组件
+// 系统通知
 const send = ref()
+// 举报结果的反馈 通知
+const feedback = ref()
 const userEditor = ref()
 
 // 处理类型
@@ -334,20 +353,56 @@ const handlerType = (row: listType) => {
   return type
 }
 
-// 初始化系统消息的提示信息
+// 初始化系统消息的提示信息 系统通知
 const sendInit = (row: listType) => {
   let type = handlerType(row)
+  let targetId = 0
   // 中间的 提示信息
   let tip = `现已删除此${type}`
   if (row.targetType === "user") {
     type = "用户"
     tip = "现以修改违规的地方"
+    targetId = row.userId || 0
   }
+
+  if (row.targetType === "article") targetId = row.articleId || 0
+  if (row.targetType === "comment") targetId = row.commentId || 0
+  if (row.targetType === "msg") targetId = row.msgId || 0
 
   send.value?.init(row, {
     title: `${type}违规处理通知`,
-    content: `你好，你的${type}存在违规情况，涉及:${row.filterType}，详情：${row.desc}，${tip}，感谢您的理解~~`,
+    content: `你好，你的${type}[${row.targetType}:${targetId}]存在违规情况，涉及:${row.filterType}，详情：${row.desc}，${tip}，感谢您的理解~~`,
   })
+}
+
+// 处理发送消息的格式 系统通知
+const sendMsg = ({ msg, row }: { msg: SentSystemMsg; row: listType }) => {
+  msg.isAll = false
+  // 被举报者
+  msg.userId = row.targetUserId
+}
+let targetId = 0
+// 初始化系统消息的提示信息 举报结果的反馈 通知
+const sendBackInit = (row: listType) => {
+  let type = handlerType(row)
+  if (row.targetType === "user") {
+    type = "用户"
+    targetId = row.userId || 0
+  }
+  if (row.targetType === "article") targetId = row.articleId || 0
+  if (row.targetType === "comment") targetId = row.commentId || 0
+  if (row.targetType === "msg") targetId = row.msgId || 0
+
+  feedback.value?.init(row, {
+    title: `${type}举报处理通知`,
+    content: `你好，根据审核您举报的${type}[${row.targetType}:${targetId}]，暂未发现其存在违规情况，我们将持续关注该${type}，的后续情况，一经核实，将从严处理。感谢您的举报，帮助我们维护一个良好又安全的社区氛围~~`,
+  })
+}
+// 处理发送消息的格式 举报结果的反馈 通知
+const sendMsgBack = ({ msg, row }: { msg: SentSystemMsg; row: listType }) => {
+  msg.isAll = false
+  // 举报者
+  msg.userId = row.userId
 }
 
 // 删除目标文件来源
@@ -484,12 +539,6 @@ const showTargetId = (row: listType) => {
   return "未知分类的id"
 }
 
-// 处理发送消息的格式
-const sendMsg = ({ msg, row }: { msg: SentSystemMsg; row: listType }) => {
-  msg.isAll = false
-  msg.userId = row.targetUserId
-}
-
 // 请求的逻辑
 const handlerReq = async (stay?: boolean) => {
   // 当前页
@@ -578,6 +627,12 @@ const handlerAllDelete = async () => {
     width: 80vw;
     max-height: 70vh;
     overflow-y: auto;
+    .vditor-reset {
+      img {
+        max-width: 100%;
+        display: block;
+      }
+    }
   }
 }
 </style>

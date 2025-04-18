@@ -150,13 +150,16 @@
     <div class="pl-65px">
       <slot name="comment-outer"></slot>
     </div>
+    <global-report v-model="isShowReport"></global-report>
   </div>
 </template>
 
 <script setup lang="ts" name="ArticleCommentsItem">
 // 引入 api
 import { putComment } from "@/api/comments"
+import { addReport } from "@/api/user/report"
 // 引入 类型
+import type { AddReportBody } from "@/api/user/report/types/addReportBody"
 import type { GetComments } from "@/api/comments/types/getComments"
 import type { GetCommentsReplies } from "@/api/comments/types/getCommentsReplies"
 import type { handlerReplyType } from "../types"
@@ -219,6 +222,14 @@ const emit = defineEmits<{
   (e: "reply", options: handlerReplyType): void
 }>()
 
+const isShowReport = ref(false)
+const reportConfirm = async (data: AddReportBody) => {
+  data.type = "comment"
+  data.commentId = cloneComment.id
+  data.targetUserId = cloneComment.userId
+  return await addReport(data)
+}
+provide("reportConfirm", reportConfirm)
 // 更多按钮 的 信息
 const moreItem = computed(() => {
   const result: menuView = {
@@ -237,9 +248,8 @@ const moreItem = computed(() => {
         name: "举报",
         click: async () => {
           // 举报的 逻辑
+          isShowReport.value = true
         },
-        // 登录了的 用户
-        hide: !userToken.value,
       },
       {
         id: 3,
@@ -280,7 +290,10 @@ let isUpdate = ref(false)
 // 是否 显示 编辑等按钮
 const hasMoreItems = (sub: menuItemType) => {
   if (sub.hide) return false
-
+  if (sub.name === "举报") {
+    if (!userToken.value) return false
+    if (userId.value === cloneComment.userId) return false
+  }
   // 处理 删除按钮
   if (sub.name === "删除") {
     // 是作者本人 显示

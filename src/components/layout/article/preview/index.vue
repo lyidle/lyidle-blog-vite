@@ -176,6 +176,10 @@
                   </div>
                 </div>
               </template>
+              <!-- 不能是自身且登录了 -->
+              <template #btns-end v-if="userId && userId !== article?.userId">
+                <global-more-report v-model="isShowReport"></global-more-report>
+              </template>
             </vditor-preview>
             <!-- 评论 -->
             <layout-article-comments
@@ -213,10 +217,12 @@ import {
   addSettingShare,
   getSettingShares,
 } from "@/api/share"
+import { addReport } from "@/api/user/report"
 import { getArticleCollects, toggleArticleCollects } from "@/api/collect"
 // 引入 类型
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "./types"
+import type { AddReportBody } from "@/api/user/report/types/addReportBody"
 // 引入 moment
 import moment from "@/utils/moment"
 // 引入计数 转换函数
@@ -262,6 +268,22 @@ const comments = ref()
 // 注入父组件提供的方法
 const reqArticle =
   inject<() => Promise<GetOneArticle["data"] | undefined>>("reqArticle")
+
+// 举报
+const isShowReport = ref(false)
+const reportConfirm = async (data: AddReportBody) => {
+  if (!props.isArticle) return
+
+  const articleId = article.value?.id
+  const userId = article.value?.userId
+  if (!articleId) return ElMessage.error("举报失败，没有articleId")
+  if (!userId) return ElMessage.error("举报失败，没有userId")
+  data.type = "article"
+  data.articleId = articleId
+  data.targetUserId = userId
+  return await addReport(data)
+}
+provide("reportConfirm", reportConfirm)
 
 const props = withDefaults(
   defineProps<{

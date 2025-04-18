@@ -118,6 +118,7 @@
         :dark="true"
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
+      <manager-com-msg-send ref="send" @req="handlerReq" />
     </my-card>
   </div>
 </template>

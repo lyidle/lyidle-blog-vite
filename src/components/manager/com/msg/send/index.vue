@@ -28,6 +28,7 @@
             v-model="createData.content"
             type="textarea"
             class="mx-10px"
+            :autosize="{ minRows: 2, maxRows: 4 }"
           ></my-input>
         </el-form-item>
         <div class="flex justify-end mt-20px">
