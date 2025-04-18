@@ -67,15 +67,22 @@
         </div>
         <!-- 内容 -->
         <div class="msg-scene overflow-y-auto">
-          <!-- 回复我的 -->
+          <!-- 我的消息 -->
           <layout-msg-reply
             v-if="$route.query.to === 'reply'"
           ></layout-msg-reply>
-          <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
-          <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
+          <!-- 回复我的 -->
           <layout-msg-whisper
             v-if="$route.query.to === 'whisper'"
           ></layout-msg-whisper>
+          <!-- @我的 -->
+          <layout-msg-at v-if="$route.query.to === 'at'"></layout-msg-at>
+          <!-- 收到的赞 -->
+          <layout-msg-like v-if="$route.query.to === 'like'"></layout-msg-like>
+          <!-- 系统通知 -->
+          <layout-msg-system
+            v-if="$route.query.to === 'system'"
+          ></layout-msg-system>
         </div>
       </div>
     </div>

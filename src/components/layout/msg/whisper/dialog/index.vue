@@ -42,7 +42,12 @@
                   :style="`${
                     isSender(item.senderId) ? 'justify-content: end' : ''
                   }`"
-                  @contextmenu="mitt.emit('isSendPopMenu', item.id)"
+                  @contextmenu="
+                    mitt.emit('isSendPopMenu', {
+                      msgId: item.id,
+                      userId: item.senderId,
+                    })
+                  "
                 >
                   <!-- 气泡 -->
                   <div

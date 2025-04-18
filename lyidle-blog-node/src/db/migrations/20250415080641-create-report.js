@@ -36,6 +36,16 @@ module.exports = {
           onDelete: "CASCADE",
         },
       },
+      settingId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Settings",
+          key: "id",
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
+        },
+      },
       commentId: {
         type: Sequelize.INTEGER,
         allowNull: true,

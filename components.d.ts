@@ -107,6 +107,7 @@ declare module 'vue' {
     LayoutMsgLike: typeof import('./src/components/layout/msg/like/index.vue')['default']
     LayoutMsgLikeDetails: typeof import('./src/components/layout/msg/like/details/index.vue')['default']
     LayoutMsgReply: typeof import('./src/components/layout/msg/reply/index.vue')['default']
+    LayoutMsgSystem: typeof import('./src/components/layout/msg/system/index.vue')['default']
     LayoutMsgWhisper: typeof import('./src/components/layout/msg/whisper/index.vue')['default']
     LayoutMsgWhisperDialog: typeof import('./src/components/layout/msg/whisper/dialog/index.vue')['default']
     LayoutSpaceFollow: typeof import('./src/components/layout/space/follow/index.vue')['default']

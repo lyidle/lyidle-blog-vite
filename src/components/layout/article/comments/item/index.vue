@@ -226,6 +226,8 @@ const isShowReport = ref(false)
 const reportConfirm = async (data: AddReportBody) => {
   data.type = "comment"
   data.commentId = cloneComment.id
+  data.articleId = (props.articleId || 0) <= 0 ? 0 : props.articleId
+  data.settingId = (props.settingId || 0) <= 0 ? 0 : props.settingId
   data.targetUserId = cloneComment.userId
   return await addReport(data)
 }

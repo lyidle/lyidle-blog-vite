@@ -7,7 +7,11 @@ export interface AddReportBody {
    */
   articleId?: number
   /**
-   * 评论
+   * 设置
+   */
+  settingId?: number
+  /**
+   * 评论需要articleId或settingId
    */
   commentId?: number
   /**

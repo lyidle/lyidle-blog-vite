@@ -54,6 +54,7 @@ export const useContextMenu = () => {
     isUserEditor.value = false
     isClosed = true
     isDelPop.value = false
+    isReport.value = false
     // 高度重置
     if (!menu) return
     menu.style.height = "0"
@@ -78,6 +79,7 @@ export const useContextMenu = () => {
 
   // 是否是发送消息界面的 气泡
   const isDelPop = ref(false)
+  const isReport = ref(false)
   // 是否是内容区域
   const isContent = ref(false)
   // 是否是用户编辑按钮
@@ -132,6 +134,7 @@ export const useContextMenu = () => {
   })
   return {
     isDelPop,
+    isReport,
     isContent,
     isUserEditor,
     isContextMenuTransitioned,

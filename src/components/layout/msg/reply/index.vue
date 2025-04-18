@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div v-for="reply in replies" class="reply-msg-item">
+    <div v-for="reply in replies" class="reply-msg-item" :key="reply.id">
       <div
         class="reply-container flex gap-0.625rem justify-between overflow-hidden p-[var(--p)]"
       >
@@ -37,7 +37,8 @@
               <my-anchor
                 :to="
                   reply.type === 'article'
-                    ? reply.link || `/doc/${reply.articleId}`
+                    ? reply.link ||
+                      `/doc/${reply.articleId}?commentId=${reply.id}`
                     : reply.link || ''
                 "
                 class="!hover:color-[var(--primary-links-hover)] msg-tools"
@@ -122,7 +123,8 @@
                 <my-anchor
                   :to="
                     reply.type === 'article'
-                      ? `/doc/${reply.articleId}`
+                      ? reply.link ||
+                        `/doc/${reply.articleId}?commentId=${reply.id}`
                       : reply.link || ''
                   "
                   class="!hover:color-[var(--primary-links-hover)] msg-tools"

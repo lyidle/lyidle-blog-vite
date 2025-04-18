@@ -6,8 +6,16 @@ const { Report, Article, Comment, Message, User } = require("@/db/models")
 
 router.post("/", async (req, res, next) => {
   // 从请求体和认证信息中获取参数
-  const { type, targetUserId, name, desc, articleId, commentId, msgId } =
-    req.body
+  const {
+    type,
+    targetUserId,
+    name,
+    desc,
+    articleId,
+    commentId,
+    msgId,
+    settingId,
+  } = req.body
   const userId = req.auth.id // 从认证信息获取举报人ID
   const msg = "创建举报信息"
 
@@ -41,7 +49,12 @@ router.post("/", async (req, res, next) => {
     // 根据不同类型验证对应ID字段
     const typeIdValidations = {
       article: () => articleId && Number.isInteger(+articleId),
-      comment: () => commentId && Number.isInteger(+commentId),
+      setting: () => settingId && Number.isInteger(+settingId),
+      // 是评论需要 article 或 setting 的 id
+      comment: () =>
+        commentId &&
+        Number.isInteger(+commentId) &&
+        (typeIdValidations.article() || typeIdValidations.setting()),
       msg: () => msgId && Number.isInteger(+msgId),
       user: () => true, // 用户类型不需要额外验证
     }
@@ -57,15 +70,17 @@ router.post("/", async (req, res, next) => {
     let num = 0
     targetUserId && ++num
     articleId && ++num
+    settingId && ++num
     commentId && ++num
     msgId && ++num
-    if (type === "user") {
-      // 时user则 需要一个 targetUserId就够了
+    if (type === "user")
       if (num !== 1)
+        // 时user则 需要一个 targetUserId就够了
         return res.result(void 0, `类型为${type}时，不能有其他的id`, false)
-    }
+    if (type !== "user" && type === "comment" && num !== 3)
+      return res.result(void 0, `类型为${type}时，id只能有3个id`, false)
     // 则 是两个 id 一个 targetUserId 和 type对应的 id
-    else if (num !== 2)
+    if (type !== "user" && type !== "comment" && num !== 2)
       return res.result(void 0, `类型为${type}时，只能有两个id`, false)
 
     // 构建举报数据对象
@@ -75,10 +90,10 @@ router.post("/", async (req, res, next) => {
       filterType: name,
       desc,
       userId,
-      // 根据类型设置关联ID
-      ...(type === "article" && { articleId }),
-      ...(type === "comment" && { commentId }),
-      ...(type === "msg" && { msgId }),
+      articleId: articleId || null,
+      commentId: commentId || null,
+      msgId: msgId || null,
+      settingId: settingId || null,
     }
 
     // 判断对应的 是否存在

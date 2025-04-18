@@ -86,15 +86,11 @@ module.exports = {
 
     // 添加联合唯一索引，确保一个用户对同一个目标只能有一条记录
     await queryInterface.addIndex("LikeDislikes", {
-      fields: ["userId", "targetType", "commentId"],
+      fields: ["userId", "targetType", "commentId", "articleId"],
       unique: true,
     })
     await queryInterface.addIndex("LikeDislikes", {
-      fields: ["userId", "targetType", "articleId"],
-      unique: true,
-    })
-    await queryInterface.addIndex("LikeDislikes", {
-      fields: ["userId", "targetType", "settingId"],
+      fields: ["userId", "targetType", "commentId", "settingId"],
       unique: true,
     })
 

@@ -12,6 +12,7 @@ export interface Data {
   content: string
   createdAt: string
   id: number
+  link: string
   isRead: boolean
   msgId: string
   receiverId: number

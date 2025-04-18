@@ -12,6 +12,7 @@ import { SendUserMsgBody } from "./types/sendUserMsgBody"
 import { GetUserMsgDetailsQuery } from "./types/getUserMsgDetailsQuery"
 import { GetUserMsgDetails } from "./types/getUserMsgDetails"
 import { GetMsgByPk } from "./types/getMsgByPk"
+import { GetUserSystemMsg } from "./types/getUserSystemMsg"
 // 统一管理 api
 enum API {
   // 回复我的
@@ -41,6 +42,8 @@ enum API {
   managerDel = "/admin/msg/del/",
   // 按照id查询 消息
   byPk = "/admin/msg/get/",
+  // 获取系统消息
+  system = "/user/msg/system",
 }
 
 // API 的 key 的类型
@@ -119,3 +122,9 @@ export const delUserMsg = (id: number) =>
 // 删除消息
 export const managerDelMsg = (id: number) =>
   request.delete<any, void>(server + prefix + API.managerDel + `/${id}`)
+
+// 得到系统通知
+export const getUserSystemMsg = (data?: paginationQuery) =>
+  request.get<any, GetUserSystemMsg["data"]>(
+    server + prefix + API.system + `/?${new URLSearchParams(data)}`
+  )

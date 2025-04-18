@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       targetType: DataTypes.ENUM("article", "comment", "msg", "user"),
       articleId: DataTypes.INTEGER,
       commentId: DataTypes.INTEGER,
+      settingId: DataTypes.INTEGER,
       msgId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
       targetUserId: DataTypes.INTEGER,

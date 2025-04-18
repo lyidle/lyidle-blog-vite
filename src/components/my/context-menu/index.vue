@@ -27,6 +27,12 @@
       </div>
     </div>
     <my-context-menu-item
+      content="举报用户"
+      icon="i-icon-park-outline:report"
+      v-if="isDelPop"
+      @click="isShowReport = !isShowReport"
+    ></my-context-menu-item>
+    <my-context-menu-item
       content="删除信息"
       icon="i-material-symbols-light:delete-forever-outline"
       v-if="isDelPop"
@@ -63,12 +69,17 @@
     ></my-context-menu-item>
     <!-- 内容区域的 菜单 -->
     <layout-content-menu v-if="isContent" />
+
+    <global-report v-model="isShowReport"></global-report>
   </div>
 </template>
 
 <script setup lang="ts" name="ContextMenu">
 // 引入 接口
 import { delUserMsg } from "@/api/user/msg"
+import { addReport } from "@/api/user/report"
+// 引入 类型
+import { AddReportBody } from "@/api/user/report/types/addReportBody"
 // 引入仓库
 import { useSettingStore } from "@/store/setting"
 // 引入 到顶部和底部的函数
@@ -121,23 +132,49 @@ mitt.on("isUserEditorMenu", isUserEditorMenu)
 
 // 删除 消息
 const handlerDelPopMsg = async () => {
-  if (typeof delPopData !== "number") return
+  if (!popMsgId || !Number.isInteger(+popMsgId)) return
   try {
-    await delUserMsg(delPopData)
+    await delUserMsg(popMsgId)
     ElMessage.success("删除消息成功")
-    mitt.emit("popmsgDelComplete", delPopData)
+    mitt.emit("popmsgDelComplete", popMsgId)
   } catch (error) {
     const err = handlerReqErr(error, "error")
     if (!err) ElMessage.error("删除消息失败")
   }
 }
 
-let delPopData: null | number = null
+// 举报用户
+const isShowReport = ref(false)
+const reportConfirm = async (data: AddReportBody) => {
+  const userId = popReportUserId
+  if (!userId) return ElMessage.error("举报失败，没有userId")
+  if (!popMsgId) return ElMessage.error("举报失败，没有msgId")
+  data.type = "msg"
+  data.targetUserId = userId
+  data.msgId = popMsgId
+  return await addReport(data)
+}
+provide("reportConfirm", reportConfirm)
+
+let popMsgId: null | number = null
+let popReportUserId: null | number = null
 // 发送消息的气泡
-const isSendPopMenu = (id: number) => {
+const isSendPopMenu = ({
+  msgId,
+  userId,
+}: {
+  msgId: number
+  userId: number
+}) => {
+  // 打开对应的菜单项
   isDelPop.value = true
-  delPopData = null
-  delPopData = id
+  isDelPop.value = true
+  // 初始化数据
+  popMsgId = null
+  popReportUserId = null
+  // 赋值数据
+  popMsgId = msgId
+  popReportUserId = userId
 }
 mitt.on("isSendPopMenu", isSendPopMenu)
 onBeforeUnmount(() => {
