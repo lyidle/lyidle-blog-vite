@@ -16,7 +16,6 @@ import { mitt } from "@/utils/emitter"
 // 引入 常量 路由
 import { constantRoute, anyRoute } from "@/router/routes"
 import { getPersistedData } from "@/utils/crypto/crypto-aes"
-import { handlerReqErr } from "@/utils/request/error/successError"
 
 type bannerImgType = { [key in string]: GetBannerImg["data"][0] }
 // 处理 常量路由 和异步路由
@@ -60,7 +59,6 @@ export const useUserStore = defineStore(
         // 调用函数 过滤出 仓库需要的信息
         const { _whitelist, _userMenuList, _routes } =
           userStoreRoutesFilter(result)
-
         // 赋值 路由
         routes.value = _routes
 
@@ -231,11 +229,7 @@ export const useUserStore = defineStore(
       // 加载游客id
       await addTourist()
       // 重新加载路由 然后到达首页
-      mitt.emit("route:reload", () =>
-        setTimeout(() => {
-          mitt.emit("replaceToHome")
-        }, 500)
-      )
+      mitt.emit("route:reload")
     }
 
     return {

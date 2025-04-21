@@ -57,6 +57,7 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
     userIds.value = user.map((item) => item.id)
   }
 
+  let isInit = false
   // 获取菜单
   const reqMenus = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
@@ -66,6 +67,10 @@ export const useMangerMenusBase = (searchKey: Ref<string>) => {
       const result = await recycleAllMenus(search)
       tableData.value = result?.menus || []
       pagination.value = result?.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")

@@ -41,7 +41,7 @@ const reloadRoute = async (
   // 重新 获取 和添加 路由
   await addRoute(routes, showInfo)
   // 有回调执行
-  callback && callback()
+  callback && (await callback())
   // 重新进行 权限判断
   mitt.emit("authRoles")
 }

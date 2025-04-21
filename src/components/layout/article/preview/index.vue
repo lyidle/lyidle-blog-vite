@@ -130,6 +130,7 @@
               v-model:article="article"
               v-model:menuTree="menuTree"
               v-model:title="title"
+              :after="renderAfter"
             >
               <template #btns>
                 <div class="flex gap-15px justify-center px-5px">
@@ -241,6 +242,8 @@ import { handlerReqErr } from "@/utils/request/error/successError"
 import throttle from "@/utils/throttle"
 // 引入 复制到 剪贴板 的函数
 import { copyToClipboardCallback } from "@/hooks/context-menu/copyToClipboard"
+import { useMenuHashTo } from "@/hooks/Doc/vditorPreview/menuHashTo"
+import { useEventListener } from "@/hooks/useEventListener"
 
 // 提取数据
 const { isAsideDocMenu, asideCounts } = storeToRefs(useSettingStore())
@@ -598,6 +601,49 @@ const menuTree = ref<TocNode[]>([])
 
 // 侧边栏 固定需要用到的容器
 const observerMenu = ref<HTMLDivElement | undefined>()
+
+const docRef = ref<HTMLDivElement>()
+
+// 处理hash 的变化
+const route = useRoute()
+let stopWatch = () => {}
+const router = useRouter()
+const hashToHeading = useMenuHashTo()
+const renderAfter = () => {
+  stopWatch()
+  if (docRef.value) {
+    // 查询所有 h1-h6 标签
+    const headings = Array.from(
+      docRef.value.querySelectorAll(
+        "h1 .vditor-anchor, h2 .vditor-anchor, h3 .vditor-anchor , h4 .vditor-anchor , h5 .vditor-anchor , h6 .vditor-anchor"
+      )
+    )
+    headings.forEach((item) => {
+      useEventListener(
+        item as HTMLAnchorElement,
+        "click",
+        (e) => {
+          e.stopPropagation()
+          e.preventDefault()
+          const hash = decodeURI(new URL((item as HTMLAnchorElement).href).hash)
+          router.replace({ ...route, hash })
+        },
+        true
+      )
+    })
+  }
+
+  stopWatch = watch(
+    () => route.hash,
+    (hash) => {
+      if (!hash) return
+      hashToHeading(hash)
+    },
+    {
+      immediate: true,
+    }
+  )
+}
 </script>
 
 <style scoped lang="scss">

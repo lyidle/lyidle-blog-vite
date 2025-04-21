@@ -8,11 +8,7 @@
       class="contain"
       :style="{ '--pages-card-contentNum': layoutRef?.contentNum }"
     >
-      <layout-content-card
-        v-for="item in articles"
-        :article="item"
-        v-if="articles"
-      >
+      <layout-content-card v-for="item in list" :article="item" v-if="list">
       </layout-content-card>
     </div>
     <div class="flex justify-center mt-30px">
@@ -29,31 +25,42 @@
   <my-empty v-else></my-empty>
 </template>
 
-<script setup lang="ts" name="UserSpaceHome">
+<script setup lang="ts" name="UserSpaceCollect">
 // 引入 api
-import { searchArticleExact } from "@/api/article"
-import type {
-  Pagination,
-  SearchArticle,
-} from "@/api/article/types/searchArticle"
+import { getOneArticle } from "@/api/article"
+import { getCollects } from "@/api/user/collect"
+// 引入 类型
+import type { GetCollects } from "@/api/user/collect/types/getCollects"
+import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 // 处理错误信息
 import { handlerReqErr } from "@/utils/request/error/successError"
+// 引入 仓库
+import { useUserSpaceStore } from "@/store/userSpace"
 
-const props = defineProps<{ account: string }>()
+defineProps<{ account: string }>()
 const layoutRef = defineModel<{ contentNum: number }>("layoutRef")
+const { userInfo } = storeToRefs(useUserSpaceStore())
 
 // 存储文章信息
-const articles = ref<SearchArticle["data"]["article"]>()
-const pagination = ref<Pagination>()
+const list = ref<GetOneArticle["data"][]>()
+const pagination = ref<GetCollects["data"]["pagination"]>()
 // 得到 文章信息
 const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
+  if (!userInfo.value?.id) return
   try {
-    const result = await searchArticleExact({
-      author: props.account,
+    const result = await getCollects({
+      userId: userInfo.value?.id,
       currentPage,
       pageSize,
     })
-    articles.value = result.article
+    const arts = await Promise.all(
+      result.list.map(async (item) => {
+        const artId = item.articleId
+        console.log(artId)
+        return await getOneArticle(artId)
+      })
+    )
+    list.value = arts
     pagination.value = result.pagination
   } catch (error) {
     const err = handlerReqErr(error, "error")
@@ -61,8 +68,24 @@ const reqArticles = async (currentPage: number = 1, pageSize: number = 10) => {
   }
 }
 
-onMounted(async () => {
-  await reqArticles()
+onMounted(() => {
+  let isErr = false
+  const stopWatch = watch(
+    () => userInfo.value,
+    async (newV) => {
+      if (!newV) return
+      await reqArticles()
+      try {
+        stopWatch()
+      } catch (error) {
+        isErr = true
+      }
+    },
+    {
+      immediate: true,
+    }
+  )
+  if (isErr) stopWatch()
 })
 </script>
 

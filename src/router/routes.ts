@@ -2,7 +2,7 @@
 import { asyncRoutesTest } from "@/test/asyncRoute"
 // 引入 测试 的路由
 import { RouteRecordRaw } from "vue-router"
-import { handlerRoutes } from "./handlerRoutes"
+import { handlerRoutes, processMenuItem } from "./handlerRoutes"
 
 /* meta 参数
  * title 网页标签展示信息
@@ -421,28 +421,5 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
     },
     // ...asyncRoutesTest,
   ],
-  (item) => {
-    // 隐藏 banner
-    if (!item.meta?.bannerHidden) {
-      item.meta!.bannerHidden = true
-    }
-    // 隐藏 header
-    if (!item.meta?.headerHidden) {
-      item.meta!.headerHidden = true
-    }
-
-    // 得到 roles
-    const roles = item.meta?.roles as string[] | undefined
-    // 添加 admin
-    if (roles?.includes("admin")) {
-      // 有数组 则 push
-      if (roles?.length) {
-        roles.push("admin")
-      }
-      // 没有数组 则创建
-      else {
-        item.meta!.roles = ["admin"]
-      }
-    }
-  }
+  processMenuItem
 )

@@ -38,25 +38,28 @@ export const routerEventHandlered = (router: any) => {
   // 重新 判断权限是否通过 需要 在 route:reload 后执行
   mitt.on("authRoles", () => {
     // 得到 roles
-    const { whitelist } = useUserStore()
-    if (whitelist) {
-      // 判断是否通过白名单
-      let isAccess = false
-      // 得到 匹配的路由
-      const matched = router.currentRoute.value?.matched
-      if (matched) {
-        for (const value of matched) {
-          // 判断 路径是否在 白名单中
-          if (whitelist.includes(value.path)) {
-            isAccess = true
-            return
-          }
-        }
-      }
-      if (!isAccess) {
-        router.replace("/")
-        ElMessage.warning("权限丢失了")
-      }
+    const { userRoles, userPermissions } = useUserStore()
+    // 得到 roles
+    const roles = router.currentRoute.value?.meta?.roles
+    const permissions = router.currentRoute.value?.meta?.permissions
+    let isAccess = true
+    // 存在 roles 则判断是否含有 不含有则不通过
+    if (
+      roles?.length &&
+      !roles.some((role: string) => userRoles.some((item) => item === role))
+    )
+      isAccess = false
+    // 存在 permissions 则判断是否含有 不含有则不通过
+    if (
+      permissions?.length &&
+      !permissions.some((role: string) =>
+        userPermissions.some((item) => item === role)
+      )
+    )
+      isAccess = false
+    if (!isAccess) {
+      router.replace("/")
+      ElMessage.warning("权限丢失了")
     }
   })
 

@@ -131,7 +131,6 @@ import { useManagerSystemMessage } from "@/hooks/manager/sysMsg/useManagerSystem
 import { delSystemMsg } from "@/api/admin/sysMsg"
 // 引入 类型
 import { GetReports } from "@/api/admin/report/types/getReports"
-import { mitt } from "@/utils/emitter"
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -191,8 +190,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqSysMsgs(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 删除

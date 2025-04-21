@@ -141,7 +141,6 @@ import { useFilterWordsBase } from "@/hooks/manager/filter/useFilterWordsBase"
 import { delFilterWord } from "@/api/admin/filter"
 // 引入 类型
 import { GetFilterWords } from "@/api/admin/filter/types/getFilterWords"
-import { mitt } from "@/utils/emitter"
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -210,8 +209,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqFilterWOrds(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 删除

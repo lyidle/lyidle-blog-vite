@@ -10,16 +10,25 @@ import { useSettingStore } from "@/store/setting"
 
 // 引入 添加 高亮 和 callotus 的函数
 import { addCalloutsAndHighlightAndFillToSvg } from "@/utils/doc/addCalloutsAndHighlightAndFillToSvg"
+import { useEventListener } from "@/hooks/useEventListener"
 
-export const useVditorPreview = (
-  article: Ref<GetOneArticle["data"]>,
-  menuTree: Ref<TocNode[] | undefined>,
-  docPreview: Ref<HTMLDivElement | undefined>,
+export const useVditorPreview = ({
+  article,
+  menuTree,
+  docPreview,
+  observerHeading,
+  autoPreview,
+  after,
+}: {
+  article: Ref<GetOneArticle["data"]>
+  menuTree: Ref<TocNode[] | undefined>
+  docPreview: Ref<HTMLDivElement | undefined>
   observerHeading: (
     menuTree: Ref<TocNode[] | undefined>
-  ) => (() => void) | undefined,
+  ) => (() => void) | undefined
   autoPreview: boolean
-) => {
+  after?: () => void
+}) => {
   // 提取数据
   const { isDark } = storeToRefs(useSettingStore())
 
@@ -94,6 +103,7 @@ export const useVditorPreview = (
         return result
       },
       after: () => {
+        after?.()
         // 处理高亮逻辑
         if (!menuTree.value) return
         destroyHighlight = observerHeading(menuTree)

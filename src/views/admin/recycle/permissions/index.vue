@@ -128,7 +128,6 @@ import { useMangerPermissionsBase } from "@/hooks/manager/recycle/permissions/us
 import { managerRestorePermission } from "@/api/recycle"
 // 引入 类型
 import type { Permission } from "@/api/recycle/types/getRecyclePermission"
-import { mitt } from "@/utils/emitter"
 const searchKey = ref("")
 // 表格的信息 和 搜索
 const {
@@ -184,8 +183,6 @@ const handlerReq = async () => {
   }
   // 默认是 当前页 和分页器的个数
   await reqPermissions(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 恢复

@@ -3,6 +3,7 @@ import express from "express"
 import getOneArticle from "./getOneArticle"
 import pagination from "./pagination"
 import authorAndId from "./authorAndId"
+import collect from "./collect"
 
 const router = express.Router()
 
@@ -10,4 +11,5 @@ const router = express.Router()
 router.use("/id", getOneArticle)
 router.use("/pagination", pagination)
 router.use("/authorAndId", authorAndId)
+router.use("/collect", collect)
 export default router

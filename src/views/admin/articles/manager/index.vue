@@ -129,8 +129,6 @@ import { managerUpdateArticle } from "@/api/article"
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
 import { useArticleManager } from "@/hooks/manager/article/useArticleManager"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
 import { Article } from "@/api/article/types/getArticle"
@@ -201,8 +199,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqAllArticles(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 取消 与 设置 轮播和置顶

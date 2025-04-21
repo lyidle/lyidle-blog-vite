@@ -182,8 +182,6 @@ import { managerDeletePermission, managerRemovePermission } from "@/api/admin"
 import { Role } from "@/api/admin/types/findAllRolesPagination"
 // 引入 基础配置
 import { useMangerPermissionsBase } from "@/hooks/manager/access/permissions/useMangerPermissionsBase"
-// 引入 mitt
-import { mitt } from "@/utils/emitter"
 // 引入 自制moment
 import moment from "@/utils/moment"
 // 搜索 的key
@@ -257,8 +255,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqAllPermissions(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 软删除

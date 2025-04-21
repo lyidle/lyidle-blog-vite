@@ -2,6 +2,7 @@
   <layout-article-tree
     :title="`${$route.meta.title || '标签'}：${handlerTitle()} `"
     :isTools="false"
+    v-if="isShow"
   ></layout-article-tree>
 </template>
 
@@ -18,13 +19,18 @@ const handlerTitle = () => {
   return tags.join(" · ")
 }
 
+const isShow = ref(true)
+
 // 得到分类
 let tags: string | string[] = ""
-try {
-  tags = JSON.parse(route.query.tags as string)
-} catch (error) {
-  tags = [route.query.tags as string]
+const initTags = () => {
+  try {
+    tags = JSON.parse(route.query.tags as string)
+  } catch (error) {
+    tags = [route.query.tags as string]
+  }
 }
+initTags()
 
 // 获取所有文章
 const handlerArticles = async (
@@ -40,7 +46,16 @@ const handlerArticles = async (
     return result
   } catch (error) {}
 }
-
+watch(
+  () => route.query.tags,
+  (cur, pre) => {
+    if (cur !== pre) {
+      isShow.value = false
+      initTags()
+      nextTick(() => (isShow.value = true))
+    }
+  }
+)
 // 提供方法
 provide("req", handlerArticles)
 </script>

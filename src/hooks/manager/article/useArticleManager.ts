@@ -62,6 +62,7 @@ export const useArticleManager = (searchKey: Ref<string>) => {
   const tableData = ref<Article[]>([])
   const pagination = ref<Pagination>()
 
+  let isInit = false
   // 获取数据
   const reqAllArticles = async (
     currentPage: number = 1,
@@ -74,6 +75,10 @@ export const useArticleManager = (searchKey: Ref<string>) => {
       const result = await searchArticleMerge(search)
       tableData.value = result.article
       pagination.value = result.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")

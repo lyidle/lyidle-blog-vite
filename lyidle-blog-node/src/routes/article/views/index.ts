@@ -28,7 +28,7 @@ router.get("/:userId", async (req, res, next) => {
     })
 
     const totalcount = findArticle.reduce(
-      (sum: any, article: any) => sum + (article.count || 0),
+      (sum: any, article: any) => +sum + (+article.count || 0),
       0
     )
 

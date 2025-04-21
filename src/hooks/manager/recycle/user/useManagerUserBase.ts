@@ -64,6 +64,7 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
     userIds.value = user.map((item) => item.id)
   }
 
+  let isInit = false
   // 获取数据
   const reqUsers = async (currentPage: number = 1, pageSize: number = 10) => {
     try {
@@ -73,6 +74,10 @@ export const useManagerUserBase = (searchKey: Ref<string>) => {
       const result = await recycleAllUsers(search)
       tableData.value = result?.users || []
       pagination.value = result?.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")

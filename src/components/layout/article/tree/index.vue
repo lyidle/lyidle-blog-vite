@@ -183,11 +183,7 @@ import { formatMilliseconds } from "@/utils/times/timeFormatter"
 import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 // 处理 错误
 import { handlerReqErr } from "@/utils/request/error/successError"
-// 引入 仓库
-import { useUserStore } from "@/store/user"
 import { mitt } from "@/utils/emitter"
-// 提取数据
-const { userNickName } = storeToRefs(useUserStore())
 
 // 判断是否是回收站页面
 const route = useRoute()

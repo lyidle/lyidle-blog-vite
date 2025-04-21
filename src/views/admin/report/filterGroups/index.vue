@@ -138,7 +138,6 @@ import { useFilterGroupsBase } from "@/hooks/manager/filter/useFilterGroupsBase"
 import { delFilterWordGroup } from "@/api/admin/filter/group/types"
 // 引入 类型
 import { GetFilterWordGroups } from "@/api/admin/filter/group/types/getFilterWordGroups"
-import { mitt } from "@/utils/emitter"
 // 表格的信息 和 搜索
 const {
   tableData,
@@ -199,8 +198,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqFilterGroups(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 删除

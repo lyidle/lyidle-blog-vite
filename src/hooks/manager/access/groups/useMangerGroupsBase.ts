@@ -59,6 +59,7 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
   const tableData = ref<Group[]>([])
   const pagination = ref<Pagination>()
 
+  let isInit = false
   // 获取数据
   const reqAllGroups = async (
     currentPage: number = 1,
@@ -71,6 +72,10 @@ export const useMangerGroupsBase = (searchKey: Ref<string>) => {
       const result = await findAllGroupsPagination(search)
       tableData.value = result.groups
       pagination.value = result.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")

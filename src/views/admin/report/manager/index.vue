@@ -288,7 +288,6 @@ import { delReports } from "@/api/admin/report"
 // 引入 类型
 import { GetReports } from "@/api/admin/report/types/getReports"
 import { SentSystemMsg } from "@/api/admin/sysMsg/types/sentSystemMsg"
-import { mitt } from "@/utils/emitter"
 import { getOneArticle, managerDeleteArticle } from "@/api/article"
 import { getCommentByPk, managerDelComment } from "@/api/comments"
 import { decompressStringNotError } from "@/utils/compression"
@@ -604,8 +603,6 @@ const handlerReq = async (stay?: boolean) => {
   }
   // 默认是 当前页 和分页器的个数
   await reqReports(cur, pageSize.value)
-  // 重新加载路由
-  mitt.emit("route:reload")
 }
 
 // 删除

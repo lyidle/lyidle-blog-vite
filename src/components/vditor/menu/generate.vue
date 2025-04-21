@@ -3,8 +3,7 @@
     <li v-for="item in menuData" :key="item.id" :class="'item-' + item.level">
       <a
         :href="`#${item.id}`"
-        @click.prevent="scrollTo($event, `#${item.id}`)"
-        ref="anchor"
+        @click.prevent="$router.replace({ ...$route, hash: `#${item.id}` })"
         >{{ item.text }}</a
       >
       <GenerateMenuTree v-if="item.children.length" :menuData="item.children" />
@@ -13,63 +12,8 @@
 </template>
 
 <script setup lang="ts" name="GenerateMenuTree">
-import { mitt } from "@/utils/emitter"
-import { scrollToHeader } from "@/utils/scrollToHeader"
 import { TocNode } from "@/views/doc/preview/types"
 defineProps<{ menuData?: TocNode[] }>()
-
-// 缓存
-let scrollToHeight: Map<string, number> | null = null
-const anchor = ref()
-let menus: HTMLAnchorElement[] | null = null
-
-// 点击高亮
-const clickHighlight = (tar: HTMLAnchorElement) => {
-  // 停止监听
-  mitt.emit("headinsObserver", false)
-  if (!menus)
-    menus = document.querySelectorAll<HTMLAnchorElement>(
-      ".doc-menu-tree li a[href^='#']"
-    ) as unknown as HTMLAnchorElement[]
-  // 排他
-  menus.forEach((item) => {
-    item.classList.remove("active")
-  })
-  tar.classList.add("active")
-}
-
-// 点击 滚动
-const scrollTo = (e: MouseEvent, id: string) => {
-  const tar = document.querySelector(id) as HTMLHeadingElement
-  if (!tar) return
-
-  // 传入 对应需要高亮的信息
-  const target = e.target as HTMLAnchorElement
-  clickHighlight(target)
-
-  // 初始化 Map
-  if (!scrollToHeight) scrollToHeight = new Map()
-
-  // 有缓存 直接滚动
-  const height = scrollToHeight.get(id)
-  if (height) {
-    window.scrollTo({
-      top: height,
-      behavior: "smooth",
-    })
-    return
-  }
-  const top = tar.getBoundingClientRect().top
-  // 调用滚动函数
-  const toScroll = scrollToHeader(top)
-  // 无缓存则保存后滚动
-  scrollToHeight.set(id, toScroll)
-}
-
-onBeforeUnmount(() => {
-  // 清除Map
-  scrollToHeight?.clear()
-})
 </script>
 
 <style lang="scss">

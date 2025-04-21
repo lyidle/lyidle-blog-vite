@@ -42,6 +42,7 @@ const props = withDefaults(
     isExportHtml?: boolean
     autoPreview?: boolean
     article?: GetOneArticle["data"]
+    after?: () => void
   }>(),
   {
     isExportHtml: true,
@@ -51,13 +52,14 @@ onMounted(() => {
   if (props.article) article.value = props.article
 })
 // 调用 渲染文章
-const html = useVditorPreview(
+const html = useVditorPreview({
   article,
   menuTree,
   docPreview,
-  useSideMenuHighlight,
-  props.autoPreview
-)
+  observerHeading: useSideMenuHighlight,
+  autoPreview: props.autoPreview,
+  after: props.after,
+})
 
 // 导出 为 html
 const exportHtml = () => {

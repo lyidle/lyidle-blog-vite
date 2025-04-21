@@ -25,11 +25,11 @@
           :account
         ></layout-space-home>
         <!-- 收藏 -->
-        <layout-space-home
+        <layout-space-collect
           v-if="scene === 'collect'"
           v-model:layoutRef="layoutRef"
           :account
-        ></layout-space-home>
+        ></layout-space-collect>
         <!-- 关注 -->
         <layout-space-follow
           v-if="scene === 'follower' || scene === 'following'"

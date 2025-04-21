@@ -58,6 +58,7 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
   const tableData = ref<Role[]>([])
   const pagination = ref<Pagination>()
 
+  let isInit = false
   // 获取数据
   const reqAllRoles = async (
     currentPage: number = 1,
@@ -70,6 +71,10 @@ export const useMangerRolesBase = (searchKey: Ref<string>) => {
       const result = await findAllRolesPagination(search)
       tableData.value = result.roles
       pagination.value = result.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")

@@ -63,6 +63,7 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
     userIds.value = user.map((item) => item.id)
   }
 
+  let isInit = false
   // 获取权限
   const reqPermissions = async (
     currentPage: number = 1,
@@ -75,6 +76,10 @@ export const useMangerPermissionsBase = (searchKey: Ref<string>) => {
       const result = await recycleAllPermissions(search)
       tableData.value = result?.permissions || []
       pagination.value = result?.pagination
+      if (isInit)
+        // 重新加载路由
+        mitt.emit("route:reload")
+      isInit = true
       return true
     } catch (error) {
       const err = handlerReqErr(error, "error")
