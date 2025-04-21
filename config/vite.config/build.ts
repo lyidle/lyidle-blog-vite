@@ -1,3 +1,5 @@
+import { BuildOptions } from "vite"
+
 export default {
   outDir: "lyidle-blog-node/src/static/dist",
   assetsDir: "assets",
@@ -5,11 +7,21 @@ export default {
   rollupOptions: {
     // 输出
     output: {
+      // 手动分块
+      // manualChunks(id) {
+      //   if (id.includes("node_modules")) {
+      //     // 让每个插件都打包成独立的文件
+      //     return id
+      //       .toString()
+      //       .split("node_modules/")[1]
+      //       .split("/")[0]
+      //       .toString()
+      //   }
+      // },
       // 入口文件名
       entryFileNames: "assets/js/[name]-[hash].js",
       // 块文件名
       chunkFileNames: "assets/js/[name]-[hash].js",
-      // 手动分块
       // 资源文件名
       assetFileNames: (assetInfo: any) => {
         // css
@@ -29,4 +41,4 @@ export default {
       },
     },
   },
-}
+} as BuildOptions

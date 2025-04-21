@@ -299,6 +299,7 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
 // 设置 卡片 样式
 @include setCardStyle;
 $gap: 10px;
@@ -328,7 +329,7 @@ $circle-bg-dur: var(--primary-during);
       top: 0;
       // 和 圆 居中
       left: -$year-line-size - $gap -
-        ($year-circle-size / 2 - $year-line-size / 2);
+        (math.div($year-circle-size, 2)- math.div($year-line-size, 2));
     }
     .years {
       // 年份的大圆
@@ -361,9 +362,10 @@ $circle-bg-dur: var(--primary-during);
         height: $size;
         background-color: $circle-central;
         position: absolute;
-        top: $year-circle-size / 2 - 8px;
+        top: math.div($year-circle-size, 2) - 8px;
         // 和 圆 居中
-        left: -$size - $gap - ($year-circle-size / 2 - $size / 2);
+        left: -$size - $gap -
+          (math.div($year-circle-size, 2) - math.div($size, 2));
         border-radius: 50%;
         z-index: 2;
       }
@@ -385,7 +387,8 @@ $circle-bg-dur: var(--primary-during);
         background-color: $circle-bg;
         position: absolute;
         // 和 圆 居中
-        left: -$circle-size - $gap - ($year-circle-size / 2 - $circle-size / 2);
+        left: -$circle-size - $gap -
+          (math.div($year-circle-size, 2) - math.div($circle-size, 2));
         top: 50%;
         transform: translateY(-50%);
         border-radius: 50%;
@@ -407,7 +410,8 @@ $circle-bg-dur: var(--primary-during);
         background-color: $circle-central;
         position: absolute;
         // 和 圆 居中
-        left: -$size - $gap - ($year-circle-size / 2 - $size / 2);
+        left: -$size - $gap -
+          (math.div($year-circle-size, 2) - math.div($size, 2));
         top: 50%;
         transform: translateY(-50%);
         border-radius: 50%;

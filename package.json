@@ -38,6 +38,7 @@
     "@unocss/preset-wind": "^0.64.1",
     "@vitejs/plugin-vue": "^5.1.4",
     "element-plus": "^2.8.8",
+    "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.79.4",
     "typescript": "^5.5.3",
     "unocss": "^0.64.0",

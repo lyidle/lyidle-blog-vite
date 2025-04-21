@@ -50,7 +50,7 @@ router.get("/", async (req, res, next) => {
       targetId = +settingId
       targetModel = Setting
       targetField = "settingId"
-      targetAttributes = ["id", "name", "content", "link"]
+      targetAttributes = ["id", "name", "content"]
     } else if (commentId) {
       targetType = "comment"
       targetId = +commentId

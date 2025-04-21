@@ -23,9 +23,6 @@ $link-color: var(--login-link-color);
   position: absolute;
   width: 50%;
   transition: width var(--primary-during);
-  @include media(sm) {
-    width: 90%;
-  }
   z-index: $global-content-index;
   // 水平居中
   inset: 0;
@@ -69,6 +66,9 @@ $link-color: var(--login-link-color);
   .reg {
     // 先隐藏注册
     transform: rotateY(180deg);
+  }
+  @include media(sm) {
+    width: 90%;
   }
 }
 </style>

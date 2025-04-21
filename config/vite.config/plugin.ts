@@ -11,6 +11,8 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import ElementPlus from "unplugin-element-plus/vite"
 // UnoCSS
 import UnoCSS from "unocss/vite"
+// 打包分析
+import { visualizer } from "rollup-plugin-visualizer"
 export default () => {
   return [
     vue(),
@@ -47,6 +49,13 @@ export default () => {
       ],
       // 开启命名空间 以components下的文件为前缀
       directoryAsNamespace: true,
+    }),
+    visualizer({
+      gzipSize: true,
+      brotliSize: true,
+      emitFile: false,
+      filename: "test.html", //分析图生成的文件名
+      open: true, //如果存在本地服务端口，将在打包后自动展示
     }),
   ]
 }
