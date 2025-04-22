@@ -221,6 +221,7 @@ export const constantRoute: RouteRecordRaw[] = [
     name: "Person",
     meta: { title: "个人" },
     component: () => import("@/components/layout/index.vue"),
+    redirect: "/person/about",
     children: [
       {
         path: "/person/about",
@@ -232,7 +233,27 @@ export const constantRoute: RouteRecordRaw[] = [
           bannerWaves: true,
           pagesMt: "-30vh",
         },
-        component: () => import("@/views/about/index.vue"),
+        component: () => import("@/views/site/about/index.vue"),
+      },
+    ],
+  },
+  {
+    path: "/site",
+    name: "Site",
+    meta: { title: "网站" },
+    component: () => import("@/components/layout/index.vue"),
+    children: [
+      {
+        path: "/site/time",
+        name: "Time",
+        meta: {
+          title: "旧时光",
+          bannerWel: "旧时光",
+          bannerPoetry: "",
+          bannerWaves: true,
+          pagesMt: "-30vh",
+        },
+        component: () => import("@/views/site/time/index.vue"),
       },
     ],
   },

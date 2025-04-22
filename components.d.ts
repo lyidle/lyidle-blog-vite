@@ -51,6 +51,7 @@ declare module 'vue' {
     GlobalReport: typeof import('./src/components/global/report/index.vue')['default']
     GlobalSetting: typeof import('./src/components/global/setting/index.vue')['default']
     GlobalTools: typeof import('./src/components/global/tools/index.vue')['default']
+    GlobalTree: typeof import('./src/components/global/tree/index.vue')['default']
     GlobalUserinfo: typeof import('./src/components/global/userinfo/index.vue')['default']
     IconArrowRight: typeof import('./src/components/icon/arrow-right/index.vue')['default']
     IconCar: typeof import('./src/components/icon/car/index.vue')['default']

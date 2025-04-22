@@ -28,6 +28,12 @@ export const useShowPersonHeaderMenu = () => {
           icon: { icon: "i-akar-icons:paper-airplane" },
           to: "/person/about",
         },
+        {
+          id: 8,
+          name: "建设进程",
+          icon: { icon: "i-arcticons:ai-chat-alt-2" },
+          to: "/site/time",
+        },
 
         // 未登录的 数据
         {

@@ -1,14 +1,6 @@
 export interface Article {
-  author?: string
-  category?: string
   createdAt?: string
-  desc?: string
-  id?: number
-  poster?: null | string
-  tags?: string[]
-  title?: string
   updatedAt?: string
-  userId?: number
   [property: string]: any
 }
 
