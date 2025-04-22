@@ -89,6 +89,7 @@ declare module 'vue' {
     LayoutContentAnnounce: typeof import('./src/components/layout/content/announce/index.vue')['default']
     LayoutContentAsideCard: typeof import('./src/components/layout/content/aside-card/index.vue')['default']
     LayoutContentCard: typeof import('./src/components/layout/content/card/index.vue')['default']
+    LayoutContentFooter: typeof import('./src/components/layout/content/footer/index.vue')['default']
     LayoutContentIntroduceSelf: typeof import('./src/components/layout/content/introduce-self/index.vue')['default']
     LayoutContentMenu: typeof import('./src/components/layout/content/menu/index.vue')['default']
     LayoutContentMenuAside: typeof import('./src/components/layout/content/menu/aside.vue')['default']

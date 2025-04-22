@@ -422,6 +422,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       articleId: DataTypes.STRING,
+      link: DataTypes.STRING,
     },
     {
       sequelize,
@@ -437,12 +438,19 @@ module.exports = (sequelize, DataTypes) => {
           // 更新 总个数
           updateTotalPages("创建", 1)
         },
+        afterCreate: async (article, options) => {
+          // 此时可以获取 article.id
+          article.link = `/doc/${article.id}`
+          // 必须手动保存修改
+          await article.save({ transaction: options.transaction })
+        },
         // 更新的钩子
         beforeUpdate: async (article, options) => {
           // 处理 图片清理
           handlerUpdateUpdateImgs(article, options)
           // 需要不是删除的情况
           if (article.get("isBin")) return
+          if (!article.link) article.link = `/doc/${article.id}`
           // 更新字数
           handlerUpdateUpdateTotalWorlds(article, options)
         },

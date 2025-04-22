@@ -25,6 +25,9 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      link: {
+        type: Sequelize.STRING,
+      },
       content: {
         type: Sequelize.JSON,
       },

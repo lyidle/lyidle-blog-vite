@@ -71,6 +71,9 @@ module.exports = {
         type: Sequelize.STRING,
         comment: "文章ID 自己手动生成",
       },
+      link: {
+        type: Sequelize.STRING,
+      },
       isBin: {
         type: Sequelize.DATE,
         allowNull: true,

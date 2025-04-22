@@ -76,6 +76,7 @@ router.get("/", async (req, res, next) => {
           a.id AS articleId, 
           a.title, 
           a.updatedAt,
+          a.link,
           COUNT(DISTINCT ld.userId) AS likeCount,
           (
             SELECT JSON_ARRAYAGG(
@@ -122,6 +123,7 @@ router.get("/", async (req, res, next) => {
           s.id AS settingId, 
           s.name, 
           s.updatedAt,
+          s.link,
           COUNT(DISTINCT ld.userId) AS likeCount,
           (
             SELECT JSON_ARRAYAGG(

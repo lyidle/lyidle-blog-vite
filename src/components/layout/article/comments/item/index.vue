@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-item-container">
+  <div class="comment-item-container" ref="container">
     <!-- 头像和评论 -->
     <div class="flex justify-between relative">
       <!-- 头像 -->
@@ -354,6 +354,25 @@ const updateComment = async () => {
   }
 }
 
+const route = useRoute()
+const container = ref<HTMLDivElement>()
+onMounted(() =>
+  nextTick(() => {
+    const queryId = route.query.commentId
+    // 是否是 当前的评论
+    const isCurId = queryId && +queryId === +cloneComment.id
+    if (!isCurId) return
+    if (!container.value) return
+    const top = container.value.getBoundingClientRect().top + window.innerHeight
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    })
+    // 添加类名
+    container.value.classList.add("curComment")
+  })
+)
+
 // 回复 的回调
 const handlerReply = () => {
   // 触发 回复的信息框
@@ -384,6 +403,25 @@ const handlerReply = () => {
       left: 70%;
       right: unset;
       transform: unset;
+    }
+  }
+}
+// 当前容器 动画效果
+.curComment {
+  animation: active-container 3s linear;
+  $active-color: #60a2ce25;
+  @keyframes active-container {
+    25% {
+      background-color: $active-color;
+    }
+    50% {
+      background-color: unset;
+    }
+    75% {
+      background-color: $active-color;
+    }
+    100% {
+      background-color: unset;
     }
   }
 }

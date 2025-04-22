@@ -4,9 +4,7 @@
       <div
         class="reply-container flex gap-0.625rem justify-between overflow-hidden p-[var(--p)]"
       >
-        <div
-          class="flex-shrink-0 flex justify-center items-center reply-avatar"
-        >
+        <div class="flex-shrink-0 flex justify-center reply-avatar">
           <!-- 头像 -->
           <global-avatar-src
             :account="reply.user.account"

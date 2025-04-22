@@ -74,6 +74,7 @@ module.exports = {
         // poster: `https://example.com/poster${i}.jpg`,
         length: lengthRender(i),
         userId: user.id,
+        link: `/doc/${i + 1}`,
         articleId: uuidV4(),
         createdAt: new Date(),
         updatedAt: new Date(),

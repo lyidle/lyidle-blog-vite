@@ -1,7 +1,7 @@
 <template>
   <!-- 没有 id时显示 信息 -->
   <div class="msg-like-container" v-show="!$route.query.id">
-    <div class="like-container flex flex-col gap-0.625rem">
+    <div class="like-container flex flex-col gap-0.625rem" ref="likeContainer">
       <template
         v-for="item in likesData"
         :id="`${item.type}:${
@@ -148,7 +148,7 @@ import moment from "@/utils/moment"
 // 交叉传感器
 import { createIntersectionObserver } from "@/utils/observer"
 
-const normalSize = 4
+const normalSize = 1
 const pagination = ref<GetUserLikes["data"]["pagination"]>({
   currentPage: 1,
   pageSize: normalSize,
@@ -160,15 +160,21 @@ const isLoading = ref(true)
 const likesData = ref<GetUserLikes["data"]["likes"]>([])
 let preItemLen = normalSize
 
+// 进行判断是否加载下一页
+const isLoad = () => {
+  if (!pagination.value.total) return
+  // 需要是 上次的 当前页 来进行判断是否加载下一页
+  return (
+    (pagination.value.currentPage - 1) * pagination.value.pageSize <
+      pagination.value.total && preItemLen >= pagination.value.pageSize
+  )
+}
 // 初始化 数据
 const reqLikes = async () => {
   // 判断是否超出
   if (init && pagination.value.total) {
     // 需要是 上次的 当前页 来进行判断是否加载下一页
-    const is =
-      (pagination.value.currentPage - 1) * pagination.value.pageSize <
-        pagination.value.total && preItemLen >= pagination.value.pageSize
-    if (is) {
+    if (isLoad()) {
       await reqLikesCallback()
     }
     return
@@ -186,6 +192,7 @@ onBeforeUnmount(() => stopObserver?.())
 
 let init = false
 
+const likeContainer = ref()
 const obEl = ref<HTMLElement>()
 onMounted(() => {
   // 初始化 交叉传感器，用于更新数据
@@ -195,6 +202,26 @@ onMounted(() => {
         // 初始化 后 自增当前页
         if (init) ++pagination.value.currentPage
         await reqLikes()
+        // 因为 是按照三个进行查询的 ，有可能都是article 且个数没有 占满容器的情况出现
+        const cur = () => {
+          // 自增
+          ++pagination.value.currentPage
+          // 是否继续请求
+          if (!isLoad()) return
+          nextTick(async () => {
+            if (!likeContainer.value) return
+            const isOverflowingVertically =
+              likeContainer.value.scrollHeight >
+              likeContainer.value.clientHeight
+            if (isOverflowingVertically) return
+            // 溢出 则退出
+            if (isOverflowingVertically) return
+            await reqLikes()
+            // 递归
+            cur()
+          })
+        }
+        cur()
       },
     })
 })

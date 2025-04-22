@@ -30,7 +30,7 @@
     <slot name="outer"></slot>
   </div>
   <!-- footer -->
-  <div class="h-30vh w-100% bg-red"></div>
+  <layout-content-footer></layout-content-footer>
 </template>
 
 <script setup lang="ts" name="Content">
@@ -150,6 +150,8 @@ $translate-y: -5px;
 $aside-pd: 20px;
 $aside-width: var(--aside-width);
 .global-content {
+  position: relative;
+  z-index: $global-content-index + 1;
   @include media(mi) {
     width: 100%;
     overflow: hidden;
