@@ -8,7 +8,7 @@ const { Setting } = require("@/db/models")
 import { delKey, setKey } from "@/utils/redis"
 router.put("/", async (req: Request, res: Response, next: NextFunction) => {
   // 提取需要的信息
-  const { name, content, id } = req.body
+  const { name, content, id, link } = req.body
   // 错误信息
   if (!id) return res.result(void 0, "id是必传项~", false)
   try {
@@ -18,6 +18,7 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
 
     if (content) await findSetting.set("content", content)
     if (name) await findSetting.set("name", name)
+    await findSetting.set("link", link || null)
 
     const { dataValues } = await findSetting.save()
 

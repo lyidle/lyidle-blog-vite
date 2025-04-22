@@ -4,6 +4,6 @@ export const menuIcons = {
   关于: "i-akar-icons:paper-airplane",
   登录: "i-material-symbols:login",
   个人中心: "i-charm:person",
-  建设进程: "i-arcticons:ai-chat-alt-2",
+  建设进程: "i-hugeicons:time-setting-03",
   发布文章: "i-simple-line-icons:doc",
 }

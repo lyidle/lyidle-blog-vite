@@ -8,7 +8,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     // 逐条插入 Menu 数据，触发钩子
     for (const menu of menus) {
-      await Menu.create(menu)
+      try {
+        await Menu.create(menu)
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     // 批量插入 MenuRole 数据（不需要触发钩子）

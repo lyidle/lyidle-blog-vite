@@ -436,6 +436,12 @@ export const asyncRoute: RouteRecordRaw[] = handlerRoutes(
               meta: { title: "设置管理" },
               component: () => import("@/views/admin/other/settings/index.vue"),
             },
+            {
+              name: "SiteTime",
+              path: "/admin/other/site-time",
+              meta: { title: "建设进程管理" },
+              component: () => import("@/views/admin/other/siteTime/index.vue"),
+            },
           ],
         },
       ],

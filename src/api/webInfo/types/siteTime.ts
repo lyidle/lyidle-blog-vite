@@ -1,7 +1,7 @@
 /**
  * Request
  */
-export interface FindOneSetting {
+export interface SiteTime {
   code: number
   data: Data
   message: string[] | string
@@ -9,9 +9,9 @@ export interface FindOneSetting {
 }
 
 export interface Data {
-  content: string[] | { [key: string]: any } | string
+  content: string
+  createdAt: string
   id: number
-  name: string
-  userId: number
+  updatedAt: string
   [property: string]: any
 }

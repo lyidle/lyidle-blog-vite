@@ -2,7 +2,9 @@
   <div
     class="footer-container w-100% mt-20px relative flex flex-col items-center color-[var(--primary-color)] gap-10px card_style"
   >
-    <div class="cur-text text-16px">©2022-2023 By Fomalhaut🥝</div>
+    <div class="cur-text text-16px">
+      {{ copyright }}&nbsp;By&nbsp;{{ VITE_INITIAL_LOGO }}
+    </div>
     <div class="cur-text">
       本站运行时间&nbsp;:&nbsp;{{ showWebTime ? showWebTime : "未知时间" }}
     </div>
@@ -15,10 +17,13 @@
 
 <script setup lang="ts" name="LayoutFooter">
 // 引入api
+import { findOneSetting } from "@/api/admin"
 import { getWebInfo } from "@/api/webInfo"
 // 引入 moment
 import { mitt } from "@/utils/emitter"
 import moment from "moment"
+
+const VITE_INITIAL_LOGO = import.meta.env.VITE_INITIAL_LOGO
 
 // 显示的数据
 const webCreatedAt = ref<Date>()
@@ -31,6 +36,14 @@ const reqWebInfo = async () => {
   if (createdAt) webCreatedAt.value = new Date(createdAt)
   else webCreatedAt.value = undefined
 }
+
+const copyright = ref<string>()
+
+const reqCopyright = async () => {
+  const result = await findOneSetting("版权")
+  copyright.value = (result.content as string) || ""
+}
+onMounted(reqCopyright)
 
 mitt.on("reloadWebInfo", reqWebInfo)
 

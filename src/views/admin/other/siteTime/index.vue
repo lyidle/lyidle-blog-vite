@@ -1,19 +1,12 @@
 <template>
   <div class="admin-container">
-    <my-search-admin
-      :submit="handlerSearch"
-      label="设置名"
-      :reset="handlerReset"
-      placeholder="设置名"
-    >
-    </my-search-admin>
     <my-card class="admin-content card_style" bg="var(--manager-card-bg) ">
       <div class="admin-header-btns">
         <my-button
           :size="headerBtnsSize"
           :style="`${headerBtnsSize === 'small' && 'width: 80px'}`"
           @click="create.init()"
-          >添加设置</my-button
+          >添加进程</my-button
         >
         <my-button
           :size="headerBtnsSize"
@@ -33,36 +26,35 @@
         <my-table-column type="selection" width="30" />
         <my-table-column width="40" prop="id" label="id" align="center" />
         <my-table-column
-          :width="tablePrimaryColumWidth"
-          prop="name"
-          label="设置名"
+          prop="content"
+          label="内容"
           align="center"
-        />
-        <my-table-column prop="content" label="内容" align="center">
+          :width="tablePrimaryColumWidth"
+        >
           <template #="{ row }">
-            <!-- 是 vditor -->
-            <div v-if="isVditorEditor(row.name)">
-              <!-- 解压缩内容 -->
-              {{ decompressStringNotError(row.content) }}
-            </div>
-            <!-- 是字符串 -->
-            <div v-else-if="typeof row.content === 'string'" class="cur-text">
+            <span>
               {{ row.content }}
-            </div>
-            <!-- 是对象字面量 -->
-            <div v-if="isPlainObject(row.content)" class="cur-text">
-              {{ row.content }}
-            </div>
-            <!-- 是数组 -->
-            <template v-if="Array.isArray(row.content)">
-              <el-tag
-                v-for="(arr, i) in row.content"
-                :key="arr"
-                :type="tagsType[i % tagsType.length]"
-                class="cur-text ml-10px float-left"
-                >{{ arr }}</el-tag
-              >
-            </template>
+            </span>
+          </template>
+        </my-table-column>
+        <my-table-column
+          min-width="100"
+          prop="createdAt"
+          label="创建时间"
+          align="center"
+        >
+          <template #="{ row }">
+            {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
+          </template>
+        </my-table-column>
+        <my-table-column
+          min-width="100"
+          prop="updatedAt"
+          label="更新时间"
+          align="center"
+        >
+          <template #="{ row }">
+            {{ moment(row.createdAt, "YYYY-MM-DD LTS") }}
           </template>
         </my-table-column>
         <!-- 工具栏 -->
@@ -87,7 +79,7 @@
               <my-popconfirm
                 width="220"
                 icon-color="#F56C6C"
-                :title="`确认要彻底删除《${row.name}》么?`"
+                :title="`确认要彻底删除id为《${row.id}》的进程么?`"
                 placement="top"
                 @confirm="handlerDelete(row)"
               >
@@ -133,7 +125,7 @@
         layout="prev, pager, next, sizes, jumper"
         :total="pagination.total"
         :page-sizes="[10, 20, 30]"
-        @change="reqAllSettings"
+        @change="reqSiteTimes"
         @current-change="handlerCurrentPage"
         @size-change="handlerSizeChange"
         v-model:current-page="currentPage"
@@ -142,8 +134,8 @@
         class="justify-center mt-[var(--admin-content-item-gap)]"
       />
 
-      <manager-com-setting-create ref="create" @req="handlerReq" />
-      <manager-com-setting-editor
+      <manager-com-site-time-create ref="create" @req="handlerReq" />
+      <manager-com-site-time-editor
         ref="editor"
         @req="handlerReq"
         v-if="editorDialogVisible"
@@ -152,40 +144,30 @@
   </div>
 </template>
 
-<script setup lang="ts" name="AdminOtherSiteTime">
+<script setup lang="ts" name="AdminOtherSettings">
 // 引入 api
-import { managerDeleteSetting } from "@/api/admin"
+import { delSiteTimes } from "@/api/webInfo"
 // 引入 类型
-import type { Setting } from "@/api/admin/types/findAllSettingsPagination"
-// 判断是否 是 vditor
-import { isVditorEditor } from "@/components/manager/com/setting/editor"
-// tags 的类型 const
-import { tagsType } from "@/components/my/tags"
+import { GetSiteTimes } from "@/api/webInfo/types/getSiteTimes"
 // 引入 基础配置
-import { useMangerSettingsBase } from "@/hooks/manager/other/settings/useMangerSettingsBase"
-// 解压缩内容
-import { decompressStringNotError } from "@/utils/compression"
-import { handlerReqErr } from "@/utils/request/error/successError"
-// 判断是否 是一个 对象字面量
-import { isPlainObject } from "lodash-es"
+import { useMangerSiteTimeBase } from "@/hooks/manager/other/siteTime/useMangerSiteTimeBase"
 
-// 搜索 的key
-const searchKey = ref("")
+import moment from "@/utils/moment"
+import { handlerReqErr } from "@/utils/request/error/successError"
+
 // 使用 基础配置
 const {
-  handlerSearch,
   tableData,
   pagination,
-  reqAllSettings,
-  handlerReset,
+  reqSiteTimes,
   currentPage,
   pageSize,
+  tablePrimaryColumWidth,
 
   headerBtnsSize,
-  tablePrimaryColumWidth,
   toolBtnsWidth,
   isSmall,
-} = useMangerSettingsBase(searchKey)
+} = useMangerSiteTimeBase()
 // 个数变化
 const handlerSizeChange = (num: number) => {
   pageSize.value = num
@@ -198,7 +180,7 @@ const handlerCurrentPage = (num: number) => {
 // 保存选中的 roleId
 const roleIds = ref<number[]>([])
 // 选择状态发生变化
-const handleSelectionChange = (role: Setting[]) => {
+const handleSelectionChange = (role: GetSiteTimes["data"]["list"][0][]) => {
   roleIds.value = role.map((item) => item.id)
 }
 
@@ -206,7 +188,7 @@ const handleSelectionChange = (role: Setting[]) => {
 const create = ref()
 const editor = ref()
 const editorDialogVisible = ref(false)
-const handerEditor = (row: Setting) => {
+const handerEditor = (row: GetSiteTimes["data"]["list"][0]) => {
   editorDialogVisible.value = true
   nextTick(() => editor.value.init(row))
 }
@@ -226,7 +208,7 @@ const handlerReq = async () => {
   // 只有一个的情况
   if (tableData.value.length === 1) {
     // 跳到上一页
-    await reqAllSettings(pre, pageSize.value)
+    await reqSiteTimes(pre, pageSize.value)
     return
   }
   // 处理批量删除时的逻辑
@@ -234,33 +216,33 @@ const handlerReq = async () => {
   // 删除时选择的个数和页码个数大于等于 则是上一页
   if (len >= pageSize.value) {
     // 跳到上一页
-    await reqAllSettings(cur - 1, pageSize.value)
+    await reqSiteTimes(cur - 1, pageSize.value)
     return
   }
   // 默认是 当前页 和分页器的个数
-  await reqAllSettings(cur, pageSize.value)
+  await reqSiteTimes(cur, pageSize.value)
 }
 
 // 删除
-const handlerDelete = async (row: Setting) => {
-  const { id, name } = row
+const handlerDelete = async (row: GetSiteTimes["data"]["list"][0]) => {
+  const { id } = row
   try {
     // 彻底删除
-    await managerDeleteSetting(id)
+    await delSiteTimes(id)
     // 重新请求
     await handlerReq()
-    ElMessage.success(`彻底删除${name}设置成功~`)
+    ElMessage.success(`彻底删除id为:${id}的进程成功~`)
   } catch (error) {
     const err = handlerReqErr(error, "error")
-    if (!err) ElMessage.error(`彻底删除${name}设置失败~`)
+    if (!err) ElMessage.error(`彻底删除id为:${id}的进程失败~`)
   }
 }
 
 // 批量删除
 const handlerAllDelete = async () => {
-  if (!roleIds.value?.length) return ElMessage.warning("没有需要彻底删除的设置")
+  if (!roleIds.value?.length) return ElMessage.warning("没有需要彻底删除的进程")
   const results = await Promise.allSettled(
-    roleIds.value.map((item) => managerDeleteSetting(item))
+    roleIds.value.map((item) => delSiteTimes(item))
   )
   const sucArr: any[] = []
   // @ts-ignore
@@ -274,16 +256,16 @@ const handlerAllDelete = async () => {
 
   if (rejectArr.length) {
     const err = handlerReqErr({ message: rejectArr }, "error")
-    if (!err) ElMessage.error("批量删除设置项失败")
+    if (!err) ElMessage.error("批量删除进程项失败")
   } else {
-    ElMessage.success("批量删除设置项成功")
+    ElMessage.success("批量删除进程项成功")
   }
   if (sucArr.length && rejectArr.length) {
-    ElMessage.error("部分设置项删除失败")
+    ElMessage.error("部分进程项删除失败")
   }
 
   // 重新请求
-  if (pagination.value?.total === 1) await reqAllSettings()
+  if (pagination.value?.total === 1) await reqSiteTimes()
   else await handlerReq()
 }
 </script>

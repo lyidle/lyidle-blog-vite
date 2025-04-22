@@ -25,7 +25,7 @@ module.exports = {
     }
 
     // 生成文章数据
-    const articleCounts = 100
+    const articleCounts = 2
     const articles = []
     const categories = ["前端", "后端", "科技", "生活", "娱乐", "教育"]
     const tagsList = [
@@ -67,9 +67,10 @@ module.exports = {
         author: user.account,
         category: randomCategory,
         tags: JSON.stringify(randomTags),
+        carousel: 1,
         // 成功 次数加一
-        carousel:
-          Math.random() > 0.5 && carouselCounts <= 8 ? !!++carouselCounts : 0,
+        // carousel:
+        //   Math.random() > 0.5 && carouselCounts <= 8 ? !!++carouselCounts : 0,
         desc: `文章的描述内容${i}`,
         // poster: `https://example.com/poster${i}.jpg`,
         length: lengthRender(i),

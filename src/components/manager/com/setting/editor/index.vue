@@ -81,6 +81,13 @@
             ref="vditorInstance"
           ></vditor-editor>
         </div>
+
+        <el-form-item label="链接" prop="link" class="mt-10px">
+          <my-input
+            placeholder="请输入链接地址"
+            v-model="createData.link"
+          ></my-input>
+        </el-form-item>
         <!-- 关于 界面 -->
         <div class="flex justify-end mt-20px">
           <my-button
@@ -123,6 +130,7 @@ const createData = reactive<Setting>({
   id: -1,
   name: "",
   content: "",
+  link: "",
   arrayContent: [],
 })
 
@@ -148,7 +156,7 @@ const contentValidator = (rule: any, value: any, callback: any) => {
     return callback(new Error("内容必须要有内容"))
 
   // 只验证 字面量的形式的 object
-  if (contentType.value !== "object") return
+  if (contentType.value !== "object") return callback()
   try {
     const content = JSON.parse(value)
     // 不是对象
@@ -156,6 +164,7 @@ const contentValidator = (rule: any, value: any, callback: any) => {
       callback(new Error('内容必须要是对象的字面量形式：{"key":"value"}'))
       return
     }
+    callback()
   } catch (error) {
     callback(new Error('内容必须要是对象的字面量形式：{"key":"value"}'))
   }
@@ -207,6 +216,7 @@ const init = (row: Setting) => {
   // 分配变量
   createData.id = _row.id
   createData.name = _row.name
+  createData.link = _row.link || ""
 
   // 判断是否是 vditor
   isVditorEditorCallback(_row.name)
@@ -268,13 +278,12 @@ const handlerConfirm = async () => {
     delete updateData.arrayContent
 
     // 是否是 vditor
-    if (isEditor) {
+    if (isEditor.value) {
       const content = vditorInstance.value.getContext()
       updateData.content = content
       // 处理文章的 内容
       await useMdReplaceImg(content, updateData, { path: "/manager" })
     }
-
     // 更新
     await updateSetting(updateData)
     ElMessage.success(`修改设置成功~`)

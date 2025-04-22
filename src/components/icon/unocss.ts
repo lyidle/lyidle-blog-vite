@@ -29,4 +29,5 @@ const adminIcon = [
   "i-fluent:collections-20-filled",
   "i-fluent:collections-add-24-filled",
   "i-mynaui:message-solid",
+  "i-token:cweb",
 ]

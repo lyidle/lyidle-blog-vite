@@ -31,7 +31,7 @@ export const useShowPersonHeaderMenu = () => {
         {
           id: 8,
           name: "建设进程",
-          icon: { icon: "i-arcticons:ai-chat-alt-2" },
+          icon: { icon: "i-hugeicons:time-setting-03" },
           to: "/site/time",
         },
 
@@ -94,7 +94,7 @@ export const useShowPersonHeaderMenu = () => {
         },
       ],
       style: {
-        width: userToken.value ? "5.9375rem" : "4.375rem",
+        width: "5.9375rem",
         pl: paddingLeft,
       },
     } as menuView

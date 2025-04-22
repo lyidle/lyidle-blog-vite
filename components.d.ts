@@ -137,6 +137,8 @@ declare module 'vue' {
     ManagerComRoleEditor: typeof import('./src/components/manager/com/role/editor/index.vue')['default']
     ManagerComSettingCreate: typeof import('./src/components/manager/com/setting/create/index.vue')['default']
     ManagerComSettingEditor: typeof import('./src/components/manager/com/setting/editor/index.vue')['default']
+    ManagerComSiteTimeCreate: typeof import('./src/components/manager/com/site-time/create/index.vue')['default']
+    ManagerComSiteTimeEditor: typeof import('./src/components/manager/com/site-time/editor/index.vue')['default']
     ManagerComUserAssignRoles: typeof import('./src/components/manager/com/user/assign-roles/index.vue')['default']
     ManagerComUserCreate: typeof import('./src/components/manager/com/user/create/index.vue')['default']
     ManagerComUserEditor: typeof import('./src/components/manager/com/user/editor/index.vue')['default']

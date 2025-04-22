@@ -10,7 +10,7 @@ import { setKey, getKey } from "@/utils/redis"
 const default_owner = process.env.default_owner
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   // 提取需要的信息
-  const { name, content } = req.body
+  const { name, content, link } = req.body
   // 有缓存 不重复设置 缓存没有 的化 模型也拦截了
   if (await getKey(`setting:${name}`))
     return res.result(void 0, `${name}信息已设置~`, false)
@@ -39,7 +39,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       ownerId = findUser.id
       await setKey("ownerId", ownerId)
     }
-    const setData: any = { name, content, userId: ownerId }
+    const setData: any = { name, content, userId: ownerId, link: link || null }
 
     const { dataValues } = await Setting.create(setData)
 

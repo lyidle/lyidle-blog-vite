@@ -34,6 +34,12 @@ const asyncRoute = [
             icon: "i-lsicon:setting-filled",
             to: "/admin/other/settings",
           },
+          {
+            name: "SiteTime",
+            to: "/admin/other/site-time",
+            icon: "i-hugeicons:time-setting-03",
+            roles: ["admin"],
+          },
         ],
       },
       {

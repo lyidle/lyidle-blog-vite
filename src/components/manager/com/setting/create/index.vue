@@ -64,6 +64,12 @@
             ></my-tags>
           </template>
         </el-form-item>
+        <el-form-item label="链接" prop="link">
+          <my-input
+            placeholder="请输入链接地址"
+            v-model="createData.link"
+          ></my-input>
+        </el-form-item>
         <div class="flex justify-end mt-20px">
           <my-button
             class="w-unset"
@@ -96,6 +102,7 @@ const createData = reactive<Setting>({
   id: -1,
   name: "",
   content: "",
+  link: "",
   arrayContent: [],
 })
 

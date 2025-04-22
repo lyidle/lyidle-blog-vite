@@ -29,6 +29,8 @@ import filter from "@/routes/admin/filter"
 import msg from "@/routes/admin/msg"
 // 引入 api/admin/comment
 import comment from "@/routes/admin/comment"
+// 引入 api/admin/site
+import site from "@/routes/admin/site"
 
 const router = express.Router()
 // 挂载路由
@@ -46,4 +48,5 @@ router.use("/sysMsg", [jwtMiddleware, isAdmin], sysMsg)
 router.use("/filter", [jwtMiddleware, isAdmin], filter)
 router.use("/msg", [jwtMiddleware, isAdmin], msg)
 router.use("/comment", [jwtMiddleware, isAdmin], comment)
+router.use("/site", site)
 export default router
