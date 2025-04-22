@@ -3,7 +3,7 @@ const path = require("path")
 const Terser = require("terser")
 
 // 设置 dist 目录路径
-const distDir = path.join(__dirname, "dist")
+const distDir = path.join(__dirname, "lyidleBlog")
 
 // 获取 dist 目录下的所有文件
 function getFilesInDir(dir) {

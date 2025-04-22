@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build:re": "rimraf dist",
+    "build:re": "rimraf lyidleBlog",
     "build:tsc": "tsc",
-    "build:move": "copyfiles -u 1 src/**/*.* dist/src --exclude \"**/*.ts\" && copyfiles package.json pnpm-lock.yaml .sequelizerc .env build.js dist",
+    "build:move": "copyfiles -u 1 src/**/*.* lyidleBlog/src --exclude \"**/*.ts\" && copyfiles package.json pnpm-lock.yaml .sequelizerc .env build.js lyidleBlog",
     "build:handler": "node build.js",
     "build:minify": "node minify.js",
     "build": "pnpm build:re && pnpm build:tsc && pnpm build:move && pnpm build:handler && pnpm build:minify",

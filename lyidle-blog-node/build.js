@@ -2,7 +2,7 @@ const fs = require("fs")
 const path = require("path")
 
 // 输入和输出目录
-const inputDirs = ["dist/src"]
+const inputDirs = ["lyidleBlog/src"]
 
 // 遍历目录获取所有文件
 function getAllFiles(dirPath, fileTypes, fileList = []) {
