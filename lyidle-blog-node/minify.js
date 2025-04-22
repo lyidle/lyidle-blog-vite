@@ -40,7 +40,7 @@ async function minifyFile(file) {
 
     // 将压缩后的代码写回文件
     fs.writeFileSync(file, result.code, "utf8")
-    console.log(`Minified: ${file}`)
+    // console.log(`Minified: ${file}`)
   } catch (error) {
     console.error(`Error minifying ${file}:`, error)
   }

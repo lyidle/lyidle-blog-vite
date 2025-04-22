@@ -29,6 +29,10 @@ import { useGlobalEmitter } from "@/hooks/globalEmitter"
 // 中文化
 import zhCn from "element-plus/es/locale/lang/zh-cn"
 import { useSettingStore } from "@/store/setting"
+// 引入 仓库
+import { useAnnounceStore } from "@/store/announce"
+const { reqAnnounce } = useAnnounceStore()
+
 const { isLoading } = storeToRefs(useSettingStore())
 
 const _opacity = computed(() => {
@@ -36,6 +40,7 @@ const _opacity = computed(() => {
 })
 // 全局的 监听事件 使用 mitt 管理 和 效果等
 useGlobalEmitter()
+onMounted(reqAnnounce)
 </script>
 
 <style lang="scss">

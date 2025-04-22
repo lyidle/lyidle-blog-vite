@@ -42,7 +42,7 @@ import { useAnnounceStore } from "@/store/announce/index"
 // 显示当前时间
 const currentTime = ref(moment(new Date(), "a h:mm:ss"))
 // 记录当前时间的 setInterval
-let updateTime: ReturnType<typeof setInterval>
+let updateTime: setTimout | null
 
 // 提取相关 信息
 const { reqAnnounce } = useAnnounceStore()
@@ -69,9 +69,7 @@ onMounted(async () => {
   }, 1000)
 })
 
-onUnmounted(() => {
-  clearInterval(updateTime)
-})
+onUnmounted(() => updateTime && clearInterval(updateTime))
 </script>
 
 <style scoped lang="scss">

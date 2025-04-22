@@ -202,6 +202,7 @@ const handlerReg = throttle(async () => {
 
 // 判断是否是 开发环境
 const isDev = import.meta.env.DEV
+let tim: setTimout | null
 // 发送验证码按钮
 const handlerCode = async () => {
   try {
@@ -216,12 +217,12 @@ const handlerCode = async () => {
     if (isDev) regData.code = `${result.regCode}` || ""
     // 处理成功的 事件
     codeIsActive.value = false
-    const tim = setInterval(() => {
+    tim = setInterval(() => {
       --code.value
       if (code.value < 0) {
         code.value = initCode
         codeIsActive.value = true
-        clearInterval(tim)
+        tim && clearInterval(tim)
       }
     }, 1000)
   } catch (error) {
@@ -229,6 +230,7 @@ const handlerCode = async () => {
     if (!err) ElMessage.error("发送验证码失败")
   }
 }
+onBeforeUnmount(() => tim && clearInterval(tim))
 defineExpose({ reg })
 </script>
 
