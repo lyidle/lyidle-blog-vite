@@ -12,8 +12,15 @@ const is_production = JSON.parse(process.env.is_production!)
 const router = express.Router()
 router.get("/", async (req, res, next) => {
   try {
-    // 获取ip
-    const userIp = ip.address()
+    // 获取真实客户端 IP
+    /** 需要 配置 OpenResty/Nginx 传递真实 IP
+     * proxy_set_header X-Real-IP $remote_addr;
+     * proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+     */
+    const userIp: string =
+      ((req.headers["x-forwarded-for"] as string)?.split(",")[0] as string) ||
+      (req.headers["x-real-ip"] as string) ||
+      (req.connection.remoteAddress as string)
     type ipRegionType =
       | Omit<IP2RegionResult, "isp"> & {
           isp?: string

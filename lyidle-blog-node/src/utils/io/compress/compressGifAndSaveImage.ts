@@ -5,8 +5,8 @@ import { v4 as uuidV4 } from "uuid"
 import { isDir } from "@/utils/io/isDir"
 import { existsSync, unlinkSync, writeFileSync } from "fs"
 import { join } from "path"
-// windows  的 gifsicle 的位置
-const win_softWare = process.env.gifsicle_route_window
+// gifsicle 的位置
+const gifsicle_route = process.env.gifsicle_route as string
 // 压缩 gif 图片
 export const compressGifAndSaveImage = async (
   buffer: Buffer,
@@ -36,11 +36,8 @@ export const compressGifAndSaveImage = async (
 
   return new Promise((resolve, reject) => {
     // 使用 exec 调用 gifsicle 压缩 GIF
-    const gifsicleCommand =
-      process.platform === "win32" ? win_softWare : "gifsicle"
-
     exec(
-      `${gifsicleCommand} --optimize=${optimize} --colors=256 ${tempInputPath} -o ${outputPath}`,
+      `${gifsicle_route}  --optimize=${optimize} --colors=256 ${tempInputPath} -o ${outputPath}`,
       (err: any, stdout: any, stderr: any) => {
         if (err) {
           reject(new Error(`GIF 压缩失败：${stderr || err.message}`))

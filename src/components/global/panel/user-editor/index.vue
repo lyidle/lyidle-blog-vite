@@ -239,6 +239,16 @@ const isDev = import.meta.env.DEV
 let tim: setTimout | null
 // 发送验证码按钮
 const handlerCode = async () => {
+  // 处理成功的 事件
+  codeIsActive.value = false
+  tim = setInterval(() => {
+    --code.value
+    if (code.value < 0) {
+      code.value = initCode
+      codeIsActive.value = true
+      tim && clearInterval(tim)
+    }
+  }, 1000)
   try {
     // 验证 邮箱
     await formInstance.value.validateField("email")
@@ -248,17 +258,8 @@ const handlerCode = async () => {
     const expire = formatMilliseconds(result.expire)
     ElMessage.success(`验证码发送成功，有效时间${expire}~`)
     // 开发环境 直接赋值 code 结果 测试用
-    if (isDev) userEditorData.code = `${result.updateCode}` || ""
-    // 处理成功的 事件
-    codeIsActive.value = false
-    tim = setInterval(() => {
-      --code.value
-      if (code.value < 0) {
-        code.value = initCode
-        codeIsActive.value = true
-        tim && clearInterval(tim)
-      }
-    }, 1000)
+    if (isDev && result.updateCode)
+      userEditorData.code = `${result.updateCode}` || ""
   } catch (error) {
     const err = handlerReqErr(error, "warning")
     if (!err) ElMessage.error("发送验证码失败")

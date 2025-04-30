@@ -1,8 +1,5 @@
 "use strict"
 
-// 引入 清除 redids 缓存的 函数
-const { clear } = require("../../utils/redis/js")
-
 const fs = require("fs")
 const path = require("path")
 /** @type {import('sequelize-cli').Migration} */
@@ -61,8 +58,6 @@ module.exports = {
 
     await queryInterface.bulkInsert("FilterTypes", types, {})
     await queryInterface.bulkInsert("Filters", sexual, {})
-    // 清空 缓存
-    await clear()
   },
 
   async down(queryInterface, Sequelize) {

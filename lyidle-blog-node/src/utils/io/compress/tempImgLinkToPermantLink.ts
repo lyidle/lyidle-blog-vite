@@ -59,20 +59,30 @@ export const tempImgLinkToPermantLink = async (
         let resolvePath
         // 判断是否是gif
         if (isGif(extension)) {
-          // gif 用 gifsicle
-          resolvePath = await compressGifAndSaveImage(
-            file,
-            outputRelative,
-            gifsicleQuality
-          )
+          try {
+            // gif 用 gifsicle
+            resolvePath = await compressGifAndSaveImage(
+              file,
+              outputRelative,
+              gifsicleQuality
+            )
+          } catch (error) {
+            console.error("gifsicle 转换图片失败")
+            console.error(error)
+          }
           // 需要是一个图片
         } else if (lookup(staticPath).startsWith("image/")) {
-          // 其他格式使用 sharp 压缩
-          resolvePath = await compressAndSaveImage(
-            file,
-            outputRelative,
-            sharpQuality
-          )
+          try {
+            // 其他格式使用 sharp 压缩
+            resolvePath = await compressAndSaveImage(
+              file,
+              outputRelative,
+              sharpQuality
+            )
+          } catch (error) {
+            console.error("sharp 转换图片失败")
+            console.error(error)
+          }
         }
         // 存在 添加到 数组
         if (resolvePath) {

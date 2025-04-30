@@ -148,7 +148,7 @@ export default async () => {
           defaults: {
             name: "版权",
             userId: ownerId,
-            content: is_production ? "" : "©2024-2025",
+            content: is_production ? "© Lyのblog" : "©2024-2025",
           },
         })
         await setKey("setting:版权", dataValues)

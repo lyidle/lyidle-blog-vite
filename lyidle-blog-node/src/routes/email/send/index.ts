@@ -47,7 +47,7 @@ const email_send = JSON.parse(process.env.email_send!)
 export default (
   route: string,
   setData: "regCode" | "forgetCode" | "updateCode",
-  template: (email: string, code: string, createTime?: string) => string
+  template: (email: string, code: string, createTime: string) => string
 ) => {
   return (
     route as string,

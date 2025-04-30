@@ -1,20 +1,19 @@
 <template>
   <div class="my-vditor-container relative">
     <div class="flex justify-end relative">
-      <h1 class="absolute top-0 left-50% translate-x-[-50%] cur-text">
-        {{ article?.title }}
-      </h1>
       <div
         class="flex-shrink-0 float-right mt-10px mr-10px flex flex-col gap-15px"
       >
         <slot name="btns"></slot>
-        <my-button
-          class="w-initial"
-          size="small"
-          @click="exportHtml"
-          v-if="isExportHtml"
-          >导出HTML文件</my-button
-        >
+        <template v-if="isExportHtml">
+          <my-button
+            class="w-initial"
+            size="small"
+            @click="exportHtml"
+            v-if="userRoles.includes('owner') || userId === article?.userId"
+            >导出HTML文件</my-button
+          >
+        </template>
         <slot name="btns-end"></slot>
       </div>
     </div>
@@ -31,6 +30,12 @@ import { useSideMenuHighlight } from "@/hooks/Doc/sideMenuHighlight"
 import type { GetOneArticle } from "@/api/article/types/getOneArticle"
 import type { TocNode } from "@/hooks/Doc/vditorPreview/types"
 import { exportHtmlFile } from "@/hooks/Doc/export/exportHtml"
+// 引入仓库
+import { useUserStore } from "@/store/user"
+
+// 提取需要的数据
+const { userId, userRoles } = storeToRefs(useUserStore())
+
 // markdown 渲染的容器
 const docPreview = ref<HTMLDivElement | undefined>()
 const article = defineModel<GetOneArticle["data"]>("article")

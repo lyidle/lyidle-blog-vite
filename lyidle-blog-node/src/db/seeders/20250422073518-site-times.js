@@ -1,5 +1,7 @@
 "use strict"
 
+// 引入 清除 redids 缓存的 函数
+const { delKeys } = require("../../utils/redis/js")
 module.exports = {
   async up(queryInterface, Sequelize) {
     const results = [
@@ -12,6 +14,8 @@ module.exports = {
     ]
 
     await queryInterface.bulkInsert("SiteTimes", results, {})
+    // 清空 缓存
+    await delKeys("")
   },
 
   async down(queryInterface, Sequelize) {

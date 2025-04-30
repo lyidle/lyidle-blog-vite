@@ -13,14 +13,27 @@ require("dotenv").config()
 
 const app = express()
 // api端口
-const api_port = process.env.api_port
+const api_port = parseInt(process.env.api_port as string)
 // web端口
 const web_port = process.env.web_port
+
+const is_production = JSON.parse(process.env.is_production as string)
 
 // 处理跨域
 const cors = require("cors")
 const corsOptions = {
-  origin: ["http://localhost:5173", `http://localhost:${web_port}`],
+  origin: is_production
+    ? [
+        // 服务器
+        `https://lyidle.cn`,
+      ]
+    : [
+        // 本地
+        // vite
+        "http://localhost:5173",
+        // web
+        `http://127.0.0.1:${web_port}`,
+      ],
 }
 app.use(cors(corsOptions))
 
@@ -42,14 +55,13 @@ app.use(express.static(resolve(__dirname, "./assets")))
 const api = require("@/routes")
 
 // 引入 redis
-// import { clear } from "./utils/redis"
+// import { delKeys } from "./utils/redis"
 ;(async () => {
-  // await clear()
+  // await delKeys("")
   await initialEnvironment()
 })()
-
 app.get("/", (req, res) => {
-  res.send("hello")
+  res.send("hello，这是一个接口文件")
 })
 
 const api_prefix = process.env.api_prefix || "/api"
@@ -400,4 +412,11 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err)
 })
 
-app.listen(api_port, () => console.log(`Api is running on port ${api_port}.`))
+if (is_production)
+  app.listen(api_port, "0.0.0.0", () =>
+    console.log(`Api is running on port ${api_port}.`)
+  )
+else
+  app.listen(api_port, "127.0.0.1", () =>
+    console.log(`Api is running on port ${api_port}.`)
+  )

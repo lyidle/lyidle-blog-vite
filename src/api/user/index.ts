@@ -68,7 +68,9 @@ const server = import.meta.env.VITE_SERVE
 
 // 发送 邮箱的接口
 const sendEmail = (api: APIKeysType) => (data?: EmailBody) =>
-  request.post<any, Email>(server + prefix + API[api], data)
+  request.post<any, Email>(server + prefix + API[api], data, {
+    timeout: 60 * 1000, //1分钟
+  })
 
 // 注册用户 发送邮箱验证码
 export const reqRegEmail = sendEmail("regEmail")
