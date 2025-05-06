@@ -14,7 +14,7 @@ export const useDocEditorOpt = defineStore(
     // 分类
     const category = ref<string>()
     // 标签
-    const tags = ref<string[]>(["Tag 1", "Tag 2", "Tag 3"])
+    const tags = ref<string[]>([])
     // 描述
     const desc = ref<string>()
     // 长度

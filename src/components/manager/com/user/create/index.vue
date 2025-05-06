@@ -111,13 +111,6 @@ const createRules = reactive({
     {
       required: true,
       trigger: "change",
-      min: 6,
-      max: 12,
-      message: "密码必须要在6-12位",
-    },
-    {
-      required: true,
-      trigger: "change",
       pattern: pwdReg.reg,
       message: pwdReg.msg,
     },

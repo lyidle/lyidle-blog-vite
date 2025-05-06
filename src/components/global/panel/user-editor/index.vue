@@ -196,12 +196,6 @@ const formRules = reactive({
     { trigger: "change", message: "密码是必填项" },
     {
       trigger: "change",
-      min: 6,
-      max: 12,
-      message: "密码必须要在6-12位",
-    },
-    {
-      trigger: "change",
       pattern: pwdReg.reg,
       message: pwdReg.msg,
     },
