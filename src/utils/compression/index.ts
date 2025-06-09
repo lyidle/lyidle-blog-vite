@@ -43,7 +43,7 @@ export const decompressString = (compressed: string): string | undefined => {
   return pako.inflate(base64ToUint8Array(compressed), { to: "string" })
 }
 
-// 解压字符串
+// 解压字符串 防止报错
 export const decompressStringNotError = (
   compressed: string
 ): string | undefined => {

@@ -23,6 +23,14 @@
                 <div class="title cur-text">{{ article?.title }}</div>
                 <div class="author cur-text">作者:{{ article?.author }}</div>
                 <div class="desc">
+                  <my-tooltip content="描述" placement="bottom">
+                    <div
+                      class="cur-text line-clamp-2 w-40vw text-center mx-auto"
+                    >
+                      {{ article.desc }}
+                    </div>
+                  </my-tooltip>
+                  <!-- 时间 -->
                   <div class="item">
                     <div class="item-data">
                       <span class="label cur-text">
@@ -43,46 +51,7 @@
                       }}</span>
                     </div>
                   </div>
-
-                  <div class="item">
-                    <div class="item-data">
-                      <span class="label cur-text">
-                        <i class="i-tabler:clover-filled"></i>
-                      </span>
-                      <span
-                        class="content cur-text doc-header-link cur-pointer"
-                      >
-                        <router-link
-                          :to="`/user/categories?author=${article.author}&category=${article.category}`"
-                          >{{ article?.category }}</router-link
-                        >
-                      </span>
-                    </div>
-                    <span class="item-hr">|</span>
-                    <div class="item-data">
-                      <span class="label cur-text"
-                        ><i class="i-mynaui:label-solid"></i
-                      ></span>
-                      <span class="content">
-                        <template
-                          v-for="(item, index) in article?.tags"
-                          :key="item"
-                        >
-                          <span class="doc-header-link cur-pointer">
-                            <router-link
-                              :to="`/user/tags?author=${article.author}&tags=${item}`"
-                              >{{ item }}</router-link
-                            >
-                          </span>
-                          <span
-                            class="tags-doc"
-                            v-if="index !== article?.tags.length - 1"
-                            >·</span
-                          >
-                        </template>
-                      </span>
-                    </div>
-                  </div>
+                  <!-- 统计信息 -->
                   <div class="item">
                     <div class="item-data">
                       <span class="label cur-text"
@@ -109,6 +78,50 @@
                       >
                       <span class="content cur-text">
                         <article-counts :article="article"></article-counts>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- 分类与标签 -->
+                  <div class="item">
+                    <div class="item-data">
+                      <span class="label cur-text">
+                        <i class="i-tabler:clover-filled"></i>
+                      </span>
+                      <span
+                        class="content cur-text doc-header-link cur-pointer"
+                      >
+                        <my-tooltip content="分类">
+                          <router-link
+                            :to="`/user/categories?author=${article.author}&category=${article.category}`"
+                            >{{ article?.category }}</router-link
+                          >
+                        </my-tooltip>
+                      </span>
+                    </div>
+                    <span class="item-hr">|</span>
+                    <div class="item-data">
+                      <span class="label cur-text"
+                        ><i class="i-mynaui:label-solid"></i
+                      ></span>
+                      <span class="content">
+                        <template
+                          v-for="(item, index) in article?.tags"
+                          :key="item"
+                        >
+                          <span class="doc-header-link cur-pointer">
+                            <my-tooltip content="标签">
+                              <router-link
+                                :to="`/user/tags?author=${article.author}&tags=${item}`"
+                                >{{ item }}</router-link
+                              >
+                            </my-tooltip>
+                          </span>
+                          <span
+                            class="tags-doc"
+                            v-if="index !== article?.tags.length - 1"
+                            >·</span
+                          >
+                        </template>
                       </span>
                     </div>
                   </div>

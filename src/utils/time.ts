@@ -1,4 +1,4 @@
-export function getTime() {
+export const getTime = () => {
   let message = ""
   const hour = new Date().getHours()
   if (hour <= 9) message = "早上"

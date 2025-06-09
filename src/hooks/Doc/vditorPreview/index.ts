@@ -10,7 +10,6 @@ import { useSettingStore } from "@/store/setting"
 
 // 引入 添加 高亮 和 callotus 的函数
 import { addCalloutsAndHighlightAndFillToSvg } from "@/utils/doc/addCalloutsAndHighlightAndFillToSvg"
-import { useEventListener } from "@/hooks/useEventListener"
 
 export const useVditorPreview = ({
   article,

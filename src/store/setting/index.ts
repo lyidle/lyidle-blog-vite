@@ -100,6 +100,9 @@ export const useSettingStore = defineStore(
 
     // 是全屏否加载
     const isLoading = ref(true)
+
+    // 是否显示导航的一级图标
+    const isNavIcon = ref(true)
     return {
       // 头部设置
       isDark,
@@ -143,6 +146,8 @@ export const useSettingStore = defineStore(
       isMusic,
       isCopyText,
       isLoading,
+      // 是否显示导航的一级图标
+      isNavIcon,
     }
   },
   {

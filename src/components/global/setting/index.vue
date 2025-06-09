@@ -2,7 +2,7 @@
   <a
     class="header-setting-container custom-popover-trigger custom-setting item-a"
   >
-    <i class="i-hugeicons:setting-07 w-1em h-1em"></i>
+    <i class="i-hugeicons:setting-07 w-1em h-1em" v-if="isNavIcon"></i>
     {{ label }}
     <my-popover :width :height :label v-bind="$attrs">
       <el-form label-width="130px" class="m-5px m-l-15px header-setting">
@@ -117,6 +117,7 @@ const {
   isAside,
   contentIsReverse,
   asideCounts,
+  isNavIcon,
 } = storeToRefs(useSettingStore())
 // 定义与接收props
 withDefaults(

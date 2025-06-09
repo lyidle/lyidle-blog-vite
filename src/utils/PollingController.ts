@@ -1,4 +1,3 @@
-// types.ts
 export interface PollingOptions {
   maxDelay?: number
   onPoll: () => Promise<boolean>

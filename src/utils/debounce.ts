@@ -20,7 +20,5 @@ export default function debounce<T extends (...args: any[]) => any>(
     }
   }
 
-  return debounced as ((...args: Parameters<T>) => void) & {
-    cancel: () => void
-  }
+  return debounced
 }

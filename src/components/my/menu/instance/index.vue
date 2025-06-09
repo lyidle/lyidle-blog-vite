@@ -1,7 +1,7 @@
 <template>
   <li class="custom-menu-trigger">
     <my-anchor :to="data.to">
-      <icon-parse :icon="data.icon"></icon-parse>
+      <icon-parse :icon="data.icon" v-if="showTitleIcon"></icon-parse>
       {{ data.name }}
     </my-anchor>
     <my-menu :triangle="true" class="my-menu-container">
@@ -59,11 +59,13 @@ const props = withDefaults(
     item_h?: string
     iconM_r?: string
     iconP_l?: string
+    showTitleIcon?: boolean
   }>(),
   {
     item_h: "var(--header-topmenu-icon-mr)",
     iconM_r: "var(--header-topmenu-h)",
     iconP_l: "var(--header-topmenu-icon-pl)",
+    showTitleIcon: true,
   }
 )
 

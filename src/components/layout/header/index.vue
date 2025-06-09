@@ -19,9 +19,25 @@ import { usePollingController } from "@/hooks/usePollingController"
 
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { useSettingStore } from "@/store/setting"
+const { isNavIcon } = storeToRefs(useSettingStore())
 
 // 提取数据
 const { userId } = storeToRefs(useUserStore())
+
+const initShowNavIcon = () =>
+  document.documentElement.offsetWidth < 500
+    ? (isNavIcon.value = false)
+    : (isNavIcon.value = true)
+onMounted(initShowNavIcon)
+
+// 监听窗口变化
+mitt.on("window:resize", initShowNavIcon)
+// 销毁
+onBeforeUnmount(
+  // 取消监听窗口变化
+  () => mitt.off("window:resize", initShowNavIcon)
+)
 
 const LOGO = import.meta.env.VITE_INITIAL_LOGO
 

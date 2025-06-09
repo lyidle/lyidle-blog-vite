@@ -3,7 +3,7 @@
   <!-- 首页 -->
   <li>
     <router-link to="/home">
-      <i class="i-ep:home-filled w-1em h-1em"> </i>
+      <i class="i-ep:home-filled w-1em h-1em" v-if="isNavIcon"> </i>
       首页
     </router-link>
   </li>
@@ -14,7 +14,7 @@
       class="item-msg"
       @mouseenter="delMsgCountsMark"
     >
-      <i class="i-formkit:email w-1em h-1em"></i>
+      <i class="i-formkit:email w-1em h-1em" v-if="isNavIcon"></i>
       消息
       <div class="tip-dot" v-if="msgCounts">{{ msgCounts }}</div>
     </my-anchor>
@@ -49,6 +49,7 @@
     v-model:data="PersonData"
     icon="i-iconoir:page-star"
     name="个人"
+    :showTitleIcon="isNavIcon"
   >
   </global-header-item>
   <slot name="last-scend"></slot>
@@ -70,6 +71,7 @@ import { delNewUserMsg } from "@/api/user/msg"
 import { useShowPersonHeaderMenu } from "@/hooks/header/showPersonHeaderMenu"
 // 引入 仓库
 import { useUserStore } from "@/store/user"
+import { useSettingStore } from "@/store/setting"
 import { mitt } from "@/utils/emitter"
 import { handlerReqErr } from "@/utils/request/error/successError"
 import throttle from "@/utils/throttle"
@@ -78,7 +80,7 @@ const PersonData = useShowPersonHeaderMenu()
 
 // 提取数据
 const { userId } = storeToRefs(useUserStore())
-
+const { isNavIcon } = storeToRefs(useSettingStore())
 const msgCounts = ref(0)
 
 // 监听是否有消息 获取个数

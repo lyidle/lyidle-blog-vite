@@ -6,7 +6,7 @@
           <!-- 菜单项 -->
           <li>
             <a @click="isShow" class="item-a">
-              <i class="i-ep:menu w-1em h-1em"> </i>
+              <i class="i-ep:menu w-1em h-1em" v-if="isNavIcon"> </i>
               菜单
             </a>
           </li>
@@ -56,6 +56,8 @@
 // 引入仓库
 import { useUserStore } from "@/store/user"
 import { useOwnerStore } from "@/store/owner"
+import { useSettingStore } from "@/store/setting"
+
 // 引入 处理后的数据
 import { useShowUserinfo } from "@/hooks/showUserinfo"
 import { mitt } from "@/utils/emitter"
@@ -69,6 +71,7 @@ const { showIsBin } = useShowUserinfo({
 })
 
 // 提取需要的数据
+const { isNavIcon } = storeToRefs(useSettingStore())
 const {
   // 用户信息
   userToken,

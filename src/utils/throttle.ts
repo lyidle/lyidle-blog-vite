@@ -22,7 +22,5 @@ export default function throttle<T extends (...args: any[]) => any>(
     }
   }
 
-  return throttled as ((...args: Parameters<T>) => void) & {
-    cancel: () => void
-  }
+  return throttled
 }

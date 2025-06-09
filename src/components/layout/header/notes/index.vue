@@ -1,6 +1,10 @@
 <template>
   <template v-if="data.length">
-    <my-menu-instance :data="item" v-for="item in data"></my-menu-instance>
+    <my-menu-instance
+      :data="item"
+      v-for="item in data"
+      :showTitleIcon="isNavIcon"
+    ></my-menu-instance>
   </template>
 </template>
 
@@ -11,6 +15,11 @@ import { getCategoryToTags } from "@/api/article"
 // 引入 类型
 import type { MenuData } from "@/components/my/menu/instance/types"
 import type { FindOneSetting } from "@/api/admin/types/findOneSetting"
+
+// 引入 仓库
+import { useSettingStore } from "@/store/setting"
+// 提取数据
+const { isNavIcon } = storeToRefs(useSettingStore())
 
 const data = ref<MenuData>([])
 

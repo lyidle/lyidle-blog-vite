@@ -3,7 +3,7 @@
     <slot v-if="$slots.default"></slot>
     <template v-else>
       <a>
-        <i class="w-1em h-1em" :class="icon"></i>
+        <i class="w-1em h-1em" :class="icon" v-if="showTitleIcon"></i>
         {{ name }}
       </a>
     </template>
@@ -45,9 +45,11 @@ withDefaults(
     name?: string
     icon?: string
     triangle?: boolean
+    showTitleIcon?: boolean
   }>(),
   {
     triangle: true,
+    showTitleIcon: true,
   }
 )
 </script>
