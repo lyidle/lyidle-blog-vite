@@ -189,6 +189,9 @@ onMounted(reqAnnounce)
     & {
       counter-reset: level-2; /* 重置三级编号计数器 */
     }
+    h1 {
+      margin-bottom: 35px;
+    }
     /* 二级编号 */
     h2 {
       counter-reset: level-3; /* 重置三级编号计数器 */

@@ -159,3 +159,4 @@ test.*
 test
 lyidle-blog-node/src/assets/images
 lyidle-blog-node/lyidleBlog
+.env.production
