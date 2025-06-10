@@ -18,7 +18,7 @@ export const useSettingStore = defineStore(
       { value: "switch", label: "快捷切换" },
     ] as const
     // 背景 是否 悬浮
-    const bannerIsFixed = ref<boolean>(false)
+    const bannerIsFixed = ref<boolean>(true)
     // 暗夜切换
     const isDark = ref<boolean>(false)
     // 主题选择
