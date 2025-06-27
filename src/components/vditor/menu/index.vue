@@ -1,6 +1,6 @@
 <template>
   <div ref="menuCom">
-    <vditor-menu-generate :menuData v-if="menuData"></vditor-menu-generate>
+    <vditor-menu-generate :menuData v-if="menuCom"></vditor-menu-generate>
   </div>
 </template>
 
@@ -28,7 +28,12 @@ useSideMenuFixed(props.menuData, props.observerMenu, menuCom)
 .active {
   color: var(--doc-menu-highlight);
 }
-
+.sideMenu > .body {
+  box-sizing: border-box;
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 3px 0;
+}
 // 侧边栏吸附效果
 .aside-menu-sticky-right {
   position: fixed !important;
