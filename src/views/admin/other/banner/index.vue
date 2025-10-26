@@ -142,9 +142,8 @@ import { escapeUrlForRegExp } from "@/RegExp/Url/replace/escapeUrlForRegExp"
 
 // 引入 默认banner 图片
 // 导入 默认的图片
-const default_light =
-  "https://blog-api.lyidle.cn/images/public/base-bg-light.png"
-const default_dark = "https://blog-api.lyidle.cn/images/public/base-bg-dark.png"
+const default_light = `/api/assets/images/public/base-bg-light.png`
+const default_dark = `/api/assets/images/public/base-bg-dark.png`
 
 // 搜索 的key
 const searchKey = ref("")

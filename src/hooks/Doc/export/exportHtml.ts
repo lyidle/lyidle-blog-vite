@@ -391,7 +391,7 @@ Current colors taken from GitHub's CSS
 
       html[themes="normal-light"] .global-banner {
         --banner-detail-color: #ffffff;
-        --banner-img: url("https://blog-api.lyidle.cn/images/public/base-bg-light.png");
+        --banner-img: url("/api/assets/images/public/base-bg-light.png");
         --banner-mask: linear-gradient(
           to right,
           rgba(137, 137, 137, 0.5),
@@ -707,7 +707,7 @@ Current colors taken from GitHub's CSS
       html[themes="normal-light"] {
         --primary-color: #2a4f7c;
         --primary-links-hover: rgb(197, 132, 57);
-        --default-img: url("https://blog-api.lyidle.cn/images/public/base-bg-light.png");
+        --default-img: url("/api/assets/images/public/base-bg-light.png");
         --default-avatar: url("/src/assets/images/avatar.jpg");
         --body-bg: #f7fcff;
         --cursor-default: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAADwUExURQAAAAweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNbC2vdLW2jdGWfHy8/////X292dzgaSqsxYnPdXY3DJBVfT09WNufZigqRMkO83R1ig4TLW6wefp67/EyldkdNfa3g0fNuHj5mx3hVVicuHk5uvs7hUmPCk4TV1peJObpcjM0e3u8MrO00BPYTwEJrkAAAArdFJOUwAFh+vynxPhNvhsqg7aMPdmCs4MgdfYi/sepbkxM/S+Kq716SsEo9vZlxlI8pYuAAAAAWJLR0Qwrtwt5AAAAAd0SU1FB+gLEAwNMmVpg2gAAACoSURBVDjL7dHFDsIAEEXR0hYrUtzd4SGDu7v//99A0rCinT0Jdztn9UYwiZJstgjGiXhntRkDCfVGE3bFEAAtancAh5MBRN0eXG4OUH8A1cMBGo4As5cBROMJfH4O0HSGAAtojiAPFpB5sESIByuEWbDeRKLfQMX2A3aI6ewQx/6g3Y8nJHRAMgWcL9fb/fFEWnfrTDYHrXzB4KHFpFIqq5VqTfj3270AZ7MnWfK+euoAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MTM6NTArMDA6MDCphdLRAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjEzOjUwKzAwOjAw2NhqbQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoxMzo1MCswMDowMI/NS7IAAAAASUVORK5CYII=")
@@ -828,7 +828,7 @@ Current colors taken from GitHub's CSS
 
       html[themes="normal-dark"] .global-banner {
         --banner-detail-color: #cfd3dc;
-        --banner-img: url("https://blog-api.lyidle.cn/images/public/base-bg-dark.png");
+        --banner-img: url("/api/assets/images/public/base-bg-dark.png");
         --banner-mask: linear-gradient(
           to right,
           rgba(52, 52, 52, 0.852),
@@ -1221,7 +1221,7 @@ Current colors taken from GitHub's CSS
       html[themes="normal-dark"] {
         --primary-color: #c7d4e4;
         --primary-links-hover: rgb(197, 132, 57);
-        --default-img: url("https://blog-api.lyidle.cn/images/public/base-bg-dark.png");
+        --default-img: url("/api/assets/images/public/base-bg-dark.png");
         --default-avatar: url("/src/assets/images/avatar.jpg");
         --body-bg: #2a3943;
         --cursor-default: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAADwUExURQAAAP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////1tndzlHWtTX2xorQQweNRYnPaSqs2dzgfX29zZFWNnc3xcpP6ivt3N9i/j5+T5MXuPl6FZjcyQ0SUxZarS5wDRDVv7+/io6Tp+mr7a7wio5TiAxRvb3+OLl5660vHiCj0NRYx4vREFPYcvO0053WeAAAAArdFJOUwAFh+vynxPhNvhsqg7aMPdmCs4MgdfYi/sepbkxM/S+Kq716SsEo9vZlxlI8pYuAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+gLEAwVHUyjJmgAAACoSURBVDjL7dHFDsIAEEXR0hYrUtzd4SGDu7v//99A0rCinT0Jdztn9UYwiZJstgjGiXhntRkDCfVGE3bFEAAtancAh5MBRN0eXG4OUH8A1cMBGo4As5cBROMJfH4O0HSGAAtojiAPFpB5sESIByuEWbDeRKLfQMX2A3aI6ewQx/6g3Y8nJHRAMgWcL9fb/fFEWnfrTDYHrXzB4KHFpFIqq5VqTfj3270AZ7MnWfK+euoAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MjE6MjkrMDA6MDCrzygnAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjIxOjI5KzAwOjAw2pKQmwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoyMToyOSswMDowMI2HsUQAAAAASUVORK5CYII=")
@@ -1732,7 +1732,7 @@ Current colors taken from GitHub's CSS
       }
       html[themes="normal-light"] .global-banner {
         --banner-detail-color: #ffffff;
-        --banner-img: url("https://blog-api.lyidle.cn/images/public/base-bg-light.png");
+        --banner-img: url("/api/assets/images/public/base-bg-light.png");
         --banner-mask: linear-gradient(
           to right,
           rgba(137, 137, 137, 0.5),
@@ -2038,7 +2038,7 @@ Current colors taken from GitHub's CSS
       html[themes="normal-light"] {
         --primary-color: #2a4f7c;
         --primary-links-hover: rgb(197, 132, 57);
-        --default-img: url("https://blog-api.lyidle.cn/images/public/base-bg-light.png");
+        --default-img: url("/api/assets/images/public/base-bg-light.png");
         --default-avatar: url("/src/assets/images/avatar.jpg");
         --body-bg: #f7fcff;
         --cursor-default: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAADwUExURQAAAAweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNQweNbC2vdLW2jdGWfHy8/////X292dzgaSqsxYnPdXY3DJBVfT09WNufZigqRMkO83R1ig4TLW6wefp67/EyldkdNfa3g0fNuHj5mx3hVVicuHk5uvs7hUmPCk4TV1peJObpcjM0e3u8MrO00BPYTwEJrkAAAArdFJOUwAFh+vynxPhNvhsqg7aMPdmCs4MgdfYi/sepbkxM/S+Kq716SsEo9vZlxlI8pYuAAAAAWJLR0Qwrtwt5AAAAAd0SU1FB+gLEAwNMmVpg2gAAACoSURBVDjL7dHFDsIAEEXR0hYrUtzd4SGDu7v//99A0rCinT0Jdztn9UYwiZJstgjGiXhntRkDCfVGE3bFEAAtancAh5MBRN0eXG4OUH8A1cMBGo4As5cBROMJfH4O0HSGAAtojiAPFpB5sESIByuEWbDeRKLfQMX2A3aI6ewQx/6g3Y8nJHRAMgWcL9fb/fFEWnfrTDYHrXzB4KHFpFIqq5VqTfj3270AZ7MnWfK+euoAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MTM6NTArMDA6MDCphdLRAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjEzOjUwKzAwOjAw2NhqbQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoxMzo1MCswMDowMI/NS7IAAAAASUVORK5CYII=")
@@ -2156,7 +2156,7 @@ Current colors taken from GitHub's CSS
       }
       html[themes="normal-dark"] .global-banner {
         --banner-detail-color: #cfd3dc;
-        --banner-img: url("https://blog-api.lyidle.cn/images/public/base-bg-dark.png");
+        --banner-img: url("/api/assets/images/public/base-bg-dark.png");
         --banner-mask: linear-gradient(
           to right,
           rgba(52, 52, 52, 0.852),
@@ -2539,7 +2539,7 @@ Current colors taken from GitHub's CSS
       html[themes="normal-dark"] {
         --primary-color: #c7d4e4;
         --primary-links-hover: rgb(197, 132, 57);
-        --default-img: url("https://blog-api.lyidle.cn/images/public/base-bg-dark.png");
+        --default-img: url("/api/assets/images/public/base-bg-dark.png");
         --default-avatar: url("/src/assets/images/avatar.jpg");
         --body-bg: #2a3943;
         --cursor-default: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAADwUExURQAAAP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////1tndzlHWtTX2xorQQweNRYnPaSqs2dzgfX29zZFWNnc3xcpP6ivt3N9i/j5+T5MXuPl6FZjcyQ0SUxZarS5wDRDVv7+/io6Tp+mr7a7wio5TiAxRvb3+OLl5660vHiCj0NRYx4vREFPYcvO0053WeAAAAArdFJOUwAFh+vynxPhNvhsqg7aMPdmCs4MgdfYi/sepbkxM/S+Kq716SsEo9vZlxlI8pYuAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+gLEAwVHUyjJmgAAACoSURBVDjL7dHFDsIAEEXR0hYrUtzd4SGDu7v//99A0rCinT0Jdztn9UYwiZJstgjGiXhntRkDCfVGE3bFEAAtancAh5MBRN0eXG4OUH8A1cMBGo4As5cBROMJfH4O0HSGAAtojiAPFpB5sESIByuEWbDeRKLfQMX2A3aI6ewQx/6g3Y8nJHRAMgWcL9fb/fFEWnfrTDYHrXzB4KHFpFIqq5VqTfj3270AZ7MnWfK+euoAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMTEtMTZUMTI6MjE6MjkrMDA6MDCrzygnAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTExLTE2VDEyOjIxOjI5KzAwOjAw2pKQmwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0xMS0xNlQxMjoyMToyOSswMDowMI2HsUQAAAAASUVORK5CYII=")
