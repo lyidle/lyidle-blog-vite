@@ -72,7 +72,7 @@ const exportHtml = () => {
     "#vditor-preview h1"
   ) as HTMLAnchorElement
 
-  const fileName = title.value || h1Name?.innerText || "LyidleのBlog"
+  const fileName = title.value || h1Name?.innerText || "FrontyardのBlog"
   exportHtmlFile(html.value, fileName)
 }
 </script>

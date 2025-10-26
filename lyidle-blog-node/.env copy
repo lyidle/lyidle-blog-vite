@@ -37,7 +37,7 @@ email_requireTLS=true
 email_user=
 email_pwd=
 # 注册邮箱的平台
-email_reg_stage=Lyのblog
+email_reg_stage=FrontyardのBlog
 # redis 
 redis_prefix=vite-blog # redis 的保存键的 前缀
 # 密码

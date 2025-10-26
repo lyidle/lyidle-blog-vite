@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "outDir": "lyidleBlog/src",
+    "outDir": "dist/src",
     "rootDir": "src",
     "resolveJsonModule": true,
     "removeComments": true,
@@ -17,6 +17,6 @@
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "lyidleBlog"],
+  "exclude": ["node_modules", "dist", "dist"],
   "files": ["src/types/express/index.d.ts"]
 }

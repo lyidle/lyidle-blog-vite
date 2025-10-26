@@ -158,5 +158,8 @@ config.json
 test.*
 test
 lyidle-blog-node/src/assets/images
-lyidle-blog-node/lyidleBlog
+lyidle-blog-node/dist
 .env.production
+*.zip
+*.7z
+*.tar

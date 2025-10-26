@@ -19,13 +19,15 @@ const web_port = process.env.web_port
 
 const is_production = JSON.parse(process.env.is_production as string)
 
+const web_server = JSON.parse(process.env.web_server as string)
+
 // 处理跨域
 const cors = require("cors")
 const corsOptions = {
   origin: is_production
     ? [
         // 服务器
-        `https://lyidle.cn`,
+        ...web_server,
       ]
     : [
         // 本地

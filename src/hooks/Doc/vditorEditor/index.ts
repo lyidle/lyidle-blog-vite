@@ -131,7 +131,7 @@ export const useVditorEditor = (
                 const h1 = document.querySelector(
                   ".vditor-reset h1"
                 ) as HTMLAnchorElement
-                const Title = title?.value || h1?.innerText || "LyidleのBlog"
+                const Title = title?.value || h1?.innerText || "FrontyardのBlog"
                 exportHtmlFile(html, Title)
               },
             },
