@@ -20,7 +20,7 @@ app.use(express.static(resolve(__dirname, "./static/dist")))
 // 得到 环境变量
 const api_prefix = process.env.api_prefix
 const is_production = JSON.parse(process.env.is_production as string) as boolean
-const TARGET_SERVER = "http://blog-api.lyidle.cn"
+const TARGET_SERVER = process.env.api_server
 if (is_production) {
   // 反向代理
   const { createProxyMiddleware } = require("http-proxy-middleware")

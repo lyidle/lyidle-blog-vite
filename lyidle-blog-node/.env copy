@@ -60,3 +60,6 @@ token_expire=1d
 default_expire=1d
 # 压缩
 gifsicle_route_window='C:\\My_Program_Folder\\Environments\\gifsicle-1.95-win64\\gifsicle.exe'
+
+web_server = '[""]'
+api_server = 
